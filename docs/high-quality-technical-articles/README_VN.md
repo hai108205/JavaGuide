@@ -34,8 +34,8 @@ Nếu bạn có ít thời gian, nên đọc trước [Lập trình viên làm t
 
 ## Thứ tự đọc đề xuất
 
-1. [Lập trình viên làm thế nào để nhanh chóng học công nghệ mới](./advanced-programmer/programmer-quickly-learn-new-technology.md): Trước tiên xây dựng phương pháp học công nghệ mới.
-2. [Hướng phát triển nghề nghiệp của lập trình viên chọn thế nào?](./programmer/programmer-career-directions.md): Trước khi vào nghề, chuyển vị trí hay đổi hướng, trước tiên hiểu nội dung công việc và rào cản của một số hướng phổ biến.
+1. [Lập trình viên làm thế nào để nhanh chóng học công nghệ mới](./advanced-programmer/VN/programmer-quickly-learn-new-technology_VN.md): Trước tiên xây dựng phương pháp học công nghệ mới.
+2. [Hướng phát triển nghề nghiệp của lập trình viên chọn thế nào?](./programmer/VN/programmer-career-directions_VN.md): Trước khi vào nghề, chuyển vị trí hay đổi hướng, trước tiên hiểu nội dung công việc và rào cản của một số hướng phổ biến.
 3. [Chiến lược trưởng thành kỹ thuật của lập trình viên](./advanced-programmer/the-growth-strategy-of-the-technological-giant.md) và [Bảy lời khuyên dành cho các bạn muốn trưởng thành lên cấp cao](./advanced-programmer/seven-tips-for-becoming-an-advanced-programmer.md): Hiểu lộ trình dài hạn của sự trưởng thành kỹ thuật.
 4. [Bàn về cách chuẩn bị sơ vòng kỹ thuật từ góc nhìn người phỏng vấn và ứng viên](./interview/technical-preliminary-preparation.md): Dùng góc nhìn người phỏng vấn để hiệu chỉnh hướng chuẩn bị.
 5. [Chia sẻ kinh nghiệm phỏng vấn giành được offer từ 20+ công ty lớn](./interview/the-experience-of-get-offer-from-over-20-big-companies.md) và [Tổng kết tuyển dụng mùa xuân của người bình thường](./interview/summary-of-spring-recruitment.md): Tham khảo quá trình tìm việc và tổng kết thực tế.
@@ -96,3 +96,65 @@ Nếu bạn có ít thời gian, nên đọc trước [Lập trình viên làm t
 - [Chuyên mục chất lượng đặc quyền của hành tinh](../zhuanlan/)
 
 <!-- @include: @article-footer.snippet.md -->
+
+
+
+```mermaid
+flowchart TD
+    classDef highlight fill:#FFE8D6,stroke:#DD6B20,stroke-width:2px,color:#7B341E,font-weight:bold;
+    classDef phase fill:#2B4C7E,stroke:#1A2E40,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef nodeItem fill:#F0F4F8,stroke:#2B4C7E,stroke-width:1px,color:#222;
+
+    %% STAGE 1
+    subgraph ST1 ["🌱 Giai đoạn 1: Xây dựng Phương pháp & Chọn Hướng đi"]
+        A1["1. Học nhanh công nghệ mới ⭐<br/><i>(Tài liệu, thực hành, tránh học kém hiệu quả)</i>"]:::highlight
+        A2["2. Định hướng nghề nghiệp<br/><i>(Backend, AI, Database, Kiến trúc...)</i>"]:::nodeItem
+        A1 --> A2
+    end
+
+    %% STAGE 2
+    subgraph ST2 ["🚀 Giai đoạn 2: Luyện cấp & Nâng cao Năng lực Kỹ thuật"]
+        B1["1. Chiến lược trưởng thành dài hạn"]:::nodeItem
+        B2["2. Bảy lời khuyên lên cấp cao (Senior)"]:::nodeItem
+        B3["3. Loại bỏ 20 thói quen xấu"]:::nodeItem
+        B4["4. Cân bằng Kỹ thuật & Nghiệp vụ (Góc nhìn 5 năm)"]:::nodeItem
+        B5["5. Bài học thực chiến (3 năm Meituan, 10 năm Big Tech)"]:::nodeItem
+        
+        B1 --> B2 --> B4
+        B1 --> B3
+        B2 --> B5
+    end
+
+    %% STAGE 3
+    subgraph ST3 ["🎯 Giai đoạn 3: Phỏng vấn & Săn Offer Công ty lớn"]
+        C1["1. Chuẩn bị sơ vòng kỹ thuật ⭐<br/><i>(Góc nhìn Phỏng vấn viên & Ứng viên)</i>"]:::highlight
+        C2["2. Phân biệt & Xử lý 'Làm đẹp CV'"]:::nodeItem
+        C3["3. Chiến lược giành Offer 20+ công ty lớn"]:::nodeItem
+        C4["4. Tham khảo thực tế (Huawei OD -> Tencent, DiDi, Toutiao)"]:::nodeItem
+        
+        C1 --> C2 --> C3 --> C4
+    end
+
+    %% STAGE 4
+    subgraph ST4 ["🏢 Giai đoạn 4: Nhập việc & Thăng tiến Công sở"]
+        D1["1. Nhanh chóng vào trạng thái tại công ty mới"]:::nodeItem
+        D2["2. 32 kỹ năng nâng cao kinh nghiệm công sở"]:::nodeItem
+        D3["3. Hiểu về Performance Review & KPI ở Big Tech"]:::nodeItem
+        
+        D1 --> D2 --> D3
+    end
+
+    %% STAGE 5
+    subgraph ST5 ["🏆 Giai đoạn 5: Mở rộng Giá trị Cá nhân & Bứt phá"]
+        E1["1. Thi các chứng chỉ giá trị cao (Cloud, PMP, RuanKao)"]:::nodeItem
+        E2["2. Xuất bản sách kỹ thuật từ 0 đến 1"]:::nodeItem
+        
+        E1 --> E2
+    end
+
+    %% Flow connections between stages
+    ST1 ==> ST2
+    ST2 ==> ST3
+    ST3 ==> ST4
+    ST4 ==> ST5
+```
