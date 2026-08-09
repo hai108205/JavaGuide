@@ -1,14 +1,4 @@
----
-title: Java基础常见面试题总结(上)
-category: Java
-description: Tổng hợp câu hỏi phỏng vấn Java cơ bản: bao gồm đặc điểm ngôn ngữ Java, sự khác biệt JVM/JDK/JRE, bytecode, kiểu dữ liệu nguyên thủy, autoboxing/unboxing, overloading và overriding cùng các kiến thức cốt lõi khác.
-tag:
-  - Java基础
-head:
-  - - meta
-    - name: keywords
-      content: Java基础,JVM,JDK,JRE,Java SE,字节码,Java编译,自动装箱,基本数据类型,方法重载,Java面试题
----
+
 
 ## Khái niệm cơ bản và kiến thức chung
 
@@ -95,20 +85,20 @@ Chúng ta cần đặc biệt chú ý đến bước `.class->mã máy`. Lấy H
 
 > 🌈 Mở rộng:
 >
-> - [基本功 | Java 即时编译器原理解析及实践 - 美团技术团队](https://mp.weixin.qq.com/s/7PH8o1tbjLsM4-nOnjbwLw)
-> - [基于静态编译构建微服务应用 - 阿里巴巴中间件](https://mp.weixin.qq.com/s/4haTyXUmh8m-dBQaEzwDJw)
+> - [Kiến thức nền tảng | Phân tích nguyên lý và thực tiễn của trình biên dịch tức thời Java - Đội ngũ Kỹ thuật Meituan](https://mp.weixin.qq.com/s/7PH8o1tbjLsM4-nOnjbwLw)
+> - [Xây dựng ứng dụng Microservices bằng phương pháp biên dịch tĩnh – Alibaba Middleware](https://mp.weixin.qq.com/s/4haTyXUmh8m-dBQaEzwDJw)
 
-![Java程序转变为机器代码的过程](https://oss.javaguide.cn/github/javaguide/java/basis/java-code-to-machine-code-with-jit.png)
+![Quá trình chuyển đổi chương trình Java thành mã máy](https://oss.javaguide.cn/github/javaguide/java/basis/java-code-to-machine-code-with-jit.png)
 
 > HotSpot áp dụng cách tiếp cận Lazy Evaluation, dựa trên nguyên lý 80/20, chỉ một phần nhỏ code (hotspot code) tiêu tốn phần lớn tài nguyên hệ thống, và đây chính là phần mà JIT cần biên dịch. JVM thu thập thông tin mỗi khi code được thực thi và thực hiện các tối ưu tương ứng, vì vậy số lần thực thi càng nhiều, tốc độ càng nhanh.
 
 Mối quan hệ giữa JDK, JRE, JVM, JIT được thể hiện trong hình dưới đây.
 
-![JDK、JRE、JVM、JIT 这四者的关系](https://oss.javaguide.cn/github/javaguide/java/basis/jdk-jre-jvm-jit.png)
+![Mối quan hệ giữa bốn thành phần JDK, JRE, JVM và JIT](https://oss.javaguide.cn/github/javaguide/java/basis/jdk-jre-jvm-jit.png)
 
 Hình dưới đây là mô hình cấu trúc tổng quan của JVM.
 
-![JVM 的大致结构模型](https://oss.javaguide.cn/github/javaguide/java/basis/jvm-rough-structure-model.png)
+![Mô hình cấu trúc tổng quát của JVM](https://oss.javaguide.cn/github/javaguide/java/basis/jvm-rough-structure-model.png)
 
 ### ⭐️ Tại sao nói Java là ngôn ngữ "biên dịch và thông dịch song song"?
 

@@ -210,35 +210,35 @@ Polymorphism, đúng như tên gọi, thể hiện một object có nhiều tr�
 
 ```mermaid
 flowchart LR
-    subgraph OOP["面向对象三大特征"]
-        style OOP fill:#F0F2F5,stroke:#E0E6ED,stroke-width:1.5px
+subgraph OOP["Ba đặc trưng của Lập trình hướng đối tượng (OOP)"]
+style OOP fill:#F0F2F5,stroke:#E0E6ED,stroke-width:1.5px
 
-        subgraph Encapsulation["封装 Encapsulation"]
-            style Encapsulation fill:#F5F7FA,stroke:#E0E6ED,stroke-width:1.5px
-            E1["隐藏内部状态"]:::core
-            E2["提供公共方法"]:::core
-            E3["保护数据安全"]:::core
-        end
-
-        subgraph Inheritance["继承 Inheritance"]
-            style Inheritance fill:#F5F7FA,stroke:#E0E6ED,stroke-width:1.5px
-            I1["代码复用"]:::core
-            I2["扩展功能"]:::core
-            I3["单继承限制"]:::highlight
-        end
-
-        subgraph Polymorphism["多态 Polymorphism"]
-            style Polymorphism fill:#F5F7FA,stroke:#E0E6ED,stroke-width:1.5px
-            P1["父类引用指向子类"]:::core
-            P2["运行时动态绑定"]:::core
-            P3["方法重写实现"]:::core
-        end
+    subgraph Encapsulation["Tính đóng gói (Encapsulation)"]
+        style Encapsulation fill:#F5F7FA,stroke:#E0E6ED,stroke-width:1.5px
+        E1["Ẩn trạng thái bên trong"]:::core
+        E2["Cung cấp phương thức công khai"]:::core
+        E3["Bảo vệ tính an toàn của dữ liệu"]:::core
     end
 
-    classDef core fill:#4CA497,color:#fff,rx:10,ry:10
-    classDef highlight fill:#E99151,color:#fff,rx:10,ry:10
+    subgraph Inheritance["Tính kế thừa (Inheritance)"]
+        style Inheritance fill:#F5F7FA,stroke:#E0E6ED,stroke-width:1.5px
+        I1["Tái sử dụng mã nguồn"]:::core
+        I2["Mở rộng chức năng"]:::core
+        I3["Giới hạn đơn kế thừa"]:::highlight
+    end
 
-    linkStyle default stroke-width:1.5px,opacity:0.8
+    subgraph Polymorphism["Tính đa hình (Polymorphism)"]
+        style Polymorphism fill:#F5F7FA,stroke:#E0E6ED,stroke-width:1.5px
+        P1["Tham chiếu lớp cha trỏ đến đối tượng lớp con"]:::core
+        P2["Liên kết động tại thời điểm chạy"]:::core
+        P3["Được thực hiện thông qua ghi đè phương thức"]:::core
+    end
+end
+
+classDef core fill:#4CA497,color:#fff,rx:10,ry:10
+classDef highlight fill:#E99151,color:#fff,rx:10,ry:10
+
+linkStyle default stroke-width:1.5px,opacity:0.8
 ```
 
 ### ⭐️ Interface và abstract class có điểm chung và khác biệt gì?
@@ -309,9 +309,9 @@ public interface MyInterface {
 
 ```mermaid
 flowchart LR
-    Copy["对象拷贝"] --> RefCopy["引用拷贝<br/>两个引用指向同一对象"]
-    Copy --> ShallowCopy["浅拷贝<br/>复制基本类型，共享引用类型"]
-    Copy --> DeepCopy["深拷贝<br/>递归复制所有属性"]
+    Copy["Sao chép đối tượng"] --> RefCopy["Sao chép tham chiếu<br/>Hai tham chiếu trỏ đến cùng một đối tượng"]
+    Copy --> ShallowCopy["Shallow Copy<br/>Sao chép kiểu nguyên thủy, dùng chung kiểu tham chiếu"]
+    Copy --> DeepCopy["Deep Copy<br/>Đệ quy sao chép tất cả thuộc tính"]
 
     classDef main fill:#005D7B,color:#fff,rx:10,ry:10
     class Copy main
@@ -458,7 +458,55 @@ public final void wait() throws InterruptedException
  */
 protected void finalize() throws Throwable { }
 ```
+```java
+/**
 
+* Phương thức native, dùng để trả về đối tượng Class của đối tượng tại thời điểm runtime. Phương thức này được khai báo với từ khóa final nên không cho phép lớp con ghi đè.
+  */*
+  *public final native Class<?> getClass()*
+  */**
+* Phương thức native, dùng để trả về mã băm (hash code) của đối tượng, chủ yếu được sử dụng trong các bảng băm (hash table), chẳng hạn như HashMap trong JDK.
+  */*
+  *public native int hashCode()*
+  */**
+* Dùng để so sánh xem 2 tham chiếu có trỏ đến cùng một đối tượng hay không. Lớp String ghi đè phương thức này để so sánh xem giá trị của hai chuỗi có bằng nhau hay không.
+  */*
+  *public boolean equals(Object obj)*
+  */**
+* Phương thức native, dùng để tạo và trả về một bản sao của đối tượng hiện tại.
+  */*
+  *protected native Object clone() throws CloneNotSupportedException*
+  */**
+* Trả về chuỗi biểu diễn ở dạng thập lục phân của mã băm của instance, dựa trên tên lớp. Khuyến nghị tất cả các lớp con của Object nên ghi đè phương thức này.
+  */*
+  *public String toString()*
+  */**
+* Phương thức native và không thể ghi đè. Đánh thức một thread đang chờ trên monitor của đối tượng này (monitor có thể hiểu tương đương với khái niệm lock). Nếu có nhiều thread đang chờ thì chỉ một thread bất kỳ được đánh thức.
+  */*
+  *public final native void notify()*
+  */**
+* Phương thức native và không thể ghi đè. Tương tự notify, điểm khác biệt duy nhất là phương thức này đánh thức tất cả thread đang chờ trên monitor của đối tượng này thay vì chỉ một thread.
+  */*
+  *public final native void notifyAll()*
+  */**
+* Phương thức native và không thể ghi đè. Tạm dừng việc thực thi của thread. Lưu ý: phương thức sleep không giải phóng lock, trong khi phương thức wait giải phóng lock; timeout là khoảng thời gian chờ.
+  */*
+  *public final native void wait(long timeout) throws InterruptedException*
+  */**
+* Có thêm tham số nanos. Tham số này biểu thị khoảng thời gian bổ sung (tính bằng nanosecond, trong phạm vi từ 0 đến 999999). Vì vậy, thời gian timeout thực tế còn phải cộng thêm số nanosecond được chỉ định bởi nanos.
+  */*
+  *public final void wait(long timeout, int nanos) throws InterruptedException*
+  */**
+* Tương tự hai phương thức wait trước đó, nhưng phương thức này chờ vô thời hạn, không có khái niệm timeout.
+  */*
+  *public final void wait() throws InterruptedException*
+  */**
+* Thao tác được kích hoạt khi instance được Garbage Collector thu hồi.
+  */
+  protected void finalize() throws Throwable { }
+
+**/
+```
 ### Sự khác biệt giữa == và equals()
 
 **`==`** có tác dụng khác nhau đối với kiểu cơ bản và kiểu reference:
@@ -534,7 +582,7 @@ Tác dụng của `hashCode()` là lấy hash code (số nguyên `int`), còn g�
 
 `hashCode()` được định nghĩa trong class `Object` của JDK, điều này có nghĩa là bất kỳ class nào trong Java đều chứa hàm `hashCode()`. Một điều cần lưu ý khác: method `hashCode()` của `Object` là native method, tức là được triển khai bằng ngôn ngữ C hoặc C++.
 
-> ⚠️ 注意：该方法在 **Oracle OpenJDK8** 中默认是 "使用线程局部状态来实现 Marsaglia's xor-shift 随机数生成", 并不是 "地址" 或者 "地址转换而来", 不同 JDK/VM 可能不同。在 **Oracle OpenJDK8** 中有六种生成方式（其中第五种是返回地址）, 通过添加 VM 参数: -XX:hashCode=4 启用第五种。参考源码:
+> ⚠️ Lưu ý: Trong Oracle OpenJDK 8, phương thức này mặc định sử dụng "trạng thái cục bộ của thread để thực hiện việc sinh số ngẫu nhiên bằng Marsaglia's xor-shift", chứ không phải "địa chỉ" hoặc "được chuyển đổi từ địa chỉ". Cách triển khai có thể khác nhau tùy JDK/VM. Trong Oracle OpenJDK 8 có sáu cách sinh mã (trong đó cách thứ năm là trả về địa chỉ). Có thể bật cách thứ năm bằng cách thêm tham số VM: -XX:hashCode=4. Tham khảo mã nguồn:
 >
 > - <https://hg.openjdk.org/jdk8u/jdk8u/hotspot/file/87ee5ee27509/src/share/vm/runtime/globals.hpp>（1127 行）
 > - <https://hg.openjdk.org/jdk8u/jdk8u/hotspot/file/87ee5ee27509/src/share/vm/runtime/synchronizer.cpp>（537 行开始）
@@ -947,3 +995,348 @@ public static String getStr() {
 - R 大（RednaxelaFX）关于常量折叠的回答：<https://www.zhihu.com/question/55976094/answer/147302764>
 
 <!-- @include: @article-footer.snippet.md -->
+
+
+> 🐛 **Đính chính:** Chúng ta biết rằng class được khai báo với từ khóa `final` thì không thể được kế thừa, method được khai báo với `final` thì không thể bị ghi đè, còn biến được khai báo với `final` nếu là kiểu nguyên thủy thì giá trị không thể thay đổi; nếu là kiểu tham chiếu thì không thể trỏ sang một đối tượng khác. Vì vậy, việc mảng lưu trữ chuỗi được khai báo với `final` **không phải là nguyên nhân cốt lõi khiến `String` bất biến**, bởi vì chuỗi được lưu trong mảng đó vẫn có thể thay đổi (trong trường hợp biến kiểu tham chiếu được khai báo với `final`).
+>
+> `String` thực sự bất biến vì các nguyên nhân sau:
+>
+> 1. Mảng lưu trữ chuỗi được khai báo với `final` và `private`, đồng thời class `String` không cung cấp/không công khai phương thức cho phép thay đổi chuỗi này.
+> 2. Class `String` được khai báo với `final`, khiến nó không thể được kế thừa, từ đó ngăn class con phá vỡ tính bất biến của `String`.
+>
+> Đọc thêm: [Hiểu thế nào về tính bất biến của giá trị kiểu String? - Câu hỏi trên Zhihu](https://www.zhihu.com/question/20618891/answer/114125846?utm_source=chatgpt.com)
+>
+> **Bổ sung** (từ issue 675): Kể từ Java 9, `String`, `StringBuilder` và `StringBuffer` chuyển sang sử dụng mảng `byte` để lưu trữ chuỗi.
+>
+> ```java
+> public final class String implements java.io.Serializable,Comparable<String>, CharSequence {
+>     // Annotation @Stable biểu thị rằng biến nhiều nhất chỉ được thay đổi một lần,
+>     // được gọi là "ổn định".
+>     @Stable
+>     private final byte[] value;
+> }
+>
+> abstract class AbstractStringBuilder implements Appendable, CharSequence {
+>     byte[] value;
+> }
+> ```
+>
+> **Tại sao Java 9 thay đổi cách triển khai bên dưới của** **`String`** **từ** **`char[]`** **sang** **`byte[]`** **?**
+>
+> Phiên bản mới của `String` hỗ trợ hai cơ chế mã hóa: Latin-1 và UTF-16. Nếu tất cả ký tự trong chuỗi đều có thể biểu diễn bằng Latin-1 thì `String` sử dụng Latin-1; nếu không thì sử dụng UTF-16. Các ký tự tiếng Trung không nằm trong phạm vi ký tự của Latin-1. Với cơ chế Latin-1, mỗi ký tự chỉ cần một byte để lưu trữ, vì vậy so với `char[]` trước đây có thể tiết kiệm một nửa dung lượng dùng để lưu dữ liệu ký tự.
+>
+> JDK cũng chỉ ra rằng phần lớn các đối tượng chuỗi chỉ chứa những ký tự có thể biểu diễn bằng Latin-1.
+>
+> Nếu chuỗi chứa các ký tự mà Latin-1 không thể biểu diễn, chẳng hạn như tiếng Trung, thì bên trong sẽ sử dụng UTF-16; mỗi code unit được lưu bằng hai byte.
+>
+> Đây là phần giới thiệu chính thức về thay đổi này: [JEP 254 - Compact Strings](https://openjdk.java.net/jeps/254?utm_source=chatgpt.com)
+
+### ⭐️ Nối chuỗi bằng `+` hay `StringBuilder`?
+
+Java không hỗ trợ **operator overloading** do người dùng tự định nghĩa, nhưng đặc tả ngôn ngữ Java định nghĩa riêng toán tử `+` và `+=` cho phép nối chuỗi.
+
+```java
+String str1 = "he";
+String str2 = "llo";
+String str3 = "world";
+String str4 = str1 + str2 + str3;
+```
+
+Bytecode tương ứng với đoạn code trên như sau:
+
+Đối với bytecode của JDK 8 được minh họa ở đây, phép nối chuỗi bằng toán tử `+` được `javac` chuyển đổi thành các lời gọi `StringBuilder.append()`.
+
+Từ JDK 9 trở đi, `javac` mặc định sử dụng `invokedynamic` và `StringConcatFactory`, vì vậy không nên coi `StringBuilder` là cơ chế triển khai bắt buộc cho mọi phiên bản Java.
+
+Tuy nhiên, nếu sử dụng toán tử `+` để nối chuỗi bên trong vòng lặp thì tồn tại một nhược điểm khá rõ ràng: **trình biên dịch không tạo một `StringBuilder` duy nhất để tái sử dụng, dẫn đến việc tạo ra quá nhiều đối tượng `StringBuilder`.**
+
+```java
+String[] arr = {"he", "llo", "world"};
+String s = "";
+for (int i = 0; i < arr.length; i++) {
+    s += arr[i];
+}
+System.out.println(s);
+```
+
+Đối tượng `StringBuilder` được tạo bên trong vòng lặp. Điều này có nghĩa là mỗi lần lặp lại tạo ra một đối tượng `StringBuilder`.
+
+Nếu sử dụng trực tiếp đối tượng `StringBuilder` để nối chuỗi thì sẽ không gặp vấn đề này:
+
+```java
+String[] arr = {"he", "llo", "world"};
+StringBuilder s = new StringBuilder();
+for (String value : arr) {
+    s.append(value);
+}
+System.out.println(s);
+```
+
+Nếu sử dụng IntelliJ IDEA, cơ chế kiểm tra code tích hợp của IDEA cũng sẽ cảnh báo và đề xuất bạn sửa đoạn code.
+
+Trong JDK 9, phép nối chuỗi bằng toán tử `+` được thay đổi để sử dụng phương thức động `makeConcatWithConstants()`. Cơ chế này phân bổ trước không gian cần thiết, từ đó giảm một phần số lượng object tạm thời được tạo ra.
+
+Tuy nhiên, tối ưu hóa này chủ yếu nhắm đến các phép nối chuỗi đơn giản, chẳng hạn `a+b+c`. Đối với một lượng lớn phép nối chuỗi trong vòng lặp, bộ nhớ vẫn được cấp phát động cho từng lần nối, tương tự như việc thực hiện `append` từng phần, và nhìn chung vẫn không hiệu quả bằng việc chủ động sử dụng `StringBuilder`.
+
+Thay đổi này được đề xuất trong **JEP 280** của JDK 9. [JEP 280 - Indify String Concatenation](https://openjdk.org/jeps/280?utm_source=chatgpt.com)
+
+### `String#equals()` và `Object#equals()` khác nhau như thế nào?
+
+Phương thức `equals` trong `String` đã được **ghi đè (override)**. Nó dùng để so sánh xem **giá trị của hai chuỗi String có bằng nhau hay không**.
+
+Trong khi đó, phương thức `equals` của `Object` mặc định kiểm tra xem **hai tham chiếu có trỏ đến cùng một đối tượng hay không**.
+
+### ⭐️ Bạn có biết tác dụng của String Constant Pool không?
+
+**String Constant Pool (bể hằng chuỗi)** là một khu vực mà JVM dành riêng cho các chuỗi (`String`) nhằm cải thiện hiệu năng và giảm mức tiêu thụ bộ nhớ. Mục đích chính là tránh việc tạo ra các chuỗi trùng lặp.
+
+```java
+// 1. Tìm đối tượng chuỗi "ab" trong String Constant Pool.
+// Nếu chưa tồn tại thì tạo "ab" và đưa vào String Constant Pool.
+//
+// 2. Gán tham chiếu đến đối tượng chuỗi "ab" cho aa.
+String aa = "ab";
+
+// Trực tiếp trả về đối tượng chuỗi "ab" trong String Constant Pool
+// và gán cho tham chiếu bb.
+String bb = "ab";
+
+System.out.println(aa == bb); // true
+```
+
+Có thể xem thêm phần giới thiệu về String Constant Pool trong bài [Chi tiết về các vùng bộ nhớ Java](https://javaguide.cn/java/jvm/memory-area.html?utm_source=chatgpt.com).
+
+### ⭐️ Câu lệnh `String s1 = new String("abc");` tạo ra bao nhiêu đối tượng String?
+
+Đầu tiên, đáp án là: **có thể tạo 1 hoặc 2 đối tượng String.**
+
+1. **Nếu String Constant Pool chưa tồn tại `"abc"`:** sẽ tạo 2 đối tượng String. Một đối tượng nằm trong String Constant Pool, được tạo/được đảm bảo tồn tại khi thực hiện `ldc`. Một đối tượng nằm trên heap, được tạo bởi `new String()` và được khởi tạo bằng `"abc"` trong String Constant Pool.
+2. **Nếu String Constant Pool đã tồn tại `"abc"`:** chỉ tạo 1 đối tượng String. Đối tượng này nằm trên heap, được tạo bởi `new String()` và sử dụng `"abc"` trong String Constant Pool để khởi tạo.
+
+Bây giờ phân tích chi tiết.
+
+#### 1. String Constant Pool chưa tồn tại `"abc"`
+
+Nếu String Constant Pool chưa tồn tại đối tượng chuỗi `"abc"`, JVM trước tiên sẽ đảm bảo đối tượng chuỗi `"abc"` tồn tại trong String Constant Pool, sau đó tạo thêm một đối tượng `String` `"abc"` trên heap.
+
+Code mẫu (JDK 1.8):
+
+```java
+String s1 = new String("abc");
+```
+
+Bytecode tương ứng:
+
+```java
+// Cấp phát một đối tượng String chưa được khởi tạo trên heap.
+// #2 là một symbolic reference trong constant pool, trỏ đến class java/lang/String.
+// Trong giai đoạn linking của quá trình class loading, symbolic reference này
+// sẽ được resolve thành direct reference, tức trỏ đến class java/lang/String thực tế.
+0 new #2 <java/lang/String>
+
+// Sao chép reference của đối tượng String trên đỉnh operand stack,
+// chuẩn bị cho việc gọi constructor.
+// Lúc này operand stack có hai reference giống nhau:
+// một dùng để truyền vào constructor,
+// một dùng để giữ reference của object mới để sau đó lưu vào local variable table.
+3 dup
+
+// JVM kiểm tra String Constant Pool trước xem "abc" đã tồn tại hay chưa.
+// Nếu đã tồn tại thì trực tiếp trả về reference của chuỗi đó.
+// Nếu chưa tồn tại thì JVM tạo string literal "abc" trong pool
+// và trả về reference của nó.
+// Reference này được push lên operand stack để làm tham số cho constructor.
+4 ldc #3 <abc>
+
+// Gọi constructor, sử dụng "abc" được load từ constant pool
+// để khởi tạo đối tượng String trên heap.
+// Đối tượng String mới có nội dung giống "abc" trong constant pool,
+// nhưng là một object độc lập được lưu trên heap.
+6 invokespecial #4 <java/lang/String.<init> : (Ljava/lang/String;)V>
+
+// Lưu reference của đối tượng String trên heap vào local variable table.
+9 astore_1
+
+// Trả về và kết thúc method.
+10 return
+```
+
+Lệnh `ldc` (load constant) thực sự dùng để load nhiều loại constant từ constant pool, bao gồm string constant, integer constant, floating-point constant, thậm chí cả class reference.
+
+Đối với string constant, lệnh `ldc` hoạt động như sau:
+
+1. **Load chuỗi từ constant pool:** `ldc` trước tiên kiểm tra String Constant Pool xem đã có đối tượng chuỗi có cùng nội dung hay chưa.
+2. **Tái sử dụng object chuỗi đã tồn tại:** nếu String Constant Pool đã có đối tượng chuỗi có cùng nội dung, `ldc` sẽ load reference của đối tượng đó lên operand stack.
+3. **Nếu chưa tồn tại thì tạo và đưa vào pool:** nếu String Constant Pool chưa có đối tượng chuỗi có cùng nội dung, JVM sẽ tạo một đối tượng chuỗi mới trong pool và load reference của nó lên operand stack.
+
+#### 2. String Constant Pool đã tồn tại `"abc"`
+
+Nếu String Constant Pool đã tồn tại đối tượng chuỗi `"abc"` thì chỉ tạo **1 đối tượng String mới trên heap**.
+
+Ví dụ:
+
+```java
+// String Constant Pool đã tồn tại đối tượng chuỗi "abc".
+String s1 = "abc";
+
+// Đoạn code dưới đây chỉ tạo thêm 1 đối tượng String "abc" trên heap.
+String s2 = new String("abc");
+```
+
+Bytecode tương ứng:
+
+```java
+0 ldc #2 <abc>
+2 astore_1
+3 new #3 <java/lang/String>
+6 dup
+7 ldc #2 <abc>
+9 invokespecial #4 <java/lang/String.<init> : (Ljava/lang/String;)V>
+12 astore_2
+13 return
+```
+
+Ở đây không cần giải thích chi tiết toàn bộ bytecode phía trên nữa.
+
+Tại vị trí `7`, lệnh `ldc` **không tạo một đối tượng String `"abc"` mới trên heap**, bởi tại vị trí `0`, một lệnh `ldc` đã được thực thi và JVM đã đảm bảo đối tượng chuỗi `"abc"` tương ứng trong String Constant Pool.
+
+Lệnh `ldc` tại vị trí `7` sẽ trực tiếp trả về reference đến đối tượng chuỗi `"abc"` trong String Constant Pool.
+
+### Phương thức `String#intern()` có tác dụng gì?
+
+`String.intern()` là một phương thức `native` (phương thức bản địa), dùng để xử lý reference của các đối tượng chuỗi trong String Constant Pool.
+
+Có thể tóm tắt quy trình hoạt động thành hai trường hợp:
+
+1. **Constant Pool đã có chuỗi có cùng nội dung:** nếu String Constant Pool đã có một đối tượng `String` có nội dung giống với chuỗi gọi `intern()`, phương thức `intern()` sẽ trực tiếp trả về reference của đối tượng đó trong pool.
+2. **Constant Pool chưa có chuỗi có cùng nội dung:** nếu String Constant Pool chưa có đối tượng có nội dung giống với chuỗi gọi `intern()`, phương thức `intern()` sẽ đưa reference của đối tượng String hiện tại vào String Constant Pool và trả về reference đó.
+
+**Tóm lại:**
+
+* Tác dụng chính của `intern()` là đảm bảo tính duy nhất của reference chuỗi trong String Constant Pool.
+* Khi gọi `intern()`, nếu constant pool đã tồn tại chuỗi có cùng nội dung thì trả về reference của object đã có trong pool; nếu chưa tồn tại thì đưa chuỗi hiện tại vào pool và trả về reference của nó.
+
+Ví dụ (JDK 1.8):
+
+```java
+// s1 trỏ đến đối tượng "Java" trong String Constant Pool.
+String s1 = "Java";
+
+// s2 cũng trỏ đến đối tượng "Java" trong String Constant Pool,
+// cùng là một object với s1.
+String s2 = s1.intern();
+
+// Tạo một đối tượng "Java" mới trên heap, s3 trỏ đến object này.
+String s3 = new String("Java");
+
+// s4 trỏ đến đối tượng "Java" trong String Constant Pool,
+// cùng là một object với s1.
+String s4 = s3.intern();
+
+// s1 và s2 trỏ đến cùng một object trong String Constant Pool.
+System.out.println(s1 == s2); // true
+
+// s3 trỏ đến object trên heap, s4 trỏ đến object trong String Constant Pool,
+// nên hai reference khác nhau.
+System.out.println(s3 == s4); // false
+
+// s1 và s4 đều trỏ đến cùng một object trong String Constant Pool.
+System.out.println(s1 == s4); // true
+```
+
+### Điều gì xảy ra khi biến kiểu `String` và constant thực hiện phép toán `+`?
+
+Trước tiên, xét trường hợp nối chuỗi mà không sử dụng từ khóa `final` (JDK 1.8):
+
+```java
+String str1 = "str";
+String str2 = "ing";
+String str3 = "str" + "ing";
+String str4 = str1 + str2;
+String str5 = "string";
+
+System.out.println(str3 == str4);// false
+System.out.println(str3 == str5);// true
+System.out.println(str4 == str5);// false
+```
+
+> **Lưu ý:** Để so sánh xem giá trị của hai chuỗi `String` có bằng nhau hay không, nên sử dụng phương thức `equals()`.
+>
+> Phương thức `equals` trong `String` đã được ghi đè. `equals` của `Object` kiểm tra xem hai reference có trỏ đến cùng một object hay không, trong khi `equals` của `String` so sánh giá trị của hai chuỗi có bằng nhau hay không.
+>
+> Nếu sử dụng `==` để so sánh hai chuỗi, IntelliJ IDEA cũng sẽ cảnh báo và đề xuất thay thế bằng `equals()`.
+
+**Đối với các biểu thức chuỗi mà giá trị có thể được xác định tại thời điểm biên dịch, compiler sẽ thực hiện Constant Folding và ghi kết quả dưới dạng string constant vào constant pool của file class; đối tượng String tương ứng sẽ được tạo và intern vào String Pool tại runtime.**
+
+Trong quá trình biên dịch, compiler `javac` sẽ thực hiện một tối ưu hóa code gọi là **Constant Folding**.
+
+Constant Folding sẽ tính trước giá trị của một constant expression và đưa giá trị đó trực tiếp vào code được sinh ra. Đây là một trong số rất ít các biện pháp tối ưu hóa mà compiler `javac` thực hiện trên source code (phần lớn tối ưu hóa code được thực hiện bởi JIT compiler).
+
+Ví dụ, với:
+
+```java
+String str3 = "str" + "ing";
+```
+
+compiler sẽ tối ưu thành:
+
+```java
+String str3 = "string";
+```
+
+Không phải tất cả constant đều được Constant Folding. Chỉ những constant mà compiler có thể xác định giá trị ngay trong quá trình biên dịch mới có thể được tối ưu:
+
+* Các kiểu dữ liệu nguyên thủy (`byte`, `boolean`, `short`, `char`, `int`, `float`, `long`, `double`) và string constant.
+* Biến kiểu dữ liệu nguyên thủy và biến `String` được khai báo với `final`.
+* Chuỗi tạo ra bằng phép nối `+`, phép toán số học giữa các kiểu dữ liệu nguyên thủy (cộng, trừ, nhân, chia), và phép toán bit trên các kiểu dữ liệu nguyên thủy (`<<`, `>>`, `>>>`).
+
+**Giá trị của reference không thể được xác định tại thời điểm biên dịch, vì vậy compiler không thể tối ưu nó.**
+
+Cách nối chuỗi giữa object reference và toán tử `+` thực tế được triển khai thông qua việc gọi `append()` của `StringBuilder`. Sau khi nối xong, `toString()` được gọi để tạo ra một đối tượng `String`.
+
+```java
+String str4 = new StringBuilder().append(str1).append(str2).toString();
+```
+
+Trong quá trình viết code thông thường, nên hạn chế việc nối nhiều đối tượng chuỗi nếu không cần thiết, bởi mỗi lần nối có thể tạo ra object mới. Nếu cần xây dựng hoặc thay đổi nội dung chuỗi, có thể sử dụng `StringBuilder` hoặc `StringBuffer`.
+
+Tuy nhiên, sau khi biến `String` được khai báo với từ khóa `final`, compiler có thể coi nó như một constant để xử lý.
+
+Ví dụ:
+
+```java
+final String str1 = "str";
+final String str2 = "ing";
+
+// Hai biểu thức dưới đây thực chất tương đương nhau.
+String c = "str" + "ing"; // object trong String Constant Pool
+String d = str1 + str2;   // object trong String Constant Pool
+
+System.out.println(c == d); // true
+```
+
+Sau khi được khai báo với từ khóa `final`, `String` có thể được compiler xử lý như một constant. Compiler có thể xác định giá trị của nó ngay trong quá trình biên dịch, tương đương với việc truy cập một constant.
+
+Nếu compiler chỉ có thể biết giá trị chính xác của biến tại runtime thì không thể thực hiện tối ưu hóa này.
+
+Ví dụ (`str2` chỉ có thể xác định giá trị tại runtime):
+
+```java
+final String str1 = "str";
+final String str2 = getStr();
+
+String c = "str" + "ing"; // object trong String Constant Pool
+String d = str1 + str2;   // tạo object mới trên heap
+
+System.out.println(c == d); // false
+
+public static String getStr() {
+    return "ing";
+}
+```
+
+## Tài liệu tham khảo
+
+* Phân tích chuyên sâu về `String#intern`: [In-depth Understanding String.intern() - Meituan](https://tech.meituan.com/2014/03/06/in-depth-understanding-string-intern.html?utm_source=chatgpt.com)
+* Phân tích source code `Java String`: [Java String 源码解读](http://keaper.cn/2020/09/08/java-string-mian-mian-guan/?utm_source=chatgpt.com)
+* Câu trả lời của R 大 (RednaxelaFX) về Constant Folding: [Zhihu - Constant Folding](https://www.zhihu.com/question/55976094/answer/147302764?utm_source=chatgpt.com)

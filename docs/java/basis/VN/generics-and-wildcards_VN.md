@@ -1,6 +1,6 @@
 ---
 title: Generics & Wildcards chi tiết
-description: Phân tích toàn diện Java Generics và Wildcards: hiểu sâu về cơ chế Type Erasure, cách dùng upper-bound và lower-bound wildcard, nguyên tắc PECS, nắm vững kỹ thuật lập trình generics.
+description: Phân tích toàn diện Java Generics và Wildcards - hiểu sâu về cơ chế Type Erasure, cách dùng upper-bound và lower-bound wildcard, nguyên tắc PECS, nắm vững kỹ thuật lập trình generics.
 category: Java
 tag:
   - Java基础

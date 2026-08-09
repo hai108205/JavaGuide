@@ -1,5 +1,5 @@
 ---
-title: Chuyên đề Java Core: Cú pháp, Lập trình hướng đối tượng, Generic, Reflection, Proxy và Serialization
+title: Chuyên đề Java Core - Cú pháp, Lập trình hướng đối tượng, Generic, Reflection, Proxy và Serialization
 description: Lộ trình học và ôn tập Java Core, bao gồm cú pháp cơ bản, lập trình hướng đối tượng, từ khóa, truyền tham số, Generic, Reflection, Proxy, Serialization, SPI, Unsafe và các cú pháp mở rộng (Syntax Sugar).
 category: Java
 tag:
