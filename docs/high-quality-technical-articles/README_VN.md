@@ -36,8 +36,8 @@ Nếu bạn có ít thời gian, nên đọc trước [Lập trình viên làm t
 
 1. [Lập trình viên làm thế nào để nhanh chóng học công nghệ mới](./advanced-programmer/VN/programmer-quickly-learn-new-technology_VN.md): Trước tiên xây dựng phương pháp học công nghệ mới.
 2. [Hướng phát triển nghề nghiệp của lập trình viên chọn thế nào?](./programmer/VN/programmer-career-directions_VN.md): Trước khi vào nghề, chuyển vị trí hay đổi hướng, trước tiên hiểu nội dung công việc và rào cản của một số hướng phổ biến.
-3. [Chiến lược trưởng thành kỹ thuật của lập trình viên](./advanced-programmer/the-growth-strategy-of-the-technological-giant.md) và [Bảy lời khuyên dành cho các bạn muốn trưởng thành lên cấp cao](./advanced-programmer/seven-tips-for-becoming-an-advanced-programmer.md): Hiểu lộ trình dài hạn của sự trưởng thành kỹ thuật.
-4. [Bàn về cách chuẩn bị sơ vòng kỹ thuật từ góc nhìn người phỏng vấn và ứng viên](./interview/technical-preliminary-preparation.md): Dùng góc nhìn người phỏng vấn để hiệu chỉnh hướng chuẩn bị.
+3. [Chiến lược trưởng thành kỹ thuật của lập trình viên](./advanced-programmer/VN/the-growth-strategy-of-the-technological-giant_VN.md) và [Bảy lời khuyên dành cho các bạn muốn trưởng thành lên cấp cao](./advanced-programmer/VN/seven-tips-for-becoming-an-advanced-programmer_VN.md): Hiểu lộ trình dài hạn của sự trưởng thành kỹ thuật.
+4. [Bàn về cách chuẩn bị sơ vòng kỹ thuật từ góc nhìn người phỏng vấn và ứng viên](./interview/VN/technical-preliminary-preparation_VN.md): Dùng góc nhìn người phỏng vấn để hiệu chỉnh hướng chuẩn bị.
 5. [Chia sẻ kinh nghiệm phỏng vấn giành được offer từ 20+ công ty lớn](./interview/the-experience-of-get-offer-from-over-20-big-companies.md) và [Tổng kết tuyển dụng mùa xuân của người bình thường](./interview/summary-of-spring-recruitment.md): Tham khảo quá trình tìm việc và tổng kết thực tế.
 6. [Nhập việc công ty mới làm thế nào để nhanh chóng vào trạng thái làm việc](./work/get-into-work-mode-quickly-when-you-join-a-company.md): Sau khi nắm được cơ hội, tiếp tục quan tâm đến nhập việc, hợp tác và trưởng thành dài hạn.
 
@@ -100,61 +100,100 @@ Nếu bạn có ít thời gian, nên đọc trước [Lập trình viên làm t
 
 
 ```mermaid
-flowchart TD
-    classDef highlight fill:#FFE8D6,stroke:#DD6B20,stroke-width:2px,color:#7B341E,font-weight:bold;
-    classDef phase fill:#2B4C7E,stroke:#1A2E40,stroke-width:2px,color:#fff,font-weight:bold;
-    classDef nodeItem fill:#F0F4F8,stroke:#2B4C7E,stroke-width:1px,color:#222;
+graph TD
+    classDef rootNode fill:#1e88e5,stroke:#fff,stroke-width:2px,color:#fff,font-weight:bold,font-size:16px;
+    classDef context fill:#e3f2fd,stroke:#1e88e5,stroke-width:1px,color:#0d47a1;
+    classDef phase fill:#fb8c00,stroke:#fff,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef article fill:#ffffff,stroke:#9e9e9e,stroke-width:1px,color:#212121;
+    classDef highlight fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000,font-weight:bold;
+    classDef faq fill:#f3e5f5,stroke:#8e24aa,stroke-width:1px,color:#4a148c;
+
+    Root("🚀 BỘ TÀI LIỆU TRƯỞNG THÀNH CỦA LẬP TRÌNH VIÊN"):::rootNode
+
+    %% CONTEXT: Target Audience
+    subgraph Context [ĐỐI TƯỢNG PHÙ HỢP]
+        direction LR
+        C1("👨‍💻 Sinh viên -> Kỹ sư (Nhận thức nghề nghiệp)"):::context
+        C2("🎯 Người chuẩn bị phỏng vấn (Góc nhìn 2 chiều)"):::context
+        C3("📈 Dev 1-5 năm kinh nghiệm (Tăng tốc học & Trưởng thành)"):::context
+        C4("🚧 Kỹ sư đang đối mặt KPI, Nút thắt & Chọn nghề"):::context
+    end
+    Root --> Context
+
+    %% FAST TRACK
+    subgraph ShortTime [⏳ ĐƯỜNG TẮT: Đọc ngay nếu có ít thời gian]
+        direction TB
+        Q1("⭐ 1. Lập trình viên làm thế nào để nhanh chóng học công nghệ mới"):::highlight
+        Q2("⭐ 2. Bàn về cách chuẩn bị sơ vòng kỹ thuật từ góc nhìn người phỏng vấn và ứng viên"):::highlight
+    end
+    Context --> ShortTime
+
+    %% ROADMAP PHASES (Thứ tự đọc & Phân loại bài viết)
+    ShortTime --> P1
+
+    P1("📍 GIAI ĐOẠN 1: Học tập & Định hướng"):::phase
+    P2("📍 GIAI ĐOẠN 2: Chuẩn bị phỏng vấn & Tìm việc"):::phase
+    P3("📍 GIAI ĐOẠN 3: Nhập việc & Hợp tác công sở"):::phase
+    P4("📍 GIAI ĐOẠN 4: Trưởng thành kỹ thuật dài hạn"):::phase
+
+    P1 ==> P2 ==> P3 ==> P4
 
     %% STAGE 1
-    subgraph ST1 ["🌱 Giai đoạn 1: Xây dựng Phương pháp & Chọn Hướng đi"]
-        A1["1. Học nhanh công nghệ mới ⭐<br/><i>(Tài liệu, thực hành, tránh học kém hiệu quả)</i>"]:::highlight
-        A2["2. Định hướng nghề nghiệp<br/><i>(Backend, AI, Database, Kiến trúc...)</i>"]:::nodeItem
-        A1 --> A2
+    subgraph Stage1 [Xây dựng nền tảng & Chọn hướng đi]
+        direction TB
+        A1("📖 Đề xuất đọc #1: Lập trình viên làm thế nào để nhanh chóng học công nghệ mới"):::article
+        A2("📖 Đề xuất đọc #2: Hướng phát triển nghề nghiệp của lập trình viên chọn thế nào?"):::article
+        A3("Lập trình viên xuất bản một cuốn sách kỹ thuật như thế nào"):::article
+        A4("Hướng dẫn xuất bản sách hiệu quả: Lập trình viên viết một cuốn sách kỹ thuật từ 0 đến 1 như thế nào"):::article
+        A5("Một số chứng chỉ hàm lượng vàng cao nhất mà lập trình viên nên lấy"):::article
     end
+    P1 -.-> Stage1
 
     %% STAGE 2
-    subgraph ST2 ["🚀 Giai đoạn 2: Luyện cấp & Nâng cao Năng lực Kỹ thuật"]
-        B1["1. Chiến lược trưởng thành dài hạn"]:::nodeItem
-        B2["2. Bảy lời khuyên lên cấp cao (Senior)"]:::nodeItem
-        B3["3. Loại bỏ 20 thói quen xấu"]:::nodeItem
-        B4["4. Cân bằng Kỹ thuật & Nghiệp vụ (Góc nhìn 5 năm)"]:::nodeItem
-        B5["5. Bài học thực chiến (3 năm Meituan, 10 năm Big Tech)"]:::nodeItem
-        
-        B1 --> B2 --> B4
-        B1 --> B3
-        B2 --> B5
+    subgraph Stage2 [Thực chiến vượt qua phỏng vấn]
+        direction TB
+        B1("📖 Đề xuất đọc #4: Bàn về cách chuẩn bị sơ vòng kỹ thuật từ góc nhìn người phỏng vấn và ứng viên"):::article
+        B2("📖 Đề xuất đọc #5: Chia sẻ kinh nghiệm phỏng vấn giành được offer từ 20+ công ty lớn"):::article
+        B3("📖 Đề xuất đọc #5: Tổng kết tuyển dụng mùa xuân của người bình thường"):::article
+        B4("Ngành IT bị 'làm đẹp hồ sơ' nghiêm trọng, là người phỏng vấn, tôi phân biệt mức độ làm đẹp hồ sơ của ứng viên như thế nào"):::article
+        B5("Sau 275 ngày OD tại Huawei, tôi vào được Tencent!"):::article
     end
+    P2 -.-> Stage2
 
     %% STAGE 3
-    subgraph ST3 ["🎯 Giai đoạn 3: Phỏng vấn & Săn Offer Công ty lớn"]
-        C1["1. Chuẩn bị sơ vòng kỹ thuật ⭐<br/><i>(Góc nhìn Phỏng vấn viên & Ứng viên)</i>"]:::highlight
-        C2["2. Phân biệt & Xử lý 'Làm đẹp CV'"]:::nodeItem
-        C3["3. Chiến lược giành Offer 20+ công ty lớn"]:::nodeItem
-        C4["4. Tham khảo thực tế (Huawei OD -> Tencent, DiDi, Toutiao)"]:::nodeItem
-        
-        C1 --> C2 --> C3 --> C4
+    subgraph Stage3 [Sống sót & Phát triển nơi công sở]
+        direction TB
+        C1("📖 Đề xuất đọc #6: Nhập việc công ty mới làm thế nào để nhanh chóng vào trạng thái làm việc"):::article
+        C2("20 thói quen xấu của lập trình viên kém"):::article
+        C3("32 gạch đầu dòng tổng kết nâng cao kinh nghiệm công sở"):::article
+        C4("Bàn về đánh giá hiệu quả công việc (performance review) ở công ty lớn"):::article
+        C5("Tổng kết bốn năm làm việc tại Tencent từ đợt tuyển dụng sinh viên mới"):::article
+        C6("Chia sẻ kinh nghiệm phát triển backend hai năm tại DiDi và Toutiao"):::article
     end
+    P3 -.-> Stage3
 
     %% STAGE 4
-    subgraph ST4 ["🏢 Giai đoạn 4: Nhập việc & Thăng tiến Công sở"]
-        D1["1. Nhanh chóng vào trạng thái tại công ty mới"]:::nodeItem
-        D2["2. 32 kỹ năng nâng cao kinh nghiệm công sở"]:::nodeItem
-        D3["3. Hiểu về Performance Review & KPI ở Big Tech"]:::nodeItem
-        
-        D1 --> D2 --> D3
+    subgraph Stage4 [Chiến lược Luyện cấp Senior]
+        direction TB
+        D1("📖 Đề xuất đọc #3: Chiến lược trưởng thành kỹ thuật của lập trình viên"):::article
+        D2("📖 Đề xuất đọc #3: Bảy lời khuyên dành cho các bạn muốn trưởng thành lên cấp cao"):::article
+        D3("Sau năm năm đi làm, suy ngẫm về kỹ thuật và nghiệp vụ"):::article
+        D4("Ba năm ở Meituan, 10 bài học đắt giá được rút ra"):::article
+        D5("Tổng kết 8 năm làm lập trình viên của một 'học sinh dở' Đại học Khoa học Kỹ thuật Trung Quốc (USTC)"):::article
+        D6("Mười năm con đường trưởng thành ở công ty lớn"):::article
     end
+    P4 -.-> Stage4
 
-    %% STAGE 5
-    subgraph ST5 ["🏆 Giai đoạn 5: Mở rộng Giá trị Cá nhân & Bứt phá"]
-        E1["1. Thi các chứng chỉ giá trị cao (Cloud, PMP, RuanKao)"]:::nodeItem
-        E2["2. Xuất bản sách kỹ thuật từ 0 đến 1"]:::nodeItem
-        
-        E1 --> E2
+    %% FAQ Section
+    subgraph FAQ [❓ NHỮNG CÂU HỎI TẦN SUẤT CAO ĐƯỢC GIẢI QUYẾT]
+        direction TB
+        F1("Học công nghệ mới sao cho nhanh vs Chỉ sưu tầm tài liệu?"):::faq
+        F2("Làm sao phán đoán bản thân đang trưởng thành hay chỉ lặp lại công việc?"):::faq
+        F3("Cân bằng giữa Bát cổ văn (lý thuyết) - Dự án - Thuật toán thế nào?"):::faq
+        F4("Người phỏng vấn đánh giá tính chân thực của dự án ra sao?"):::faq
+        F5("Vài tuần đầu mới nhập việc nên tập trung làm gì?"):::faq
+        F6("Đối mặt với KPI, thăng tiến, áp lực nghiệp vụ & lo lắng nghề nghiệp?"):::faq
+        F7("Kỹ thuật và Hiểu biết nghiệp vụ: Cái nào quan trọng hơn ở từng giai đoạn?"):::faq
     end
-
-    %% Flow connections between stages
-    ST1 ==> ST2
-    ST2 ==> ST3
-    ST3 ==> ST4
-    ST4 ==> ST5
+    P4 --> FAQ
 ```
