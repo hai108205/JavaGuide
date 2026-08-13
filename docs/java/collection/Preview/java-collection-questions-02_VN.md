@@ -1,6 +1,6 @@
 ---
 title: Tổng hợp câu hỏi phỏng vấn Java Collection (Phần 2)
-description: Câu hỏi phỏng vấn Java Collection tần suất cao: phân tích chuyên sâu nguyên lý底层 của HashMap, chuyển đổi Red-Black Tree, giải quyết hash collision, cơ chế thread-safe của ConcurrentHashMap, sự khác biệt với Hashtable và các kiến thức cốt lõi khác.
+description: "Câu hỏi phỏng vấn Java Collection tần suất cao: phân tích chuyên sâu nguyên lý底层 của HashMap, chuyển đổi Red-Black Tree, giải quyết hash collision, cơ chế thread-safe của ConcurrentHashMap, sự khác biệt với Hashtable và các kiến thức cốt lõi khác."
 category: Java
 tag:
   - Java Collection
@@ -64,11 +64,11 @@ static final int tableSizeFor(int cap) {
 
 Nếu bạn đã xem mã nguồn của `HashSet` thì sẽ biết: `HashSet` được cài đặt dựa trên `HashMap`. (Mã nguồn của `HashSet` rất rất ít, vì ngoài `clone()`, `writeObject()`, `readObject()` là những phương thức `HashSet` buộc phải tự cài đặt, còn lại đều gọi trực tiếp phương thức trong `HashMap`.)
 
-|               `HashMap`                |                                                        `HashSet`                                                         |
-| :------------------------------------: | :----------------------------------------------------------------------------------------------------------------------: |
-|           Cài đặt `Map` interface           |                                                    Cài đặt `Set` interface                                                     |
-|               Lưu trữ key-value pairs              |                                                        Chỉ lưu trữ object                                                        |
-|      Gọi `put()` để thêm phần tử vào map      |                                            Gọi `add()` để thêm phần tử vào `Set`                                            |
+|               `HashMap`               |                                                                                   `HashSet`                                                                                   |
+| :-----------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|        Cài đặt `Map` interface        |                                                                            Cài đặt `Set` interface                                                                            |
+|        Lưu trữ key-value pairs        |                                                                              Chỉ lưu trữ object                                                                               |
+|  Gọi `put()` để thêm phần tử vào map  |                                                                     Gọi `add()` để thêm phần tử vào `Set`                                                                     |
 | `HashMap` dùng Key để tính `hashcode` | `HashSet` dùng member object để tính `hashcode`, đối với hai object, `hashcode` có thể giống nhau, nên phương thức `equals()` được dùng để kiểm tra tính bằng nhau của object |
 
 ### ⭐️ Sự khác biệt giữa HashMap và TreeMap

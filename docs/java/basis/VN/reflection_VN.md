@@ -1,6 +1,6 @@
 ---
 title: Giải thích chi tiết về Java Reflection
-description: Đi sâu vào nguyên lý và ứng dụng của Java Reflection: nắm vững các API cốt lõi Class, Method, Field, hiểu cách Reflection được sử dụng trong các framework như Spring, MyBatis, và tìm hiểu cách triển khai Dynamic Proxy.
+description: "Đi sâu vào nguyên lý và ứng dụng của Java Reflection: nắm vững các API cốt lõi Class, Method, Field, hiểu cách Reflection được sử dụng trong các framework như Spring, MyBatis, và tìm hiểu cách triển khai Dynamic Proxy."
 category: Java
 tag:
   - Java基础

@@ -1,6 +1,6 @@
 ---
 title: Phân tích mã nguồn ArrayList
-description: Phân tích chuyên sâu mã nguồn ArrayList: giải thích chi tiết cấu trúc mảng nền (array), cơ chế mở rộng dung lượng 1.5 lần, truy cập ngẫu nhiên nhanh (RandomAccess), triển khai tuần tự hóa (serialization) và so sánh hiệu năng với Vector.
+description: "Phân tích chuyên sâu mã nguồn ArrayList: giải thích chi tiết cấu trúc mảng nền (array), cơ chế mở rộng dung lượng 1.5 lần, truy cập ngẫu nhiên nhanh (RandomAccess), triển khai tuần tự hóa (serialization) và so sánh hiệu năng với Vector."
 category: Java
 tag:
   - Java集合

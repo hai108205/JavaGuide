@@ -1,6 +1,6 @@
 ---
 title: Java Magic Class Unsafe Chi Tiết
-description: Phân tích chuyên sâu về Java Magic Class Unsafe: giải thích các khả năng cấp thấp như thao tác bộ nhớ trực tiếp, thao tác nguyên tử CAS, khởi tạo đối tượng, giúp hiểu nguyên lý triển khai của các lớp công cụ đồng thời JUC và rủi ro khi sử dụng.
+description: "Phân tích chuyên sâu về Java Magic Class Unsafe: giải thích các khả năng cấp thấp như thao tác bộ nhớ trực tiếp, thao tác nguyên tử CAS, khởi tạo đối tượng, giúp hiểu nguyên lý triển khai của các lớp công cụ đồng thời JUC và rủi ro khi sử dụng."
 category: Java
 tag:
   - Java基础

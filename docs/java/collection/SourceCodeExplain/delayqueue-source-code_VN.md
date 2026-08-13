@@ -1,6 +1,6 @@
 ---
 title: Phân tích mã nguồn DelayQueue
-description: Phân tích chuyên sâu mã nguồn DelayQueue: giải thích chi tiết nguyên lý triển khai hàng đợi trễ, cách sử dụng interface Delayed, lập lịch tác vụ trễ, các kịch bản ứng dụng như hủy đơn hàng khi quá hạn, thiết kế thread-safe dựa trên PriorityQueue.
+description: "Phân tích chuyên sâu mã nguồn DelayQueue: giải thích chi tiết nguyên lý triển khai hàng đợi trễ, cách sử dụng interface Delayed, lập lịch tác vụ trễ, các kịch bản ứng dụng như hủy đơn hàng khi quá hạn, thiết kế thread-safe dựa trên PriorityQueue."
 category: Java
 tag:
   - Java集合

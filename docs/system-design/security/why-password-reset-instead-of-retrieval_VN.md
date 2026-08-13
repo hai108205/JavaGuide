@@ -1,23 +1,18 @@
 ---
-
-title: Tại sao khi quên mật khẩu chỉ có thể đặt lại, chứ không thể cho bạn biết mật khẩu gốc?
-description: Giải thích chi tiết vì sao khi quên mật khẩu, website chỉ có thể cho phép bạn đặt lại mật khẩu thay vì cung cấp mật khẩu ban đầu. Nguyên nhân cốt lõi là máy chủ lưu trữ mật khẩu bằng thuật toán băm (Hash), mà Hash là thuật toán một chiều, không thể khôi phục lại dữ liệu gốc từ giá trị băm. Bài viết cũng giới thiệu về bảo mật lưu trữ mật khẩu, cơ chế Salt, Bcrypt, bảo mật truyền mật khẩu và các kiến thức liên quan.
+title: "Tại sao khi quên mật khẩu chỉ có thể đặt lại, chứ không thể cho bạn biết mật khẩu gốc?"
+description: "Giải thích chi tiết vì sao khi quên mật khẩu, website chỉ có thể cho phép bạn đặt lại mật khẩu thay vì cung cấp mật khẩu ban đầu. Nguyên nhân cốt lõi là máy chủ lưu trữ mật khẩu bằng thuật toán băm (Hash), mà Hash là thuật toán một chiều, không thể khôi phục lại dữ liệu gốc từ giá trị băm. Bài viết cũng giới thiệu về bảo mật lưu trữ mật khẩu, cơ chế Salt, Bcrypt, bảo mật truyền mật khẩu và các kiến thức liên quan."
 category:
-
-* Thiết kế hệ thống
-  tag:
-* An toàn dữ liệu
-* Bảo mật mật khẩu
-* Thuật toán Hash
-* Câu hỏi phỏng vấn
-  head:
-* * meta
-  * name: keywords
-    content: đặt lại mật khẩu,khôi phục mật khẩu,thuật toán Hash,lưu trữ mật khẩu,Bcrypt,Salt,bảo mật mật khẩu,câu hỏi phỏng vấn
-
+  - "Thiết kế hệ thống"
+tag:
+  - "An toàn dữ liệu"
+  - "Bảo mật mật khẩu"
+  - "Thuật toán Hash"
+  - "Câu hỏi phỏng vấn"
+head:
+  - - meta
+    - name: keywords
+      content: "đặt lại mật khẩu,khôi phục mật khẩu,thuật toán Hash,lưu trữ mật khẩu,Bcrypt,Salt,bảo mật mật khẩu,câu hỏi phỏng vấn"
 ---
-
-Đây là một câu hỏi khá thú vị và cũng thường xuất hiện trong các buổi phỏng vấn của nhiều công ty. Thoạt nhìn thì có vẻ đơn giản, nhưng không biết khi đặt lại mật khẩu, bạn đã từng tự hỏi vì sao lại như vậy chưa?
 
 ![Đặt lại mật khẩu tài khoản](https://oss.javaguide.cn/github/javaguide/system-design/security/reset-password-page.png)
 
@@ -101,8 +96,8 @@ Mật khẩu nên được lưu bằng các thuật toán được thiết kế 
 
 **Bcrypt** là thuật toán Hash được thiết kế chuyên biệt cho lưu trữ mật khẩu và thuộc nhóm **Slow Hash**. Thuật toán này tích hợp sẵn cơ chế **Salt** và tham số **cost**:
 
-* **salt**: Chuỗi ngẫu nhiên dùng để kết hợp với mật khẩu nhằm tăng tính duy nhất.
-* **cost**: Điều khiển số lần lặp, từ đó tăng thời gian và chi phí tính toán.
+- **salt**: Chuỗi ngẫu nhiên dùng để kết hợp với mật khẩu nhằm tăng tính duy nhất.
+- **cost**: Điều khiển số lần lặp, từ đó tăng thời gian và chi phí tính toán.
 
 Salt ngẫu nhiên của Bcrypt giúp chống các cuộc tấn công tính toán trước và Rainbow Table Attack. Tham số cost giúp tăng chi phí brute-force ngoại tuyến, nhưng không thể biến một mật khẩu yếu thành mật khẩu không thể bị bẻ khóa. Ngoài ra, cần lưu ý rằng phần lớn các triển khai Bcrypt chỉ xử lý **72 byte đầu tiên** của mật khẩu; hệ thống không nên cắt bớt mật khẩu một cách âm thầm mà không thông báo cho người dùng.
 
@@ -174,10 +169,10 @@ Ngoài việc mã hóa đường truyền, hệ thống còn nên giới hạn s
 
 Bài viết này tập trung giải thích vì sao máy chủ không thể khôi phục mật khẩu gốc. Trong thực tế, khi triển khai chức năng quên mật khẩu, vẫn cần chú ý các yêu cầu bảo mật sau:
 
-* Dù tài khoản có tồn tại hay không, hệ thống đều phải trả về cùng một thông báo và cố gắng giữ thời gian phản hồi tương đương nhằm tránh User Enumeration.
-* Reset Token phải được tạo bằng bộ sinh số ngẫu nhiên bảo mật, có đủ entropy, chỉ sử dụng một lần và hết hạn trong thời gian ngắn.
-* Áp dụng Rate Limiting đối với yêu cầu đặt lại mật khẩu và quá trình xác thực Reset Token; liên kết đặt lại mật khẩu chỉ sử dụng tên miền đáng tin cậy và HTTPS để tránh rò rỉ Token thông qua Referer.
-* Sau khi thay đổi mật khẩu thành công, nên gửi thông báo bảo mật cho người dùng, đồng thời vô hiệu hóa các phiên đăng nhập hiện có theo mức độ rủi ro, hoặc ít nhất cho phép người dùng đăng xuất tất cả các phiên khác chỉ bằng một thao tác.
+- Dù tài khoản có tồn tại hay không, hệ thống đều phải trả về cùng một thông báo và cố gắng giữ thời gian phản hồi tương đương nhằm tránh User Enumeration.
+- Reset Token phải được tạo bằng bộ sinh số ngẫu nhiên bảo mật, có đủ entropy, chỉ sử dụng một lần và hết hạn trong thời gian ngắn.
+- Áp dụng Rate Limiting đối với yêu cầu đặt lại mật khẩu và quá trình xác thực Reset Token; liên kết đặt lại mật khẩu chỉ sử dụng tên miền đáng tin cậy và HTTPS để tránh rò rỉ Token thông qua Referer.
+- Sau khi thay đổi mật khẩu thành công, nên gửi thông báo bảo mật cho người dùng, đồng thời vô hiệu hóa các phiên đăng nhập hiện có theo mức độ rủi ro, hoặc ít nhất cho phép người dùng đăng xuất tất cả các phiên khác chỉ bằng một thao tác.
 
 ## Tổng kết
 
@@ -195,6 +190,6 @@ Vì vậy, **đừng sử dụng cùng một mật khẩu cho tất cả các we
 
 ## Tài liệu tham khảo
 
-* OWASP Password Storage Cheat Sheet：https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
-* OWASP Forgot Password Cheat Sheet：https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html
-* OWASP Transport Layer Security Cheat Sheet：https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html
+- OWASP Password Storage Cheat Sheet：https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
+- OWASP Forgot Password Cheat Sheet：https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html
+- OWASP Transport Layer Security Cheat Sheet：https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html

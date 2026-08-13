@@ -1,5 +1,5 @@
 ---
-title: Chuyên đề Maven: POM, tọa độ, repository, quản lý dependency, lifecycle, plugin và dự án đa module
+title: "Chuyên đề Maven: POM, tọa độ, repository, quản lý dependency, lifecycle, plugin và dự án đa module"
 description: Lộ trình học Maven phục vụ phỏng vấn và xây dựng dự án, bao gồm POM, tọa độ, repository, phạm vi dependency, lifecycle, plugin, dự án đa module, Maven Wrapper và các best practice, phù hợp với lập trình viên Java backend.
 category: Công cụ phát triển
 tag:

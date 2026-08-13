@@ -1,6 +1,6 @@
 ---
 title: Làm thế nào để triển khai Message Queue dựa trên Redis?
-description: Giải thích ba cách dùng Redis làm Message Queue: List, Pub/Sub, Stream. So sánh với các năng lực cốt lõi của MQ cấp production, giải thích chi tiết Consumer Group và cơ chế ACK của Redis 5.0 Stream, cùng so sánh kịch bản sử dụng với Kafka/RabbitMQ.
+description: "Giải thích ba cách dùng Redis làm Message Queue: List, Pub/Sub, Stream. So sánh với các năng lực cốt lõi của MQ cấp production, giải thích chi tiết Consumer Group và cơ chế ACK của Redis 5.0 Stream, cùng so sánh kịch bản sử dụng với Kafka/RabbitMQ."
 category: Cơ sở dữ liệu
 tag:
   - Redis
@@ -15,16 +15,16 @@ Nói kết luận trước: **Có thể, nhưng phải xem kịch bản cụ th�
 
 Trước khi chính thức giới thiệu, chúng ta cùng xem: **Một MQ cấp production cần có những năng lực cốt lõi nào?**
 
-| Chiều năng lực | Định nghĩa | Chỉ số/đặc trưng chính |
-| :--- | :--- | :--- |
-| **Persistence** | Tin nhắn sau khi ghi không bị mất do sự cố tiến trình/node | Ghi đĩa đồng bộ/xác nhận đa bản sao, RPO ≈ 0 |
-| **At-least-once delivery** | Tin nhắn cuối cùng được tiêu thụ, cho phép trùng lặp | Cần kết hợp với tính idempotent của consumer |
-| **Xác nhận tiêu thụ** | Consumer thông báo rõ ràng đã xử lý thành công | Cơ chế ACK, retry khi timeout, Dead Letter Queue |
-| **Retry tin nhắn** | Tiêu thụ thất bại có thể tự động gửi lại | Chiến lược backoff, số lần retry tối đa, chuyển vào dead letter |
-| **Consumer Group** | Nhiều consumer hợp tác tiêu thụ, tự động chuyển đổi khi gặp sự cố | Cân bằng tải trong nhóm, phân chia partition, Rebalance |
-| **Khả năng tích lũy tin nhắn** | Năng lực đệm khi tốc độ sản xuất > tốc độ tiêu thụ | Lưu trữ đĩa, TTL, cảnh báo tích lũy |
-| **Đảm bảo thứ tự** | Tin nhắn được tiêu thụ theo thứ tự gửi | Có thứ tự theo partition/có thứ tự toàn cục, phạt khi sai thứ tự |
-| **Khả năng mở rộng** | Mở rộng theo chiều ngang để tăng thông lượng hoặc phòng chống thảm họa | Cơ chế sharding, Broker stateless, mở rộng/thu hẹp động |
+| Chiều năng lực                 | Định nghĩa                                                             | Chỉ số/đặc trưng chính                                           |
+| :----------------------------- | :--------------------------------------------------------------------- | :--------------------------------------------------------------- |
+| **Persistence**                | Tin nhắn sau khi ghi không bị mất do sự cố tiến trình/node             | Ghi đĩa đồng bộ/xác nhận đa bản sao, RPO ≈ 0                     |
+| **At-least-once delivery**     | Tin nhắn cuối cùng được tiêu thụ, cho phép trùng lặp                   | Cần kết hợp với tính idempotent của consumer                     |
+| **Xác nhận tiêu thụ**          | Consumer thông báo rõ ràng đã xử lý thành công                         | Cơ chế ACK, retry khi timeout, Dead Letter Queue                 |
+| **Retry tin nhắn**             | Tiêu thụ thất bại có thể tự động gửi lại                               | Chiến lược backoff, số lần retry tối đa, chuyển vào dead letter  |
+| **Consumer Group**             | Nhiều consumer hợp tác tiêu thụ, tự động chuyển đổi khi gặp sự cố      | Cân bằng tải trong nhóm, phân chia partition, Rebalance          |
+| **Khả năng tích lũy tin nhắn** | Năng lực đệm khi tốc độ sản xuất > tốc độ tiêu thụ                     | Lưu trữ đĩa, TTL, cảnh báo tích lũy                              |
+| **Đảm bảo thứ tự**             | Tin nhắn được tiêu thụ theo thứ tự gửi                                 | Có thứ tự theo partition/có thứ tự toàn cục, phạt khi sai thứ tự |
+| **Khả năng mở rộng**           | Mở rộng theo chiều ngang để tăng thông lượng hoặc phòng chống thảm họa | Cơ chế sharding, Broker stateless, mở rộng/thu hẹp động          |
 
 Redis cung cấp nhiều cách triển khai MQ, từ `List` thời kỳ đầu đến `Pub/Sub`, rồi đến cấu trúc dữ liệu `Stream` được thêm vào từ Redis 5.0 (triển khai dựa trên danh sách liên kết có thứ tự, hỗ trợ Consumer Group và cơ chế ACK, có thể dùng để xây dựng Message Queue hạng nhẹ).
 
@@ -186,16 +186,16 @@ Nhìn chung, `Stream` đã có thể đáp ứng các yêu cầu cơ bản của
 
 Bảng dưới đây là so sánh giữa Redis Stream và các MQ phổ biến:
 
-| Chiều | Redis Stream | RabbitMQ | Kafka | Hàng đợi trong bộ nhớ |
-| :--- | :--- | :--- | :--- | :--- |
-| **Thông lượng** | Cao (QPS cấp trăm nghìn) | Trung bình (QPS cấp vạn) | **Cực cao (cấp triệu, mở rộng ngang bằng partition)** | Cực cao (giới hạn bởi CPU/bộ nhớ) |
-| **Độ trễ** | **Cực thấp (cấp dưới mili giây)** | **Thấp (cấp micro/mili giây, thời gian thực mạnh)** | Trung bình (cấp mili giây, chịu ảnh hưởng của batch processing) | Cực thấp (cấp nano/micro giây) |
-| **Persistence** | Hỗ trợ (RDB/AOF bất đồng bộ) | Hỗ trợ (đĩa) | **Hỗ trợ mạnh (ghi đĩa tuần tự native)** | Không |
-| **Tích lũy tin nhắn** | Bình thường (giới hạn bởi bộ nhớ) | Trung bình (tích lũy nhiều thì hiệu năng giảm rõ rệt) | **Cực mạnh (lưu trữ đĩa cấp TB, hiệu năng ổn định)** | Kém (dễ OOM) |
-| **Truy lại tin nhắn** | Hỗ trợ (theo ID/thời gian) | **Không hỗ trợ (ở chế độ queue truyền thống)** | **Hỗ trợ mạnh (theo Offset/thời gian)** | Không hỗ trợ |
-| **Độ tin cậy** | Trung bình (rủi ro mất dữ liệu AOF) | **Cao (cơ chế Confirm/xác nhận đã trưởng thành)** | **Cực cao (đa bản sao + cấu hình nhất quán mạnh)** | Thấp |
-| **Độ phức tạp vận hành** | Thấp (vận hành Redis là đủ) | Trung bình (môi trường Erlang, quản lý Cluster) | Cao (phụ thuộc ZK hoặc KRaft) | Cực thấp |
-| **Kịch bản phù hợp** | Hạng nhẹ, độ trễ thấp, đã có sẵn Redis | **Định tuyến phức tạp, độ tin cậy cao, nghiệp vụ tài chính** | **Big Data, tổng hợp log, xử lý luồng thông lượng cao** | Tách ghép trong tiến trình, yêu cầu hiệu năng cực hạn |
+| Chiều                    | Redis Stream                           | RabbitMQ                                                     | Kafka                                                           | Hàng đợi trong bộ nhớ                                 |
+| :----------------------- | :------------------------------------- | :----------------------------------------------------------- | :-------------------------------------------------------------- | :---------------------------------------------------- |
+| **Thông lượng**          | Cao (QPS cấp trăm nghìn)               | Trung bình (QPS cấp vạn)                                     | **Cực cao (cấp triệu, mở rộng ngang bằng partition)**           | Cực cao (giới hạn bởi CPU/bộ nhớ)                     |
+| **Độ trễ**               | **Cực thấp (cấp dưới mili giây)**      | **Thấp (cấp micro/mili giây, thời gian thực mạnh)**          | Trung bình (cấp mili giây, chịu ảnh hưởng của batch processing) | Cực thấp (cấp nano/micro giây)                        |
+| **Persistence**          | Hỗ trợ (RDB/AOF bất đồng bộ)           | Hỗ trợ (đĩa)                                                 | **Hỗ trợ mạnh (ghi đĩa tuần tự native)**                        | Không                                                 |
+| **Tích lũy tin nhắn**    | Bình thường (giới hạn bởi bộ nhớ)      | Trung bình (tích lũy nhiều thì hiệu năng giảm rõ rệt)        | **Cực mạnh (lưu trữ đĩa cấp TB, hiệu năng ổn định)**            | Kém (dễ OOM)                                          |
+| **Truy lại tin nhắn**    | Hỗ trợ (theo ID/thời gian)             | **Không hỗ trợ (ở chế độ queue truyền thống)**               | **Hỗ trợ mạnh (theo Offset/thời gian)**                         | Không hỗ trợ                                          |
+| **Độ tin cậy**           | Trung bình (rủi ro mất dữ liệu AOF)    | **Cao (cơ chế Confirm/xác nhận đã trưởng thành)**            | **Cực cao (đa bản sao + cấu hình nhất quán mạnh)**              | Thấp                                                  |
+| **Độ phức tạp vận hành** | Thấp (vận hành Redis là đủ)            | Trung bình (môi trường Erlang, quản lý Cluster)              | Cao (phụ thuộc ZK hoặc KRaft)                                   | Cực thấp                                              |
+| **Kịch bản phù hợp**     | Hạng nhẹ, độ trễ thấp, đã có sẵn Redis | **Định tuyến phức tạp, độ tin cậy cao, nghiệp vụ tài chính** | **Big Data, tổng hợp log, xử lý luồng thông lượng cao**         | Tách ghép trong tiến trình, yêu cầu hiệu năng cực hạn |
 
 ### Tổng kết
 

@@ -1,6 +1,6 @@
 ---
 title: Phân tích mã nguồn ConcurrentHashMap
-description: Phân tích chuyên sâu mã nguồn ConcurrentHashMap: so sánh cách triển khai Segment lock phân đoạn trong JDK 1.7 với CAS + Synchronized trong JDK 1.8, hiểu cơ chế thread-safe và tối ưu hiệu năng của Map trong môi trường đa luồng.
+description: "Phân tích chuyên sâu mã nguồn ConcurrentHashMap: so sánh cách triển khai Segment lock phân đoạn trong JDK 1.7 với CAS + Synchronized trong JDK 1.8, hiểu cơ chế thread-safe và tối ưu hiệu năng của Map trong môi trường đa luồng."
 category: Java
 tag:
   - Java集合

@@ -1,6 +1,6 @@
 ---
 title: Tổng hợp các câu hỏi phỏng vấn MySQL thường gặp
-description: Giải thích chi tiết các câu hỏi phỏng vấn MySQL tần suất cao: kiến trúc cơ bản, InnoDB Engine, nguyên lý Index, B+ Tree, Transaction ACID, MVCC, redo/undo/binlog, Row Lock/Table Lock, tối ưu Slow Query — một bài nắm trọn các điểm bắt buộc của kỳ phỏng vấn công ty lớn!
+description: "Giải thích chi tiết các câu hỏi phỏng vấn MySQL tần suất cao: kiến trúc cơ bản, InnoDB Engine, nguyên lý Index, B+ Tree, Transaction ACID, MVCC, redo/undo/binlog, Row Lock/Table Lock, tối ưu Slow Query — một bài nắm trọn các điểm bắt buộc của kỳ phỏng vấn công ty lớn!"
 category: Cơ sở dữ liệu
 tag:
   - MySQL
@@ -130,20 +130,20 @@ Trong Java, kiểu DECIMAL của MySQL tương ứng với lớp Java `java.math
 
 Kiểu TEXT tương tự CHAR (0-255 byte) và VARCHAR (0-65,535 byte), nhưng có thể lưu chuỗi dài hơn, tức dữ liệu văn bản dài, ví dụ nội dung blog.
 
-| Kiểu       | Kích thước lưu được  | Công dụng              |
-| ---------- | -------------------- | ---------------------- |
+| Kiểu       | Kích thước lưu được  | Công dụng                  |
+| ---------- | -------------------- | -------------------------- |
 | TINYTEXT   | 0-255 byte           | Chuỗi văn bản thông thường |
-| TEXT       | 0-65,535 byte        | Chuỗi văn bản dài      |
-| MEDIUMTEXT | 0-16,772,150 byte    | Dữ liệu văn bản khá lớn |
-| LONGTEXT   | 0-4,294,967,295 byte | Dữ liệu văn bản cực lớn |
+| TEXT       | 0-65,535 byte        | Chuỗi văn bản dài          |
+| MEDIUMTEXT | 0-16,772,150 byte    | Dữ liệu văn bản khá lớn    |
+| LONGTEXT   | 0-4,294,967,295 byte | Dữ liệu văn bản cực lớn    |
 
 Kiểu BLOB chủ yếu dùng để lưu đối tượng nhị phân lớn, ví dụ file hình ảnh, âm thanh, video, v.v.
 
-| Kiểu       | Kích thước lưu được | Công dụng                          |
-| ---------- | ------------------- | ---------------------------------- |
-| TINYBLOB   | 0-255 byte          | Chuỗi nhị phân văn bản ngắn        |
-| BLOB       | 0-65KB              | Chuỗi nhị phân                     |
-| MEDIUMBLOB | 0-16MB              | Dữ liệu văn bản dài dạng nhị phân  |
+| Kiểu       | Kích thước lưu được | Công dụng                             |
+| ---------- | ------------------- | ------------------------------------- |
+| TINYBLOB   | 0-255 byte          | Chuỗi nhị phân văn bản ngắn           |
+| BLOB       | 0-65KB              | Chuỗi nhị phân                        |
+| MEDIUMBLOB | 0-16MB              | Dữ liệu văn bản dài dạng nhị phân     |
 | LONGBLOB   | 0-4GB               | Dữ liệu văn bản cực lớn dạng nhị phân |
 
 Trong phát triển hằng ngày, kiểu TEXT ít được sử dụng, nhưng thỉnh thoảng vẫn dùng đến, còn kiểu BLOB thì gần như không dùng. Nếu phạm vi độ dài dự kiến có thể được VARCHAR đáp ứng, khuyến nghị tránh dùng TEXT.
@@ -219,14 +219,14 @@ MySQL không có kiểu boolean riêng, `BOOL` và `BOOLEAN` là từ đồng ng
 
 Cuối cùng, dùng một bảng để tổng kết:
 
-| Tiêu chí so sánh       | Kiểu VARCHAR (khuyến nghị)          | Kiểu INT/BIGINT (không khuyến nghị) | Giải thích/Ghi chú                                                                  |
-| ---------------------- | ----------------------------------- | ------------------------------------ | ----------------------------------------------------------------------------------- |
-| **Tương thích định dạng** | ✔ Lưu được số 0 đầu, "+", "-", dấu cách, v.v. | ✘ Tự động mất số 0 đầu, không lưu được ký hiệu | VARCHAR lưu nguyên dạng mọi định dạng số điện thoại, INT/BIGINT chỉ hỗ trợ số thuần, số 0 đầu sẽ biến mất |
-| **Tính toàn vẹn**      | ✔ Không mất bất kỳ thông tin định dạng nào | ✘ Mất thông tin định dạng            | Ví dụ "013800012345" lưu vào INT sẽ thành 13800012345, "+" cũng không lưu được     |
-| **Không dùng cho tính toán** | ✔ Phù hợp lưu "định danh"           | ✘ Chỉ phù hợp tính toán số học       | Số điện thoại bản chất là định danh chuỗi, không tính toán toán học, VARCHAR sát với công dụng thực tế hơn |
-| **Tính linh hoạt truy vấn** | ✔ Hỗ trợ `LIKE '138%'`, v.v.        | ✘ Truy vấn tiền tố bất tiện hoặc hiệu năng kém | Dùng VARCHAR có thể truy vấn hiệu quả theo đoạn số/tiền tố, kiểu số cần chuyển sang chuỗi hoặc xử lý phức tạp khác |
-| **Hỗ trợ lưu trữ mã hóa** | ✔ Lưu được bản mã (chữ cái, ký hiệu, v.v.) | ✘ Không thể lưu bản mã               | Bản mã sau khi mã hóa số điện thoại là chuỗi/nhị phân, chỉ VARCHAR, TEXT, BLOB, v.v. mới tương thích |
-| **Khuyến nghị độ dài** | 15~20 (chưa mã hóa), mã hóa thì tùy tình hình | Không có ý nghĩa                     | Khi không mã hóa VARCHAR(15~20) là phổ biến, sau khi mã hóa độ dài phụ thuộc thuật toán và phương thức mã hóa |
+| Tiêu chí so sánh             | Kiểu VARCHAR (khuyến nghị)                     | Kiểu INT/BIGINT (không khuyến nghị)            | Giải thích/Ghi chú                                                                                                 |
+| ---------------------------- | ---------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| **Tương thích định dạng**    | ✔ Lưu được số 0 đầu, "+", "-", dấu cách, v.v. | ✘ Tự động mất số 0 đầu, không lưu được ký hiệu | VARCHAR lưu nguyên dạng mọi định dạng số điện thoại, INT/BIGINT chỉ hỗ trợ số thuần, số 0 đầu sẽ biến mất          |
+| **Tính toàn vẹn**            | ✔ Không mất bất kỳ thông tin định dạng nào    | ✘ Mất thông tin định dạng                      | Ví dụ "013800012345" lưu vào INT sẽ thành 13800012345, "+" cũng không lưu được                                     |
+| **Không dùng cho tính toán** | ✔ Phù hợp lưu "định danh"                     | ✘ Chỉ phù hợp tính toán số học                 | Số điện thoại bản chất là định danh chuỗi, không tính toán toán học, VARCHAR sát với công dụng thực tế hơn         |
+| **Tính linh hoạt truy vấn**  | ✔ Hỗ trợ `LIKE '138%'`, v.v.                  | ✘ Truy vấn tiền tố bất tiện hoặc hiệu năng kém | Dùng VARCHAR có thể truy vấn hiệu quả theo đoạn số/tiền tố, kiểu số cần chuyển sang chuỗi hoặc xử lý phức tạp khác |
+| **Hỗ trợ lưu trữ mã hóa**    | ✔ Lưu được bản mã (chữ cái, ký hiệu, v.v.)    | ✘ Không thể lưu bản mã                         | Bản mã sau khi mã hóa số điện thoại là chuỗi/nhị phân, chỉ VARCHAR, TEXT, BLOB, v.v. mới tương thích               |
+| **Khuyến nghị độ dài**       | 15~20 (chưa mã hóa), mã hóa thì tùy tình hình  | Không có ý nghĩa                               | Khi không mã hóa VARCHAR(15~20) là phổ biến, sau khi mã hóa độ dài phụ thuộc thuật toán và phương thức mã hóa      |
 
 ## Kiến trúc cơ bản của MySQL
 
@@ -746,12 +746,12 @@ Chuẩn SQL định nghĩa bốn Transaction Isolation Level, dùng để cân b
 - **REPEATABLE-READ (Đọc lặp lại)**: Kết quả đọc nhiều lần đối với cùng một trường đều nhất quán, trừ khi dữ liệu bị chính Transaction của mình sửa đổi, có thể ngăn Dirty Read và Unrepeatable Read, nhưng Phantom Read vẫn có thể xảy ra. Isolation Level mặc định của MySQL InnoDB Storage Engine chính là REPEATABLE READ. Và InnoDB ở level này thông qua cơ chế MVCC (Multiversion Concurrency Control) và Next-Key Locks (Gap Lock+Row Lock), phần lớn đã giải quyết vấn đề Phantom Read.
 - **SERIALIZABLE (Tuần tự hóa)**: Isolation Level cao nhất, hoàn toàn tuân thủ ACID. Tất cả Transaction lần lượt thực thi từng cái một, như vậy giữa các Transaction hoàn toàn không thể can thiệp lẫn nhau, nghĩa là level này có thể ngăn Dirty Read, Unrepeatable Read và Phantom Read.
 
-| Isolation Level  | Dirty Read        | Unrepeatable Read (Non-Repeatable Read) | Phantom Read           |
-| ---------------- | ----------------- | --------------------------------------- | ---------------------- |
-| READ UNCOMMITTED | √                 | √                                       | √                      |
-| READ COMMITTED   | ×                 | √                                       | √                      |
-| REPEATABLE READ  | ×                 | ×                                       | √ (chuẩn) / ≈× (InnoDB) |
-| SERIALIZABLE     | ×                 | ×                                       | ×                      |
+| Isolation Level  | Dirty Read | Unrepeatable Read (Non-Repeatable Read) | Phantom Read            |
+| ---------------- | ---------- | --------------------------------------- | ----------------------- |
+| READ UNCOMMITTED | √          | √                                       | √                       |
+| READ COMMITTED   | ×          | √                                       | √                       |
+| REPEATABLE READ  | ×          | ×                                       | √ (chuẩn) / ≈× (InnoDB) |
+| SERIALIZABLE     | ×          | ×                                       | ×                       |
 
 ### Isolation Level mặc định của MySQL là gì?
 
@@ -817,10 +817,10 @@ Dù là Table-level Lock hay Row-level Lock, đều tồn tại hai loại Share
 
 Exclusive Lock không tương thích với bất kỳ Lock nào, Shared Lock chỉ tương thích với Shared Lock.
 
-|      | Khóa S | Khóa X |
-| :--- | :----- | :--- |
+|        | Khóa S         | Khóa X   |
+| :----- | :------------- | :------- |
 | Khóa S | Không xung đột | Xung đột |
-| Khóa X | Xung đột   | Xung đột |
+| Khóa X | Xung đột       | Xung đột |
 
 Do sự tồn tại của MVCC, đối với câu lệnh `SELECT` thông thường, InnoDB sẽ không thêm bất kỳ Lock nào. Tuy nhiên, bạn có thể thêm rõ ràng Shared Lock hoặc Exclusive Lock bằng các câu lệnh sau.
 
@@ -846,17 +846,17 @@ Intention Lock là Table-level Lock, có hai loại:
 
 Giữa các Intention Lock với nhau là tương thích lẫn nhau.
 
-|       | Khóa IS | Khóa IX |
-| ----- | ------- | ------- |
-| Khóa IS | Tương thích  | Tương thích  |
-| Khóa IX | Tương thích  | Tương thích  |
+|         | Khóa IS     | Khóa IX     |
+| ------- | ----------- | ----------- |
+| Khóa IS | Tương thích | Tương thích |
+| Khóa IX | Tương thích | Tương thích |
 
 Intention Lock và Shared Lock cũng như Exclusive Lock loại trừ lẫn nhau (ở đây chỉ Shared Lock và Exclusive Lock cấp bảng, Intention Lock không loại trừ với Shared Lock và Exclusive Lock cấp hàng).
 
-|      | Khóa IS | Khóa IX |
-| ---- | ------- | ------- |
-| Khóa S | Tương thích  | Loại trừ  |
-| Khóa X | Loại trừ  | Loại trừ  |
+|        | Khóa IS     | Khóa IX  |
+| ------ | ----------- | -------- |
+| Khóa S | Tương thích | Loại trừ |
+| Khóa X | Loại trừ    | Loại trừ |
 
 Mô tả tương ứng trong cuốn sách "MySQL Technology Insider InnoDB Storage Engine" có lẽ là lỗi đánh máy.
 
@@ -921,11 +921,11 @@ Nói chính xác hơn, không chỉ Primary Key tự tăng, cột `AUTO_INCREMEN
 
 Nếu một Transaction đang chèn dữ liệu vào bảng có cột tự tăng, sẽ lấy Auto-increment Lock trước, không lấy được thì có thể bị chặn. Hành vi chặn ở đây chỉ là một trong những hành vi của Auto-increment Lock, có thể hiểu Auto-increment Lock là một giao diện, cài đặt cụ thể của nó có nhiều loại. Hạng mục cấu hình cụ thể là `innodb_autoinc_lock_mode` (giới thiệu từ MySQL 5.1.22), các giá trị có thể chọn như sau:
 
-| innodb_autoinc_lock_mode | Giới thiệu                          |
-| :----------------------- | :---------------------------------- |
-| 0                        | Chế độ truyền thống                 |
+| innodb_autoinc_lock_mode | Giới thiệu                                 |
+| :----------------------- | :----------------------------------------- |
+| 0                        | Chế độ truyền thống                        |
 | 1                        | Chế độ liên tục (mặc định trước MySQL 8.0) |
-| 2                        | Chế độ xen kẽ (mặc định từ MySQL 8.0)   |
+| 2                        | Chế độ xen kẽ (mặc định từ MySQL 8.0)      |
 
 Trong chế độ xen kẽ, tất cả câu lệnh "INSERT-LIKE" (tất cả câu lệnh chèn, bao gồm: `INSERT`, `REPLACE`, `INSERT…SELECT`, `REPLACE…SELECT`, `LOAD DATA`, v.v.) đều không dùng Table-level Lock, mà dùng cài đặt Mutex Lock hạng nhẹ, nhiều câu lệnh chèn có thể thực thi đồng thời, tốc độ nhanh hơn, khả năng mở rộng cũng tốt hơn.
 
@@ -994,20 +994,20 @@ mysql> EXPLAIN SELECT `score`,`name` FROM `cus_order` ORDER BY `score` DESC;
 
 Ý nghĩa của từng trường như sau:
 
-| **Tên cột**   | **Ý nghĩa**                                          |
-| ------------- | ---------------------------------------------------- |
-| id            | Định danh chuỗi của truy vấn SELECT                  |
-| select_type   | Loại truy vấn tương ứng với từ khóa SELECT           |
-| table         | Tên bảng được dùng                                   |
-| partitions    | Partition khớp, đối với bảng không phân vùng, giá trị là NULL |
-| type          | Phương thức truy cập bảng                            |
-| possible_keys | Index có thể được dùng                               |
-| key           | Index thực tế được dùng                              |
-| key_len       | Độ dài của Index được chọn                           |
+| **Tên cột**   | **Ý nghĩa**                                                               |
+| ------------- | ------------------------------------------------------------------------- |
+| id            | Định danh chuỗi của truy vấn SELECT                                       |
+| select_type   | Loại truy vấn tương ứng với từ khóa SELECT                                |
+| table         | Tên bảng được dùng                                                        |
+| partitions    | Partition khớp, đối với bảng không phân vùng, giá trị là NULL             |
+| type          | Phương thức truy cập bảng                                                 |
+| possible_keys | Index có thể được dùng                                                    |
+| key           | Index thực tế được dùng                                                   |
+| key_len       | Độ dài của Index được chọn                                                |
 | ref           | Khi dùng truy vấn bằng nhau qua Index, cột hoặc hằng số so sánh với Index |
-| rows          | Số hàng dự kiến đọc                                  |
-| filtered      | Tỷ lệ phần trăm bản ghi còn lại sau khi lọc theo điều kiện bảng |
-| Extra         | Thông tin bổ sung                                    |
+| rows          | Số hàng dự kiến đọc                                                       |
+| filtered      | Tỷ lệ phần trăm bản ghi còn lại sau khi lọc theo điều kiện bảng           |
+| Extra         | Thông tin bổ sung                                                         |
 
 Vì giới hạn độ dài, ở đây tôi chỉ giới thiệu đơn giản về Execution Plan của MySQL, giới thiệu chi tiết hãy xem bài viết: [Execution Plan của SQL](./mysql-query-execution-plan.md).
 

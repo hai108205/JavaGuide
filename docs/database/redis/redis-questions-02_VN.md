@@ -1,6 +1,6 @@
 ---
 title: Tổng hợp câu hỏi phỏng vấn Redis thường gặp (Phần 2)
-description: Tổng hợp câu hỏi phỏng vấn Redis mới nhất (Phần 2): Phân tích chuyên sâu về nguyên lý Redis Transaction, tối ưu hiệu năng (pipeline/Lua/bigkey/hotkey), giải pháp cho Cache Penetration/Cache Breakdown/Cache Avalanche, Slow Query và Memory Fragmentation, giải thích chi tiết Redis Sentinel và Redis Cluster. Giúp bạn dễ dàng vượt qua phỏng vấn kỹ thuật Backend!
+description: "Tổng hợp câu hỏi phỏng vấn Redis mới nhất (Phần 2): Phân tích chuyên sâu về nguyên lý Redis Transaction, tối ưu hiệu năng (pipeline/Lua/bigkey/hotkey), giải pháp cho Cache Penetration/Cache Breakdown/Cache Avalanche, Slow Query và Memory Fragmentation, giải thích chi tiết Redis Sentinel và Redis Cluster. Giúp bạn dễ dàng vượt qua phỏng vấn kỹ thuật Backend!"
 category: Cơ sở dữ liệu
 tag:
   - Redis
@@ -345,12 +345,12 @@ Khi thực thi lệnh này trên môi trường production, để giảm ảnh h
 
 Lệnh `SCAN` có thể trả về các key khớp theo một pattern và số lượng nhất định. Sau khi lấy được key, có thể dùng các lệnh như `STRLEN`, `HLEN`, `LLEN` để trả về độ dài hoặc số lượng phần tử của nó.
 
-| Cấu trúc dữ liệu | Lệnh   | Độ phức tạp | Kết quả (tương ứng với key)   |
-| ---------------- | ------ | ----------- | ----------------------------- |
-| String           | STRLEN | O(1)        | Độ dài của giá trị chuỗi      |
-| Hash             | HLEN   | O(1)        | Số lượng field trong Hash     |
-| List             | LLEN   | O(1)        | Số lượng phần tử của List     |
-| Set              | SCARD  | O(1)        | Số lượng phần tử của Set      |
+| Cấu trúc dữ liệu | Lệnh   | Độ phức tạp | Kết quả (tương ứng với key)     |
+| ---------------- | ------ | ----------- | ------------------------------- |
+| String           | STRLEN | O(1)        | Độ dài của giá trị chuỗi        |
+| Hash             | HLEN   | O(1)        | Số lượng field trong Hash       |
+| List             | LLEN   | O(1)        | Số lượng phần tử của List       |
+| Set              | SCARD  | O(1)        | Số lượng phần tử của Set        |
 | Sorted Set       | ZCARD  | O(1)        | Số lượng phần tử của Sorted Set |
 
 Đối với kiểu tập hợp còn có thể dùng lệnh `MEMORY USAGE` (Redis 4.0+), lệnh này trả về không gian bộ nhớ mà cặp key-value chiếm dụng.

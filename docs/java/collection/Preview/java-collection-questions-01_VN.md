@@ -1,6 +1,6 @@
 ---
 title: Tổng hợp câu hỏi phỏng vấn Java Collection (Phần 1)
-description: Tổng hợp câu hỏi phỏng vấn Java Collection Framework: phân tích chuyên sâu các interface Collection/List/Set/Queue, so sánh các lớp collection phổ biến như ArrayList/LinkedList/HashMap, nắm vững cấu trúc dữ liệu nền tảng và tình huống sử dụng.
+description: "Tổng hợp câu hỏi phỏng vấn Java Collection Framework: phân tích chuyên sâu các interface Collection/List/Set/Queue, so sánh các lớp collection phổ biến như ArrayList/LinkedList/HashMap, nắm vững cấu trúc dữ liệu nền tảng và tình huống sử dụng."
 category: Java
 tag:
   - Java Collection
@@ -524,24 +524,24 @@ Output：
 
 `Queue` mở rộng interface `Collection`, dựa trên **cách xử lý khác nhau sau khi thao tác thất bại do vấn đề dung lượng**, có thể chia thành hai loại phương thức: một loại sẽ ném exception sau khi thao tác thất bại, loại còn lại sẽ trả về giá trị đặc biệt.
 
-| Interface `Queue` | Ném exception | Trả về giá trị đặc biệt |
-| ----------------- | ------------- | ----------------------- |
-| Chèn vào cuối hàng đợi | add(E e) | offer(E e) |
-| Xóa ở đầu hàng đợi | remove() | poll() |
-| Truy vấn phần tử đầu hàng đợi | element() | peek() |
+| Interface `Queue`             | Ném exception | Trả về giá trị đặc biệt |
+| ----------------------------- | ------------- | ----------------------- |
+| Chèn vào cuối hàng đợi        | add(E e)      | offer(E e)              |
+| Xóa ở đầu hàng đợi            | remove()      | poll()                  |
+| Truy vấn phần tử đầu hàng đợi | element()     | peek()                  |
 
 `Deque` là hàng đợi hai đầu (double-ended queue), có thể chèn hoặc xóa phần tử ở cả hai đầu của hàng đợi.
 
 `Deque` mở rộng interface `Queue`, bổ sung thêm các phương thức chèn và xóa ở đầu và cuối hàng đợi, tương tự cũng chia thành hai loại dựa trên cách xử lý sau khi thất bại:
 
-| Interface `Deque` | Ném exception | Trả về giá trị đặc biệt |
-| ----------------- | ------------- | ----------------------- |
-| Chèn vào đầu hàng đợi | addFirst(E e) | offerFirst(E e) |
-| Chèn vào cuối hàng đợi | addLast(E e) | offerLast(E e) |
-| Xóa ở đầu hàng đợi | removeFirst() | pollFirst() |
-| Xóa ở cuối hàng đợi | removeLast() | pollLast() |
-| Truy vấn phần tử đầu hàng đợi | getFirst() | peekFirst() |
-| Truy vấn phần tử cuối hàng đợi | getLast() | peekLast() |
+| Interface `Deque`              | Ném exception | Trả về giá trị đặc biệt |
+| ------------------------------ | ------------- | ----------------------- |
+| Chèn vào đầu hàng đợi          | addFirst(E e) | offerFirst(E e)         |
+| Chèn vào cuối hàng đợi         | addLast(E e)  | offerLast(E e)          |
+| Xóa ở đầu hàng đợi             | removeFirst() | pollFirst()             |
+| Xóa ở cuối hàng đợi            | removeLast()  | pollLast()              |
+| Truy vấn phần tử đầu hàng đợi  | getFirst()    | peekFirst()             |
+| Truy vấn phần tử cuối hàng đợi | getLast()     | peekLast()              |
 
 Thực tế, `Deque` còn cung cấp các phương thức khác như `push()` và `pop()`, có thể dùng để mô phỏng stack (ngăn xếp).
 

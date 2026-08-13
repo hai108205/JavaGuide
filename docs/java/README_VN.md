@@ -1,5 +1,5 @@
 ---
-title: Hệ thống kiến thức Java: Cơ bản, Collection, Concurrent, JVM, IO và các tính năng mới
+title: "Hệ thống kiến thức Java: Cơ bản, Collection, Concurrent, JVM, IO và các tính năng mới"
 description: Lộ trình học và ôn tập Java dành cho phỏng vấn, bao gồm Java Core, Collection Framework, lập trình đồng thời, JVM, IO/NIO và các tính năng mới của Java. Phù hợp cho sinh viên mới ra trường, người chuyển việc và lập trình viên Backend Java.
 category: Java
 tag:
@@ -69,7 +69,7 @@ Nếu bạn không có nhiều thời gian, hãy ưu tiên đọc các bài tổ
 
 - [Chuyên đề Java Concurrent](./concurrent/): Bao quát Thread, Lock, Memory Model, Thread Pool và các công cụ đồng thời.
 - [Tổng hợp câu hỏi phỏng vấn Java Concurrent (Phần 1)](./concurrent/java-concurrent-questions-01.md), [Phần 2](./concurrent/java-concurrent-questions-02.md), [Phần 3](./concurrent/java-concurrent-questions-03.md): Danh sách các câu hỏi xuất hiện nhiều trong phỏng vấn.
-- [JMM (Java Memory Model)](./concurrent/jmm.md): Hiểu Visibility, Atomicity, Ordering và nguyên tắc *happens-before*.
+- [JMM (Java Memory Model)](./concurrent/jmm.md): Hiểu Visibility, Atomicity, Ordering và nguyên tắc _happens-before_.
 - [CAS](./concurrent/cas.md), [AQS](./concurrent/aqs.md), [Thread Pool trong Java](./concurrent/java-thread-pool-summary.md): Các chủ đề nền tảng được hỏi rất nhiều trong phỏng vấn.
 - [Những câu hỏi thường gặp về Virtual Thread](./concurrent/virtual-thread.md): Tìm hiểu ảnh hưởng của Project Loom đến mô hình lập trình đồng thời.
 

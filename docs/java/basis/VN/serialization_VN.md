@@ -1,6 +1,6 @@
 ---
 title: Giải thích chi tiết về Serialization trong Java
-description: Phân tích chuyên sâu về cơ chế serialization và deserialization trong Java: giải thích chi tiết về Serializable interface, transient keyword, vai trò của serialVersionUID, lựa chọn giao thức serialization và các tình huống ứng dụng như RPC, caching.
+description: "Phân tích chuyên sâu về cơ chế serialization và deserialization trong Java: giải thích chi tiết về Serializable interface, transient keyword, vai trò của serialVersionUID, lựa chọn giao thức serialization và các tình huống ứng dụng như RPC, caching."
 category: Java
 tag:
   - Java基础

@@ -1,6 +1,6 @@
 ---
 title: Không có kinh nghiệm thực tập khi tham gia tuyển dụng trường thì phải làm sao? Viết kinh nghiệm thực tập như thế nào?
-description: Không có kinh nghiệm thực tập vẫn có thể vượt qua tuyển dụng trường: từ củng cố kinh nghiệm dự án, liên tục tối ưu CV đến chuẩn bị phỏng vấn kỹ thuật một cách có hệ thống, đưa ra lộ trình cải thiện khả thi và những lưu ý giúp bạn nâng cao tỷ lệ vượt qua phỏng vấn ngay cả khi không có kinh nghiệm thực tập tại công ty lớn.
+description: "Không có kinh nghiệm thực tập vẫn có thể vượt qua tuyển dụng trường: từ củng cố kinh nghiệm dự án, liên tục tối ưu CV đến chuẩn bị phỏng vấn kỹ thuật một cách có hệ thống, đưa ra lộ trình cải thiện khả thi và những lưu ý giúp bạn nâng cao tỷ lệ vượt qua phỏng vấn ngay cả khi không có kinh nghiệm thực tập tại công ty lớn."
 category: 面试准备
 icon: "mdi:chart-timeline-variant"
 head:

@@ -1,5 +1,5 @@
 ---
-title: Chuyên đề Redis: Cache, Cấu trúc dữ liệu, Persistence, Cluster, Blocking và Thực hành kỹ thuật
+title: "Chuyên đề Redis: Cache, Cấu trúc dữ liệu, Persistence, Cluster, Blocking và Thực hành kỹ thuật"
 description: Lộ trình học Redis và Cache cho phỏng vấn, bao gồm Cache Penetration, Cache Breakdown, Cache Avalanche, chiến lược đọc/ghi, cấu trúc dữ liệu Redis, Persistence, vấn đề Blocking, Delayed Task và Cluster.
 category: Cơ sở dữ liệu
 tag:

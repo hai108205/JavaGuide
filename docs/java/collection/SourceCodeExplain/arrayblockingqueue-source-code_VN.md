@@ -1,6 +1,6 @@
 ---
 title: Phân tích mã nguồn ArrayBlockingQueue
-description: Phân tích chuyên sâu mã nguồn ArrayBlockingQueue: giải thích chi tiết về triển khai hàng đợi chặn có giới hạn (bounded blocking queue), ứng dụng mô hình Producer-Consumer, kiểm soát đồng thời bằng ReentrantLock + Condition, cơ chế hàng đợi công việc của ThreadPool.
+description: "Phân tích chuyên sâu mã nguồn ArrayBlockingQueue: giải thích chi tiết về triển khai hàng đợi chặn có giới hạn (bounded blocking queue), ứng dụng mô hình Producer-Consumer, kiểm soát đồng thời bằng ReentrantLock + Condition, cơ chế hàng đợi công việc của ThreadPool."
 category: Java
 tag:
   - Java集合
@@ -699,22 +699,22 @@ public boolean contains(Object o) {
 
 Thêm phần tử:
 
-| Phương thức                              | Cách xử lý khi hàng đợi đầy                                           | Giá trị trả về |
-| ----------------------------------------- | -------------------------------------------------------------------- | ---------- |
-| `put(E e)`                                | Thread bị chặn, cho đến khi bị ngắt hoặc được đánh thức               | void       |
-| `offer(E e)`                              | Trả về trực tiếp `false`                                             | boolean    |
-| `offer(E e, long timeout, TimeUnit unit)` | Chặn trong thời gian chờ chỉ định, vượt quá thời gian quy định mà vẫn chưa thêm thành công thì trả về `false` | boolean    |
-| `add(E e)`                                | Ném trực tiếp ngoại lệ `IllegalStateException`                      | boolean    |
+| Phương thức                               | Cách xử lý khi hàng đợi đầy                                                                                   | Giá trị trả về |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------- |
+| `put(E e)`                                | Thread bị chặn, cho đến khi bị ngắt hoặc được đánh thức                                                       | void           |
+| `offer(E e)`                              | Trả về trực tiếp `false`                                                                                      | boolean        |
+| `offer(E e, long timeout, TimeUnit unit)` | Chặn trong thời gian chờ chỉ định, vượt quá thời gian quy định mà vẫn chưa thêm thành công thì trả về `false` | boolean        |
+| `add(E e)`                                | Ném trực tiếp ngoại lệ `IllegalStateException`                                                                | boolean        |
 
 Lấy/Xóa phần tử:
 
-| Phương thức                        | Cách xử lý khi hàng đợi rỗng                                       | Giá trị trả về |
-| ----------------------------------- | ------------------------------------------------------------------- | ---------- |
-| `take()`                            | Thread bị chặn, cho đến khi bị ngắt hoặc được đánh thức             | E          |
-| `poll()`                            | Trả về `null`                                                       | E          |
-| `poll(long timeout, TimeUnit unit)` | Chặn trong thời gian chờ chỉ định, vượt quá thời gian quy định mà vẫn rỗng thì trả về `null` | E          |
-| `peek()`                            | Trả về `null`                                                       | E          |
-| `remove()`                          | Ném trực tiếp ngoại lệ `NoSuchElementException`                    | boolean    |
+| Phương thức                         | Cách xử lý khi hàng đợi rỗng                                                                 | Giá trị trả về |
+| ----------------------------------- | -------------------------------------------------------------------------------------------- | -------------- |
+| `take()`                            | Thread bị chặn, cho đến khi bị ngắt hoặc được đánh thức                                      | E              |
+| `poll()`                            | Trả về `null`                                                                                | E              |
+| `poll(long timeout, TimeUnit unit)` | Chặn trong thời gian chờ chỉ định, vượt quá thời gian quy định mà vẫn rỗng thì trả về `null` | E              |
+| `peek()`                            | Trả về `null`                                                                                | E              |
+| `remove()`                          | Ném trực tiếp ngoại lệ `NoSuchElementException`                                              | boolean        |
 
 ![](https://oss.javaguide.cn/github/javaguide/java/collection/ArrayBlockingQueue-get-add-element-methods.png)
 

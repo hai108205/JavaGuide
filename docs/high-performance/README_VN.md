@@ -1,21 +1,18 @@
 ---
-
-title: Hệ thống kiến thức về hệ thống hiệu năng cao - CDN, cân bằng tải, tối ưu cơ sở dữ liệu, bộ nhớ đệm và hàng đợi thông điệp
-description: Lộ trình học tập và ôn phỏng vấn về hệ thống hiệu năng cao, bao gồm CDN, cân bằng tải, tách đọc/ghi, phân tách cơ sở dữ liệu và bảng, phân tách dữ liệu nóng/lạnh, phân trang sâu, tối ưu SQL, hàng đợi thông điệp và các hệ thống MQ phổ biến.
-category: Hiệu năng cao
+title: "Hệ thống kiến thức về hệ thống hiệu năng cao - CDN, cân bằng tải, tối ưu cơ sở dữ liệu, bộ nhớ đệm và hàng đợi thông điệp"
+description: "Lộ trình học tập và ôn phỏng vấn về hệ thống hiệu năng cao, bao gồm CDN, cân bằng tải, tách đọc/ghi, phân tách cơ sở dữ liệu và bảng, phân tách dữ liệu nóng/lạnh, phân trang sâu, tối ưu SQL, hàng đợi thông điệp và các hệ thống MQ phổ biến."
+category: "Hiệu năng cao"
 tag:
-
-* Hiệu năng cao
-* Thiết kế hệ thống
-* Phỏng vấn Backend
-  sitemap:
+  - "Hiệu năng cao"
+  - "Thiết kế hệ thống"
+  - "Phỏng vấn Backend"
+sitemap:
   changefreq: weekly
   priority: 0.95
-  head:
-* * meta
-  * name: keywords
-    content: hệ thống hiệu năng cao,thiết kế hệ thống hiệu năng cao,câu hỏi phỏng vấn hệ thống hiệu năng cao,CDN,cân bằng tải,tách đọc ghi,phân tách cơ sở dữ liệu và bảng,phân tách dữ liệu nóng lạnh,phân trang sâu,tối ưu SQL,hàng đợi thông điệp,Kafka,RocketMQ,RabbitMQ,Disruptor,phỏng vấn Backend
-
+head:
+  - - meta
+    - name: keywords
+      content: "hệ thống hiệu năng cao,thiết kế hệ thống hiệu năng cao,câu hỏi phỏng vấn hệ thống hiệu năng cao,CDN,cân bằng tải,tách đọc ghi,phân tách cơ sở dữ liệu và bảng,phân tách dữ liệu nóng lạnh,phân trang sâu,tối ưu SQL,hàng đợi thông điệp,Kafka,RocketMQ,RabbitMQ,Disruptor,phỏng vấn Backend"
 ---
 
 ## Tổng quan
@@ -30,18 +27,18 @@ Chỉ khi có thể giải thích rõ **nút thắt nằm ở đâu, tại sao c
 
 ## Đối tượng phù hợp
 
-* Các lập trình viên Backend đang học một cách có hệ thống về thiết kế hệ thống hiệu năng cao.
-* Những người đang chuẩn bị phỏng vấn Backend cho chương trình tuyển dụng sinh viên mới tốt nghiệp, tuyển dụng có kinh nghiệm hoặc các công ty công nghệ lớn.
-* Các kỹ sư muốn bổ sung năng lực thực tế về CDN, cân bằng tải, tối ưu cơ sở dữ liệu, hàng đợi thông điệp và các lĩnh vực liên quan.
-* Những người đã gặp các vấn đề như SQL chậm, phân trang sâu, lưu lượng truy cập tập trung vào một số điểm nóng, hàng đợi thông điệp bị tồn đọng hoặc cơ sở dữ liệu chịu tải cao nhưng chưa có phương pháp xử lý một cách hệ thống.
+- Các lập trình viên Backend đang học một cách có hệ thống về thiết kế hệ thống hiệu năng cao.
+- Những người đang chuẩn bị phỏng vấn Backend cho chương trình tuyển dụng sinh viên mới tốt nghiệp, tuyển dụng có kinh nghiệm hoặc các công ty công nghệ lớn.
+- Các kỹ sư muốn bổ sung năng lực thực tế về CDN, cân bằng tải, tối ưu cơ sở dữ liệu, hàng đợi thông điệp và các lĩnh vực liên quan.
+- Những người đã gặp các vấn đề như SQL chậm, phân trang sâu, lưu lượng truy cập tập trung vào một số điểm nóng, hàng đợi thông điệp bị tồn đọng hoặc cơ sở dữ liệu chịu tải cao nhưng chưa có phương pháp xử lý một cách hệ thống.
 
 ## Trọng tâm học tập
 
-* Khi nói đến tối ưu hệ thống hiệu năng cao, thực chất chúng ta đang tối ưu **độ trễ, thông lượng, hiệu suất sử dụng tài nguyên hay trải nghiệm mà người dùng cảm nhận**?
-* CDN, cân bằng tải, cache, tối ưu cơ sở dữ liệu và hàng đợi thông điệp lần lượt giải quyết những nút thắt nào trong chuỗi xử lý?
-* Tách đọc/ghi, phân tách cơ sở dữ liệu và bảng, phân tách dữ liệu nóng/lạnh và tối ưu phân trang sâu phù hợp với những tình huống nào?
-* Kafka, RocketMQ, RabbitMQ và Disruptor có vai trò gì và khác nhau như thế nào khi lựa chọn công nghệ?
-* Khi phỏng vấn, làm thế nào để trả lời các câu hỏi về hiệu năng cao theo mạch **“xác định nút thắt → lựa chọn giải pháp → phân tích đánh đổi → rủi ro khi triển khai”**?
+- Khi nói đến tối ưu hệ thống hiệu năng cao, thực chất chúng ta đang tối ưu **độ trễ, thông lượng, hiệu suất sử dụng tài nguyên hay trải nghiệm mà người dùng cảm nhận**?
+- CDN, cân bằng tải, cache, tối ưu cơ sở dữ liệu và hàng đợi thông điệp lần lượt giải quyết những nút thắt nào trong chuỗi xử lý?
+- Tách đọc/ghi, phân tách cơ sở dữ liệu và bảng, phân tách dữ liệu nóng/lạnh và tối ưu phân trang sâu phù hợp với những tình huống nào?
+- Kafka, RocketMQ, RabbitMQ và Disruptor có vai trò gì và khác nhau như thế nào khi lựa chọn công nghệ?
+- Khi phỏng vấn, làm thế nào để trả lời các câu hỏi về hiệu năng cao theo mạch **“xác định nút thắt → lựa chọn giải pháp → phân tích đánh đổi → rủi ro khi triển khai”**?
 
 ## Mạch trả lời khi phỏng vấn
 
@@ -68,40 +65,40 @@ Hãy làm rõ bối cảnh trước rồi mới đưa ra giải pháp. Cách tr�
 
 ### Tầng truy cập và phân phối request
 
-* [Giải thích chi tiết nguyên lý hoạt động của CDN](./cdn.md): Tìm hiểu cơ chế điều phối GSLB, chiến lược cache, pre-warming và refresh cache, tối ưu tỷ lệ cache hit và chống hotlink.
-* [Giải thích chi tiết nguyên lý và thuật toán cân bằng tải](./load-balancing.md): Tìm hiểu cân bằng tải Layer 4/Layer 7, cân bằng tải phía server/phía client và các thuật toán điều phối phổ biến.
+- [Giải thích chi tiết nguyên lý hoạt động của CDN](./cdn.md): Tìm hiểu cơ chế điều phối GSLB, chiến lược cache, pre-warming và refresh cache, tối ưu tỷ lệ cache hit và chống hotlink.
+- [Giải thích chi tiết nguyên lý và thuật toán cân bằng tải](./load-balancing.md): Tìm hiểu cân bằng tải Layer 4/Layer 7, cân bằng tải phía server/phía client và các thuật toán điều phối phổ biến.
 
 ### Cơ sở dữ liệu và tối ưu truy cập dữ liệu
 
-* [Giải thích chi tiết về tách đọc/ghi và phân tách cơ sở dữ liệu, bảng](./read-and-write-separation-and-library-subtable.md): Tìm hiểu replication giữa master và replica, tách đọc/ghi, phân tách theo chiều dọc, phân tách theo chiều ngang và các vấn đề phát sinh sau khi phân tách cơ sở dữ liệu và bảng.
-* [Giải thích chi tiết về phân tách dữ liệu nóng/lạnh](./data-cold-hot-separation.md): Tìm hiểu cách xác định dữ liệu nóng/lạnh, lưu trữ phân tầng, tính nhất quán khi di chuyển dữ liệu và tối ưu truy vấn dữ liệu lạnh.
-* [Tổng hợp các phương pháp tối ưu SQL phổ biến](./sql-optimization.md): Hệ thống hóa các phương pháp thực tế như xác định SQL chậm, tối ưu index, viết lại truy vấn và tối ưu phân trang.
-* [Giới thiệu phân trang sâu và các đề xuất tối ưu](./deep-pagination-optimization.md): Tìm hiểu vấn đề hiệu năng của phân trang sâu và các giải pháp như truy vấn theo phạm vi, tối ưu bằng subquery, delayed join và covering index.
+- [Giải thích chi tiết về tách đọc/ghi và phân tách cơ sở dữ liệu, bảng](./read-and-write-separation-and-library-subtable.md): Tìm hiểu replication giữa master và replica, tách đọc/ghi, phân tách theo chiều dọc, phân tách theo chiều ngang và các vấn đề phát sinh sau khi phân tách cơ sở dữ liệu và bảng.
+- [Giải thích chi tiết về phân tách dữ liệu nóng/lạnh](./data-cold-hot-separation.md): Tìm hiểu cách xác định dữ liệu nóng/lạnh, lưu trữ phân tầng, tính nhất quán khi di chuyển dữ liệu và tối ưu truy vấn dữ liệu lạnh.
+- [Tổng hợp các phương pháp tối ưu SQL phổ biến](./sql-optimization.md): Hệ thống hóa các phương pháp thực tế như xác định SQL chậm, tối ưu index, viết lại truy vấn và tối ưu phân trang.
+- [Giới thiệu phân trang sâu và các đề xuất tối ưu](./deep-pagination-optimization.md): Tìm hiểu vấn đề hiệu năng của phân trang sâu và các giải pháp như truy vấn theo phạm vi, tối ưu bằng subquery, delayed join và covering index.
 
 ### Hàng đợi thông điệp và xử lý bất đồng bộ để điều tiết tải
 
-* [Chuyên đề về hàng đợi thông điệp](./message-queue/): Từ kiến thức cơ bản về hàng đợi thông điệp đến phạm vi sử dụng của Kafka, RocketMQ, RabbitMQ và Disruptor.
-* [Tổng hợp kiến thức cơ bản về hàng đợi thông điệp](./message-queue/message-queue.md): Tìm hiểu các kịch bản sử dụng, mô hình thông điệp, độ tin cậy, thứ tự, tính idempotent và cách xử lý tình trạng tồn đọng thông điệp.
-* [Tổng hợp các câu hỏi thường gặp về Kafka](./message-queue/kafka-questions-01.md): Nắm vững kiến trúc Kafka, nguyên lý đạt hiệu năng cao, độ tin cậy của thông điệp, thứ tự thông điệp và Rebalance.
-* [Tổng hợp các câu hỏi thường gặp về RocketMQ](./message-queue/rocketmq-questions.md): Tìm hiểu kiến trúc RocketMQ, các loại thông điệp, cơ chế lưu trữ, độ tin cậy và các tính năng mới trong phiên bản 5.x.
-* [Tổng hợp các câu hỏi thường gặp về RabbitMQ](./message-queue/rabbitmq-questions.md): Tìm hiểu AMQP, các loại Exchange, cơ chế xác nhận, Dead Letter Queue, Delay Queue, Quorum Queue và Streams.
-* [Tổng hợp các câu hỏi thường gặp về Disruptor](./message-queue/disruptor-questions.md): Tìm hiểu RingBuffer, Sequencer, WaitStrategy, thiết kế không khóa (lock-free) và kỹ thuật padding cache line.
+- [Chuyên đề về hàng đợi thông điệp](./message-queue/): Từ kiến thức cơ bản về hàng đợi thông điệp đến phạm vi sử dụng của Kafka, RocketMQ, RabbitMQ và Disruptor.
+- [Tổng hợp kiến thức cơ bản về hàng đợi thông điệp](./message-queue/message-queue.md): Tìm hiểu các kịch bản sử dụng, mô hình thông điệp, độ tin cậy, thứ tự, tính idempotent và cách xử lý tình trạng tồn đọng thông điệp.
+- [Tổng hợp các câu hỏi thường gặp về Kafka](./message-queue/kafka-questions-01.md): Nắm vững kiến trúc Kafka, nguyên lý đạt hiệu năng cao, độ tin cậy của thông điệp, thứ tự thông điệp và Rebalance.
+- [Tổng hợp các câu hỏi thường gặp về RocketMQ](./message-queue/rocketmq-questions.md): Tìm hiểu kiến trúc RocketMQ, các loại thông điệp, cơ chế lưu trữ, độ tin cậy và các tính năng mới trong phiên bản 5.x.
+- [Tổng hợp các câu hỏi thường gặp về RabbitMQ](./message-queue/rabbitmq-questions.md): Tìm hiểu AMQP, các loại Exchange, cơ chế xác nhận, Dead Letter Queue, Delay Queue, Quorum Queue và Streams.
+- [Tổng hợp các câu hỏi thường gặp về Disruptor](./message-queue/disruptor-questions.md): Tìm hiểu RingBuffer, Sequencer, WaitStrategy, thiết kế không khóa (lock-free) và kỹ thuật padding cache line.
 
 ## Các câu hỏi thường gặp
 
-* Khi tối ưu hệ thống hiệu năng cao, trước tiên nên xác định những chỉ số nào?
-* CDN và cân bằng tải lần lượt giải quyết vấn đề gì?
-* Cân bằng tải Layer 4 và Layer 7 khác nhau như thế nào?
-* Tách đọc/ghi gây ra những vấn đề gì về tính nhất quán? Xử lý độ trễ giữa master và replica như thế nào?
-* Sau khi phân tách cơ sở dữ liệu và bảng, xử lý Distributed ID, JOIN giữa các cơ sở dữ liệu và giao dịch phân tán như thế nào?
-* Tại sao phân trang sâu lại chậm? Có những phương án tối ưu nào?
-* Hàng đợi thông điệp làm thế nào để đảm bảo thông điệp không bị mất, không bị xử lý trùng và không bị sai thứ tự?
-* Nên lựa chọn Kafka, RocketMQ hay RabbitMQ như thế nào?
-* Nên xác định nguyên nhân và xử lý tình trạng tồn đọng thông điệp như thế nào?
+- Khi tối ưu hệ thống hiệu năng cao, trước tiên nên xác định những chỉ số nào?
+- CDN và cân bằng tải lần lượt giải quyết vấn đề gì?
+- Cân bằng tải Layer 4 và Layer 7 khác nhau như thế nào?
+- Tách đọc/ghi gây ra những vấn đề gì về tính nhất quán? Xử lý độ trễ giữa master và replica như thế nào?
+- Sau khi phân tách cơ sở dữ liệu và bảng, xử lý Distributed ID, JOIN giữa các cơ sở dữ liệu và giao dịch phân tán như thế nào?
+- Tại sao phân trang sâu lại chậm? Có những phương án tối ưu nào?
+- Hàng đợi thông điệp làm thế nào để đảm bảo thông điệp không bị mất, không bị xử lý trùng và không bị sai thứ tự?
+- Nên lựa chọn Kafka, RocketMQ hay RabbitMQ như thế nào?
+- Nên xác định nguyên nhân và xử lý tình trạng tồn đọng thông điệp như thế nào?
 
 ## Các chuyên đề liên quan
 
-* [Hệ thống kiến thức về hệ thống có tính sẵn sàng cao](../high-availability/)
-* [Hệ thống kiến thức về hệ thống phân tán](../distributed-system/)
-* [Cơ sở dữ liệu](../database/)
-* [Thiết kế hệ thống](../system-design/)
+- [Hệ thống kiến thức về hệ thống có tính sẵn sàng cao](../high-availability/)
+- [Hệ thống kiến thức về hệ thống phân tán](../distributed-system/)
+- [Cơ sở dữ liệu](../database/)
+- [Thiết kế hệ thống](../system-design/)

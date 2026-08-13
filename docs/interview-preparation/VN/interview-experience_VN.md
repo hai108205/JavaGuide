@@ -1,6 +1,6 @@
 ---
 title: Tổng hợp kinh nghiệm phỏng vấn chất lượng cao (trả phí)
-description: Tổng hợp kinh nghiệm phỏng vấn chất lượng cao: Tổng hợp 30+ bài chia sẻ kinh nghiệm phỏng vấn và tổng kết Java Backend chất lượng cao dành cho cả fresher và experienced, đúc kết các điểm thi thường gặp và chiến lược phỏng vấn, phù hợp để đối chiếu tự kiểm tra và bổ sung kiến thức còn thiếu.
+description: "Tổng hợp kinh nghiệm phỏng vấn chất lượng cao: Tổng hợp 30+ bài chia sẻ kinh nghiệm phỏng vấn và tổng kết Java Backend chất lượng cao dành cho cả fresher và experienced, đúc kết các điểm thi thường gặp và chiến lược phỏng vấn, phù hợp để đối chiếu tự kiểm tra và bổ sung kiến thức còn thiếu."
 category: Knowledge Planet
 icon: "mdi:chart-timeline-variant"
 head:

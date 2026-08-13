@@ -1,6 +1,6 @@
 ---
 title: Lộ trình học Java phiên bản mới nhất 2026 (4w+ từ)
-description: Lộ trình học Java phiên bản mới nhất: Kết hợp yêu cầu tuyển dụng Java Backend hiện tại, cung cấp lộ trình học tập hệ thống từ cơ bản đến nâng cao và đề xuất tài nguyên, bao gồm Java cốt lõi, cơ sở dữ liệu, cache, middleware, framework và trọng tâm phỏng vấn, giúp lập kế hoạch hiệu quả và tăng tốc đạt được mục tiêu.
+description: "Lộ trình học Java phiên bản mới nhất: Kết hợp yêu cầu tuyển dụng Java Backend hiện tại, cung cấp lộ trình học tập hệ thống từ cơ bản đến nâng cao và đề xuất tài nguyên, bao gồm Java cốt lõi, cơ sở dữ liệu, cache, middleware, framework và trọng tâm phỏng vấn, giúp lập kế hoạch hiệu quả và tăng tốc đạt được mục tiêu."
 category: 面试准备
 icon: mdi:map-marker-path
 head:

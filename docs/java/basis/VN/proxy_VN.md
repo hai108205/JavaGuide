@@ -1,6 +1,6 @@
 ---
 title: Giải thích chi tiết về Proxy Pattern trong Java
-description: Giải thích chi tiết nguyên lý và cách triển khai Proxy Pattern trong Java: so sánh sự khác biệt giữa static proxy và dynamic proxy, phân tích sâu cơ chế JDK dynamic proxy và CGLIB proxy, hiểu cách triển khai cross-cutting concerns trong AOP.
+description: "Giải thích chi tiết nguyên lý và cách triển khai Proxy Pattern trong Java: so sánh sự khác biệt giữa static proxy và dynamic proxy, phân tích sâu cơ chế JDK dynamic proxy và CGLIB proxy, hiểu cách triển khai cross-cutting concerns trong AOP."
 category: Java
 tag:
   - Java基础
@@ -399,14 +399,14 @@ after method send
 
 Sự khác biệt cốt lõi giữa static proxy và dynamic proxy nằm ở **thời điểm xác định mối quan hệ proxy, tính linh hoạt trong triển khai và chi phí bảo trì**.
 
-| Tiêu chí so sánh              | Static Proxy                                                                                          | Dynamic Proxy                                                                             |
-| ----------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| Thời điểm xác định quan hệ proxy | Compile-time (tạo file `.class` bytecode cố định sau khi biên dịch)                                | Runtime (tạo động proxy class bytecode và nạp vào JVM)                                    |
-| Cách triển khai               | Viết proxy class thủ công trước khi biên dịch, thường thông qua composition (tổ hợp) và delegation (ủy thác) gọi target object | Không cần viết proxy class cụ thể thủ công, đóng gói logic enhancement thông qua `Handler`/`Interceptor` |
-| Phụ thuộc interface           | Không bắt buộc; static proxy dựa trên interface thường cho proxy class và target class tuân theo cùng một interface | JDK Dynamic Proxy hướng interface, CGLIB và các subclass proxy khác hướng implementation class có thể kế thừa |
-| Lượng code và khả năng bảo trì | Lượng code lớn (càng nhiều target class, càng nhiều proxy class), chi phí bảo trì cao; khi interface thêm phương thức mới, target class và proxy class cần sửa đổi đồng bộ | Lượng code rất ít (logic enhancement chung có thể tái sử dụng), khả năng bảo trì tốt; giải phóng phụ thuộc với interface, thay đổi interface không ảnh hưởng đến proxy logic |
-| Ưu điểm cốt lõi               | Triển khai đơn giản, logic trực quan, không có phụ thuộc framework bổ sung                           | Tính linh hoạt cao, khả năng tái sử dụng cao, giảm code trùng lặp, thích ứng với các tình huống phức tạp |
-| Tình huống ứng dụng điển hình  | Decorator pattern đơn giản, nhu cầu enhancement cho một số ít class cố định                           | Spring AOP, RPC framework (như Dubbo), ORM framework                                      |
+| Tiêu chí so sánh                 | Static Proxy                                                                                                                                                               | Dynamic Proxy                                                                                                                                                                |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Thời điểm xác định quan hệ proxy | Compile-time (tạo file `.class` bytecode cố định sau khi biên dịch)                                                                                                        | Runtime (tạo động proxy class bytecode và nạp vào JVM)                                                                                                                       |
+| Cách triển khai                  | Viết proxy class thủ công trước khi biên dịch, thường thông qua composition (tổ hợp) và delegation (ủy thác) gọi target object                                             | Không cần viết proxy class cụ thể thủ công, đóng gói logic enhancement thông qua `Handler`/`Interceptor`                                                                     |
+| Phụ thuộc interface              | Không bắt buộc; static proxy dựa trên interface thường cho proxy class và target class tuân theo cùng một interface                                                        | JDK Dynamic Proxy hướng interface, CGLIB và các subclass proxy khác hướng implementation class có thể kế thừa                                                                |
+| Lượng code và khả năng bảo trì   | Lượng code lớn (càng nhiều target class, càng nhiều proxy class), chi phí bảo trì cao; khi interface thêm phương thức mới, target class và proxy class cần sửa đổi đồng bộ | Lượng code rất ít (logic enhancement chung có thể tái sử dụng), khả năng bảo trì tốt; giải phóng phụ thuộc với interface, thay đổi interface không ảnh hưởng đến proxy logic |
+| Ưu điểm cốt lõi                  | Triển khai đơn giản, logic trực quan, không có phụ thuộc framework bổ sung                                                                                                 | Tính linh hoạt cao, khả năng tái sử dụng cao, giảm code trùng lặp, thích ứng với các tình huống phức tạp                                                                     |
+| Tình huống ứng dụng điển hình    | Decorator pattern đơn giản, nhu cầu enhancement cho một số ít class cố định                                                                                                | Spring AOP, RPC framework (như Dubbo), ORM framework                                                                                                                         |
 
 ## 5. Tổng kết
 

@@ -1,6 +1,6 @@
 ---
 title: Hướng dẫn Viết CV cho Lập trình viên
-description: Hướng dẫn viết CV cho lập trình viên: Bắt đầu từ logic sàng lọc, giải thích rõ cấu trúc CV, cách viết kinh nghiệm dự án và mô tả kỹ năng, cung cấp mẫu CV và gợi ý tránh lỗi thường gặp, giúp bạn nâng cao tỷ lệ vượt qua vòng sàng lọc CV và để người phỏng vấn khai thác tốt hơn điểm mạnh của bạn.
+description: "Hướng dẫn viết CV cho lập trình viên: Bắt đầu từ logic sàng lọc, giải thích rõ cấu trúc CV, cách viết kinh nghiệm dự án và mô tả kỹ năng, cung cấp mẫu CV và gợi ý tránh lỗi thường gặp, giúp bạn nâng cao tỷ lệ vượt qua vòng sàng lọc CV và để người phỏng vấn khai thác tốt hơn điểm mạnh của bạn."
 category: 面试准备
 icon: "mdi:account-tie-outline"
 head:
@@ -91,8 +91,8 @@ Học vấn cũng không thể thiếu. Thông qua phần giới thiệu học v
 
 Ví dụ:
 
-> Đại học Bắc Kinh  Thạc sĩ, Kỹ thuật Phần mềm  2019.09 - 2022.01
-> Đại học Hồ Nam  Cử nhân, Hóa học Ứng dụng  2015.09 ~ 2019.06
+> Đại học Bắc Kinh Thạc sĩ, Kỹ thuật Phần mềm 2019.09 - 2022.01
+> Đại học Hồ Nam Cử nhân, Hóa học Ứng dụng 2015.09 ~ 2019.06
 
 ### Kỹ năng Chuyên môn
 
@@ -135,7 +135,7 @@ Mẫu giới thiệu kinh nghiệm dự án như sau:
 
 > Tên dự án (cỡ chữ lớn hơn một chút)
 >
-> 2017-05~2018-06  Kỹ sư Phát triển Java Backend Taobao
+> 2017-05~2018-06 Kỹ sư Phát triển Java Backend Taobao
 >
 > - **Mô tả Dự án**: Mô tả đơn giản dự án làm gì.
 > - **Công nghệ Sử dụng (Tech Stack)**: Sử dụng công nghệ gì (ví dụ Spring Boot + MySQL + Redis + Mybatis-plus + Spring Security + Oauth2)

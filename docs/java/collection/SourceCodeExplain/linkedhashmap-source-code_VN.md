@@ -1,6 +1,6 @@
 ---
 title: Phân tích mã nguồn LinkedHashMap
-description: Phân tích chuyên sâu mã nguồn LinkedHashMap: giải thích chi tiết cơ chế duy trì danh sách liên kết đôi (doubly linked list) để đạt được thứ tự chèn/truy cập, triển khai LRU cache, sự khác biệt với HashMap và tối ưu hiệu suất duyệt.
+description: "Phân tích chuyên sâu mã nguồn LinkedHashMap: giải thích chi tiết cơ chế duy trì danh sách liên kết đôi (doubly linked list) để đạt được thứ tự chèn/truy cập, triển khai LRU cache, sự khác biệt với HashMap và tối ưu hiệu suất duyệt."
 category: Java
 tag:
   - Java Collections

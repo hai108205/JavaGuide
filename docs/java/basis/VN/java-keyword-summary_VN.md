@@ -1,6 +1,6 @@
 ---
 title: Tổng hợp từ khóa Java
-description: Tổng hợp hệ thống các từ khóa Java thường dùng: giải thích chi tiết cách dùng và phân biệt các từ khóa final, static, this, super, volatile, transient, synchronized, giúp lập trình viên Java nắm vững cú pháp cốt lõi.
+description: "Tổng hợp hệ thống các từ khóa Java thường dùng: giải thích chi tiết cách dùng và phân biệt các từ khóa final, static, this, super, volatile, transient, synchronized, giúp lập trình viên Java nắm vững cú pháp cốt lõi."
 category: Java
 tag:
   - Java基础

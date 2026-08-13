@@ -1,6 +1,6 @@
 ---
 title: Hướng dẫn Kinh nghiệm Dự án
-description: Hướng dẫn kinh nghiệm dự án: Dành cho những người tìm việc chưa có dự án hoặc dự án còn đơn điệu, đưa ra phương pháp và gợi ý lựa chọn để có được kinh nghiệm dự án thực chiến, đồng thời giải thích rõ cách tạo điểm sáng cho dự án, cách phục hồi và trình bày, nhằm nâng cao sức cạnh tranh của CV và phỏng vấn.
+description: "Hướng dẫn kinh nghiệm dự án: Dành cho những người tìm việc chưa có dự án hoặc dự án còn đơn điệu, đưa ra phương pháp và gợi ý lựa chọn để có được kinh nghiệm dự án thực chiến, đồng thời giải thích rõ cách tạo điểm sáng cho dự án, cách phục hồi và trình bày, nhằm nâng cao sức cạnh tranh của CV và phỏng vấn."
 category: 面试准备
 icon: "mdi:projector-screen-outline"
 head:

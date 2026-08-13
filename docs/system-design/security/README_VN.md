@@ -1,5 +1,5 @@
 ---
-title: Chuyên đề Xác thực - Ủy quyền và Bảo mật Dữ liệu: JWT, SSO, Hệ thống Phân quyền, Mã hóa, Che giấu và Kiểm tra Dữ liệu
+title: "Chuyên đề Xác thực - Ủy quyền và Bảo mật Dữ liệu: JWT, SSO, Hệ thống Phân quyền, Mã hóa, Che giấu và Kiểm tra Dữ liệu"
 description: Lộ trình học phỏng vấn về Xác thực - Ủy quyền và Bảo mật Dữ liệu, bao gồm Session, Token, OAuth2, JWT, SSO, RBAC, thuật toán mã hóa, che giấu dữ liệu, kiểm tra dữ liệu và bảo mật mật khẩu.
 category: 系统设计
 tag:

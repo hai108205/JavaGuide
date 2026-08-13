@@ -1,6 +1,6 @@
 ---
 title: Tổng hợp câu hỏi phỏng vấn Redis thường gặp (Phần 1)
-description: Tổng hợp câu hỏi phỏng vấn Redis mới nhất (Phần 1): giải thích chuyên sâu về nền tảng Redis, năm cấu trúc dữ liệu thông dụng, nguyên lý mô hình Single Thread, cơ chế Persistence, chiến lược Eviction và Expire của Memory, triển khai Distributed Lock và Message Queue. Phù hợp cho các lập trình viên đang chuẩn bị phỏng vấn Backend!
+description: "Tổng hợp câu hỏi phỏng vấn Redis mới nhất (Phần 1): giải thích chuyên sâu về nền tảng Redis, năm cấu trúc dữ liệu thông dụng, nguyên lý mô hình Single Thread, cơ chế Persistence, chiến lược Eviction và Expire của Memory, triển khai Distributed Lock và Message Queue. Phù hợp cho các lập trình viên đang chuẩn bị phỏng vấn Backend!"
 category: Cơ sở dữ liệu
 tag:
   - Redis
@@ -112,13 +112,13 @@ Redis ngoài việc dùng làm Cache, còn có thể dùng cho Distributed Lock 
 
 ### ⭐️Tại sao dùng Redis mà không dùng Cache cục bộ (Local Cache)?
 
-| Đặc điểm | Local Cache | Redis |
-| ------------ | ------------------------------------ | -------------------------------- |
-| Tính nhất quán dữ liệu | Khi triển khai trên nhiều server tồn tại vấn đề dữ liệu không nhất quán | Dữ liệu nhất quán |
-| Giới hạn Memory | Bị giới hạn bởi Memory của một server | Triển khai độc lập, không gian Memory lớn hơn |
-| Nguy cơ mất dữ liệu | Server gặp sự cố là mất dữ liệu | Có thể Persistence, dữ liệu khó bị mất |
-| Quản lý bảo trì | Phân tán, quản lý bất tiện | Quản lý tập trung, cung cấp công cụ quản lý phong phú |
-| Độ phong phú chức năng | Chức năng hạn chế, thường chỉ cung cấp lưu trữ cặp Key-Value đơn giản | Chức năng phong phú, hỗ trợ nhiều cấu trúc dữ liệu và tính năng |
+| Đặc điểm               | Local Cache                                                             | Redis                                                           |
+| ---------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Tính nhất quán dữ liệu | Khi triển khai trên nhiều server tồn tại vấn đề dữ liệu không nhất quán | Dữ liệu nhất quán                                               |
+| Giới hạn Memory        | Bị giới hạn bởi Memory của một server                                   | Triển khai độc lập, không gian Memory lớn hơn                   |
+| Nguy cơ mất dữ liệu    | Server gặp sự cố là mất dữ liệu                                         | Có thể Persistence, dữ liệu khó bị mất                          |
+| Quản lý bảo trì        | Phân tán, quản lý bất tiện                                              | Quản lý tập trung, cung cấp công cụ quản lý phong phú           |
+| Độ phong phú chức năng | Chức năng hạn chế, thường chỉ cung cấp lưu trữ cặp Key-Value đơn giản   | Chức năng phong phú, hỗ trợ nhiều cấu trúc dữ liệu và tính năng |
 
 Về giới thiệu chi tiết Local Cache, Distributed Cache và Multi-level Cache (Cache đa tầng), có thể xem bài viết này do tôi viết: [Tổng hợp câu hỏi phỏng vấn thường gặp về nền tảng Cache](http://localhost:8080/database/redis/cache-basics.html).
 
@@ -277,13 +277,13 @@ struct __attribute__ ((__packed__)) sdshdr64 {
 
 Qua source code có thể thấy, SDS có tổng cộng năm cách triển khai: SDS_TYPE_5 (không được dùng), SDS_TYPE_8, SDS_TYPE_16, SDS_TYPE_32, SDS_TYPE_64, trong đó chỉ bốn loại sau thực sự được dùng. Redis sẽ dựa vào độ dài khởi tạo để quyết định dùng loại nào, từ đó giảm mức sử dụng Memory.
 
-| Loại | Byte | Bit |
+| Loại     | Byte | Bit |
 | -------- | ---- | --- |
-| sdshdr5 | < 1 | <8 |
-| sdshdr8 | 1 | 8 |
-| sdshdr16 | 2 | 16 |
-| sdshdr32 | 4 | 32 |
-| sdshdr64 | 8 | 64 |
+| sdshdr5  | < 1  | <8  |
+| sdshdr8  | 1    | 8   |
+| sdshdr16 | 2    | 16  |
+| sdshdr32 | 4    | 32  |
+| sdshdr64 | 8    | 64  |
 
 Bốn loại triển khai sau đều bao gồm 4 thuộc tính dưới đây:
 

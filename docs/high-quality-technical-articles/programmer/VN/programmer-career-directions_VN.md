@@ -1,6 +1,6 @@
 ---
 title: Hướng phát triển nghề nghiệp của lập trình viên chọn thế nào?
-description: Hướng phát triển nghề nghiệp của lập trình viên chọn thế nào: xoay quanh các hướng như backend, frontend, full-stack, phát triển ứng dụng AI, kernel cơ sở dữ liệu, thuật toán, middleware, test development, vận hành/kỹ thuật nền tảng (platform engineering) và kiến trúc sư, trình bày phù hợp với đối tượng nào, rào cản, rủi ro và điểm khởi đầu học tập.
+description: "Hướng phát triển nghề nghiệp của lập trình viên chọn thế nào: xoay quanh các hướng như backend, frontend, full-stack, phát triển ứng dụng AI, kernel cơ sở dữ liệu, thuật toán, middleware, test development, vận hành/kỹ thuật nền tảng (platform engineering) và kiến trúc sư, trình bày phù hợp với đối tượng nào, rào cản, rủi ro và điểm khởi đầu học tập."
 category: 技术文章精选集
 tag:
   - 程序员

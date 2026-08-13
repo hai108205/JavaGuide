@@ -1,6 +1,6 @@
 ---
 title: Java dùng long hay BigDecimal cho số tiền?
-description: Hướng dẫn chọn kiểu dữ liệu tiền tệ trong Java: giải thích khi nào dùng long lưu đơn vị tiền tệ nhỏ nhất, khi nào dùng BigDecimal để tính toán chính xác, cùng các vấn đề về làm tròn, tràn số, chuyển đổi đơn vị và thiết kế trường cơ sở dữ liệu.
+description: "Hướng dẫn chọn kiểu dữ liệu tiền tệ trong Java: giải thích khi nào dùng long lưu đơn vị tiền tệ nhỏ nhất, khi nào dùng BigDecimal để tính toán chính xác, cùng các vấn đề về làm tròn, tràn số, chuyển đổi đơn vị và thiết kế trường cơ sở dữ liệu."
 category: Java
 tag:
   - Java基础
@@ -19,12 +19,12 @@ Số tiền đã xác định đơn vị nhỏ nhất có thể dùng `long` đ�
 
 Phương án Long được đề cập dưới đây đều chỉ việc dùng số nguyên để lưu đơn vị tiền tệ nhỏ nhất. Khi code Java tham gia tính toán, thường dùng kiểu nguyên thủy `long`, khi cần biểu thị giá trị null mới dùng kiểu wrapper `Long`.
 
-| Mục so sánh             | `long`                                           | `BigDecimal`                                |
-| ----------------------- | ------------------------------------------------ | ------------------------------------------- |
-| Cách biểu diễn          | Số nguyên với đơn vị nhỏ nhất cố định            | Số thập phân có `scale`                     |
-| Trường hợp sử dụng phổ biến | Tiền đơn hàng, số dư, số tiền đã ghi sổ (đã xác định đơn vị nhỏ nhất) | Tính chiết khấu, thuế, lãi suất, tỷ giá     |
-| Rủi ro chính            | Nhầm lẫn đơn vị, tràn số âm thầm, khó mở rộng độ chính xác | Cách khởi tạo, quy tắc làm tròn, khác biệt `scale` |
-| Kiểu dữ liệu DB phổ biến | `BIGINT`                                         | `DECIMAL(p, s)`                             |
+| Mục so sánh                 | `long`                                                                | `BigDecimal`                                       |
+| --------------------------- | --------------------------------------------------------------------- | -------------------------------------------------- |
+| Cách biểu diễn              | Số nguyên với đơn vị nhỏ nhất cố định                                 | Số thập phân có `scale`                            |
+| Trường hợp sử dụng phổ biến | Tiền đơn hàng, số dư, số tiền đã ghi sổ (đã xác định đơn vị nhỏ nhất) | Tính chiết khấu, thuế, lãi suất, tỷ giá            |
+| Rủi ro chính                | Nhầm lẫn đơn vị, tràn số âm thầm, khó mở rộng độ chính xác            | Cách khởi tạo, quy tắc làm tròn, khác biệt `scale` |
+| Kiểu dữ liệu DB phổ biến    | `BIGINT`                                                              | `DECIMAL(p, s)`                                    |
 
 ## Tại sao không dùng double cho số tiền?
 

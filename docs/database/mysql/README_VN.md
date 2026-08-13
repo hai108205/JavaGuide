@@ -1,5 +1,5 @@
 ---
-title: Chuyên đề MySQL: Index, Transaction, Log, Sao lưu khôi phục, MVCC và Tối ưu hiệu năng
+title: "Chuyên đề MySQL: Index, Transaction, Log, Sao lưu khôi phục, MVCC và Tối ưu hiệu năng"
 description: Lộ trình học MySQL cho phỏng vấn và tối ưu hiệu năng, bao quát Index, Index mất hiệu lực, Transaction Isolation Level, MVCC, binlog, redo log, undo log, sao lưu khôi phục, Execution Plan và tối ưu SQL.
 category: Cơ sở dữ liệu
 tag:

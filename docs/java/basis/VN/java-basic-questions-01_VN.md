@@ -1,4 +1,14 @@
-
+---
+title: "Tổng hợp câu hỏi phỏng vấn cơ bản về Java (Phần 1)"
+category: Java
+description: "Tổng hợp các câu hỏi phỏng vấn Java cơ bản thường gặp: bao gồm các đặc điểm của ngôn ngữ Java, sự khác biệt JVM/JDK/JRE, giải thích chi tiết bytecode, kiểu dữ liệu cơ bản, tự động đóng hộp và mở hộp, nạp chồng và ghi đè phương thức và các kiến thức cốt lõi khác, hỗ trợ nhà phát triển Java vượt qua phỏng vấn."
+tag:
+  - "Java cơ bản"
+head:
+  - - meta
+    - name: keywords
+      content: "Java cơ bản,JVM,JDK,JRE,Java SE,Bytecode,Biên dịch Java,Tự động mở hộp,Kiểu dữ liệu cơ bản,Nạp chồng phương thức,Câu hỏi phỏng vấn Java"
+---
 
 ## Khái niệm cơ bản và kiến thức chung
 
@@ -127,15 +137,15 @@ JDK 9 từng giới thiệu công cụ AOT (Ahead of Time Compilation) thử ngh
 
 So sánh dưới đây lấy HotSpot JIT và GraalVM Native Image phổ biến làm ví dụ. Các công cụ AOT khác nhau có cách triển khai không hoàn toàn giống nhau, hiệu suất thực tế còn bị ảnh hưởng bởi tham số build, tải ứng dụng, và liệu có sử dụng PGO (Profile-Guided Optimization, tức tận dụng thông tin hiệu suất thu thập được trong thời gian chạy thực tế để hỗ trợ tối ưu) hay không.
 
-| Tiêu chí                | JIT (Just in Time Compilation)                              | AOT (Ahead of Time Compilation)                                           |
-| ----------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------- |
-| **Thời điểm biên dịch** | Biên dịch trong runtime dựa trên tình hình thực thi code    | Biên dịch trước trong giai đoạn build                                     |
-| **Khởi động và warm-up** | Sau khi khởi động thường cần interpreter và biên dịch hotspot code | Thường khởi động nhanh hơn, không cần chờ JIT warm-up                     |
-| **Hiệu suất dài hạn**   | Có thể tận dụng thông tin thu thập lúc runtime để liên tục tối ưu hotspot code | Thiếu thông tin runtime đầy đủ, hiệu suất cụ thể phụ thuộc vào hiện thực và cấu hình build |
-| **Bộ nhớ runtime**      | Cần lưu compiler, dữ liệu hiệu suất và machine code đã sinh | Các hiện thực như Native Image thường chiếm ít bộ nhớ runtime hơn          |
-| **Phụ thuộc runtime**   | Cần JVM và runtime tương ứng                                | Native Image có thể sinh ra native executable độc lập                      |
-| **Tính năng động**      | Hỗ trợ runtime loading, reflection và bytecode generation   | Công cụ phân tích closed-world thường cần metadata hoặc xử lý trong giai đoạn build |
-| **Kịch bản phổ biến**   | Dịch vụ chạy dài hạn, coi trọng throughput liên tục        | CLI, Serverless, elastic scaling và dịch vụ nhạy cảm với cold start       |
+| Tiêu chí                 | JIT (Just in Time Compilation)                                                 | AOT (Ahead of Time Compilation)                                                            |
+| ------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| **Thời điểm biên dịch**  | Biên dịch trong runtime dựa trên tình hình thực thi code                       | Biên dịch trước trong giai đoạn build                                                      |
+| **Khởi động và warm-up** | Sau khi khởi động thường cần interpreter và biên dịch hotspot code             | Thường khởi động nhanh hơn, không cần chờ JIT warm-up                                      |
+| **Hiệu suất dài hạn**    | Có thể tận dụng thông tin thu thập lúc runtime để liên tục tối ưu hotspot code | Thiếu thông tin runtime đầy đủ, hiệu suất cụ thể phụ thuộc vào hiện thực và cấu hình build |
+| **Bộ nhớ runtime**       | Cần lưu compiler, dữ liệu hiệu suất và machine code đã sinh                    | Các hiện thực như Native Image thường chiếm ít bộ nhớ runtime hơn                          |
+| **Phụ thuộc runtime**    | Cần JVM và runtime tương ứng                                                   | Native Image có thể sinh ra native executable độc lập                                      |
+| **Tính năng động**       | Hỗ trợ runtime loading, reflection và bytecode generation                      | Công cụ phân tích closed-world thường cần metadata hoặc xử lý trong giai đoạn build        |
+| **Kịch bản phổ biến**    | Dịch vụ chạy dài hạn, coi trọng throughput liên tục                            | CLI, Serverless, elastic scaling và dịch vụ nhạy cảm với cold start                        |
 
 <img src="https://oss.javaguide.cn/github/javaguide/java/basis/jit-vs-aot.png" alt="JIT vs AOT" style="zoom: 25%;" />
 
@@ -266,19 +276,19 @@ Có một số identifier được Java gán cho ý nghĩa đặc biệt, chỉ 
 
 ### Java có những keyword nào?
 
-| Phân loại                              | Keyword  |            |          |              |            |           |        |
-| :------------------------------------- | -------- | ---------- | -------- | ------------ | ---------- | --------- | ------ |
-| Access control                         | private  | protected  | public   |              |            |           |        |
-| Class, method và variable modifier     | abstract | class      | extends  | final        | implements | interface | native |
-|                                        | new      | static     | strictfp | synchronized | transient  | volatile  | enum   |
-| Program control                        | break    | continue   | return   | do           | while      | if        | else   |
-|                                        | for      | instanceof | switch   | case         | default    | assert    |        |
-| Error handling                         | try      | catch      | throw    | throws       | finally    |           |        |
-| Package related                        | import   | package    |          |              |            |           |        |
-| Primitive type                         | boolean  | byte       | char     | double       | float      | int       | long   |
-|                                        | short    |            |          |              |            |           |        |
-| Variable reference                     | super    | this       | void     |              |            |           |        |
-| Reserved word                          | goto     | const      |          |              |            |           |        |
+| Phân loại                          | Keyword  |            |          |              |            |           |        |
+| :--------------------------------- | -------- | ---------- | -------- | ------------ | ---------- | --------- | ------ |
+| Access control                     | private  | protected  | public   |              |            |           |        |
+| Class, method và variable modifier | abstract | class      | extends  | final        | implements | interface | native |
+|                                    | new      | static     | strictfp | synchronized | transient  | volatile  | enum   |
+| Program control                    | break    | continue   | return   | do           | while      | if        | else   |
+|                                    | for      | instanceof | switch   | case         | default    | assert    |        |
+| Error handling                     | try      | catch      | throw    | throws       | finally    |           |        |
+| Package related                    | import   | package    |          |              |            |           |        |
+| Primitive type                     | boolean  | byte       | char     | double       | float      | int       | long   |
+|                                    | short    |            |          |              |            |           |        |
+| Variable reference                 | super    | this       | void     |              |            |           |        |
+| Reserved word                      | goto     | const      |          |              |            |           |        |
 
 > Tips: Tất cả keyword đều viết thường, trong IDE sẽ hiển thị với màu đặc biệt.
 >
@@ -290,7 +300,7 @@ Có một số identifier được Java gán cho ý nghĩa đặc biệt, chỉ 
 
 ⚠️ Lưu ý: mặc dù `true`, `false`, và `null` trông giống keyword nhưng thực chất chúng là literal value, đồng thời bạn cũng không được dùng chúng làm identifier.
 
-Tài liệu chính thức: [https://docs.oracle.com/javase/tutorial/java/nutsandbolts/_keywords.html](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/_keywords.html)
+Tài liệu chính thức: [https://docs.oracle.com/javase/tutorial/java/nutsandbolts/\_keywords.html](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/_keywords.html)
 
 ### ⭐️ Toán tử tăng/giảm (++/--)
 
@@ -597,16 +607,16 @@ flowchart TB
 
 Giá trị mặc định và kích thước của 8 kiểu dữ liệu nguyên thủy này như sau:
 
-| Kiểu       | Số bit | Số byte | Giá trị mặc định | Phạm vi giá trị                                                                                          |
-| :--------- | :----- | :------ | :--------------- | -------------------------------------------------------------------------------------------------------- |
-| `byte`     | 8      | 1       | 0                | -128 ~ 127                                                                                               |
-| `short`    | 16     | 2       | 0                | -32768 (-2^15) ~ 32767 (2^15 - 1)                                                                        |
-| `int`      | 32     | 4       | 0                | -2147483648 ~ 2147483647                                                                                 |
-| `long`     | 64     | 8       | 0L               | -9223372036854775808 (-2^63) ~ 9223372036854775807 (2^63 -1)                                             |
-| `char`     | 16     | 2       | ' '         | 0 ~ 65535 (2^16 - 1)                                                                                     |
-| `float`    | 32     | 4       | 0f               | Khoảng -3.4028235E38 ~ 3.4028235E38, giá trị dương nhỏ nhất khác 0 khoảng 1.4E-45, bao gồm ±0, ±∞, NaN   |
-| `double`   | 64     | 8       | 0d               | Khoảng -1.7976931348623157E308 ~ 1.7976931348623157E308, giá trị dương nhỏ nhất khác 0 khoảng 4.9E-324, bao gồm ±0, ±∞, NaN |
-| `boolean`  | Không quy định | Không quy định | false        | true, false                                                                                              |
+| Kiểu      | Số bit         | Số byte        | Giá trị mặc định | Phạm vi giá trị                                                                                                             |
+| :-------- | :------------- | :------------- | :--------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `byte`    | 8              | 1              | 0                | -128 ~ 127                                                                                                                  |
+| `short`   | 16             | 2              | 0                | -32768 (-2^15) ~ 32767 (2^15 - 1)                                                                                           |
+| `int`     | 32             | 4              | 0                | -2147483648 ~ 2147483647                                                                                                    |
+| `long`    | 64             | 8              | 0L               | -9223372036854775808 (-2^63) ~ 9223372036854775807 (2^63 -1)                                                                |
+| `char`    | 16             | 2              | ' '               | 0 ~ 65535 (2^16 - 1)                                                                                                        |
+| `float`   | 32             | 4              | 0f               | Khoảng -3.4028235E38 ~ 3.4028235E38, giá trị dương nhỏ nhất khác 0 khoảng 1.4E-45, bao gồm ±0, ±∞, NaN                      |
+| `double`  | 64             | 8              | 0d               | Khoảng -1.7976931348623157E308 ~ 1.7976931348623157E308, giá trị dương nhỏ nhất khác 0 khoảng 4.9E-324, bao gồm ±0, ±∞, NaN |
+| `boolean` | Không quy định | Không quy định | false            | true, false                                                                                                                 |
 
 Có thể thấy, các kiểu `byte`, `short`, `int`, `long` có giá trị dương lớn nhất đều trừ đi 1. Tại sao vậy? Đó là vì trong cách biểu diễn two's complement (bù hai), bit cao nhất được dùng để biểu diễn dấu (0 là dương, 1 là âm), các bit còn lại biểu diễn phần giá trị. Vì vậy, nếu muốn biểu diễn số dương lớn nhất, chúng ta cần đặt tất cả các bit ngoại trừ bit cao nhất thành 1. Nếu cộng thêm 1, sẽ gây overflow và trở thành số âm.
 
@@ -1152,13 +1162,13 @@ Overriding là mối quan hệ khai báo giữa subclass instance method và sup
 
 Tổng kết: **Overriding là subclass tái tạo lại method của superclass, hình thức bên ngoài không thể thay đổi, logic bên trong có thể thay đổi.**
 
-| Điểm khác biệt     | Overloading                                                                               | Overriding                                                                                           |
-| ------------------ | ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| **Phạm vi xảy ra**       | Trong cùng một class.                                                                     | Giữa superclass và subclass (có quan hệ kế thừa).                                                    |
-| **Method signature**     | Method name **phải giống nhau**, nhưng **parameter list phải khác nhau** (kiểu, số lượng hoặc thứ tự tham số ít nhất một yếu tố khác). | Method name, parameter list **phải hoàn toàn giống nhau**.                                           |
-| **Return type**          | **Không liên quan** đến return type, có thể tùy ý thay đổi.                               | Return type của subclass method phải **giống** với return type của superclass method, hoặc là **subclass** của nó. |
-| **Access modifier**      | **Không liên quan** đến access modifier, có thể tùy ý thay đổi.                           | Access modifier của subclass method **không được thấp hơn** access modifier của superclass method. (public > protected > default > private) |
-| **Thời điểm binding**    | Compile-time binding (static binding)                                                     | Run-time binding (dynamic binding)                                                                   |
+| Điểm khác biệt        | Overloading                                                                                                                            | Overriding                                                                                                                                  |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Phạm vi xảy ra**    | Trong cùng một class.                                                                                                                  | Giữa superclass và subclass (có quan hệ kế thừa).                                                                                           |
+| **Method signature**  | Method name **phải giống nhau**, nhưng **parameter list phải khác nhau** (kiểu, số lượng hoặc thứ tự tham số ít nhất một yếu tố khác). | Method name, parameter list **phải hoàn toàn giống nhau**.                                                                                  |
+| **Return type**       | **Không liên quan** đến return type, có thể tùy ý thay đổi.                                                                            | Return type của subclass method phải **giống** với return type của superclass method, hoặc là **subclass** của nó.                          |
+| **Access modifier**   | **Không liên quan** đến access modifier, có thể tùy ý thay đổi.                                                                        | Access modifier của subclass method **không được thấp hơn** access modifier của superclass method. (public > protected > default > private) |
+| **Thời điểm binding** | Compile-time binding (static binding)                                                                                                  | Run-time binding (dynamic binding)                                                                                                          |
 
 **Overriding method cần tuân theo "hai giống, hai nhỏ, một lớn"** (trích từ "Crazy Java讲义", [issue#892](https://github.com/Snailclimb/JavaGuide/issues/892)):
 

@@ -1,5 +1,5 @@
 ---
-title: Hệ thống kiến thức chuẩn bị phỏng vấn: Kế hoạch ôn tập, CV, kinh nghiệm dự án, lộ trình học, trọng tâm phỏng vấn và điều chỉnh tâm lý
+title: "Hệ thống kiến thức chuẩn bị phỏng vấn: Kế hoạch ôn tập, CV, kinh nghiệm dự án, lộ trình học, trọng tâm phỏng vấn và điều chỉnh tâm lý"
 description: Lộ trình chuẩn bị phỏng vấn Java Backend, bao gồm kế hoạch ôn tập, viết CV, kinh nghiệm dự án, lộ trình học Java, trọng tâm phỏng vấn, tài liệu PDF, kinh nghiệm thực tập, tổng kết phỏng vấn và điều chỉnh tâm lý.
 category: 面试准备
 tag:

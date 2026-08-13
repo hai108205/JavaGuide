@@ -1,6 +1,6 @@
 ---
 title: Phân tích mã nguồn LinkedList
-description: Phân tích chuyên sâu mã nguồn LinkedList: cấu trúc danh sách liên kết đôi (doubly linked list), triển khai giao diện Deque, độ phức tạp O(1) khi chèn/xóa ở đầu và cuối, so sánh hiệu năng với ArrayList và các tình huống áp dụng.
+description: "Phân tích chuyên sâu mã nguồn LinkedList: cấu trúc danh sách liên kết đôi (doubly linked list), triển khai giao diện Deque, độ phức tạp O(1) khi chèn/xóa ở đầu và cuối, so sánh hiệu năng với ArrayList và các tình huống áp dụng."
 category: Java
 tag:
   - Java Collection

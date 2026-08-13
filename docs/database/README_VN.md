@@ -1,5 +1,5 @@
 ---
-title: Hệ thống kiến thức Cơ sở dữ liệu: SQL, MySQL, Redis, MongoDB và Elasticsearch
+title: "Hệ thống kiến thức Cơ sở dữ liệu: SQL, MySQL, Redis, MongoDB và Elasticsearch"
 description: Lộ trình học và ôn tập Cơ sở dữ liệu dành cho phỏng vấn và phát triển Backend, bao gồm SQL, chỉ mục MySQL, giao dịch, nhật ký, MVCC, kế hoạch thực thi, Redis Cache, MongoDB và Elasticsearch.
 category: Cơ sở dữ liệu
 tag:

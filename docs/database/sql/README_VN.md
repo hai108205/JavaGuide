@@ -1,5 +1,5 @@
 ---
-title: Chuyên đề SQL: Nền tảng cú pháp, truy vấn, tổng hợp, kết nối, truy vấn con và câu hỏi phỏng vấn thường gặp
+title: "Chuyên đề SQL: Nền tảng cú pháp, truy vấn, tổng hợp, kết nối, truy vấn con và câu hỏi phỏng vấn thường gặp"
 description: Lộ trình học SQL và nền tảng Cơ sở dữ liệu cho phỏng vấn, bao gồm truy vấn SQL, lọc, sắp xếp, tổng hợp, nhóm, kết nối, truy vấn con, thêm/xóa/sửa dữ liệu, ràng buộc, Transaction và các câu hỏi phỏng vấn SQL thường gặp.
 category: Cơ sở dữ liệu
 tag:

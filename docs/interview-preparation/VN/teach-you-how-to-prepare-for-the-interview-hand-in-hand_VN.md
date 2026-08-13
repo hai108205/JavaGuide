@@ -1,6 +1,6 @@
 ---
 title: Làm thế nào để chuẩn bị phỏng vấn Java hiệu quả?
-description: Làm thế nào để chuẩn bị phỏng vấn Java hiệu quả: từ học tập theo định hướng tìm việc, xây dựng danh sách kỹ năng đến tối ưu CV và nước rút phỏng vấn, cung cấp phương pháp chuẩn bị có hệ thống, giúp bạn đi đường tắt ít hơn và nâng cao tỷ lệ vượt qua phỏng vấn.
+description: "Làm thế nào để chuẩn bị phỏng vấn Java hiệu quả: từ học tập theo định hướng tìm việc, xây dựng danh sách kỹ năng đến tối ưu CV và nước rút phỏng vấn, cung cấp phương pháp chuẩn bị có hệ thống, giúp bạn đi đường tắt ít hơn và nâng cao tỷ lệ vượt qua phỏng vấn."
 category: 知识星球
 icon: "mdi:map-marker-path"
 head:

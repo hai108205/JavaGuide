@@ -69,7 +69,7 @@ Phương án do mình thiết kế, khi người khác đặt câu hỏi thì ch
 
 Những người này học được chút kiến thức là tưởng mình giỏi lắm, không ngờ rằng chỉ là do mình thấy biết quá ít.
 
-## 9. Quy ước interface không đúng chuẩn
+## 9. Quy ước API không đúng chuẩn
 
 Thỏa thuận API với người khác hoàn toàn dựa vào giao tiếp miệng, không đưa ra tài liệu mô tả đúng chuẩn, thậm chí đến lúc test liên kết (联调) mới phát hiện ra, hóa ra lại không giống với những gì đã thống nhất, hoặc đổi giao thức rồi mà không thông báo cho bên đối tác, trải nghiệm hợp tác cực kỳ tệ.
 
@@ -105,9 +105,9 @@ Thêm tính năng mới chỉ quan tâm đến một mảnh nghiệp vụ nhỏ,
 
 Cần học cách phân tích yêu cầu và những thay đổi có thể xảy ra trong tương lai, thiết kế giải pháp tổng quát hơn, giảm chi phí phát triển ở giai đoạn sau.
 
-## 16. Interface không tự test, gặp vấn đề không in log
+## 16. API không tự test, gặp vấn đề không in log
 
-Interface do mình phát triển mà không tự test đã đem đi liên kết với người khác, gặp vấn đề lại nói là không in log, hiệu quả hợp tác cực kỳ thấp.
+API do mình phát triển mà không tự test đã đem đi liên kết với người khác, gặp vấn đề lại nói là không in log, hiệu quả hợp tác cực kỳ thấp.
 
 ## 17. Commit code không đúng quy chuẩn
 

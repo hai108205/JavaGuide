@@ -1,6 +1,6 @@
 ---
 title: Tổng hợp trọng điểm phỏng vấn Java Backend phiên bản 2026 mới nhất
-description: Tổng hợp trọng điểm phỏng vấn Java Backend: Hệ thống hóa các điểm thi thường gặp và mức độ ưu tiên ôn tập cho fresher/experienced, bao gồm Java cơ bản, Collection, Concurrency, MySQL, Redis, Spring/Spring Boot, JVM và chuẩn bị kinh nghiệm dự án, giúp bạn nắm trọng điểm để ôn tập hiệu quả.
+description: "Tổng hợp trọng điểm phỏng vấn Java Backend: Hệ thống hóa các điểm thi thường gặp và mức độ ưu tiên ôn tập cho fresher/experienced, bao gồm Java cơ bản, Collection, Concurrency, MySQL, Redis, Spring/Spring Boot, JVM và chuẩn bị kinh nghiệm dự án, giúp bạn nắm trọng điểm để ôn tập hiệu quả."
 category: Chuẩn bị phỏng vấn
 icon: mdi:star-outline
 head:

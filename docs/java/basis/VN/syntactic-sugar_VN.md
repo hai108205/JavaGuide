@@ -1,6 +1,6 @@
 ---
 title: Java Syntactic Sugar Chi Tiết
-description: Phân tích chuyên sâu nguyên lý Syntactic Sugar trong Java: giải thích cơ chế biên dịch của autoboxing/unboxing, type erasure, enhanced for, varargs, enum, Lambda và các loại syntactic sugar khác, giúp tránh các lỗi thường gặp khi sử dụng.
+description: "Phân tích chuyên sâu nguyên lý Syntactic Sugar trong Java: giải thích cơ chế biên dịch của autoboxing/unboxing, type erasure, enhanced for, varargs, enum, Lambda và các loại syntactic sugar khác, giúp tránh các lỗi thường gặp khi sử dụng."
 category: Java
 tag:
   - Java基础

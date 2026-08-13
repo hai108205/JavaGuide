@@ -1,5 +1,5 @@
 ---
-title: Chuyên đề Java Collection: List, Map, Queue, Collection đồng bộ và phân tích mã nguồn
+title: "Chuyên đề Java Collection: List, Map, Queue, Collection đồng bộ và phân tích mã nguồn"
 description: Lộ trình học tập Java Collection cho phỏng vấn và phân tích mã nguồn, bao gồm List, Set, Map, Queue, ArrayList, HashMap, ConcurrentHashMap, hàng đợi chặn (blocking queue) và các vấn đề thường gặp khi sử dụng collection.
 category: Java
 tag:

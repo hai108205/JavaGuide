@@ -1,6 +1,6 @@
 ---
 title: Tài liệu PDF phỏng vấn Java + Backend mới nhất 2026
-description: Tổng hợp tài liệu PDF phỏng vấn Backend phiên bản 2026 (JavaGuide): hệ thống các chủ đề trọng tâm cho tuyển dụng campus và social recruitment kèm mức độ ưu tiên ôn tập, bao gồm Java Core, Collections, Concurrency, MySQL, Redis, Spring/Spring Boot, JVM, System Design và chuẩn bị kinh nghiệm dự án, giúp bạn tập trung vào trọng điểm để chuẩn bị hiệu quả.
+description: "Tổng hợp tài liệu PDF phỏng vấn Backend phiên bản 2026 (JavaGuide): hệ thống các chủ đề trọng tâm cho tuyển dụng campus và social recruitment kèm mức độ ưu tiên ôn tập, bao gồm Java Core, Collections, Concurrency, MySQL, Redis, Spring/Spring Boot, JVM, System Design và chuẩn bị kinh nghiệm dự án, giúp bạn tập trung vào trọng điểm để chuẩn bị hiệu quả."
 category: 面试准备
 icon: mdi:file-pdf-box
 head:

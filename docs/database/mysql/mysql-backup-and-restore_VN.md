@@ -1,5 +1,5 @@
 ---
-title: Giải thích chi tiết Backup và Restore trong MySQL: mysqldump, XtraBackup, binlog và PITR
+title: "Giải thích chi tiết Backup và Restore trong MySQL: mysqldump, XtraBackup, binlog và PITR"
 description: Giải thích chi tiết về Backup và Restore trong MySQL, trình bày về mysqldump, MySQL Shell, Percona XtraBackup, binlog, PITR, RTO/RPO, diễn tập phục hồi và những hiểu lầm phổ biến khi Backup.
 category: Cơ sở dữ liệu
 tag:
@@ -57,26 +57,26 @@ Backup trong MySQL thường có ba nhóm phân loại, mỗi nhóm trả lời 
 
 Theo việc Database có đang phục vụ trong lúc Backup hay không:
 
-| Loại | Mô tả | Tình huống áp dụng |
-| ---- | -------------------------------------- | ---------------------------------------- |
-| Cold Backup (Backup lạnh) | Dừng MySQL rồi sao chép file dữ liệu | Hệ thống nhỏ, tình huống có Maintenance Window (cửa sổ bảo trì) rộng rãi |
-| Warm Backup (Backup ấm) | Backup khi MySQL đang chạy, nhưng có thể khóa hoặc ảnh hưởng đến ghi | Tình huống yêu cầu khả dụng ở mức trung bình, chấp nhận ảnh hưởng trong thời gian ngắn |
-| Hot Backup (Backup nóng) | Backup khi MySQL đang chạy, cố gắng không chặn đọc/ghi của nghiệp vụ | Database Production, Database lớn, tình huống Maintenance Window rất ngắn |
+| Loại                      | Mô tả                                                                | Tình huống áp dụng                                                                     |
+| ------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Cold Backup (Backup lạnh) | Dừng MySQL rồi sao chép file dữ liệu                                 | Hệ thống nhỏ, tình huống có Maintenance Window (cửa sổ bảo trì) rộng rãi               |
+| Warm Backup (Backup ấm)   | Backup khi MySQL đang chạy, nhưng có thể khóa hoặc ảnh hưởng đến ghi | Tình huống yêu cầu khả dụng ở mức trung bình, chấp nhận ảnh hưởng trong thời gian ngắn |
+| Hot Backup (Backup nóng)  | Backup khi MySQL đang chạy, cố gắng không chặn đọc/ghi của nghiệp vụ | Database Production, Database lớn, tình huống Maintenance Window rất ngắn              |
 
 Theo nội dung file Backup:
 
-| Loại | Mô tả | Công cụ tiêu biểu |
-| -------- | -------------------------------- | ------------------------------------------- |
-| Logical Backup (Backup logic) | Xuất nội dung logic như SQL, CSV | `mysqldump`, MySQL Shell dump utilities |
+| Loại                            | Mô tả                                           | Công cụ tiêu biểu                           |
+| ------------------------------- | ----------------------------------------------- | ------------------------------------------- |
+| Logical Backup (Backup logic)   | Xuất nội dung logic như SQL, CSV                | `mysqldump`, MySQL Shell dump utilities     |
 | Physical Backup (Backup vật lý) | Sao chép file vật lý như file dữ liệu, file Log | Percona XtraBackup, MySQL Enterprise Backup |
 
 Theo phạm vi Backup:
 
-| Loại | Mô tả |
-| -------- | -------------------------------- |
-| Full Backup (Backup toàn bộ) | Backup toàn bộ dữ liệu tại một thời điểm |
+| Loại                                   | Mô tả                                                   |
+| -------------------------------------- | ------------------------------------------------------- |
+| Full Backup (Backup toàn bộ)           | Backup toàn bộ dữ liệu tại một thời điểm                |
 | Incremental Backup (Backup tăng cường) | Backup dữ liệu hoặc Log thay đổi kể từ lần Backup trước |
-| Differential Backup (Backup khác biệt) | Backup dữ liệu thay đổi kể từ lần Full Backup trước |
+| Differential Backup (Backup khác biệt) | Backup dữ liệu thay đổi kể từ lần Full Backup trước     |
 
 Trong phỏng vấn rất hay hỏi các phân loại này, nhưng trên Production điều thực sự phải đạt được chỉ có một: file Backup có Restore ra được dữ liệu mà nghiệp vụ cần hay không. Phân loại chỉ là ngôn ngữ để chọn phương án, Restore thành công mới là kết quả.
 
@@ -339,14 +339,14 @@ Sau khi phục hồi Full Physical Backup, từ vị trí mà file này đưa ra
 
 Có thể chọn theo lượng dữ liệu, mục tiêu phục hồi và năng lực vận hành.
 
-| Tình huống | Phương pháp phù hợp hơn |
-| ---------------------------------- | ------------------------------------- |
-| Database nhỏ, Database kiểm thử, xuất bảng đơn lẻ, Migration chéo môi trường | `mysqldump` |
-| Cần xem hoặc sửa thủ công nội dung Backup | `mysqldump` |
-| Migration logic quy mô vừa, muốn Import/Xuất song song | MySQL Shell Dump Utilities |
-| Database lớn, cửa sổ phục hồi ngắn, chủ yếu là bảng InnoDB | XtraBackup hoặc MySQL Enterprise Backup |
-| Cần phục hồi theo thời điểm (Point-in-Time) | Full Backup + binlog |
-| Instance Cloud Database | Ưu tiên dùng Snapshot / PITR của nhà cung cấp Cloud, sau đó xuất ra để xác minh |
+| Tình huống                                                                   | Phương pháp phù hợp hơn                                                         |
+| ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Database nhỏ, Database kiểm thử, xuất bảng đơn lẻ, Migration chéo môi trường | `mysqldump`                                                                     |
+| Cần xem hoặc sửa thủ công nội dung Backup                                    | `mysqldump`                                                                     |
+| Migration logic quy mô vừa, muốn Import/Xuất song song                       | MySQL Shell Dump Utilities                                                      |
+| Database lớn, cửa sổ phục hồi ngắn, chủ yếu là bảng InnoDB                   | XtraBackup hoặc MySQL Enterprise Backup                                         |
+| Cần phục hồi theo thời điểm (Point-in-Time)                                  | Full Backup + binlog                                                            |
+| Instance Cloud Database                                                      | Ưu tiên dùng Snapshot / PITR của nhà cung cấp Cloud, sau đó xuất ra để xác minh |
 
 Ở đây đừng nghĩ việc chọn công cụ quá huyền bí. Database nhỏ dùng `mysqldump` không có vấn đề gì, script đơn giản, có sự cố cũng dễ điều tra. Khi lượng dữ liệu tăng lên, vấn đề Restore file SQL chậm sẽ ngày càng rõ, lúc đó chuyển sang Physical Backup mới thực tế.
 

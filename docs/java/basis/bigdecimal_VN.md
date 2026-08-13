@@ -1,6 +1,6 @@
 ---
 title: BigDecimal chi tiết
-description: Giải thích chi tiết cách sử dụng BigDecimal: giải quyết vấn đề mất độ chính xác của số dấu phẩy động, nắm vững các phép cộng trừ nhân chia, quy tắc làm tròn RoundingMode, phương thức so sánh compareTo, phù hợp với các tình huống yêu cầu độ chính xác cao như tính toán tài chính.
+description: "Giải thích chi tiết cách sử dụng BigDecimal: giải quyết vấn đề mất độ chính xác của số dấu phẩy động, nắm vững các phép cộng trừ nhân chia, quy tắc làm tròn RoundingMode, phương thức so sánh compareTo, phù hợp với các tình huống yêu cầu độ chính xác cao như tính toán tài chính."
 category: Java
 tag:
   - Java基础

@@ -1,6 +1,6 @@
 ---
 title: Tự kiểm tra các câu hỏi phỏng vấn thường gặp (Trả phí)
-description: Tự kiểm tra các câu hỏi phỏng vấn thường gặp: tổng hợp các câu hỏi tần suất cao về Java Backend theo cách đặt câu hỏi thực tế trong phỏng vấn, kèm gợi ý và đánh dấu mức độ quan trọng, phù hợp để tự kiểm tra trước phỏng vấn, xác định điểm yếu và ôn tập có trọng tâm.
+description: "Tự kiểm tra các câu hỏi phỏng vấn thường gặp: tổng hợp các câu hỏi tần suất cao về Java Backend theo cách đặt câu hỏi thực tế trong phỏng vấn, kèm gợi ý và đánh dấu mức độ quan trọng, phù hợp để tự kiểm tra trước phỏng vấn, xác định điểm yếu và ôn tập có trọng tâm."
 category: 知识星球
 icon: "mdi:shield-lock-outline"
 head:

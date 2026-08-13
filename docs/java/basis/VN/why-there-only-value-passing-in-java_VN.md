@@ -1,6 +1,6 @@
 ---
 title: Java truyền tham trị (pass-by-value) chi tiết
-description: Giải thích chi tiết tại sao Java chỉ có truyền tham trị: phân tích cơ chế truyền tham số trong Java qua các ví dụ, làm rõ các hiểu lầm phổ biến về truyền tham trị và truyền tham chiếu, hiểu bản chất khác biệt giữa tham số thực và tham số hình thức.
+description: "Giải thích chi tiết tại sao Java chỉ có truyền tham trị: phân tích cơ chế truyền tham số trong Java qua các ví dụ, làm rõ các hiểu lầm phổ biến về truyền tham trị và truyền tham chiếu, hiểu bản chất khác biệt giữa tham số thực và tham số hình thức."
 category: Java
 tag:
   - Java基础

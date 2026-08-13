@@ -1,6 +1,6 @@
 ---
 title: Hiện thực Delayed Task dựa trên Redis như thế nào?
-description: Giải thích chi tiết hai phương án hiện thực Delayed Task dựa trên Redis: lắng nghe sự kiện hết hạn và Delayed Queue của Redisson, phân tích ưu nhược điểm, vấn đề độ tin cậy và kịch bản áp dụng của từng phương án.
+description: "Giải thích chi tiết hai phương án hiện thực Delayed Task dựa trên Redis: lắng nghe sự kiện hết hạn và Delayed Queue của Redisson, phân tích ưu nhược điểm, vấn đề độ tin cậy và kịch bản áp dụng của từng phương án."
 category: Cơ sở dữ liệu
 tag:
   - Redis

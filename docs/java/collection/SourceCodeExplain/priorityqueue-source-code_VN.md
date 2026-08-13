@@ -1,6 +1,6 @@
 ---
 title: Phân tích mã nguồn PriorityQueue (Trả phí)
-description: Phân tích chuyên sâu mã nguồn PriorityQueue: giải thích chi tiết cách triển khai hàng đợi ưu tiên dựa trên binary heap, thao tác heapify siftUp/siftDown, sắp xếp tùy chỉnh với Comparator, cơ chế mở rộng dung lượng động.
+description: "Phân tích chuyên sâu mã nguồn PriorityQueue: giải thích chi tiết cách triển khai hàng đợi ưu tiên dựa trên binary heap, thao tác heapify siftUp/siftDown, sắp xếp tùy chỉnh với Comparator, cơ chế mở rộng dung lượng động."
 category: Java
 tag:
   - Java集合

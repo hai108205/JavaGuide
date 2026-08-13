@@ -1,6 +1,6 @@
 ---
 title: Phân tích mã nguồn HashMap
-description: Phân tích chuyên sâu mã nguồn HashMap: giải thích chi tiết sự khác biệt về cấu trúc giữa JDK1.7/1.8, hàm băm nhiễu (hash perturbation), hệ số tải 0.75, cơ chế rehash khi mở rộng, ngưỡng chuyển đổi linked list sang red-black tree và các nguyên lý cốt lõi khác của HashMap.
+description: "Phân tích chuyên sâu mã nguồn HashMap: giải thích chi tiết sự khác biệt về cấu trúc giữa JDK1.7/1.8, hàm băm nhiễu (hash perturbation), hệ số tải 0.75, cơ chế rehash khi mở rộng, ngưỡng chuyển đổi linked list sang red-black tree và các nguyên lý cốt lõi khác của HashMap."
 category: Java
 tag:
   - Java集合
