@@ -1,72 +1,72 @@
 ---
-title: 星球专属优质专栏：Java 面试、系统设计、手写 RPC、源码阅读与实战项目
-description: JavaGuide 知识星球专栏与学习路线，包含 Java 面试指北、后端系统设计、场景题、手写 RPC、Java 源码阅读和 AI 智能面试辅助平台。
-category: 知识星球
+title: "Chuyên mục chất lượng độc quyền: Phỏng vấn Java, Thiết kế hệ thống, Tự xây dựng RPC, Đọc mã nguồn và Dự án thực chiến"
+description: Chuyên mục Knowledge Planet và lộ trình học tập của JavaGuide, bao gồm định hướng phỏng vấn Java, thiết kế hệ thống Backend, các bài toán tình huống, tự xây dựng RPC, đọc mã nguồn Java và nền tảng hỗ trợ phỏng vấn thông minh bằng AI.
+category: Knowledge Planet
 sitemap:
-  changefreq: weekly
-  priority: 0.9
+changefreq: weekly
+priority: 0.9
 head:
   - - meta
     - name: keywords
-      content: JavaGuide知识星球,Java面试指北,后端系统设计,手写RPC框架,Java源码阅读,Java实战项目,Java面试资料,知识星球专栏
+      content: JavaGuide Knowledge Planet,Phỏng vấn Java,Thiết kế hệ thống Backend,Tự xây dựng Framework RPC,Đọc mã nguồn Java,Dự án Java thực chiến,Tài liệu phỏng vấn Java,Chuyên mục Knowledge Planet
 ---
 
-这份 **星球专属优质专栏** 汇总 JavaGuide 知识星球里的系统学习资料，覆盖 Java 面试、系统设计与场景题、手写 RPC、源码阅读和实战项目。
+**Chuyên mục chất lượng độc quyền trên Knowledge Planet** này tổng hợp các tài liệu học tập có hệ thống từ JavaGuide Knowledge Planet, bao phủ các chủ đề về **phỏng vấn Java, thiết kế hệ thống và bài toán tình huống, tự xây dựng RPC, đọc mã nguồn và dự án thực chiến**.
 
-如果你正在准备 Java 后端面试，建议先看 [《Java 面试指北》](./java-mian-shi-zhi-bei.md) 和 [《后端面试高频系统设计&场景题》](./back-end-interview-high-frequency-system-design-and-scenario-questions.md)；如果你想补项目和源码能力，可以继续看 [AI 智能面试辅助平台 + RAG 知识库](./interview-guide.md)、[《手写 RPC 框架》](./handwritten-rpc-framework.md) 和 [《Java 必读源码系列》](./source-code-reading.md)。
+Nếu bạn đang chuẩn bị cho **phỏng vấn Java Backend**, nên bắt đầu với [**"Định hướng phỏng vấn Java"**](./java-mian-shi-zhi-bei.md) và [**"Các bài toán System Design & Scenario thường gặp trong phỏng vấn Backend"**](./back-end-interview-high-frequency-system-design-and-scenario-questions.md).
 
-## 适合谁看
+Nếu muốn nâng cao năng lực **làm project và đọc source code**, bạn có thể tiếp tục với [**Nền tảng hỗ trợ phỏng vấn thông minh bằng AI + RAG Knowledge Base**](./interview-guide.md), [**"Tự xây dựng Framework RPC"**](./handwritten-rpc-framework.md) và [**"Series mã nguồn Java bắt buộc phải đọc"**](./source-code-reading.md).
 
-- 正在准备 Java 后端校招、社招、中大厂面试的同学。
-- 想用系统资料替代碎片化搜索，提高复习效率的读者。
-- 需要补齐系统设计、场景题、项目实战和源码阅读能力的后端开发者。
-- 希望在 JavaGuide 开源内容之外获得更完整学习路线和资料支持的读者。
+## Đối tượng phù hợp
 
-## 学习重点
+- Sinh viên hoặc lập trình viên đang chuẩn bị cho **phỏng vấn Java Backend**, bao gồm tuyển dụng sinh viên mới tốt nghiệp (Campus Recruitment), tuyển dụng xã hội (Experienced Hire) và phỏng vấn tại các công ty công nghệ lớn.
+- Người muốn sử dụng tài liệu học tập có hệ thống thay cho việc tìm kiếm thông tin rời rạc, từ đó nâng cao hiệu quả ôn tập.
+- Backend Developer cần bổ sung kiến thức về **System Design, Scenario-based Questions, Project thực chiến và Source Code Reading**.
+- Người muốn có một **lộ trình học tập hoàn chỉnh** và nguồn tài liệu hỗ trợ chuyên sâu hơn bên cạnh các nội dung mã nguồn mở của JavaGuide.
 
-- Java 面试复习要同时覆盖基础知识、项目经验、系统设计、场景题和表达方式。
-- 系统设计与场景题重点看问题拆解、容量估算、核心链路、数据一致性和可用性设计。
-- 手写 RPC 适合把网络通信、序列化、注册中心、动态代理和服务治理串起来。
-- 源码阅读要带着问题看，重点理解框架设计思路和可迁移的工程经验。
-- 实战项目要能跑起来、讲清楚、改得动，才真正能转化为面试竞争力。
+## Trọng tâm học tập
 
-## 建议阅读顺序
+- Ôn tập phỏng vấn Java cần đồng thời bao phủ **kiến thức nền tảng, kinh nghiệm dự án, System Design, Scenario Questions và kỹ năng trình bày**.
+- Với **System Design và Scenario Questions**, cần tập trung vào cách phân rã vấn đề, **Capacity Estimation**, luồng xử lý cốt lõi, **Data Consistency** và thiết kế **High Availability**.
+- Tự xây dựng RPC là cách phù hợp để kết nối các kiến thức về **Network Communication, Serialization, Service Registry, Dynamic Proxy và Service Governance**.
+- Khi đọc source code, nên bắt đầu từ một vấn đề cụ thể; trọng tâm là hiểu **tư duy thiết kế framework** và những kinh nghiệm engineering có thể áp dụng sang các dự án khác.
+- Một dự án thực chiến cần **chạy được, giải thích được và có thể tự thay đổi/mở rộng**. Khi đó kiến thức mới thực sự chuyển hóa thành năng lực cạnh tranh trong phỏng vấn.
 
-1. [《Java 面试指北》](./java-mian-shi-zhi-bei.md)：先建立 Java 后端面试复习主线。
-2. [《后端面试高频系统设计&场景题》](./back-end-interview-high-frequency-system-design-and-scenario-questions.md)：补齐短链、秒杀、海量数据去重、第三方授权登录等高频场景。
-3. [AI 智能面试辅助平台 + RAG 知识库](./interview-guide.md)：用完整实战项目补简历亮点和工程经验。
-4. [《手写 RPC 框架》](./handwritten-rpc-framework.md)：通过从零实现 RPC 框架理解分布式服务调用。
-5. [《Java 必读源码系列》](./source-code-reading.md)：在有基础后阅读 Dubbo、Netty、Spring Boot 等框架源码。
+## Thứ tự học đề xuất
 
-## 核心文章
+1. [**"Định hướng phỏng vấn Java"**](./java-mian-shi-zhi-bei.md): Xây dựng trước một roadmap tổng thể cho việc ôn tập phỏng vấn Java Backend.
+2. [**"Các bài toán System Design & Scenario thường gặp trong phỏng vấn Backend"**](./back-end-interview-high-frequency-system-design-and-scenario-questions.md): Bổ sung các bài toán phổ biến như **Short URL Service, Seckill/Flash Sale System, Deduplication dữ liệu quy mô lớn, Third-party OAuth Login**.
+3. [**Nền tảng hỗ trợ phỏng vấn thông minh bằng AI + RAG Knowledge Base**](./interview-guide.md): Sử dụng một project thực chiến hoàn chỉnh để bổ sung điểm nhấn cho CV và tích lũy kinh nghiệm Engineering.
+4. [**"Tự xây dựng Framework RPC"**](./handwritten-rpc-framework.md): Tự implement một RPC Framework từ đầu để hiểu rõ cơ chế **Distributed Service Invocation**.
+5. [**"Series mã nguồn Java bắt buộc phải đọc"**](./source-code-reading.md): Sau khi đã có nền tảng vững, bắt đầu đọc source code của các framework như **Dubbo, Netty, Spring Boot**.
 
-### 面试资料
+## Các bài viết cốt lõi
 
-- [《Java 面试指北》](./java-mian-shi-zhi-bei.md)：与 JavaGuide 开源版内容互补，面向 Java 后端面试系统复习。
-- [《后端面试高频系统设计&场景题》](./back-end-interview-high-frequency-system-design-and-scenario-questions.md)：覆盖短链系统、秒杀系统、海量数据去重、第三方授权登录等高频问题。
-- [《Java 必读源码系列》](./source-code-reading.md)：整理 Dubbo 2.6.x、Netty 4.x、Spring Boot 2.1 等框架和中间件源码阅读资料。
+### Tài liệu phỏng vấn
 
-### 实战项目
+- [**"Định hướng phỏng vấn Java"**](./java-mian-shi-zhi-bei.md): Bổ sung cho nội dung mã nguồn mở của JavaGuide, hướng đến việc ôn tập có hệ thống cho phỏng vấn Java Backend.
+- [**"Các bài toán System Design & Scenario thường gặp trong phỏng vấn Backend"**](./back-end-interview-high-frequency-system-design-and-scenario-questions.md): Bao phủ các bài toán phổ biến như **Short URL System, Seckill System, Deduplication dữ liệu quy mô lớn, Third-party OAuth Login**.
+- [**"Series mã nguồn Java bắt buộc phải đọc"**](./source-code-reading.md): Tổng hợp tài liệu đọc source code của các framework và middleware như **Dubbo 2.6.x, Netty 4.x và Spring Boot 2.1**.
 
-- [AI 智能面试辅助平台 + RAG 知识库](./interview-guide.md)：基于 Spring Boot 4.0、Java 21、Spring AI 2.0 开发，适合作为学习和简历项目。
-- [《手写 RPC 框架》](./handwritten-rpc-framework.md)：从零开始基于 Netty、Kryo、ZooKeeper 实现一个简易 RPC 框架。
+### Dự án thực chiến
 
-## 高频问题
+- [**Nền tảng hỗ trợ phỏng vấn thông minh bằng AI + RAG Knowledge Base**](./interview-guide.md): Được xây dựng dựa trên **Spring Boot 4.0, Java 21 và Spring AI 2.0**, phù hợp làm project học tập cũng như project đưa vào CV.
+- [**"Tự xây dựng Framework RPC"**](./handwritten-rpc-framework.md): Từ con số 0, sử dụng **Netty, Kryo và ZooKeeper** để implement một RPC Framework đơn giản.
 
-- Java 后端面试复习应该先看开源内容，还是先看星球专栏？
-- 系统设计题应该怎么拆解，如何避免只背固定答案？
-- 手写 RPC 框架适合什么基础的读者学习？
-- 源码阅读应该从 Dubbo、Netty、Spring Boot 哪个开始？
-- 实战项目写进简历时，如何讲清楚技术难点和个人贡献？
-- 星球内容如何和 JavaGuide、项目实战、面试题一起使用？
+## Các câu hỏi thường gặp
 
-## 相关专题
+- Khi ôn tập phỏng vấn Java Backend, nên học nội dung mã nguồn mở trước hay bắt đầu từ các chuyên mục trên Knowledge Planet?
+- Khi giải bài **System Design**, nên phân rã vấn đề như thế nào để tránh việc chỉ học thuộc các đáp án mẫu?
+- **Tự xây dựng RPC Framework** phù hợp với người có nền tảng kiến thức ở mức nào?
+- Khi đọc source code, nên bắt đầu từ **Dubbo, Netty hay Spring Boot**?
+- Khi đưa project thực chiến vào CV, làm thế nào để trình bày rõ **Technical Challenges** và **đóng góp cá nhân**?
+- Nên kết hợp nội dung trên Knowledge Planet với **JavaGuide, project thực chiến và bộ câu hỏi phỏng vấn** như thế nào?
 
-- [Java 知识体系](../java/)
-- [面试准备](../interview-preparation/)
-- [系统设计](../system-design/)
-- [分布式系统知识体系](../distributed-system/)
-- [Java 开源项目精选](../open-source-project/)
-- [高质量技术文章](../high-quality-technical-articles/)
+## Chủ đề liên quan
 
-<!-- @include: @planet2.snippet.md -->
+- [**Hệ thống kiến thức Java**](../java/)
+- [**Chuẩn bị phỏng vấn**](../interview-preparation/)
+- [**System Design**](../system-design/)
+- [**Hệ thống kiến thức Distributed System**](../distributed-system/)
+- [**Tuyển chọn các dự án Java Open Source**](../open-source-project/)
+- [**Các bài viết kỹ thuật chất lượng cao**](../high-quality-technical-articles/)
