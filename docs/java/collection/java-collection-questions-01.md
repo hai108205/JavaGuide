@@ -1,101 +1,101 @@
 ---
-title: Java集合常见面试题总结(上)
-description: Java集合框架面试题总结：深入解析Collection/List/Set/Queue接口，对比ArrayList/LinkedList/HashMap等常用集合类，掌握集合底层数据结构与使用场景。
+title: Tổng hợp câu hỏi phỏng vấn Java Collection (Phần 1)
+description: "Tổng hợp câu hỏi phỏng vấn Java Collection Framework: phân tích chuyên sâu các interface Collection/List/Set/Queue, so sánh các lớp collection phổ biến như ArrayList/LinkedList/HashMap, nắm vững cấu trúc dữ liệu nền tảng và tình huống sử dụng."
 category: Java
 tag:
-  - Java集合
+  - Java Collection
 head:
   - - meta
     - name: keywords
-      content: Java集合,Collection,List,Set,Queue,ArrayList,LinkedList,HashMap,集合框架,Java面试题
+      content: Java Collection,Collection,List,Set,Queue,ArrayList,LinkedList,HashMap,Collection Framework,câu hỏi phỏng vấn Java
 ---
 
 <!-- markdownlint-disable MD024 -->
 
-## 集合概述
+## Tổng quan về Collection
 
-### Java 集合概览
+### Tổng quan Java Collection
 
-Java 集合，也叫作容器，主要是由两大接口派生而来：一个是 `Collection` 接口，主要用于存放单一元素；另一个是 `Map` 接口，主要用于存放键值对。对于 `Collection` 接口，下面又有三个主要的子接口：`List`、`Set`、 `Queue`。
+Java Collection, còn được gọi là container (vùng chứa), chủ yếu được dẫn xuất từ hai interface chính: một là interface `Collection`, chủ yếu dùng để lưu trữ các phần tử đơn lẻ; hai là interface `Map`, chủ yếu dùng để lưu trữ các cặp key-value. Đối với interface `Collection`, bên dưới có ba interface con chính: `List`, `Set`, `Queue`.
 
-Java 集合框架如下图所示：
+Java Collection Framework được minh họa như hình dưới đây:
 
-![Java 集合框架概览](https://oss.javaguide.cn/github/javaguide/java/collection/java-collection-hierarchy.png)
+![Tổng quan Java Collection Framework](https://oss.javaguide.cn/github/javaguide/java/collection/java-collection-hierarchy.png)
 
-注：图中只列举了主要的继承派生关系，并没有列举所有关系。比方省略了 `AbstractList`, `NavigableSet` 等抽象类以及其他的一些辅助类，如想深入了解，可自行查看源码。
+Lưu ý: Hình chỉ liệt kê các mối quan hệ kế thừa và dẫn xuất chính, không liệt kê tất cả các mối quan hệ. Ví dụ đã bỏ qua các abstract class như `AbstractList`, `NavigableSet` và một số auxiliary class khác. Nếu muốn tìm hiểu sâu hơn, bạn có thể tự xem source code.
 
-### ⭐️ 说说 List, Set, Queue, Map 四者的区别？
+### ⭐️ Phân biệt List, Set, Queue, Map?
 
-- `List`（对付顺序的好帮手）: 存储的元素是有序的、可重复的。
-- `Set`（注重独一无二的性质）: 存储的元素不可重复的。
-- `Queue`（实现排队功能的叫号机）: 按特定的排队规则来确定先后顺序，存储的元素是有序的、可重复的。
-- `Map`（用 key 来搜索的专家）: 使用键值对（key-value）存储，类似于数学上的函数 y=f(x)，"x" 代表 key，"y" 代表 value，key 无序、不可重复，value 无序、可重复，每个键最多映射到一个值。注意，这里的“无序”指的是 `HashMap` 这类实现——键值对之间没有显式的关联顺序。`LinkedHashMap` 和 `TreeMap` 等实现则是有序的，它们通过额外的数据结构（双向链表或红黑树）来维护键值对的顺序。
+- `List` (trợ thủ xử lý thứ tự): Các phần tử được lưu trữ có thứ tự (ordered), có thể trùng lặp (duplicate).
+- `Set` (chú trọng tính duy nhất): Các phần tử được lưu trữ không thể trùng lặp.
+- `Queue` (máy gọi số xếp hàng): Xác định thứ tự trước sau theo quy tắc xếp hàng cụ thể, các phần tử được lưu trữ có thứ tự, có thể trùng lặp.
+- `Map` (chuyên gia tìm kiếm bằng key): Sử dụng cặp key-value để lưu trữ, tương tự như hàm toán học y=f(x), "x" đại diện cho key, "y" đại diện cho value. Key không có thứ tự (unordered), không thể trùng lặp; value không có thứ tự (unordered), có thể trùng lặp. Mỗi key ánh xạ tối đa đến một value. Lưu ý: "không có thứ tự" ở đây đề cập đến các implementation như `HashMap` — không có thứ tự liên kết rõ ràng giữa các cặp key-value. Các implementation như `LinkedHashMap` và `TreeMap` thì có thứ tự, chúng duy trì thứ tự của các cặp key-value thông qua cấu trúc dữ liệu bổ sung (doubly linked list hoặc red-black tree).
 
-### 集合框架底层数据结构总结
+### Tổng kết cấu trúc dữ liệu nền tảng của Collection Framework
 
-先来看一下 `Collection` 接口下面的集合。
+Trước tiên hãy xem các collection bên dưới interface `Collection`.
 
 #### List
 
-- `ArrayList`：`Object[]` 数组。详细可以查看：[ArrayList 源码分析](./arraylist-source-code.md)。
-- `Vector`：`Object[]` 数组。
-- `LinkedList`：双向链表（JDK1.6 之前为循环链表，JDK1.7 取消了循环）。详细可以查看：[LinkedList 源码分析](./linkedlist-source-code.md)。
+- `ArrayList`: Mảng `Object[]`. Chi tiết có thể xem: [Phân tích source code ArrayList](./arraylist-source-code.md).
+- `Vector`: Mảng `Object[]`.
+- `LinkedList`: Doubly linked list (trước JDK 1.6 là circular linked list, JDK 1.7 đã bỏ circular). Chi tiết có thể xem: [Phân tích source code LinkedList](./linkedlist-source-code.md).
 
 #### Set
 
-- `HashSet`（无序，唯一）: 基于 `HashMap` 实现的，底层采用 `HashMap` 来保存元素。
-- `LinkedHashSet`: `LinkedHashSet` 是 `HashSet` 的子类，并且其内部是通过 `LinkedHashMap` 来实现的。
-- `TreeSet`（有序，唯一）: 红黑树（自平衡的排序二叉树）。
+- `HashSet` (không có thứ tự, duy nhất): Dựa trên `HashMap`, sử dụng `HashMap` ở tầng dưới để lưu trữ phần tử.
+- `LinkedHashSet`: `LinkedHashSet` là lớp con của `HashSet`, và bên trong nó được triển khai thông qua `LinkedHashMap`.
+- `TreeSet` (có thứ tự, duy nhất): Red-black tree (cây nhị phân tìm kiếm tự cân bằng).
 
 #### Queue
 
-- `PriorityQueue`: `Object[]` 数组来实现小顶堆。详细可以查看：[PriorityQueue 源码分析](./priorityqueue-source-code.md)。
-- `DelayQueue`:`PriorityQueue`。详细可以查看：[DelayQueue 源码分析](./delayqueue-source-code.md)。
-- `ArrayDeque`: 可扩容动态双向数组。
+- `PriorityQueue`: Mảng `Object[]` triển khai min-heap. Chi tiết có thể xem: [Phân tích source code PriorityQueue](./priorityqueue-source-code.md).
+- `DelayQueue`: `PriorityQueue`. Chi tiết có thể xem: [Phân tích source code DelayQueue](./delayqueue-source-code.md).
+- `ArrayDeque`: Mảng hai chiều động có thể mở rộng.
 
-再来看看 `Map` 接口下面的集合。
+Tiếp theo hãy xem các collection bên dưới interface `Map`.
 
 #### Map
 
-- `HashMap`：JDK1.8 之前 `HashMap` 由数组+链表组成的，数组是 `HashMap` 的主体，链表则是主要为了解决哈希冲突而存在的（“拉链法”解决冲突）。JDK1.8 以后在解决哈希冲突时有了较大的变化，当链表长度大于阈值（默认为 8）（将链表转换成红黑树前会判断，如果当前数组的长度小于 64，那么会选择先进行数组扩容，而不是转换为红黑树）时，将链表转化为红黑树，以减少搜索时间。详细可以查看：[HashMap 源码分析](./hashmap-source-code.md)，基础概念可以先看 [哈希表面试题总结](../../cs-basics/data-structure/hash-table.md)。
-- `LinkedHashMap`：`LinkedHashMap` 继承自 `HashMap`，所以它的底层仍然是基于拉链式散列结构即由数组和链表或红黑树组成。另外，`LinkedHashMap` 在上面结构的基础上，增加了一条双向链表，使得上面的结构可以保持键值对的插入顺序。同时通过对链表进行相应的操作，实现了访问顺序相关逻辑。详细可以查看：[LinkedHashMap 源码分析](./linkedhashmap-source-code.md)，LRU 手写题可以看 [LRU 缓存面试题总结](../../cs-basics/data-structure/lru-cache.md)。
-- `Hashtable`：数组+链表组成的，数组是 `Hashtable` 的主体，链表则是主要为了解决哈希冲突而存在的。
-- `TreeMap`：红黑树（自平衡的排序二叉树）。
+- `HashMap`: Trước JDK 1.8, `HashMap` được tạo thành từ mảng + linked list, mảng là phần chính của `HashMap`, linked list chủ yếu tồn tại để giải quyết hash collision (phương pháp "separate chaining" để giải quyết collision). Từ JDK 1.8 trở đi, cách xử lý hash collision có thay đổi lớn: khi độ dài linked list vượt quá ngưỡng (mặc định là 8) (trước khi chuyển linked list thành red-black tree sẽ kiểm tra, nếu độ dài mảng hiện tại nhỏ hơn 64, thì sẽ chọn mở rộng mảng trước thay vì chuyển thành red-black tree), linked list sẽ được chuyển thành red-black tree để giảm thời gian tìm kiếm. Chi tiết có thể xem: [Phân tích source code HashMap](./hashmap-source-code.md), các khái niệm cơ bản có thể xem trước [Tổng hợp câu hỏi phỏng vấn Hash Table](../../cs-basics/data-structure/hash-table.md).
+- `LinkedHashMap`: `LinkedHashMap` kế thừa từ `HashMap`, vì vậy tầng dưới của nó vẫn dựa trên cấu trúc separate chaining, tức là được tạo thành từ mảng và linked list hoặc red-black tree. Ngoài ra, `LinkedHashMap` bổ sung thêm một doubly linked list trên nền cấu trúc trên, cho phép duy trì thứ tự chèn (insertion order) của các cặp key-value. Đồng thời thông qua các thao tác tương ứng trên linked list, nó triển khai logic liên quan đến thứ tự truy cập (access order). Chi tiết có thể xem: [Phân tích source code LinkedHashMap](./linkedhashmap-source-code.md), bài tập viết tay LRU có thể xem [Tổng hợp câu hỏi phỏng vấn LRU Cache](../../cs-basics/data-structure/lru-cache.md).
+- `Hashtable`: Được tạo thành từ mảng + linked list, mảng là phần chính của `Hashtable`, linked list chủ yếu tồn tại để giải quyết hash collision.
+- `TreeMap`: Red-black tree (cây nhị phân tìm kiếm tự cân bằng).
 
-### 如何选用集合？
+### Làm thế nào để chọn Collection?
 
-我们主要根据集合的特点来选择合适的集合。比如：
+Chúng ta chủ yếu dựa vào đặc điểm của collection để chọn collection phù hợp. Ví dụ:
 
-- 我们需要根据键值获取到元素值时就选用 `Map` 接口下的集合，需要排序时选择 `TreeMap`,不需要排序时就选择 `HashMap`,需要保证线程安全就选用 `ConcurrentHashMap`。
-- 我们只需要存放元素值时，就选择实现 `Collection` 接口的集合，需要保证元素唯一时选择实现 `Set` 接口的集合比如 `TreeSet` 或 `HashSet`，不需要就选择实现 `List` 接口的比如 `ArrayList` 或 `LinkedList`，然后再根据实现这些接口的集合的特点来选用。
+- Khi cần lấy giá trị phần tử dựa trên key, chọn collection thuộc interface `Map`. Khi cần sắp xếp thì chọn `TreeMap`, không cần sắp xếp thì chọn `HashMap`, cần đảm bảo thread-safe thì chọn `ConcurrentHashMap`.
+- Khi chỉ cần lưu trữ giá trị phần tử, chọn collection triển khai interface `Collection`. Khi cần đảm bảo phần tử duy nhất thì chọn collection triển khai interface `Set` như `TreeSet` hoặc `HashSet`, không cần thì chọn collection triển khai `List` như `ArrayList` hoặc `LinkedList`, sau đó dựa vào đặc điểm của các collection triển khai các interface này để lựa chọn.
 
-### 为什么要使用集合？
+### Tại sao nên sử dụng Collection?
 
-当我们需要存储一组类型相同的数据时，数组是最常用且最基本的容器之一。但是，使用数组存储对象存在一些不足之处，因为在实际开发中，存储的数据类型多种多样且数量不确定。这时，Java 集合就派上用场了。与数组相比，Java 集合提供了更灵活、更有效的方法来存储多个数据对象。Java 集合框架中的各种集合类和接口可以存储不同类型和数量的对象，同时还具有多样化的操作方式。相较于数组，Java 集合的优势在于它们的大小可变、支持泛型、具有内建算法等。总的来说，Java 集合提高了数据的存储和处理灵活性，可以更好地适应现代软件开发中多样化的数据需求，并支持高质量的代码编写。
+Khi cần lưu trữ một nhóm dữ liệu cùng kiểu, mảng (array) là một trong những container cơ bản và phổ biến nhất. Tuy nhiên, việc sử dụng mảng để lưu trữ đối tượng tồn tại một số hạn chế, vì trong thực tế phát triển, kiểu dữ liệu được lưu trữ rất đa dạng và số lượng không xác định. Lúc này, Java Collection phát huy tác dụng. So với mảng, Java Collection cung cấp phương pháp linh hoạt và hiệu quả hơn để lưu trữ nhiều đối tượng dữ liệu. Các lớp và interface collection khác nhau trong Java Collection Framework có thể lưu trữ các đối tượng với kiểu và số lượng khác nhau, đồng thời còn có các phương thức thao tác đa dạng. So với mảng, ưu điểm của Java Collection nằm ở chỗ kích thước có thể thay đổi, hỗ trợ generics, có sẵn các thuật toán tích hợp, v.v. Nhìn chung, Java Collection nâng cao tính linh hoạt trong lưu trữ và xử lý dữ liệu, có thể thích ứng tốt hơn với nhu cầu dữ liệu đa dạng trong phát triển phần mềm hiện đại, đồng thời hỗ trợ viết code chất lượng cao.
 
 ## List
 
-### ⭐️ ArrayList 和 Array（数组）的区别？
+### ⭐️ Sự khác biệt giữa ArrayList và Array (mảng)?
 
-`ArrayList` 内部基于动态数组实现，比 `Array`（静态数组） 使用起来更加灵活：
+`ArrayList` được triển khai nội bộ dựa trên mảng động (dynamic array), linh hoạt hơn so với `Array` (mảng tĩnh):
 
-- `ArrayList` 会根据实际存储的元素动态扩容，也可以通过 `trimToSize()` 主动缩小底层数组，而 `Array` 被创建之后就不能改变它的长度了。
-- `ArrayList` 允许你使用泛型来确保类型安全，`Array` 则不可以。
-- `ArrayList` 中只能存储对象。对于基本类型数据，需要使用其对应的包装类（如 Integer、Double 等）。`Array` 可以直接存储基本类型数据，也可以存储对象。
-- `ArrayList` 支持插入、删除、遍历等常见操作，并且提供了丰富的 API 操作方法，比如 `add()`、`remove()` 等。`Array` 只是一个固定长度的数组，只能按照下标访问其中的元素，不具备动态添加、删除元素的能力。
-- `ArrayList` 创建时不需要指定大小，而 `Array` 创建时必须指定大小。
+- `ArrayList` sẽ tự động mở rộng dung lượng (dynamic expansion) theo các phần tử thực tế được lưu trữ, cũng có thể chủ động thu nhỏ mảng nền thông qua `trimToSize()`, trong khi `Array` sau khi được tạo thì không thể thay đổi độ dài.
+- `ArrayList` cho phép bạn sử dụng generics để đảm bảo type safety, `Array` thì không.
+- `ArrayList` chỉ có thể lưu trữ đối tượng. Đối với dữ liệu kiểu primitive, cần sử dụng wrapper class tương ứng (như Integer, Double, v.v.). `Array` có thể lưu trữ trực tiếp dữ liệu kiểu primitive, cũng có thể lưu trữ đối tượng.
+- `ArrayList` hỗ trợ các thao tác phổ biến như chèn, xóa, duyệt, và cung cấp các phương thức API phong phú, ví dụ như `add()`, `remove()`, v.v. `Array` chỉ là một mảng có độ dài cố định, chỉ có thể truy cập phần tử theo chỉ mục (index), không có khả năng động thêm, xóa phần tử.
+- `ArrayList` khi tạo không cần chỉ định kích thước, trong khi `Array` khi tạo phải chỉ định kích thước.
 
-下面是二者使用的简单对比：
+Dưới đây là so sánh đơn giản về cách sử dụng cả hai:
 
-`Array`：
+`Array`:
 
 ```java
- // 初始化一个 String 类型的数组
+ // Khởi tạo một mảng kiểu String
  String[] stringArr = new String[]{"hello", "world", "!"};
- // 修改数组元素的值
+ // Sửa giá trị phần tử mảng
  stringArr[0] = "goodbye";
  System.out.println(Arrays.toString(stringArr));// [goodbye, world, !]
- // 删除数组中的元素，需要手动移动后面的元素
+ // Xóa phần tử trong mảng, cần thủ công di chuyển các phần tử phía sau
  for (int i = 0; i < stringArr.length - 1; i++) {
      stringArr[i] = stringArr[i + 1];
  }
@@ -106,36 +106,36 @@ Java 集合框架如下图所示：
 `ArrayList`：
 
 ```java
-// 初始化一个 String 类型的 ArrayList
+// Khởi tạo một ArrayList kiểu String
  ArrayList<String> stringList = new ArrayList<>(Arrays.asList("hello", "world", "!"));
-// 添加元素到 ArrayList 中
+// Thêm phần tử vào ArrayList
  stringList.add("goodbye");
  System.out.println(stringList);// [hello, world, !, goodbye]
- // 修改 ArrayList 中的元素
+ // Sửa phần tử trong ArrayList
  stringList.set(0, "hi");
  System.out.println(stringList);// [hi, world, !, goodbye]
- // 删除 ArrayList 中的元素
+ // Xóa phần tử trong ArrayList
  stringList.remove(0);
  System.out.println(stringList); // [world, !, goodbye]
 ```
 
-### ArrayList 和 Vector 的区别?（了解即可）
+### Sự khác biệt giữa ArrayList và Vector? (chỉ cần biết)
 
-- `ArrayList` 是 `List` 的主要实现类，底层使用 `Object[]` 存储，适用于频繁的查找工作，线程不安全。
-- `Vector` 是 `List` 的古老实现类，底层使用 `Object[]` 存储，线程安全。
+- `ArrayList` là lớp triển khai chính của `List`, tầng dưới sử dụng `Object[]` để lưu trữ, phù hợp cho công việc tìm kiếm thường xuyên, không thread-safe.
+- `Vector` là lớp triển khai cũ của `List`, tầng dưới sử dụng `Object[]` để lưu trữ, thread-safe.
 
-### Vector 和 Stack 的区别?（了解即可）
+### Sự khác biệt giữa Vector và Stack? (chỉ cần biết)
 
-- `Vector` 和 `Stack` 两者都是线程安全的，都是使用 `synchronized` 关键字进行同步处理。
-- `Stack` 继承自 `Vector`，是一个后进先出的栈，而 `Vector` 是一个列表。
+- `Vector` và `Stack` đều thread-safe, đều sử dụng từ khóa `synchronized` để đồng bộ hóa.
+- `Stack` kế thừa từ `Vector`, là một stack (ngăn xếp) theo nguyên tắc LIFO (Last-In-First-Out), trong khi `Vector` là một list.
 
-随着 Java 并发编程的发展，`Vector` 和 `Stack` 已经被淘汰，推荐使用并发集合类（例如 `ConcurrentHashMap`、`CopyOnWriteArrayList` 等）或者手动实现线程安全的方法来提供安全的多线程操作支持。
+Cùng với sự phát triển của lập trình đa luồng trong Java, `Vector` và `Stack` đã bị loại bỏ, khuyến nghị sử dụng các concurrent collection class (ví dụ `ConcurrentHashMap`, `CopyOnWriteArrayList`, v.v.) hoặc thủ công triển khai các phương thức thread-safe để cung cấp hỗ trợ thao tác đa luồng an toàn.
 
-### ArrayList 可以添加 null 值吗？
+### ArrayList có thể thêm giá trị null không?
 
-`ArrayList` 中可以存储任何类型的对象，包括 `null` 值。不过，不建议向 `ArrayList` 中添加 `null` 值， `null` 值无意义，会让代码难以维护比如忘记做判空处理就会导致空指针异常。
+`ArrayList` có thể lưu trữ bất kỳ kiểu đối tượng nào, bao gồm cả giá trị `null`. Tuy nhiên, không khuyến khích thêm giá trị `null` vào `ArrayList`, giá trị `null` không có ý nghĩa, sẽ khiến code khó bảo trì, ví dụ quên xử lý null check sẽ dẫn đến NullPointerException.
 
-示例代码：
+Code ví dụ:
 
 ```java
 ArrayList<String> listOfStrings = new ArrayList<>();
@@ -144,96 +144,96 @@ listOfStrings.add("java");
 System.out.println(listOfStrings);
 ```
 
-输出：
+Output:
 
 ```plain
 [null, java]
 ```
 
-### ⭐️ ArrayList 插入和删除元素的时间复杂度？
+### ⭐️ Độ phức tạp thời gian khi chèn và xóa phần tử của ArrayList?
 
-对于插入：
+Đối với chèn (insert):
 
-- 头部插入：由于需要将所有元素都依次向后移动一个位置，因此时间复杂度是 O(n)。
-- 尾部插入：当 `ArrayList` 的容量未达到极限时，往列表末尾插入元素的时间复杂度是 O(1)，因为它只需要在数组末尾添加一个元素即可；当容量已达到极限并且需要扩容时，则需要执行一次 O(n) 的操作将原数组复制到新的更大的数组中，然后再执行 O(1) 的操作添加元素。
-- 指定位置插入：需要将目标位置之后的所有元素都向后移动一个位置，然后再把新元素放入指定位置。这个过程需要移动平均 n/2 个元素，因此时间复杂度为 O(n)。
+- Chèn vào đầu (head): Do cần di chuyển tất cả các phần tử lùi về sau một vị trí, nên độ phức tạp thời gian là O(n).
+- Chèn vào cuối (tail): Khi dung lượng của `ArrayList` chưa đạt đến giới hạn, chèn phần tử vào cuối list có độ phức tạp thời gian là O(1), vì chỉ cần thêm một phần tử vào cuối mảng; khi dung lượng đã đạt giới hạn và cần mở rộng, cần thực hiện một thao tác O(n) để sao chép mảng gốc sang mảng mới lớn hơn, sau đó thực hiện thao tác O(1) để thêm phần tử.
+- Chèn vào vị trí chỉ định: Cần di chuyển tất cả các phần tử sau vị trí đích lùi về sau một vị trí, sau đó đặt phần tử mới vào vị trí chỉ định. Quá trình này cần di chuyển trung bình n/2 phần tử, do đó độ phức tạp thời gian là O(n).
 
-对于删除：
+Đối với xóa (delete):
 
-- 头部删除：由于需要将所有元素依次向前移动一个位置，因此时间复杂度是 O(n)。
-- 尾部删除：当删除的元素位于列表末尾时，时间复杂度为 O(1)。
-- 指定位置删除：需要将目标元素之后的所有元素向前移动一个位置以填补被删除的空白位置，因此需要移动平均 n/2 个元素，时间复杂度为 O(n)。
+- Xóa ở đầu (head): Do cần di chuyển tất cả các phần tử tiến lên trước một vị trí, nên độ phức tạp thời gian là O(n).
+- Xóa ở cuối (tail): Khi phần tử bị xóa nằm ở cuối list, độ phức tạp thời gian là O(1).
+- Xóa ở vị trí chỉ định: Cần di chuyển tất cả các phần tử sau phần tử đích tiến lên trước một vị trí để lấp đầy vị trí trống bị xóa, do đó cần di chuyển trung bình n/2 phần tử, độ phức tạp thời gian là O(n).
 
-这里简单列举一个例子：
+Dưới đây là một ví dụ minh họa đơn giản:
 
 ```java
-// ArrayList的底层数组大小为10，此时存储了7个元素
+// Mảng nền của ArrayList có kích thước 10, hiện đang lưu trữ 7 phần tử
 +---+---+---+---+---+---+---+---+---+---+
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |   |   |   |
 +---+---+---+---+---+---+---+---+---+---+
   0   1   2   3   4   5   6   7   8   9
-// 在索引为1的位置插入一个元素8，该元素后面的所有元素都要向右移动一位
+// Chèn một phần tử 8 vào vị trí index 1, tất cả các phần tử phía sau phần tử đó đều phải dịch sang phải một vị trí
 +---+---+---+---+---+---+---+---+---+---+
 | 1 | 8 | 2 | 3 | 4 | 5 | 6 | 7 |   |   |
 +---+---+---+---+---+---+---+---+---+---+
   0   1   2   3   4   5   6   7   8   9
-// 删除索引为1的位置的元素，该元素后面的所有元素都要向左移动一位
+// Xóa phần tử tại vị trí index 1, tất cả các phần tử phía sau phần tử đó đều phải dịch sang trái một vị trí
 +---+---+---+---+---+---+---+---+---+---+
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |   |   |   |
 +---+---+---+---+---+---+---+---+---+---+
   0   1   2   3   4   5   6   7   8   9
 ```
 
-### ⭐️ LinkedList 插入和删除元素的时间复杂度？
+### ⭐️ Độ phức tạp thời gian khi chèn và xóa phần tử của LinkedList?
 
-- 头部插入/删除：只需要修改头结点的指针即可完成插入/删除操作，因此时间复杂度为 O(1)。
-- 尾部插入/删除：只需要修改尾结点的指针即可完成插入/删除操作，因此时间复杂度为 O(1)。
-- 指定位置插入/删除：需要先移动到指定位置，再修改指定节点的指针完成插入/删除，不过由于有头尾指针，可以从较近的指针出发，因此需要遍历平均 n/4 个元素，时间复杂度为 O(n)。
+- Chèn/xóa ở đầu (head): Chỉ cần sửa con trỏ của nút đầu (head node) là có thể hoàn thành thao tác chèn/xóa, do đó độ phức tạp thời gian là O(1).
+- Chèn/xóa ở cuối (tail): Chỉ cần sửa con trỏ của nút cuối (tail node) là có thể hoàn thành thao tác chèn/xóa, do đó độ phức tạp thời gian là O(1).
+- Chèn/xóa ở vị trí chỉ định: Cần di chuyển đến vị trí chỉ định trước, sau đó sửa con trỏ của nút được chỉ định để hoàn thành chèn/xóa. Tuy nhiên, do có con trỏ đầu và cuối, có thể xuất phát từ con trỏ gần hơn, do đó cần duyệt trung bình n/4 phần tử, độ phức tạp thời gian là O(n).
 
-这里简单列举一个例子：假如我们要删除节点 9 的话，需要先遍历链表找到该节点。然后，再执行相应节点指针指向的更改，具体的源码可以参考：[LinkedList 源码分析](https://javaguide.cn/java/collection/linkedlist-source-code.html)。
+Dưới đây là một ví dụ minh họa đơn giản: Giả sử chúng ta muốn xóa nút 9, cần duyệt linked list trước để tìm nút đó. Sau đó, thực hiện thay đổi con trỏ của nút tương ứng. Source code cụ thể có thể tham khảo: [Phân tích source code LinkedList](https://javaguide.cn/java/collection/linkedlist-source-code.html).
 
-![unlink 方法逻辑](https://oss.javaguide.cn/github/javaguide/java/collection/linkedlist-unlink.jpg)
+![Logic phương thức unlink](https://oss.javaguide.cn/github/javaguide/java/collection/linkedlist-unlink.jpg)
 
-### LinkedList 为什么不能实现 RandomAccess 接口？
+### Tại sao LinkedList không thể triển khai interface RandomAccess?
 
-`RandomAccess` 是一个标记接口，用来表明实现该接口的类支持随机访问（即可以通过索引快速访问元素）。由于 `LinkedList` 底层数据结构是链表，内存地址不连续，只能通过指针来定位，不支持随机快速访问，所以不能实现 `RandomAccess` 接口。
+`RandomAccess` là một marker interface, dùng để biểu thị rằng lớp triển khai interface này hỗ trợ truy cập ngẫu nhiên (random access) (tức có thể truy cập nhanh phần tử thông qua index). Do cấu trúc dữ liệu nền tảng của `LinkedList` là linked list, địa chỉ bộ nhớ không liên tục, chỉ có thể định vị thông qua con trỏ, không hỗ trợ truy cập ngẫu nhiên nhanh, vì vậy không thể triển khai interface `RandomAccess`.
 
-### ⭐️ ArrayList 与 LinkedList 区别？
+### ⭐️ Sự khác biệt giữa ArrayList và LinkedList?
 
-- **是否保证线程安全：** `ArrayList` 和 `LinkedList` 都是不同步的，也就是不保证线程安全；
-- **底层数据结构：** `ArrayList` 底层使用的是 **`Object` 数组**；`LinkedList` 底层使用的是 **双向链表** 数据结构（JDK1.6 之前为循环链表，JDK1.7 取消了循环。注意双向链表和双向循环链表的区别，下面有介绍到！）
-- **插入和删除是否受元素位置的影响：**
-  - `ArrayList` 采用数组存储，所以插入和删除元素的时间复杂度受元素位置的影响。 比如：执行 `add(E e)` 方法的时候， `ArrayList` 会默认在将指定的元素追加到此列表的末尾，这种情况时间复杂度就是 O(1)。但是如果要在指定位置 i 插入和删除元素的话（`add(int index, E element)`），时间复杂度就为 O(n)。因为在进行上述操作的时候集合中第 i 和第 i 个元素之后的(n-i)个元素都要执行向后位/向前移一位的操作。
-  - `LinkedList` 采用链表存储，所以在头尾插入或者删除元素不受元素位置的影响（`add(E e)`、`addFirst(E e)`、`addLast(E e)`、`removeFirst()`、 `removeLast()`），时间复杂度为 O(1)，如果是要在指定位置 `i` 插入和删除元素的话（`add(int index, E element)`，`remove(Object o)`,`remove(int index)`）， 时间复杂度为 O(n)，因为需要先移动到指定位置再插入和删除。
-- **是否支持快速随机访问：** `LinkedList` 不支持高效的随机元素访问，而 `ArrayList`（实现了 `RandomAccess` 接口） 支持。快速随机访问就是通过元素的序号快速获取元素对象(对应于 `get(int index)` 方法)。
-- **内存空间占用：** `ArrayList` 的空间浪费主要体现在在 list 列表的结尾会预留一定的容量空间，而 LinkedList 的空间花费则体现在它的每一个元素都需要消耗比 ArrayList 更多的空间（因为要存放直接后继和直接前驱以及数据）。
+- **Có đảm bảo thread-safe không:** `ArrayList` và `LinkedList` đều không được đồng bộ hóa, tức là không đảm bảo thread-safe;
+- **Cấu trúc dữ liệu nền tảng:** `ArrayList` tầng dưới sử dụng **mảng `Object`**; `LinkedList` tầng dưới sử dụng cấu trúc dữ liệu **doubly linked list** (trước JDK 1.6 là circular linked list, JDK 1.7 đã bỏ circular. Lưu ý sự khác biệt giữa doubly linked list và doubly circular linked list, có giới thiệu bên dưới!)
+- **Chèn và xóa có bị ảnh hưởng bởi vị trí phần tử không:**
+  - `ArrayList` sử dụng mảng để lưu trữ, nên độ phức tạp thời gian của chèn và xóa phần tử bị ảnh hưởng bởi vị trí phần tử. Ví dụ: khi thực thi phương thức `add(E e)`, `ArrayList` sẽ mặc định thêm phần tử được chỉ định vào cuối list, trường hợp này độ phức tạp thời gian là O(1). Nhưng nếu muốn chèn và xóa phần tử tại vị trí i được chỉ định (`add(int index, E element)`), độ phức tạp thời gian là O(n). Vì khi thực hiện thao tác trên, phần tử thứ i và (n-i) phần tử sau phần tử thứ i trong collection đều phải thực hiện thao tác dịch lùi về sau / tiến lên trước một vị trí.
+  - `LinkedList` sử dụng linked list để lưu trữ, nên chèn hoặc xóa ở đầu và cuối không bị ảnh hưởng bởi vị trí phần tử (`add(E e)`, `addFirst(E e)`, `addLast(E e)`, `removeFirst()`, `removeLast()`), độ phức tạp thời gian là O(1). Nếu muốn chèn và xóa phần tử tại vị trí `i` được chỉ định (`add(int index, E element)`, `remove(Object o)`, `remove(int index)`), độ phức tạp thời gian là O(n), vì cần di chuyển đến vị trí chỉ định trước rồi mới chèn và xóa.
+- **Có hỗ trợ truy cập ngẫu nhiên nhanh không:** `LinkedList` không hỗ trợ truy cập phần tử ngẫu nhiên hiệu quả, trong khi `ArrayList` (triển khai interface `RandomAccess`) thì có hỗ trợ. Truy cập ngẫu nhiên nhanh là lấy nhanh đối tượng phần tử thông qua số thứ tự của phần tử (tương ứng với phương thức `get(int index)`).
+- **Chiếm dụng không gian bộ nhớ:** Lãng phí không gian của `ArrayList` chủ yếu thể hiện ở chỗ cuối list sẽ dự trữ một lượng không gian dung lượng nhất định, trong khi chi phí không gian của `LinkedList` thể hiện ở chỗ mỗi phần tử của nó đều cần tiêu tốn nhiều không gian hơn `ArrayList` (vì phải lưu trữ con trỏ kế tiếp (successor) và con trỏ trước đó (predecessor) cùng với dữ liệu).
 
-我们在项目中一般是不会使用到 `LinkedList` 的，需要用到 `LinkedList` 的场景几乎都可以使用 `ArrayList` 来代替，并且，性能通常会更好！就连 `LinkedList` 的作者约书亚 · 布洛克（Josh Bloch）自己都说从来不会使用 `LinkedList`。
+Trong thực tế dự án, chúng ta thường không sử dụng `LinkedList`, các tình huống cần dùng `LinkedList` hầu như đều có thể dùng `ArrayList` để thay thế, và hiệu năng thường sẽ tốt hơn! Ngay cả tác giả của `LinkedList` là Joshua Bloch cũng tự nói rằng ông chưa bao giờ sử dụng `LinkedList`.
 
 ![](https://oss.javaguide.cn/github/javaguide/redisimage-20220412110853807.png)
 
-另外，不要下意识地认为 `LinkedList` 作为链表就最适合元素增删的场景。我在上面也说了，`LinkedList` 仅仅在头尾插入或者删除元素的时候时间复杂度近似 O(1)，其他情况增删元素的平均时间复杂度都是 O(n)。
+Ngoài ra, đừng mặc định cho rằng `LinkedList` với tư cách là linked list thì phù hợp nhất cho các tình huống thêm xóa phần tử. Tôi đã nói ở trên, `LinkedList` chỉ có độ phức tạp thời gian xấp xỉ O(1) khi chèn hoặc xóa phần tử ở đầu và cuối, các trường hợp thêm xóa phần tử khác đều có độ phức tạp thời gian trung bình là O(n).
 
-#### 补充内容: 双向链表和双向循环链表
+#### Nội dung bổ sung: Doubly Linked List và Doubly Circular Linked List
 
-**双向链表：** 包含两个指针，一个 prev 指向前一个节点，一个 next 指向后一个节点。
+**Doubly Linked List:** Chứa hai con trỏ, một prev trỏ đến nút trước đó, một next trỏ đến nút kế tiếp.
 
-![双向链表](https://oss.javaguide.cn/github/javaguide/cs-basics/data-structure/bidirectional-linkedlist.png)
+![Doubly Linked List](https://oss.javaguide.cn/github/javaguide/cs-basics/data-structure/bidirectional-linkedlist.png)
 
-**双向循环链表：** 最后一个节点的 next 指向 head，而 head 的 prev 指向最后一个节点，构成一个环。
+**Doubly Circular Linked List:** next của nút cuối cùng trỏ đến head, và prev của head trỏ đến nút cuối cùng, tạo thành một vòng.
 
-![双向循环链表](https://oss.javaguide.cn/github/javaguide/cs-basics/data-structure/bidirectional-circular-linkedlist.png)
+![Doubly Circular Linked List](https://oss.javaguide.cn/github/javaguide/cs-basics/data-structure/bidirectional-circular-linkedlist.png)
 
-#### 补充内容:RandomAccess 接口
+#### Nội dung bổ sung: Interface RandomAccess
 
 ```java
 public interface RandomAccess {
 }
 ```
 
-查看源码我们发现实际上 `RandomAccess` 接口中什么都没有定义。所以，在我看来 `RandomAccess` 接口不过是一个标识罢了。标识什么？ 标识实现这个接口的类具有随机访问功能。
+Xem source code chúng ta phát hiện thực tế interface `RandomAccess` không định nghĩa gì cả. Vì vậy, theo tôi, interface `RandomAccess` chẳng qua chỉ là một marker (đánh dấu). Đánh dấu gì? Đánh dấu rằng lớp triển khai interface này có chức năng truy cập ngẫu nhiên (random access).
 
-在 `binarySearch()` 方法中，它要判断传入的 list 是否 `RandomAccess` 的实例，如果是，调用 `indexedBinarySearch()` 方法，如果不是，那么调用 `iteratorBinarySearch()` 方法
+Trong phương thức `binarySearch()`, nó cần phán đoán list được truyền vào có phải là instance của `RandomAccess` hay không, nếu đúng thì gọi phương thức `indexedBinarySearch()`, nếu không thì gọi phương thức `iteratorBinarySearch()`.
 
 ```java
     public static <T>
@@ -245,28 +245,28 @@ public interface RandomAccess {
     }
 ```
 
-`ArrayList` 实现了 `RandomAccess` 接口， 而 `LinkedList` 没有实现。为什么呢？我觉得还是和底层数据结构有关！`ArrayList` 底层是数组，而 `LinkedList` 底层是链表。数组天然支持随机访问，时间复杂度为 O(1)，所以称为快速随机访问。链表需要遍历到特定位置才能访问特定位置的元素，时间复杂度为 O(n)，所以不支持快速随机访问。`ArrayList` 实现了 `RandomAccess` 接口，就表明了他具有快速随机访问功能。 `RandomAccess` 接口只是标识，并不是说 `ArrayList` 实现 `RandomAccess` 接口才具有快速随机访问功能的！
+`ArrayList` triển khai interface `RandomAccess`, còn `LinkedList` thì không. Tại sao vậy? Tôi nghĩ vẫn là liên quan đến cấu trúc dữ liệu nền tảng! `ArrayList` tầng dưới là mảng, còn `LinkedList` tầng dưới là linked list. Mảng tự nhiên hỗ trợ truy cập ngẫu nhiên, độ phức tạp thời gian là O(1), nên được gọi là truy cập ngẫu nhiên nhanh. Linked list cần duyệt đến vị trí cụ thể mới có thể truy cập phần tử tại vị trí đó, độ phức tạp thời gian là O(n), nên không hỗ trợ truy cập ngẫu nhiên nhanh. `ArrayList` triển khai interface `RandomAccess`, điều này biểu thị rằng nó có chức năng truy cập ngẫu nhiên nhanh. Interface `RandomAccess` chỉ là marker, không phải nói `ArrayList` triển khai interface `RandomAccess` thì mới có chức năng truy cập ngẫu nhiên nhanh!
 
-### ⭐️ 说一说 ArrayList 的扩容机制吧
+### ⭐️ Trình bày cơ chế mở rộng dung lượng của ArrayList
 
-详见笔主的这篇文章: [ArrayList 扩容机制分析](https://javaguide.cn/java/collection/arraylist-source-code.html#arraylist-扩容机制分析)。
+Xem chi tiết bài viết của tác giả: [Phân tích cơ chế mở rộng dung lượng ArrayList](https://javaguide.cn/java/collection/arraylist-source-code.html#arraylist-扩容机制分析).
 
-### ⭐️ 集合中的 fail-fast 和 fail-safe 是什么？
+### ⭐️ Fail-fast và fail-safe trong Collection là gì?
 
-`fail-fast`（快速失败）和 `fail-safe`（安全失败）是 Java 集合框架在处理并发修改问题时，两种截然不同的设计哲学和容错策略。
+`fail-fast` (thất bại nhanh) và `fail-safe` (thất bại an toàn) là hai triết lý thiết kế và chiến lược xử lý lỗi hoàn toàn khác nhau trong Java Collection Framework khi xử lý vấn đề concurrent modification (sửa đổi đồng thời).
 
-关于 `fail-fast` 引用 `medium` 中一篇文章关于 `fail-fast` 和 `fail-safe` 的说法：
+Về `fail-fast`, trích dẫn một bài viết trên Medium về `fail-fast` và `fail-safe`:
 
 > Fail-fast systems are designed to immediately stop functioning upon encountering an unexpected condition. This immediate failure helps to catch errors early, making debugging more straightforward.
 
-快速失败的思想即针对可能发生的异常进行提前表明故障并停止运行，通过尽早的发现和停止错误，降低故障系统级联的风险。
+Tư tưởng của fail-fast là chủ động biểu thị lỗi và dừng hoạt động đối với các exception có thể xảy ra, thông qua việc phát hiện và dừng lỗi sớm, giảm thiểu rủi ro lan truyền lỗi theo tầng trong hệ thống.
 
-在 `java.util` 包下的大部分集合（如 `ArrayList`, `HashMap`）是不支持线程安全的，为了能够提前发现并发操作导致线程安全风险，提出通过维护一个 `modCount` 记录修改的次数，迭代期间通过比对预期修改次数 `expectedModCount` 和 `modCount` 是否一致来判断是否存在并发操作，从而实现快速失败，由此保证在避免在异常时执行非必要的复杂代码。
+Hầu hết các collection trong package `java.util` (như `ArrayList`, `HashMap`) không hỗ trợ thread-safe. Để có thể phát hiện sớm rủi ro thread-safe do thao tác đồng thời gây ra, đề xuất duy trì một biến `modCount` để ghi lại số lần sửa đổi. Trong quá trình lặp (iteration), so sánh số lần sửa đổi dự kiến `expectedModCount` với `modCount` có nhất quán hay không để phán đoán có tồn tại thao tác đồng thời hay không, từ đó triển khai fail-fast, đảm bảo tránh thực thi code phức tạp không cần thiết khi xảy ra exception.
 
-**ArrayList (fail-fast) 示例：**
+**Ví dụ ArrayList (fail-fast):**
 
 ```java
-     // 使用线程不安全的 ArrayList，它是一种 fail-fast 集合
+     // Sử dụng ArrayList không thread-safe, nó là một collection fail-fast
       List<Integer> list = new ArrayList<>();
       CountDownLatch latch = new CountDownLatch(2);
 
@@ -310,7 +310,7 @@ public interface RandomAccess {
       System.out.println("Final list state: " + list);
 ```
 
-输出：
+Output:
 
 ```
 Initial list: [0, 1, 2, 3, 4]
@@ -321,50 +321,50 @@ Iterator Thread (t1) sees: 0
 Final list state: [0, 2, 3, 4]
 ```
 
-程序在线程 t2 修改列表后，线程 t1 的下一次迭代操作立刻就抛出了 `ConcurrentModificationException`。这是因为 ArrayList 的迭代器在每次 `next()` 调用时，都会检查 `modCount` 是否被改变。一旦发现集合在迭代器不知情的情况下被修改，它会立即“快速失败”，以防止在不一致的数据上继续操作导致不可预期的后果。
+Sau khi thread t2 sửa đổi list, thao tác lặp tiếp theo của thread t1 ngay lập tức ném ra `ConcurrentModificationException`. Điều này là do iterator của ArrayList trong mỗi lần gọi `next()` đều kiểm tra `modCount` có bị thay đổi hay không. Một khi phát hiện collection bị sửa đổi mà iterator không hề hay biết, nó sẽ ngay lập tức "fail-fast" để ngăn chặn việc tiếp tục thao tác trên dữ liệu không nhất quán dẫn đến hậu quả không mong muốn.
 
-对此我们也给出 `for` 循环底层迭代器获取下一个元素时的 `next` 方法，可以看到其内部的 `checkForComodification` 具有针对修改次数比对的逻辑：
+Về điều này, chúng tôi cũng đưa ra phương thức `next` khi iterator tầng dưới của vòng lặp `for` lấy phần tử tiếp theo, có thể thấy bên trong nó có logic `checkForComodification` để so sánh số lần sửa đổi:
 
 ```java
  public E next() {
- 			//检查是否存在并发修改
+ 			//Kiểm tra có tồn tại concurrent modification không
             checkForComodification();
             //......
-            //返回下一个元素
+            //Trả về phần tử tiếp theo
             return (E) elementData[lastRet = i];
         }
 
 final void checkForComodification() {
-		//当前循环遍历次数和预期修改次数不一致时，就会抛出ConcurrentModificationException
+			//Khi số lần lặp hiện tại và số lần sửa đổi dự kiến không nhất quán, sẽ ném ra ConcurrentModificationException
             if (modCount != expectedModCount)
                 throw new ConcurrentModificationException();
         }
 
 ```
 
-而 `fail-safe` 也就是安全失败的含义，它旨在即使面对意外情况也能恢复并继续运行，这使得它特别适用于不确定或者不稳定的环境：
+Còn `fail-safe` tức là ý nghĩa của thất bại an toàn, nó hướng đến việc ngay cả khi đối mặt với tình huống bất ngờ cũng có thể khôi phục và tiếp tục chạy, điều này khiến nó đặc biệt phù hợp với môi trường không chắc chắn hoặc không ổn định:
 
 > Fail-safe systems take a different approach, aiming to recover and continue even in the face of unexpected conditions. This makes them particularly suited for uncertain or volatile environments.
 
-该思想常运用于并发容器，最经典的实现就是 `CopyOnWriteArrayList` 的实现，通过写时复制（Copy-On-Write）的思想保证在进行修改操作时复制出一份快照，基于这份快照完成添加或者删除操作后，将 `CopyOnWriteArrayList` 底层的数组引用指向这个新的数组空间，由此避免迭代时被并发修改所干扰所导致并发操作安全问题，当然这种做法也存在缺点，即进行遍历操作时无法获得实时结果：
+Tư tưởng này thường được áp dụng trong concurrent container, implementation kinh điển nhất chính là `CopyOnWriteArrayList`. Thông qua tư tưởng Copy-On-Write (sao chép khi ghi), đảm bảo khi thực hiện thao tác sửa đổi sẽ sao chép ra một bản snapshot (ảnh chụp), dựa trên snapshot này để hoàn thành thao tác thêm hoặc xóa, sau đó trỏ tham chiếu mảng nền của `CopyOnWriteArrayList` đến không gian mảng mới này, từ đó tránh bị concurrent modification làm nhiễu loạn dẫn đến vấn đề an toàn thao tác đồng thời. Đương nhiên cách làm này cũng tồn tại nhược điểm, đó là khi thực hiện thao tác duyệt không thể nhận được kết quả thời gian thực:
 
 ![](https://oss.javaguide.cn/github/javaguide/java/collection/fail-fast-and-fail-safe-copyonwritearraylist.png)
 
-对应我们也给出 `CopyOnWriteArrayList` 实现 `fail-safe` 的核心代码，可以看到它的实现就是通过 `getArray` 获取数组引用然后通过 `Arrays.copyOf` 得到一个数组的快照，基于这个快照完成添加操作后，修改底层 `array` 变量指向的引用地址由此完成写时复制：
+Tương ứng, chúng tôi cũng đưa ra code lõi triển khai `fail-safe` của `CopyOnWriteArrayList`. Có thể thấy implementation của nó là thông qua `getArray` lấy tham chiếu mảng, sau đó thông qua `Arrays.copyOf` lấy một snapshot của mảng. Dựa trên snapshot này hoàn thành thao tác thêm, sau đó sửa địa chỉ tham chiếu mà biến `array` tầng dưới trỏ đến, từ đó hoàn thành Copy-On-Write:
 
 ```java
 public boolean add(E e) {
         final ReentrantLock lock = this.lock;
         lock.lock();
         try {
-        	//获取原有数组
+        	//Lấy mảng gốc
             Object[] elements = getArray();
             int len = elements.length;
-            //基于原有数组复制出一份内存快照
+            //Dựa trên mảng gốc sao chép ra một bản snapshot bộ nhớ
             Object[] newElements = Arrays.copyOf(elements, len + 1);
-            //进行添加操作
+            //Thực hiện thao tác thêm
             newElements[len] = e;
-            //array指向新的数组
+            //array trỏ đến mảng mới
             setArray(newElements);
             return true;
         } finally {
@@ -375,16 +375,16 @@ public boolean add(E e) {
 
 ## Set
 
-### Comparable 和 Comparator 的区别
+### Sự khác biệt giữa Comparable và Comparator
 
-`Comparable` 接口和 `Comparator` 接口都是 Java 中用于排序的接口，它们在实现类对象之间比较大小、排序等方面发挥了重要作用：
+Interface `Comparable` và interface `Comparator` đều là các interface dùng để sắp xếp trong Java, chúng đóng vai trò quan trọng trong việc so sánh kích thước, sắp xếp giữa các đối tượng của lớp triển khai:
 
-- `Comparable` 接口实际上是出自 `java.lang` 包 它有一个 `compareTo(Object obj)` 方法用来排序
-- `Comparator` 接口实际上是出自 `java.util` 包它有一个 `compare(Object obj1, Object obj2)` 方法用来排序
+- Interface `Comparable` thực tế xuất phát từ package `java.lang`, nó có một phương thức `compareTo(Object obj)` dùng để sắp xếp.
+- Interface `Comparator` thực tế xuất phát từ package `java.util`, nó có một phương thức `compare(Object obj1, Object obj2)` dùng để sắp xếp.
 
-一般我们需要对一个集合使用自定义排序时，我们就要重写 `compareTo()` 方法或 `compare()` 方法，当我们需要对某一个集合实现两种排序方式，比如一个 `song` 对象中的歌名和歌手名分别采用一种排序方法的话，我们可以重写 `compareTo()` 方法和使用自制的 `Comparator` 方法或者以两个 `Comparator` 来实现歌名排序和歌星名排序，第二种代表我们只能使用两个参数版的 `Collections.sort()`.
+Thông thường khi cần sử dụng custom sorting cho một collection, chúng ta cần ghi đè phương thức `compareTo()` hoặc phương thức `compare()`. Khi cần triển khai hai cách sắp xếp cho một collection, ví dụ một đối tượng `song` có tên bài hát và tên ca sĩ, mỗi loại áp dụng một phương thức sắp xếp riêng, chúng ta có thể ghi đè phương thức `compareTo()` và sử dụng phương thức `Comparator` tự chế, hoặc dùng hai `Comparator` để triển khai sắp xếp theo tên bài hát và sắp xếp theo tên ca sĩ. Cách thứ hai nghĩa là chúng ta chỉ có thể sử dụng phiên bản hai tham số của `Collections.sort()`.
 
-#### Comparator 定制排序
+#### Comparator - Custom Sorting
 
 ```java
 ArrayList<Integer> arrayList = new ArrayList<Integer>();
@@ -396,47 +396,47 @@ arrayList.add(7);
 arrayList.add(4);
 arrayList.add(-9);
 arrayList.add(-7);
-System.out.println("原始数组:");
+System.out.println("Mảng gốc:");
 System.out.println(arrayList);
-// void reverse(List list)：反转
+// void reverse(List list)：Đảo ngược
 Collections.reverse(arrayList);
 System.out.println("Collections.reverse(arrayList):");
 System.out.println(arrayList);
 
-// void sort(List list),按自然排序的升序排序
+// void sort(List list), sắp xếp tăng dần theo thứ tự tự nhiên
 Collections.sort(arrayList);
 System.out.println("Collections.sort(arrayList):");
 System.out.println(arrayList);
-// 定制排序的用法
+// Cách sử dụng custom sorting
 Collections.sort(arrayList, new Comparator<Integer>() {
     @Override
     public int compare(Integer o1, Integer o2) {
         return o2.compareTo(o1);
     }
 });
-System.out.println("定制排序后：");
+System.out.println("Sau khi custom sorting：");
 System.out.println(arrayList);
 ```
 
 Output:
 
 ```plain
-原始数组:
+Mảng gốc:
 [-1, 3, 3, -5, 7, 4, -9, -7]
 Collections.reverse(arrayList):
 [-7, -9, 4, 7, -5, 3, 3, -1]
 Collections.sort(arrayList):
 [-9, -7, -5, -1, 3, 3, 4, 7]
-定制排序后：
+Sau khi custom sorting：
 [7, 4, 3, 3, -1, -5, -7, -9]
 ```
 
-#### 重写 compareTo 方法实现按年龄来排序
+#### Ghi đè phương thức compareTo để triển khai sắp xếp theo tuổi
 
 ```java
-// person对象没有实现Comparable接口，所以必须实现，这样才不会出错，才可以使treemap中的数据按顺序排列
-// 前面一个例子的String类已经默认实现了Comparable接口，详细可以查看String类的API文档，另外其他
-// 像Integer类等都已经实现了Comparable接口，所以不需要另外实现了
+// Đối tượng person không triển khai interface Comparable, nên phải triển khai, như vậy mới không bị lỗi, mới có thể làm cho dữ liệu trong treemap sắp xếp theo thứ tự
+// Ví dụ trước đó, lớp String đã mặc định triển khai interface Comparable, chi tiết có thể xem tài liệu API của lớp String, ngoài ra các
+// lớp khác như Integer, v.v. đều đã triển khai interface Comparable, nên không cần triển khai thêm
 public  class Person implements Comparable<Person> {
     private String name;
     private int age;
@@ -464,7 +464,7 @@ public  class Person implements Comparable<Person> {
     }
 
     /**
-     * T重写compareTo方法实现按年龄来排序
+     * T ghi đè phương thức compareTo để triển khai sắp xếp theo tuổi
      */
     @Override
     public int compareTo(Person o) {
@@ -483,11 +483,11 @@ public  class Person implements Comparable<Person> {
 ```java
     public static void main(String[] args) {
         TreeMap<Person, String> pdata = new TreeMap<Person, String>();
-        pdata.put(new Person("张三", 30), "zhangsan");
-        pdata.put(new Person("李四", 20), "lisi");
-        pdata.put(new Person("王五", 10), "wangwu");
-        pdata.put(new Person("小红", 5), "xiaohong");
-        // 得到key的值的同时得到key所对应的值
+        pdata.put(new Person("Trương Tam", 30), "zhangsan");
+        pdata.put(new Person("Lý Tứ", 20), "lisi");
+        pdata.put(new Person("Vương Ngũ", 10), "wangwu");
+        pdata.put(new Person("Tiểu Hồng", 5), "xiaohong");
+        // Lấy giá trị của key đồng thời lấy giá trị tương ứng với key
         Set<Person> keys = pdata.keySet();
         for (Person key : keys) {
             System.out.println(key.getAge() + "-" + key.getName());
@@ -499,84 +499,84 @@ public  class Person implements Comparable<Person> {
 Output：
 
 ```plain
-5-小红
-10-王五
-20-李四
-30-张三
+5-Tiểu Hồng
+10-Vương Ngũ
+20-Lý Tứ
+30-Trương Tam
 ```
 
-### 无序性和不可重复性的含义是什么
+### Ý nghĩa của tính không có thứ tự (unordered) và tính không thể trùng lặp (non-duplicate)
 
-- 无序性不等于随机性，无序性是指存储的数据在底层数组中并非按照数组索引的顺序添加，而是根据数据的哈希值决定的。
-- 不可重复性是指添加的元素按照 `equals()` 判断时，返回 false，需要同时重写 `equals()` 方法和 `hashCode()` 方法。
+- Tính không có thứ tự (unordered) không đồng nghĩa với tính ngẫu nhiên (randomness). Tính không có thứ tự nghĩa là dữ liệu được lưu trữ trong mảng nền không được thêm theo thứ tự index của mảng, mà được quyết định dựa trên giá trị hash của dữ liệu.
+- Tính không thể trùng lặp (non-duplicate) nghĩa là khi phần tử được thêm vào, nếu kiểm tra bằng `equals()` trả về false, cần đồng thời ghi đè cả phương thức `equals()` và phương thức `hashCode()`.
 
-### 比较 HashSet、LinkedHashSet 和 TreeSet 三者的异同
+### So sánh điểm giống và khác nhau giữa HashSet, LinkedHashSet và TreeSet
 
-- `HashSet`、`LinkedHashSet` 和 `TreeSet` 都是 `Set` 接口的实现类，都能保证元素唯一，并且都不是线程安全的。
-- `HashSet`、`LinkedHashSet` 和 `TreeSet` 的主要区别在于底层数据结构不同。`HashSet` 的底层数据结构是哈希表（基于 `HashMap` 实现）。`LinkedHashSet` 的底层数据结构是链表和哈希表，元素的插入和取出顺序满足 FIFO。`TreeSet` 底层数据结构是红黑树，元素是有序的，排序的方式有自然排序和定制排序。
-- 底层数据结构不同又导致这三者的应用场景不同。`HashSet` 用于不需要保证元素插入和取出顺序的场景，`LinkedHashSet` 用于保证元素的插入和取出顺序满足 FIFO 的场景，`TreeSet` 用于支持对元素自定义排序规则的场景。
+- `HashSet`, `LinkedHashSet` và `TreeSet` đều là các lớp triển khai của interface `Set`, đều có thể đảm bảo phần tử duy nhất, và đều không thread-safe.
+- Sự khác biệt chính giữa `HashSet`, `LinkedHashSet` và `TreeSet` nằm ở cấu trúc dữ liệu nền tảng khác nhau. Cấu trúc dữ liệu nền tảng của `HashSet` là hash table (dựa trên `HashMap`). Cấu trúc dữ liệu nền tảng của `LinkedHashSet` là linked list và hash table, thứ tự chèn và lấy ra của phần tử tuân thủ FIFO. Cấu trúc dữ liệu nền tảng của `TreeSet` là red-black tree, phần tử có thứ tự, phương thức sắp xếp bao gồm natural ordering và custom sorting.
+- Cấu trúc dữ liệu nền tảng khác nhau dẫn đến tình huống ứng dụng của ba loại này cũng khác nhau. `HashSet` dùng cho tình huống không cần đảm bảo thứ tự chèn và lấy ra của phần tử, `LinkedHashSet` dùng cho tình huống cần đảm bảo thứ tự chèn và lấy ra của phần tử tuân thủ FIFO, `TreeSet` dùng cho tình huống cần hỗ trợ quy tắc custom sorting cho phần tử.
 
 ## Queue
 
-### Queue 与 Deque 的区别
+### Sự khác biệt giữa Queue và Deque
 
-`Queue` 是单端队列，只能从一端插入元素，另一端删除元素，实现上一般遵循 **先进先出（FIFO）** 规则。
+`Queue` là hàng đợi một đầu (single-ended queue), chỉ có thể chèn phần tử từ một đầu, xóa phần tử từ đầu kia, implementation thường tuân theo quy tắc **First-In-First-Out (FIFO)**.
 
-`Queue` 扩展了 `Collection` 的接口，根据 **因为容量问题而导致操作失败后处理方式的不同** 可以分为两类方法: 一种在操作失败后会抛出异常，另一种则会返回特殊值。
+`Queue` mở rộng interface `Collection`, dựa trên **cách xử lý khác nhau sau khi thao tác thất bại do vấn đề dung lượng**, có thể chia thành hai loại phương thức: một loại sẽ ném exception sau khi thao tác thất bại, loại còn lại sẽ trả về giá trị đặc biệt.
 
-| `Queue` 接口 | 抛出异常  | 返回特殊值 |
-| ------------ | --------- | ---------- |
-| 插入队尾     | add(E e)  | offer(E e) |
-| 删除队首     | remove()  | poll()     |
-| 查询队首元素 | element() | peek()     |
+| Interface `Queue`             | Ném exception | Trả về giá trị đặc biệt |
+| ----------------------------- | ------------- | ----------------------- |
+| Chèn vào cuối hàng đợi        | add(E e)      | offer(E e)              |
+| Xóa ở đầu hàng đợi            | remove()      | poll()                  |
+| Truy vấn phần tử đầu hàng đợi | element()     | peek()                  |
 
-`Deque` 是双端队列，在队列的两端均可以插入或删除元素。
+`Deque` là hàng đợi hai đầu (double-ended queue), có thể chèn hoặc xóa phần tử ở cả hai đầu của hàng đợi.
 
-`Deque` 扩展了 `Queue` 的接口, 增加了在队首和队尾进行插入和删除的方法，同样根据失败后处理方式的不同分为两类：
+`Deque` mở rộng interface `Queue`, bổ sung thêm các phương thức chèn và xóa ở đầu và cuối hàng đợi, tương tự cũng chia thành hai loại dựa trên cách xử lý sau khi thất bại:
 
-| `Deque` 接口 | 抛出异常      | 返回特殊值      |
-| ------------ | ------------- | --------------- |
-| 插入队首     | addFirst(E e) | offerFirst(E e) |
-| 插入队尾     | addLast(E e)  | offerLast(E e)  |
-| 删除队首     | removeFirst() | pollFirst()     |
-| 删除队尾     | removeLast()  | pollLast()      |
-| 查询队首元素 | getFirst()    | peekFirst()     |
-| 查询队尾元素 | getLast()     | peekLast()      |
+| Interface `Deque`              | Ném exception | Trả về giá trị đặc biệt |
+| ------------------------------ | ------------- | ----------------------- |
+| Chèn vào đầu hàng đợi          | addFirst(E e) | offerFirst(E e)         |
+| Chèn vào cuối hàng đợi         | addLast(E e)  | offerLast(E e)          |
+| Xóa ở đầu hàng đợi             | removeFirst() | pollFirst()             |
+| Xóa ở cuối hàng đợi            | removeLast()  | pollLast()              |
+| Truy vấn phần tử đầu hàng đợi  | getFirst()    | peekFirst()             |
+| Truy vấn phần tử cuối hàng đợi | getLast()     | peekLast()              |
 
-事实上，`Deque` 还提供有 `push()` 和 `pop()` 等其他方法，可用于模拟栈。
+Thực tế, `Deque` còn cung cấp các phương thức khác như `push()` và `pop()`, có thể dùng để mô phỏng stack (ngăn xếp).
 
-### ArrayDeque 与 LinkedList 的区别
+### Sự khác biệt giữa ArrayDeque và LinkedList
 
-`ArrayDeque` 和 `LinkedList` 都实现了 `Deque` 接口，两者都具有队列的功能，但两者有什么区别呢？
+`ArrayDeque` và `LinkedList` đều triển khai interface `Deque`, cả hai đều có chức năng của hàng đợi, nhưng giữa chúng có sự khác biệt gì?
 
-- `ArrayDeque` 是基于可变长的数组和双指针来实现，而 `LinkedList` 则通过链表来实现。
+- `ArrayDeque` được triển khai dựa trên mảng có độ dài thay đổi và con trỏ kép (double pointer), trong khi `LinkedList` được triển khai thông qua linked list.
 
-- `ArrayDeque` 不支持存储 `NULL` 数据，但 `LinkedList` 支持。
+- `ArrayDeque` không hỗ trợ lưu trữ dữ liệu `NULL`, nhưng `LinkedList` thì có hỗ trợ.
 
-- `ArrayDeque` 是在 JDK1.6 才被引入的，而 `LinkedList` 早在 JDK1.2 时就已经存在。
+- `ArrayDeque` được giới thiệu từ JDK 1.6, trong khi `LinkedList` đã tồn tại từ JDK 1.2.
 
-- `ArrayDeque` 插入时可能存在扩容过程, 不过均摊后的插入操作依然为 O(1)。虽然 `LinkedList` 不需要扩容，但是每次插入数据时均需要申请新的堆空间，均摊性能相比更慢。
+- `ArrayDeque` khi chèn có thể tồn tại quá trình mở rộng (expansion), tuy nhiên thao tác chèn sau khi được trải đều (amortized) vẫn là O(1). Mặc dù `LinkedList` không cần mở rộng, nhưng mỗi lần chèn dữ liệu đều cần yêu cầu không gian heap mới, hiệu năng trải đều (amortized performance) tương đối chậm hơn.
 
-从性能的角度上，选用 `ArrayDeque` 来实现队列要比 `LinkedList` 更好。此外，`ArrayDeque` 也可以用于实现栈。
+Từ góc độ hiệu năng, chọn `ArrayDeque` để triển khai hàng đợi sẽ tốt hơn `LinkedList`. Ngoài ra, `ArrayDeque` cũng có thể được dùng để triển khai stack.
 
-### 说一说 PriorityQueue
+### Trình bày về PriorityQueue
 
-`PriorityQueue` 是在 JDK1.5 中被引入的, 其与 `Queue` 的区别在于元素出队顺序是与优先级相关的，即总是优先级最高的元素先出队。
+`PriorityQueue` được giới thiệu từ JDK 1.5, sự khác biệt của nó với `Queue` nằm ở chỗ thứ tự ra khỏi hàng đợi (dequeue) của phần tử liên quan đến độ ưu tiên (priority), tức là phần tử có độ ưu tiên cao nhất luôn ra khỏi hàng đợi trước.
 
-这里列举其相关的一些要点：
+Dưới đây liệt kê một số điểm liên quan:
 
-- `PriorityQueue` 利用了二叉堆的数据结构来实现的，底层使用可变长的数组来存储数据
-- `PriorityQueue` 通过堆元素的上浮和下沉，实现了在 O(logn) 的时间复杂度内插入元素和删除堆顶元素。
-- `PriorityQueue` 是非线程安全的，且不支持存储 `NULL`。未提供 `Comparator` 时，元素需要实现 `Comparable`；提供 `Comparator` 时，元素需要能够被该比较器相互比较。
-- `PriorityQueue` 默认是小顶堆，但可以接收一个 `Comparator` 作为构造参数，从而来自定义元素优先级的先后。
+- `PriorityQueue` sử dụng cấu trúc dữ liệu binary heap (đống nhị phân) để triển khai, tầng dưới sử dụng mảng có độ dài thay đổi để lưu trữ dữ liệu.
+- `PriorityQueue` thông qua thao tác sift-up (nổi lên) và sift-down (chìm xuống) của phần tử heap, triển khai chèn phần tử và xóa phần tử đỉnh heap trong độ phức tạp thời gian O(log n).
+- `PriorityQueue` không thread-safe, và không hỗ trợ lưu trữ `NULL`. Khi không cung cấp `Comparator`, phần tử cần triển khai `Comparable`; khi cung cấp `Comparator`, phần tử cần có thể được so sánh lẫn nhau bởi comparator đó.
+- `PriorityQueue` mặc định là min-heap (đống nhỏ nhất), nhưng có thể nhận một `Comparator` làm tham số khởi tạo, từ đó tự định nghĩa thứ tự ưu tiên của phần tử.
 
-`PriorityQueue` 在面试中可能更多的会出现在手撕算法的时候，典型例题包括堆排序、求第 K 大的数、带权图的遍历等，所以需要会熟练使用才行。
+`PriorityQueue` trong phỏng vấn có thể xuất hiện nhiều hơn trong các tình huống viết tay thuật toán, các bài tập điển hình bao gồm heap sort, tìm số lớn thứ K, duyệt đồ thị có trọng số, v.v., nên cần phải sử dụng thành thạo.
 
-如果想先补堆和 Top K 的算法模板，可以看 [堆详解](../../cs-basics/data-structure/heap.md) 和 [Top K 问题面试题总结](../../cs-basics/algorithms/top-k.md)。
+Nếu muốn ôn trước template thuật toán heap và Top K, có thể xem [Heap chi tiết](../../cs-basics/data-structure/heap.md) và [Tổng hợp câu hỏi phỏng vấn Top K](../../cs-basics/algorithms/top-k.md).
 
-### 什么是 BlockingQueue？
+### BlockingQueue là gì?
 
-`BlockingQueue`（阻塞队列）是一个接口，继承自 `Queue`。它为插入和移除操作分别提供了抛出异常、返回特殊值、持续阻塞和超时等待四种处理方式。其中，`take()` 可以在队列为空时阻塞，`put()` 可以在容量受限的队列已满时阻塞。
+`BlockingQueue` (hàng đợi chặn) là một interface, kế thừa từ `Queue`. Nó cung cấp bốn cách xử lý cho thao tác chèn và xóa: ném exception, trả về giá trị đặc biệt, chặn liên tục (blocking) và chờ có thời gian chờ (timeout). Trong đó, `take()` có thể chặn khi hàng đợi rỗng, `put()` có thể chặn khi hàng đợi bị giới hạn dung lượng đã đầy.
 
 ```java
 public interface BlockingQueue<E> extends Queue<E> {
@@ -584,41 +584,41 @@ public interface BlockingQueue<E> extends Queue<E> {
 }
 ```
 
-`BlockingQueue` 常用于生产者-消费者模型中，生产者线程会向队列中添加数据，而消费者线程会从队列中取出数据进行处理。
+`BlockingQueue` thường được dùng trong mô hình Producer-Consumer (Nhà sản xuất - Người tiêu dùng), luồng producer sẽ thêm dữ liệu vào hàng đợi, còn luồng consumer sẽ lấy dữ liệu từ hàng đợi để xử lý.
 
 ![BlockingQueue](https://oss.javaguide.cn/github/javaguide/java/collection/blocking-queue.png)
 
-### BlockingQueue 的实现类有哪些？
+### Các lớp triển khai của BlockingQueue là gì?
 
-![BlockingQueue 的实现类](https://oss.javaguide.cn/github/javaguide/java/collection/blocking-queue-hierarchy.png)
+![Các lớp triển khai của BlockingQueue](https://oss.javaguide.cn/github/javaguide/java/collection/blocking-queue-hierarchy.png)
 
-Java 中常用的阻塞队列实现类有以下几种：
+Các lớp triển khai blocking queue phổ biến trong Java gồm có:
 
-1. `ArrayBlockingQueue`：使用数组实现的有界阻塞队列。在创建时需要指定容量大小，并支持公平和非公平两种方式的锁访问机制。
-2. `LinkedBlockingQueue`：使用单向链表实现的可选有界阻塞队列。在创建时可以指定容量大小，如果不指定则默认为 `Integer.MAX_VALUE`。和 `ArrayBlockingQueue` 不同的是， 它仅支持非公平的锁访问机制。
-3. `PriorityBlockingQueue`：支持优先级排序的无界阻塞队列。元素必须实现 `Comparable` 接口或者在构造函数中传入 `Comparator` 对象，并且不能插入 null 元素。
-4. `SynchronousQueue`：同步队列，是一种不存储元素的阻塞队列。每个插入操作都必须等待对应的删除操作，反之删除操作也必须等待插入操作。因此，`SynchronousQueue` 通常用于线程之间的直接传递数据。
-5. `DelayQueue`：延迟队列，其中的元素只有到了其指定的延迟时间，才能够从队列中出队。
+1. `ArrayBlockingQueue`: Hàng đợi chặn có giới hạn (bounded) được triển khai bằng mảng. Khi tạo cần chỉ định kích thước dung lượng, và hỗ trợ cơ chế truy cập khóa công bằng (fair) và không công bằng (non-fair).
+2. `LinkedBlockingQueue`: Hàng đợi chặn có giới hạn tùy chọn (optionally-bounded) được triển khai bằng singly linked list. Khi tạo có thể chỉ định kích thước dung lượng, nếu không chỉ định thì mặc định là `Integer.MAX_VALUE`. Khác với `ArrayBlockingQueue`, nó chỉ hỗ trợ cơ chế truy cập khóa không công bằng.
+3. `PriorityBlockingQueue`: Hàng đợi chặn không giới hạn (unbounded) hỗ trợ sắp xếp theo độ ưu tiên. Phần tử phải triển khai interface `Comparable` hoặc truyền vào đối tượng `Comparator` trong constructor, và không thể chèn phần tử null.
+4. `SynchronousQueue`: Hàng đợi đồng bộ (synchronous queue), là một blocking queue không lưu trữ phần tử. Mỗi thao tác chèn đều phải chờ một thao tác xóa tương ứng, ngược lại thao tác xóa cũng phải chờ thao tác chèn. Do đó, `SynchronousQueue` thường được dùng để truyền dữ liệu trực tiếp giữa các luồng.
+5. `DelayQueue`: Hàng đợi trễ (delay queue), trong đó phần tử chỉ có thể ra khỏi hàng đợi khi đến thời gian trễ được chỉ định.
 6. ……
 
-日常开发中，这些队列使用的其实都不多，了解即可。
+Trong phát triển hàng ngày, những hàng đợi này thực sự được sử dụng không nhiều, chỉ cần biết là được.
 
-### ⭐️ ArrayBlockingQueue 和 LinkedBlockingQueue 有什么区别？
+### ⭐️ ArrayBlockingQueue và LinkedBlockingQueue khác nhau như thế nào?
 
-`ArrayBlockingQueue` 和 `LinkedBlockingQueue` 是 Java 并发包中常用的两种阻塞队列实现，它们都是线程安全的。不过，不过它们之间也存在下面这些区别：
+`ArrayBlockingQueue` và `LinkedBlockingQueue` là hai loại blocking queue thường dùng trong Java Concurrency Package, chúng đều thread-safe. Tuy nhiên, giữa chúng tồn tại những sự khác biệt sau:
 
-- 底层实现：`ArrayBlockingQueue` 基于数组实现，而 `LinkedBlockingQueue` 基于链表实现。
-- 是否有界：`ArrayBlockingQueue` 是有界队列，必须在创建时指定容量大小。`LinkedBlockingQueue` 创建时可以不指定容量大小，默认是 `Integer.MAX_VALUE`，也就是无界的。但也可以指定队列大小，从而成为有界的。
-- 锁是否分离： `ArrayBlockingQueue` 中的锁是没有分离的，即生产和消费用的是同一个锁；`LinkedBlockingQueue` 中的锁是分离的，即生产用的是 `putLock`，消费是 `takeLock`，这样可以防止生产者和消费者线程之间的锁争夺。
-- 内存占用：`ArrayBlockingQueue` 需要提前分配数组内存，而 `LinkedBlockingQueue` 则是动态分配链表节点内存。这意味着，`ArrayBlockingQueue` 在创建时就会占用一定的内存空间，且往往申请的内存比实际所用的内存更大，而 `LinkedBlockingQueue` 则是根据元素的增加而逐渐占用内存空间。
+- Triển khai nền tảng: `ArrayBlockingQueue` dựa trên mảng, còn `LinkedBlockingQueue` dựa trên linked list.
+- Có giới hạn hay không: `ArrayBlockingQueue` là hàng đợi có giới hạn (bounded), phải chỉ định kích thước dung lượng khi tạo. `LinkedBlockingQueue` khi tạo có thể không chỉ định kích thước dung lượng, mặc định là `Integer.MAX_VALUE`, tức là không giới hạn (unbounded). Nhưng cũng có thể chỉ định kích thước hàng đợi, từ đó trở thành có giới hạn.
+- Khóa có được tách biệt không: Khóa trong `ArrayBlockingQueue` không được tách biệt, tức là sản xuất (produce) và tiêu thụ (consume) dùng cùng một khóa; khóa trong `LinkedBlockingQueue` được tách biệt, tức là sản xuất dùng `putLock`, tiêu thụ dùng `takeLock`, điều này có thể ngăn chặn tranh chấp khóa giữa luồng producer và consumer.
+- Chiếm dụng bộ nhớ: `ArrayBlockingQueue` cần phân bổ trước bộ nhớ mảng, còn `LinkedBlockingQueue` thì phân bổ động bộ nhớ nút linked list. Điều này có nghĩa là `ArrayBlockingQueue` khi tạo sẽ chiếm dụng một lượng không gian bộ nhớ nhất định, và thường thì bộ nhớ được yêu cầu lớn hơn bộ nhớ thực tế sử dụng, còn `LinkedBlockingQueue` thì theo sự tăng lên của phần tử mà dần dần chiếm dụng không gian bộ nhớ.
 
-## 数据结构延伸阅读
+## Tài liệu mở rộng về cấu trúc dữ liệu
 
-Java 集合面试经常会追到底层数据结构。建议结合下面几篇一起复习：
+Phỏng vấn Java Collection thường xuyên truy vấn đến cấu trúc dữ liệu nền tảng. Khuyến nghị kết hợp ôn tập cùng các bài viết sau:
 
-- [线性数据结构详解](../../cs-basics/data-structure/linear-data-structure.md)：理解数组、链表、栈、队列和 `ArrayList`、`LinkedList`、`ArrayDeque` 的关系。
-- [哈希表面试题总结](../../cs-basics/data-structure/hash-table.md)：理解哈希冲突、扩容和 `HashMap` 的底层思想。
-- [红黑树详解](../../cs-basics/data-structure/red-black-tree.md)：理解 `TreeMap`、`TreeSet` 以及 `HashMap` 树化链表时涉及的红黑树。
-- [堆详解](../../cs-basics/data-structure/heap.md)：理解 `PriorityQueue` 的底层结构和 Top K 题型。
+- [Cấu trúc dữ liệu tuyến tính chi tiết](../../cs-basics/data-structure/linear-data-structure.md): Hiểu mối quan hệ giữa mảng, linked list, stack, queue và `ArrayList`, `LinkedList`, `ArrayDeque`.
+- [Tổng hợp câu hỏi phỏng vấn Hash Table](../../cs-basics/data-structure/hash-table.md): Hiểu hash collision, mở rộng dung lượng và tư tưởng nền tảng của `HashMap`.
+- [Red-Black Tree chi tiết](../../cs-basics/data-structure/red-black-tree.md): Hiểu red-black tree liên quan đến `TreeMap`, `TreeSet` và `HashMap` khi chuyển linked list thành cây.
+- [Heap chi tiết](../../cs-basics/data-structure/heap.md): Hiểu cấu trúc nền tảng của `PriorityQueue` và dạng bài Top K.
 
 <!-- @include: @article-footer.snippet.md -->

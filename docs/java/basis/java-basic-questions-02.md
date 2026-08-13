@@ -12,34 +12,34 @@ head:
 
 <!-- @include: @article-header.snippet.md -->
 
-## 面向对象基础
+## Kiến thức cơ bản về hướng đối tượng
 
-### ⭐️ 面向对象和面向过程的区别
+### ⭐️ Sự khác biệt giữa hướng đối tượng và hướng thủ tục
 
-面向过程编程（Procedural-Oriented Programming，POP）和面向对象编程（Object-Oriented Programming，OOP）是两种常见的编程范式，两者的主要区别在于解决问题的方式不同：
+Lập trình hướng thủ tục (Procedural-Oriented Programming, POP) và lập trình hướng đối tượng (Object-Oriented Programming, OOP) là hai mô hình lập trình phổ biến, sự khác biệt chính giữa hai mô hình này nằm ở cách giải quyết vấn đề:
 
-- **面向过程编程（POP）**：面向过程把解决问题的过程拆成一个个方法，通过一个个方法的执行解决问题。
-- **面向对象编程（OOP）**：面向对象会先抽象出对象，然后用对象执行方法的方式解决问题。
+- **Lập trình hướng thủ tục (POP)**: Hướng thủ tục chia quá trình giải quyết vấn đề thành từng method riêng lẻ, giải quyết vấn đề thông qua việc thực thi lần lượt từng method.
+- **Lập trình hướng đối tượng (OOP)**: Hướng đối tượng trước tiên trừu tượng hóa thành các object, sau đó dùng object thực thi method để giải quyết vấn đề.
 
-相比较于 POP，OOP 开发的程序一般具有下面这些优点：
+So với POP, chương trình phát triển theo OOP thường có những ưu điểm sau:
 
-- **易维护**：由于良好的结构和封装性，OOP 程序通常更容易维护。
-- **易复用**：通过继承和多态，OOP 设计使得代码更具复用性，方便扩展功能。
-- **易扩展**：模块化设计使得系统扩展变得更加容易和灵活。
+- **Dễ bảo trì**: Do cấu trúc tốt và tính encapsulation, chương trình OOP thường dễ bảo trì hơn.
+- **Dễ tái sử dụng**: Thông qua inheritance và polymorphism, thiết kế OOP khiến code có tính tái sử dụng cao hơn, thuận tiện cho việc mở rộng chức năng.
+- **Dễ mở rộng**: Thiết kế module hóa khiến việc mở rộng hệ thống trở nên dễ dàng và linh hoạt hơn.
 
-POP 的编程方式通常更为简单和直接，适合处理一些较简单的任务。
+Phương thức lập trình POP thường đơn giản và trực tiếp hơn, phù hợp để xử lý các tác vụ đơn giản.
 
-POP 和 OOP 的性能差异主要取决于它们的运行机制，而不仅仅是编程范式本身。因此，简单地比较两者的性能是一个常见的误区（相关 issue : [面向过程：面向过程性能比面向对象高？？](https://github.com/Snailclimb/JavaGuide/issues/431)）。
+Sự khác biệt về hiệu năng giữa POP và OOP chủ yếu phụ thuộc vào cơ chế vận hành của chúng, chứ không chỉ đơn thuần là bản thân mô hình lập trình. Do đó, so sánh hiệu năng giữa hai mô hình một cách đơn giản là một hiểu lầm phổ biến (issue liên quan: [面向过程：面向过程性能比面向对象高？？](https://github.com/Snailclimb/JavaGuide/issues/431)).
 
 ![ POP 和 OOP  性能比较不合适](https://oss.javaguide.cn/github/javaguide/java/basis/pop-vs-oop-performance.png)
 
-在选择编程范式时，性能并不是唯一的考虑因素。代码的可维护性、可扩展性和开发效率同样重要。
+Khi lựa chọn mô hình lập trình, hiệu năng không phải là yếu tố duy nhất cần cân nhắc. Khả năng bảo trì, khả năng mở rộng và hiệu suất phát triển của code cũng quan trọng không kém.
 
-现代编程语言基本都支持多种编程范式，既可以用来进行面向过程编程，也可以进行面向对象编程。
+Các ngôn ngữ lập trình hiện đại về cơ bản đều hỗ trợ nhiều mô hình lập trình, có thể dùng cho lập trình hướng thủ tục hoặc lập trình hướng đối tượng.
 
-下面是一个求圆的面积和周长的示例，简单分别展示了面向对象和面向过程两种不同的解决方案。
+Dưới đây là một ví dụ tính diện tích và chu vi hình tròn, minh họa hai giải pháp khác nhau theo hướng đối tượng và hướng thủ tục.
 
-**面向对象**：
+**Hướng đối tượng**:
 
 ```java
 public class Circle {
@@ -72,9 +72,9 @@ public class Circle {
 }
 ```
 
-我们定义了一个 `Circle` 类来表示圆，该类包含了圆的半径属性和计算面积、周长的方法。
+Chúng ta định nghĩa một class `Circle` để biểu diễn hình tròn, class này chứa thuộc tính bán kính và các method tính diện tích, chu vi.
 
-**面向过程**：
+**Hướng thủ tục**:
 
 ```java
 public class Main {
@@ -93,21 +93,21 @@ public class Main {
 }
 ```
 
-我们直接定义了圆的半径，并使用该半径直接计算出圆的面积和周长。
+Chúng ta trực tiếp định nghĩa bán kính hình tròn và dùng bán kính đó để tính trực tiếp diện tích và chu vi.
 
-### 创建一个对象用什么运算符？对象实例与对象引用有何不同？
+### Dùng toán tử gì để tạo một object? Object instance và object reference khác nhau thế nào?
 
-使用 `new` 运算符可以创建对象实例。JVM 的堆用于分配类实例和数组；引用值可以保存在局部变量、对象字段、静态字段或数组元素中，并不一定存放在栈中。
+Dùng toán tử `new` có thể tạo object instance. Heap của JVM dùng để cấp phát class instance và array; reference value có thể được lưu trong biến cục bộ, object field, static field hoặc phần tử array, không nhất thiết phải nằm trong stack.
 
-- 一个对象引用可以指向 0 个或 1 个对象（一根绳子可以不系气球，也可以系一个气球）；
-- 一个对象可以有 n 个引用指向它（可以用 n 条绳子系住一个气球）。
+- Một object reference có thể trỏ đến 0 hoặc 1 object (một sợi dây có thể không buộc bóng bay, cũng có thể buộc một quả bóng bay);
+- Một object có thể có n reference trỏ đến nó (có thể dùng n sợi dây buộc một quả bóng bay).
 
-### ⭐️ 对象的相等和引用相等的区别
+### ⭐️ Sự khác biệt giữa object equality và reference equality
 
-- 对象相等通常由 `equals()` 定义，用于比较类型约定的逻辑状态或值。
-- 引用相等由 `==` 判断，表示两个引用是否指向同一个对象（或都为 `null`），Java 语言并不暴露或比较物理内存地址。
+- Object equality thường được định nghĩa bởi `equals()`, dùng để so sánh trạng thái logic hoặc giá trị theo quy ước của kiểu.
+- Reference equality được xác định bởi `==`, thể hiện hai reference có trỏ đến cùng một object hay không (hoặc đều là `null`), ngôn ngữ Java không phơi bày hoặc so sánh địa chỉ bộ nhớ vật lý.
 
-这里举一个例子：
+Đây là một ví dụ:
 
 ```java
 String str1 = "hello";
@@ -122,7 +122,7 @@ System.out.println(str1.equals(str3));
 
 ```
 
-输出结果：
+Kết quả đầu ra:
 
 ```plain
 false
@@ -131,34 +131,34 @@ true
 true
 ```
 
-从上面的代码输出结果可以看出：
+Từ kết quả đầu ra của code trên có thể thấy:
 
-- `str1` 和 `str2` 不相等，而 `str1` 和 `str3` 相等。这是因为 `==` 运算符比较的是字符串的引用是否相等。
-- `str1`、 `str2`、`str3` 三者的内容都相等。这是因为 `equals` 方法比较的是字符串的内容，即使这些字符串的对象引用不同，只要它们的内容相等，就认为它们是相等的。
+- `str1` và `str2` không bằng nhau, còn `str1` và `str3` bằng nhau. Điều này là do toán tử `==` so sánh reference của string có bằng nhau hay không.
+- Nội dung của `str1`, `str2`, `str3` đều bằng nhau. Điều này là do method `equals` so sánh nội dung của string, ngay cả khi object reference của các string này khác nhau, chỉ cần nội dung của chúng bằng nhau thì coi như chúng bằng nhau.
 
-### 如果一个类没有声明构造方法，该程序能正确执行吗？
+### Nếu một class không khai báo constructor, chương trình có thể thực thi đúng không?
 
-构造方法是一种特殊的方法，主要作用是完成对象的初始化工作。
+Constructor là một method đặc biệt, chức năng chính là hoàn thành việc khởi tạo object.
 
-如果一个类没有声明构造方法，也可以执行！因为一个类即使没有声明构造方法也会有默认的不带参数的构造方法。如果我们自己添加了类的构造方法（无论是否有参），Java 就不会添加默认的无参数的构造方法了。
+Nếu một class không khai báo constructor, chương trình vẫn có thể thực thi! Bởi vì một class ngay cả khi không khai báo constructor cũng sẽ có constructor mặc định không tham số. Nếu chúng ta tự thêm constructor của class (dù có tham số hay không), Java sẽ không thêm constructor mặc định không tham số nữa.
 
-我们一直在不知不觉地使用构造方法，这也是为什么我们在创建对象的时候后面要加一个括号（因为要调用无参的构造方法）。如果我们重载了有参的构造方法，记得都要把无参的构造方法也写出来（无论是否用到），因为这可以帮助我们在创建对象的时候少踩坑。
+Chúng ta vẫn luôn sử dụng constructor một cách vô thức, đây cũng là lý do tại sao khi tạo object chúng ta thêm một cặp dấu ngoặc đơn phía sau (vì cần gọi constructor không tham số). Nếu chúng ta overload constructor có tham số, hãy nhớ viết cả constructor không tham số (dù có dùng hay không), vì điều này có thể giúp chúng ta tránh được nhiều lỗi khi tạo object.
 
-### 构造方法有哪些特点？是否可被 override?
+### Constructor có những đặc điểm gì? Có thể bị override không?
 
-构造方法具有以下特点：
+Constructor có những đặc điểm sau:
 
-- **名称与类名相同**：构造方法的名称必须与类名完全一致。
-- **没有返回值**：构造方法没有返回类型，且不能使用 `void` 声明。
-- **自动执行**：在生成类的对象时，构造方法会自动执行，无需显式调用。
+- **Tên trùng với tên class**: Tên của constructor phải hoàn toàn trùng khớp với tên class.
+- **Không có giá trị trả về**: Constructor không có kiểu trả về, và không được dùng `void` để khai báo.
+- **Tự động thực thi**: Khi tạo object của class, constructor sẽ tự động thực thi, không cần gọi tường minh.
 
-构造方法**不能被重写（override）**，但**可以被重载（overload）**。因此，一个类中可以有多个构造方法，这些构造方法可以具有不同的参数列表，以提供不同的对象初始化方式。
+Constructor **không thể bị override (ghi đè)**, nhưng **có thể bị overload (nạp chồng)**. Do đó, một class có thể có nhiều constructor, các constructor này có thể có danh sách tham số khác nhau để cung cấp các cách khởi tạo object khác nhau.
 
-### ⭐️ 面向对象三大特征
+### ⭐️ Ba đặc trưng của hướng đối tượng
 
-#### 封装
+#### Encapsulation (Đóng gói)
 
-封装是指把一个对象的状态信息（也就是属性）隐藏在对象内部，不允许外部对象直接访问对象的内部信息。但是可以提供一些可以被外界访问的方法来操作属性。就好像我们看不到挂在墙上的空调的内部的零件信息（也就是属性），但是可以通过遥控器（方法）来控制空调。如果属性不想被外界访问，我们大可不必提供方法给外界访问。但是如果一个类没有提供给外界访问的方法，那么这个类也没有什么意义了。就好像如果没有空调遥控器，那么我们就无法操控空凋制冷，空调本身就没有意义了（当然现在还有很多其他方法，这里只是为了举例子）。
+Encapsulation là việc ẩn thông tin trạng thái (tức là thuộc tính) của một object bên trong object, không cho phép object bên ngoài truy cập trực tiếp vào thông tin nội bộ của object. Nhưng có thể cung cấp một số method được phép truy cập từ bên ngoài để thao tác với thuộc tính. Cũng giống như chúng ta không nhìn thấy thông tin linh kiện bên trong của chiếc điều hòa treo tường (tức là thuộc tính), nhưng có thể điều khiển điều hòa thông qua remote (method). Nếu thuộc tính không muốn bị truy cập từ bên ngoài, chúng ta không cần cung cấp method cho bên ngoài truy cập. Nhưng nếu một class không có method nào cho bên ngoài truy cập, thì class đó cũng không có ý nghĩa gì. Cũng giống như nếu không có remote điều hòa, chúng ta không thể điều khiển điều hòa làm lạnh, thì bản thân chiếc điều hòa cũng không có ý nghĩa (tất nhiên hiện nay còn nhiều cách khác, ở đây chỉ là ví dụ).
 
 ```java
 public class Student {
@@ -187,79 +187,79 @@ public class Student {
 }
 ```
 
-#### 继承
+#### Inheritance (Kế thừa)
 
-不同类型的对象，相互之间经常有一定数量的共同点。例如，小明同学、小红同学、小李同学，都共享学生的特性（班级、学号等）。同时，每一个对象还定义了额外的特性使得他们与众不同。例如小明的数学比较好，小红的性格惹人喜爱；小李的力气比较大。继承是使用已存在的类的定义作为基础建立新类的技术，新类的定义可以增加新的数据或新的功能，也可以用父类的功能，但不能选择性地继承父类。通过使用继承，可以快速地创建新的类，可以提高代码的重用，程序的可维护性，节省大量创建新类的时间，提高我们的开发效率。
+Các object thuộc các kiểu khác nhau thường có một số điểm chung nhất định với nhau. Ví dụ, bạn học Tiểu Minh, Tiểu Hồng, Tiểu Lý đều chia sẻ các đặc tính của học sinh (lớp, mã số sinh viên, v.v.). Đồng thời, mỗi object còn định nghĩa thêm các đặc tính khiến chúng khác biệt. Ví dụ Tiểu Minh giỏi toán, Tiểu Hồng có tính cách dễ mến; Tiểu Lý có sức khỏe tốt. Inheritance là kỹ thuật sử dụng định nghĩa của class đã tồn tại làm nền tảng để xây dựng class mới. Định nghĩa của class mới có thể thêm dữ liệu mới hoặc chức năng mới, cũng có thể dùng chức năng của parent class, nhưng không thể kế thừa parent class một cách chọn lọc. Thông qua việc sử dụng inheritance, có thể nhanh chóng tạo ra class mới, nâng cao khả năng tái sử dụng code, khả năng bảo trì của chương trình, tiết kiệm nhiều thời gian tạo class mới, nâng cao hiệu suất phát triển của chúng ta.
 
-**关于继承如下 3 点请记住：**
+**Về inheritance, hãy ghi nhớ 3 điểm sau:**
 
-1. 子类对象包含由父类声明的实例状态，但父类的 `private` 成员不会被子类继承，子类也不能直接访问这些成员。
-2. 子类可以拥有自己属性和方法，即子类可以对父类进行扩展。
-3. 子类可以用自己的方式实现父类的方法。（以后介绍）。
+1. Object của subclass chứa instance state được khai báo bởi parent class, nhưng thành viên `private` của parent class sẽ không được subclass kế thừa, subclass cũng không thể truy cập trực tiếp các thành viên này.
+2. Subclass có thể có thuộc tính và method của riêng mình, tức là subclass có thể mở rộng parent class.
+3. Subclass có thể triển khai method của parent class theo cách riêng của mình (sẽ giới thiệu sau).
 
-#### 多态
+#### Polymorphism (Đa hình)
 
-多态，顾名思义，表示一个对象具有多种的状态，具体表现为父类的引用指向子类的实例。
+Polymorphism, đúng như tên gọi, thể hiện một object có nhiều trạng thái, biểu hiện cụ thể là reference của parent class trỏ đến instance của subclass.
 
-**多态的特点:**
+**Đặc điểm của polymorphism:**
 
-- 对象类型和引用类型之间具有继承（类）/实现（接口）的关系；
-- 引用类型变量发出的方法调用的到底是哪个类中的方法，必须在程序运行期间才能确定；
-- 多态不能调用“只在子类存在但在父类不存在”的方法；
-- 如果子类重写了父类的方法，真正执行的是子类重写的方法，如果子类没有重写父类的方法，执行的是父类的方法。
+- Giữa kiểu object và kiểu reference có quan hệ inheritance (class) / implementation (interface);
+- Lời gọi method do biến kiểu reference phát ra thực sự là method của class nào, phải đến thời điểm runtime mới xác định được;
+- Polymorphism không thể gọi method "chỉ tồn tại trong subclass nhưng không tồn tại trong parent class";
+- Nếu subclass override method của parent class, method thực sự được thực thi là method bị override trong subclass; nếu subclass không override method của parent class, method được thực thi là method của parent class.
 
 ```mermaid
 flowchart LR
-    subgraph OOP["面向对象三大特征"]
-        style OOP fill:#F0F2F5,stroke:#E0E6ED,stroke-width:1.5px
+subgraph OOP["Ba đặc trưng của Lập trình hướng đối tượng (OOP)"]
+style OOP fill:#F0F2F5,stroke:#E0E6ED,stroke-width:1.5px
 
-        subgraph Encapsulation["封装 Encapsulation"]
-            style Encapsulation fill:#F5F7FA,stroke:#E0E6ED,stroke-width:1.5px
-            E1["隐藏内部状态"]:::core
-            E2["提供公共方法"]:::core
-            E3["保护数据安全"]:::core
-        end
-
-        subgraph Inheritance["继承 Inheritance"]
-            style Inheritance fill:#F5F7FA,stroke:#E0E6ED,stroke-width:1.5px
-            I1["代码复用"]:::core
-            I2["扩展功能"]:::core
-            I3["单继承限制"]:::highlight
-        end
-
-        subgraph Polymorphism["多态 Polymorphism"]
-            style Polymorphism fill:#F5F7FA,stroke:#E0E6ED,stroke-width:1.5px
-            P1["父类引用指向子类"]:::core
-            P2["运行时动态绑定"]:::core
-            P3["方法重写实现"]:::core
-        end
+    subgraph Encapsulation["Tính đóng gói (Encapsulation)"]
+        style Encapsulation fill:#F5F7FA,stroke:#E0E6ED,stroke-width:1.5px
+        E1["Ẩn trạng thái bên trong"]:::core
+        E2["Cung cấp phương thức công khai"]:::core
+        E3["Bảo vệ tính an toàn của dữ liệu"]:::core
     end
 
-    classDef core fill:#4CA497,color:#fff,rx:10,ry:10
-    classDef highlight fill:#E99151,color:#fff,rx:10,ry:10
+    subgraph Inheritance["Tính kế thừa (Inheritance)"]
+        style Inheritance fill:#F5F7FA,stroke:#E0E6ED,stroke-width:1.5px
+        I1["Tái sử dụng mã nguồn"]:::core
+        I2["Mở rộng chức năng"]:::core
+        I3["Giới hạn đơn kế thừa"]:::highlight
+    end
 
-    linkStyle default stroke-width:1.5px,opacity:0.8
+    subgraph Polymorphism["Tính đa hình (Polymorphism)"]
+        style Polymorphism fill:#F5F7FA,stroke:#E0E6ED,stroke-width:1.5px
+        P1["Tham chiếu lớp cha trỏ đến đối tượng lớp con"]:::core
+        P2["Liên kết động tại thời điểm chạy"]:::core
+        P3["Được thực hiện thông qua ghi đè phương thức"]:::core
+    end
+end
+
+classDef core fill:#4CA497,color:#fff,rx:10,ry:10
+classDef highlight fill:#E99151,color:#fff,rx:10,ry:10
+
+linkStyle default stroke-width:1.5px,opacity:0.8
 ```
 
-### ⭐️ 接口和抽象类有什么共同点和区别？
+### ⭐️ Interface và abstract class có điểm chung và khác biệt gì?
 
-#### 接口和抽象类的共同点
+#### Điểm chung giữa interface và abstract class
 
-- **实例化**：接口和抽象类都不能直接实例化，只能被实现（接口）或继承（抽象类）后才能创建具体的对象。
-- **抽象方法**：接口和抽象类都可以包含抽象方法。抽象方法没有方法体，必须在子类或实现类中实现。
+- **Khởi tạo**: Interface và abstract class đều không thể khởi tạo trực tiếp, chỉ có thể được implements (interface) hoặc extends (abstract class) rồi mới tạo ra object cụ thể.
+- **Abstract method**: Interface và abstract class đều có thể chứa abstract method. Abstract method không có method body, phải được triển khai trong subclass hoặc implementation class.
 
-#### 接口和抽象类的区别
+#### Sự khác biệt giữa interface và abstract class
 
-- **设计目的**：接口主要用于对类的行为进行约束，你实现了某个接口就具有了对应的行为。抽象类主要用于代码复用，强调的是所属关系。
-- **继承和实现**：一个类只能继承一个类（包括抽象类），因为 Java 不支持多继承。但一个类可以实现多个接口，一个接口也可以继承多个其他接口。
-- **成员变量**：接口中的成员变量只能是 `public static final` 类型的，不能被修改且必须有初始值。抽象类的成员变量可以有任何修饰符（`private`, `protected`, `public`），可以在子类中被重新定义或赋值。
-- **方法**：
-  - Java 8 之前，接口中的方法默认是 `public abstract`，也就是只能有方法声明。自 Java 8 起，可以在接口中定义 `default`（默认） 方法和 `static`（静态）方法。 自 Java 9 起，接口可以包含 `private` 方法。
-  - 抽象类可以包含抽象方法和非抽象方法。抽象方法没有方法体，必须在子类中实现。非抽象方法有具体实现，可以直接在抽象类中使用或在子类中重写。
+- **Mục đích thiết kế**: Interface chủ yếu dùng để ràng buộc hành vi của class, bạn implements một interface nào đó thì sẽ có hành vi tương ứng. Abstract class chủ yếu dùng để tái sử dụng code, nhấn mạnh vào quan hệ sở thuộc.
+- **Kế thừa và triển khai**: Một class chỉ có thể kế thừa một class (bao gồm abstract class), vì Java không hỗ trợ đa kế thừa. Nhưng một class có thể implements nhiều interface, một interface cũng có thể extends nhiều interface khác.
+- **Biến thành viên**: Biến thành viên trong interface chỉ có thể là kiểu `public static final`, không thể bị sửa đổi và phải có giá trị khởi tạo. Biến thành viên của abstract class có thể có bất kỳ modifier nào (`private`, `protected`, `public`), có thể được định nghĩa lại hoặc gán lại trong subclass.
+- **Method**:
+  - Trước Java 8, method trong interface mặc định là `public abstract`, tức là chỉ có thể có khai báo method. Từ Java 8 trở đi, có thể định nghĩa `default` method và `static` method trong interface. Từ Java 9 trở đi, interface có thể chứa `private` method.
+  - Abstract class có thể chứa abstract method và non-abstract method. Abstract method không có method body, phải được triển khai trong subclass. Non-abstract method có triển khai cụ thể, có thể dùng trực tiếp trong abstract class hoặc override trong subclass.
 
-Java 8 为接口引入了 `default` 方法和 `static` 方法，Java 9 又允许接口声明 `private` 方法。这些方法让接口的使用更加灵活。
+Java 8 đã giới thiệu `default` method và `static` method cho interface, Java 9 lại cho phép interface khai báo `private` method. Những method này khiến việc sử dụng interface trở nên linh hoạt hơn.
 
-Java 8 引入的 `default` 方法用于提供接口方法的默认实现，可以在实现类中被覆盖。这样就可以在不修改实现类的情况下向现有接口添加新功能，从而增强接口的扩展性和向后兼容性。
+`default` method được giới thiệu trong Java 8 dùng để cung cấp triển khai mặc định cho interface method, có thể bị override trong implementation class. Như vậy có thể thêm chức năng mới vào interface hiện có mà không cần sửa đổi implementation class, từ đó tăng cường khả năng mở rộng và khả năng tương thích ngược của interface.
 
 ```java
 public interface MyInterface {
@@ -269,7 +269,7 @@ public interface MyInterface {
 }
 ```
 
-Java 8 引入的 `static` 方法无法在实现类中被覆盖，只能通过接口名直接调用（`MyInterface.staticMethod()`），类似于类中的静态方法。`static` 方法通常用于定义一些通用的、与接口相关的工具方法，一般很少用。
+`static` method được giới thiệu trong Java 8 không thể bị override trong implementation class, chỉ có thể gọi trực tiếp thông qua tên interface (`MyInterface.staticMethod()`), tương tự như static method trong class. `static` method thường dùng để định nghĩa một số method tiện ích chung liên quan đến interface, thường ít được dùng.
 
 ```java
 public interface MyInterface {
@@ -279,7 +279,7 @@ public interface MyInterface {
 }
 ```
 
-Java 9 允许在接口中使用 `private` 方法。`private` 方法可以用于在接口内部共享代码，不对外暴露。
+Java 9 cho phép sử dụng `private` method trong interface. `private` method có thể dùng để chia sẻ code trong nội bộ interface, không phơi bày ra bên ngoài.
 
 ```java
 public interface MyInterface {
@@ -305,13 +305,13 @@ public interface MyInterface {
 }
 ```
 
-### 深拷贝和浅拷贝区别了解吗？什么是引用拷贝？
+### Bạn có hiểu sự khác biệt giữa deep copy và shallow copy không? Reference copy là gì?
 
 ```mermaid
 flowchart LR
-    Copy["对象拷贝"] --> RefCopy["引用拷贝<br/>两个引用指向同一对象"]
-    Copy --> ShallowCopy["浅拷贝<br/>复制基本类型，共享引用类型"]
-    Copy --> DeepCopy["深拷贝<br/>递归复制所有属性"]
+    Copy["Sao chép đối tượng"] --> RefCopy["Sao chép tham chiếu<br/>Hai tham chiếu trỏ đến cùng một đối tượng"]
+    Copy --> ShallowCopy["Shallow Copy<br/>Sao chép kiểu nguyên thủy, dùng chung kiểu tham chiếu"]
+    Copy --> DeepCopy["Deep Copy<br/>Đệ quy sao chép tất cả thuộc tính"]
 
     classDef main fill:#005D7B,color:#fff,rx:10,ry:10
     class Copy main
@@ -319,18 +319,18 @@ flowchart LR
     linkStyle default stroke-width:1.5px,opacity:0.8
 ```
 
-关于深拷贝和浅拷贝区别，我这里先给结论：
+Về sự khác biệt giữa deep copy và shallow copy, tôi đưa ra kết luận trước:
 
-- **浅拷贝**：浅拷贝会在堆上创建一个新的对象（区别于引用拷贝的一点），不过，如果原对象内部的属性是引用类型的话，浅拷贝会直接复制内部对象的引用地址，也就是说拷贝对象和原对象共用同一个内部对象。
-- **深拷贝**：深拷贝会完全复制整个对象，包括这个对象所包含的内部对象。
+- **Shallow copy**: Shallow copy sẽ tạo một object mới trên heap (điểm khác biệt so với reference copy). Tuy nhiên, nếu thuộc tính bên trong object gốc là kiểu reference, shallow copy sẽ sao chép trực tiếp địa chỉ reference của internal object, nghĩa là object copy và object gốc dùng chung một internal object.
+- **Deep copy**: Deep copy sẽ sao chép hoàn toàn toàn bộ object, bao gồm cả internal object mà object này chứa.
 
-上面的结论没有完全理解的话也没关系，我们来看一个具体的案例！
+Nếu chưa hoàn toàn hiểu kết luận trên cũng không sao, chúng ta hãy xem một ví dụ cụ thể!
 
-#### 浅拷贝
+#### Shallow copy
 
-浅拷贝的示例代码如下，我们这里实现了 `Cloneable` 接口，并重写了 `clone()` 方法。
+Code ví dụ về shallow copy như sau, ở đây chúng ta implements interface `Cloneable` và override method `clone()`.
 
-`clone()` 方法的实现很简单，直接调用的是父类 `Object` 的 `clone()` 方法。
+Cách triển khai của method `clone()` rất đơn giản, gọi trực tiếp method `clone()` của parent class `Object`.
 
 ```java
 public class Address implements Cloneable{
@@ -361,7 +361,7 @@ public class Person implements Cloneable {
 }
 ```
 
-测试：
+Kiểm thử:
 
 ```java
 Person person1 = new Person(new Address("武汉"));
@@ -370,11 +370,11 @@ Person person1Copy = person1.clone();
 System.out.println(person1.getAddress() == person1Copy.getAddress());
 ```
 
-从输出结构就可以看出， `person1` 的克隆对象和 `person1` 使用的仍然是同一个 `Address` 对象。
+Từ kết quả đầu ra có thể thấy, object clone của `person1` và `person1` vẫn dùng chung một object `Address`.
 
-#### 深拷贝
+#### Deep copy
 
-这里我们简单对 `Person` 类的 `clone()` 方法进行修改，连带着要把 `Person` 对象内部的 `Address` 对象一起复制。
+Ở đây chúng ta sửa đổi đơn giản method `clone()` của class `Person`, đồng thời sao chép cả object `Address` bên trong object `Person`.
 
 ```java
 @Override
@@ -389,7 +389,7 @@ public Person clone() {
 }
 ```
 
-测试：
+Kiểm thử:
 
 ```java
 Person person1 = new Person(new Address("武汉"));
@@ -398,19 +398,19 @@ Person person1Copy = person1.clone();
 System.out.println(person1.getAddress() == person1Copy.getAddress());
 ```
 
-从输出结构就可以看出，显然 `person1` 的克隆对象和 `person1` 包含的 `Address` 对象已经是不同的了。
+Từ kết quả đầu ra có thể thấy rõ ràng, object clone của `person1` và object `Address` chứa trong `person1` đã là khác nhau.
 
-**那什么是引用拷贝呢？** 简单来说，引用拷贝就是两个不同的引用指向同一个对象。
+**Vậy reference copy là gì?** Nói đơn giản, reference copy là hai reference khác nhau trỏ đến cùng một object.
 
-我专门画了一张图来描述浅拷贝、深拷贝和引用拷贝：
+Tôi đã vẽ riêng một bức hình để mô tả shallow copy, deep copy và reference copy:
 
 ![图解浅拷贝、深拷贝和引用拷贝](https://oss.javaguide.cn/github/javaguide/java/basis/shallow&deep-copy.png)
 
 ## ⭐️ Object
 
-### Object 类的常见方法有哪些？
+### Class Object có những method phổ biến nào?
 
-Object 类是一个特殊的类，是所有类的父类，主要提供了以下方法。需要注意，`finalize()` 自 JDK 9 起已被弃用，并在 JDK 18 中被标记为待移除，不应在新代码中使用：
+Class Object là một class đặc biệt, là parent class của tất cả các class, chủ yếu cung cấp các method sau. Cần lưu ý, `finalize()` đã bị deprecated từ JDK 9 và bị đánh dấu là sẽ bị loại bỏ trong JDK 18, không nên dùng trong code mới:
 
 ```java
 /**
@@ -459,18 +459,68 @@ public final void wait() throws InterruptedException
 protected void finalize() throws Throwable { }
 ```
 
-### == 和 equals() 的区别
+```java
+/**
 
-**`==`** 对于基本类型和引用类型的作用效果是不同的：
+* Phương thức native, dùng để trả về đối tượng Class của đối tượng tại thời điểm runtime. Phương thức này được khai báo với từ khóa final nên không cho phép lớp con ghi đè.
+  */*
+  *public final native Class<?> getClass()*
+  */**
+* Phương thức native, dùng để trả về mã băm (hash code) của đối tượng, chủ yếu được sử dụng trong các bảng băm (hash table), chẳng hạn như HashMap trong JDK.
+  */*
+  *public native int hashCode()*
+  */**
+* Dùng để so sánh xem 2 tham chiếu có trỏ đến cùng một đối tượng hay không. Lớp String ghi đè phương thức này để so sánh xem giá trị của hai chuỗi có bằng nhau hay không.
+  */*
+  *public boolean equals(Object obj)*
+  */**
+* Phương thức native, dùng để tạo và trả về một bản sao của đối tượng hiện tại.
+  */*
+  *protected native Object clone() throws CloneNotSupportedException*
+  */**
+* Trả về chuỗi biểu diễn ở dạng thập lục phân của mã băm của instance, dựa trên tên lớp. Khuyến nghị tất cả các lớp con của Object nên ghi đè phương thức này.
+  */*
+  *public String toString()*
+  */**
+* Phương thức native và không thể ghi đè. Đánh thức một thread đang chờ trên monitor của đối tượng này (monitor có thể hiểu tương đương với khái niệm lock). Nếu có nhiều thread đang chờ thì chỉ một thread bất kỳ được đánh thức.
+  */*
+  *public final native void notify()*
+  */**
+* Phương thức native và không thể ghi đè. Tương tự notify, điểm khác biệt duy nhất là phương thức này đánh thức tất cả thread đang chờ trên monitor của đối tượng này thay vì chỉ một thread.
+  */*
+  *public final native void notifyAll()*
+  */**
+* Phương thức native và không thể ghi đè. Tạm dừng việc thực thi của thread. Lưu ý: phương thức sleep không giải phóng lock, trong khi phương thức wait giải phóng lock; timeout là khoảng thời gian chờ.
+  */*
+  *public final native void wait(long timeout) throws InterruptedException*
+  */**
+* Có thêm tham số nanos. Tham số này biểu thị khoảng thời gian bổ sung (tính bằng nanosecond, trong phạm vi từ 0 đến 999999). Vì vậy, thời gian timeout thực tế còn phải cộng thêm số nanosecond được chỉ định bởi nanos.
+  */*
+  *public final void wait(long timeout, int nanos) throws InterruptedException*
+  */**
+* Tương tự hai phương thức wait trước đó, nhưng phương thức này chờ vô thời hạn, không có khái niệm timeout.
+  */*
+  *public final void wait() throws InterruptedException*
+  */**
+* Thao tác được kích hoạt khi instance được Garbage Collector thu hồi.
+  */
+  protected void finalize() throws Throwable { }
 
-- 对于基本数据类型来说，`==` 比较的是值。
-- 对于引用数据类型来说，`==` 比较引用是否指向同一个对象（或都为 `null`），不是比较物理内存地址。
+**/
+```
 
-> 对于 `==` 来说，不管比较基本类型还是引用类型，其比较的都是操作数的值；引用值描述其所指向的对象，但 Java 语言不把它定义为可见的物理内存地址。
+### Sự khác biệt giữa == và equals()
 
-**`equals()`** 不能用于判断基本数据类型的变量，只能用来判断两个对象是否相等。`equals()` 方法存在于 `Object` 类中，而 `Object` 类是所有类的直接或间接父类，因此所有的类都有 `equals()` 方法。
+**`==`** có tác dụng khác nhau đối với kiểu cơ bản và kiểu reference:
 
-`Object` 类 `equals()` 方法：
+- Đối với kiểu dữ liệu cơ bản (primitive type), `==` so sánh giá trị.
+- Đối với kiểu dữ liệu reference (reference type), `==` so sánh reference có trỏ đến cùng một object hay không (hoặc đều là `null`), không phải so sánh địa chỉ bộ nhớ vật lý.
+
+> Đối với `==`, dù so sánh kiểu cơ bản hay kiểu reference, nó đều so sánh giá trị của toán hạng; reference value mô tả object mà nó trỏ đến, nhưng ngôn ngữ Java không định nghĩa nó là địa chỉ bộ nhớ vật lý có thể nhìn thấy.
+
+**`equals()`** không thể dùng để xác định biến kiểu dữ liệu cơ bản, chỉ có thể dùng để xác định hai object có bằng nhau không. Method `equals()` tồn tại trong class `Object`, mà class `Object` là parent class trực tiếp hoặc gián tiếp của tất cả các class, do đó tất cả các class đều có method `equals()`.
+
+Method `equals()` của class `Object`:
 
 ```java
 public boolean equals(Object obj) {
@@ -478,12 +528,12 @@ public boolean equals(Object obj) {
 }
 ```
 
-`equals()` 方法存在两种使用情况：
+Method `equals()` có hai trường hợp sử dụng:
 
-- **类没有重写 `equals()` 方法**：通过 `equals()` 比较该类的两个对象时，等价于通过“==”比较这两个对象，使用的默认是 `Object` 类 `equals()` 方法。
-- **类重写了 `equals()` 方法**：一般我们都重写 `equals()` 方法来比较两个对象中的属性是否相等；若它们的属性相等，则返回 true（即，认为这两个对象相等）。
+- **Class không override method `equals()`**: Khi so sánh hai object của class này thông qua `equals()`, tương đương với việc so sánh hai object này bằng "==", sử dụng mặc định method `equals()` của class `Object`.
+- **Class đã override method `equals()`**: Thông thường chúng ta override method `equals()` để so sánh các thuộc tính trong hai object có bằng nhau hay không; nếu các thuộc tính của chúng bằng nhau, trả về true (tức là coi hai object này bằng nhau).
 
-举个例子（这里只是为了举例。实际上，你按照下面这种写法的话，像 IDEA 这种比较智能的 IDE 都会提示你将 `==` 换成 `equals()`）：
+Ví dụ (ở đây chỉ là để minh họa. Thực tế, nếu bạn viết theo cách dưới đây, những IDE thông minh như IDEA sẽ gợi ý bạn thay `==` bằng `equals()`):
 
 ```java
 String a = new String("ab"); // a 为一个引用
@@ -496,11 +546,11 @@ System.out.println(a.equals(b));// true
 System.out.println(42 == 42.0);// true
 ```
 
-`String` 中的 `equals` 方法是被重写过的，因为 `Object` 的 `equals` 方法判断两个引用是否指向同一个对象，而 `String` 的 `equals` 方法比较的是字符串的值。
+Method `equals` trong `String` đã được override, vì method `equals` của `Object` xác định hai reference có trỏ đến cùng một object hay không, còn method `equals` của `String` so sánh giá trị của string.
 
-当使用字符串字面量创建 `String` 类型的对象（如 `String aa = "ab"`）时，虚拟机会在常量池中查找有没有已经存在的值和要创建的值相同的对象，如果有就把它赋给当前引用；如果没有，就在常量池中创建一个 `String` 对象并赋给当前引用。但当使用 `new` 关键字创建对象（如 `String a = new String("ab")`）时，虚拟机总是会在堆内存中**创建一个新的对象**并使用常量池中的值（如果没有，会先在字符串常量池中创建字符串对象 "ab"）进行初始化，然后赋给当前引用。
+Khi dùng string literal để tạo object kiểu `String` (như `String aa = "ab"`), virtual machine sẽ tìm trong constant pool xem có object nào đã tồn tại có giá trị giống với giá trị cần tạo không, nếu có thì gán nó cho reference hiện tại; nếu không có, thì tạo một object `String` trong constant pool và gán cho reference hiện tại. Nhưng khi dùng từ khóa `new` để tạo object (như `String a = new String("ab")`), virtual machine luôn **tạo một object mới** trong heap memory và dùng giá trị trong constant pool (nếu không có, sẽ tạo string object "ab" trong string constant pool trước) để khởi tạo, sau đó gán cho reference hiện tại.
 
-`String` 类 `equals()` 方法：
+Method `equals()` của class `String`:
 
 ```java
 public boolean equals(Object anObject) {
@@ -526,15 +576,15 @@ public boolean equals(Object anObject) {
 }
 ```
 
-### hashCode() 有什么用？
+### hashCode() dùng để làm gì?
 
-`hashCode()` 的作用是获取哈希码（`int` 整数），也称为散列码。这个哈希码的作用是确定该对象在哈希表中的索引位置。
+Tác dụng của `hashCode()` là lấy hash code (số nguyên `int`), còn gọi là散列码. Hash code này có tác dụng xác định vị trí index của object đó trong hash table.
 
 ![hashCode() 方法](https://oss.javaguide.cn/github/javaguide/java/basis/java-hashcode-method.png)
 
-`hashCode()` 定义在 JDK 的 `Object` 类中，这就意味着 Java 中的任何类都包含有 `hashCode()` 函数。另外需要注意的是：`Object` 的 `hashCode()` 方法是本地方法，也就是用 C 语言或 C++ 实现的。
+`hashCode()` được định nghĩa trong class `Object` của JDK, điều này có nghĩa là bất kỳ class nào trong Java đều chứa hàm `hashCode()`. Một điều cần lưu ý khác: method `hashCode()` của `Object` là native method, tức là được triển khai bằng ngôn ngữ C hoặc C++.
 
-> ⚠️ 注意：该方法在 **Oracle OpenJDK8** 中默认是 “使用线程局部状态来实现 Marsaglia's xor-shift 随机数生成”, 并不是 “地址” 或者 “地址转换而来”, 不同 JDK/VM 可能不同。在 **Oracle OpenJDK8** 中有六种生成方式（其中第五种是返回地址）, 通过添加 VM 参数: -XX:hashCode=4 启用第五种。参考源码:
+> ⚠️ Lưu ý: Trong Oracle OpenJDK 8, phương thức này mặc định sử dụng "trạng thái cục bộ của thread để thực hiện việc sinh số ngẫu nhiên bằng Marsaglia's xor-shift", chứ không phải "địa chỉ" hoặc "được chuyển đổi từ địa chỉ". Cách triển khai có thể khác nhau tùy JDK/VM. Trong Oracle OpenJDK 8 có sáu cách sinh mã (trong đó cách thứ năm là trả về địa chỉ). Có thể bật cách thứ năm bằng cách thêm tham số VM: -XX:hashCode=4. Tham khảo mã nguồn:
 >
 > - <https://hg.openjdk.org/jdk8u/jdk8u/hotspot/file/87ee5ee27509/src/share/vm/runtime/globals.hpp>（1127 行）
 > - <https://hg.openjdk.org/jdk8u/jdk8u/hotspot/file/87ee5ee27509/src/share/vm/runtime/synchronizer.cpp>（537 行开始）
@@ -543,69 +593,69 @@ public boolean equals(Object anObject) {
 public native int hashCode();
 ```
 
-散列表存储的是键值对(key-value)，它的特点是：**能根据“键”快速的检索出对应的“值”。这其中就利用到了散列码！（可以快速找到所需要的对象）**
+Hash table lưu trữ các cặp key-value, đặc điểm của nó là: **có thể nhanh chóng truy xuất "value" tương ứng dựa trên "key". Trong đó đã tận dụng hash code! (có thể nhanh chóng tìm thấy object cần thiết)**
 
-### 为什么要有 hashCode？
+### Tại sao cần có hashCode?
 
-我们以“HashSet 如何检查重复”为例子来说明为什么要有 hashCode？
+Chúng ta lấy ví dụ "HashSet kiểm tra trùng lặp như thế nào" để giải thích tại sao cần có hashCode?
 
-当我们把对象加入 HashSet 时，HashSet 会先调用对象的 `hashCode()` 方法，得到一个“哈希值”，并通过内部散列函数对这个哈希值再做一次简单的转换（比如取余），决定这条数据应该放进底层数组的哪一个桶（bucket，对应到底层数组的某个位置）：
+Khi chúng ta thêm object vào HashSet, HashSet sẽ gọi method `hashCode()` của object trước tiên, thu được một "hash value", và thông qua hàm hash nội bộ thực hiện thêm một lần biến đổi đơn giản đối với hash value này (ví dụ như lấy phần dư), để quyết định dữ liệu này nên được đặt vào bucket nào của mảng nền (bucket, tương ứng với một vị trí nào đó trong mảng nền):
 
-1. 如果该桶当前是空的，就直接将对象对应的节点插入到这个桶中。
-2. 如果该桶中已经有其他元素，HashSet 会在这个桶对应的链表或红黑树中逐个比较：
-   - 对于**哈希值不同**的节点，直接跳过；
-   - 对于**哈希值相同**的节点，则会进一步调用 equals() 方法来检查这两个对象是否“相等”：
-     – 如果 `equals()` 返回 true，说明集合中已经存在与当前对象等价的元素，`HashSet` 就不会再次加入它；
-     – 如果返回 false， 则认为是新元素，会将该对象作为一个新节点加入到**同一个桶**的链表或红黑树中。
+1. Nếu bucket đó hiện đang trống, trực tiếp chèn node tương ứng với object vào bucket này.
+2. Nếu bucket đó đã có các phần tử khác, HashSet sẽ so sánh lần lượt trong linked list hoặc red-black tree tương ứng với bucket này:
+   - Đối với các node có **hash value khác nhau**, trực tiếp bỏ qua;
+   - Đối với các node có **hash value giống nhau**, sẽ tiếp tục gọi method equals() để kiểm tra hai object này có "bằng nhau" hay không:
+     – Nếu `equals()` trả về true, chứng tỏ trong tập hợp đã tồn tại phần tử tương đương với object hiện tại, `HashSet` sẽ không thêm nó vào nữa;
+     – Nếu trả về false, thì coi là phần tử mới, sẽ thêm object đó như một node mới vào trong linked list hoặc red-black tree của **cùng một bucket**.
 
-通过先利用 `hashCode()` 将候选范围缩小到同一个桶内，再在桶内少量元素上调用 `equals()` 做精确判断，`HashSet` 大大减少了 `equals()` 的调用次数，从而提高了查找和插入的执行效率。
+Bằng cách sử dụng `hashCode()` trước tiên để thu hẹp phạm vi ứng viên vào cùng một bucket, sau đó gọi `equals()` trên một số ít phần tử trong bucket để đưa ra phán đoán chính xác, `HashSet` đã giảm đáng kể số lần gọi `equals()`, từ đó nâng cao hiệu suất thực thi của việc tìm kiếm và chèn.
 
-**那为什么 JDK 还要同时提供这两个方法呢？**
+**Vậy tại sao JDK còn phải cung cấp đồng thời cả hai method này?**
 
-这是因为在一些容器（比如 `HashMap`、`HashSet`）中，有了 `hashCode()` 之后，判断元素是否在对应容器中的效率会更高（参考添加元素进 `HashSet` 的过程）！
+Điều này là do trong một số container (như `HashMap`, `HashSet`), sau khi có `hashCode()`, hiệu suất xác định phần tử có trong container tương ứng hay không sẽ cao hơn (tham khảo quá trình thêm phần tử vào `HashSet`)!
 
-我们在前面也提到了添加元素进 `HashSet` 的过程，如果 `HashSet` 在对比的时候，同样的 `hashCode` 有多个对象，它会继续使用 `equals()` 来判断是否真的相同。也就是说 `hashCode` 帮助我们大大缩小了查找成本。
+Chúng ta cũng đã đề cập ở trên về quá trình thêm phần tử vào `HashSet`, nếu `HashSet` khi so sánh, cùng một `hashCode` có nhiều object, nó sẽ tiếp tục dùng `equals()` để xác định có thực sự giống nhau không. Điều đó nói lên rằng `hashCode` đã giúp chúng ta thu hẹp đáng kể chi phí tìm kiếm.
 
-**那为什么不只提供 `hashCode()` 方法呢？**
+**Vậy tại sao không chỉ cung cấp mỗi method `hashCode()`?**
 
-这是因为两个对象的 `hashCode` 值相等并不代表两个对象就相等。
+Điều này là do giá trị `hashCode` của hai object bằng nhau không có nghĩa là hai object đó bằng nhau.
 
-**那为什么两个对象有相同的 `hashCode` 值，它们也不一定是相等的？**
+**Vậy tại sao hai object có cùng giá trị `hashCode`, chúng cũng không nhất thiết là bằng nhau?**
 
-因为 `hashCode()` 所使用的哈希算法也许刚好会让多个对象传回相同的哈希值。越糟糕的哈希算法越容易碰撞，但这也与数据值域分布的特性有关（所谓哈希碰撞就是指不同的对象得到相同的 `hashCode` )。
+Bởi vì thuật toán hash mà `hashCode()` sử dụng có thể vừa hay khiến nhiều object trả về cùng một hash value. Thuật toán hash càng tệ thì càng dễ xảy ra collision, nhưng điều này cũng liên quan đến đặc tính phân bố miền giá trị của dữ liệu (cái gọi là hash collision chính là các object khác nhau nhận được cùng một `hashCode`).
 
-总结下来就是：
+Tóm lại:
 
-- 如果两个对象的 `hashCode` 值相等，那这两个对象不一定相等（哈希碰撞）。
-- 如果两个对象的 `hashCode` 值相等并且 `equals()` 方法也返回 `true`，我们才认为这两个对象相等。
-- 如果两个对象的 `hashCode` 值不相等，我们就可以直接认为这两个对象不相等。
+- Nếu giá trị `hashCode` của hai object bằng nhau, thì hai object đó không nhất thiết bằng nhau (hash collision).
+- Nếu giá trị `hashCode` của hai object bằng nhau và method `equals()` cũng trả về `true`, chúng ta mới coi hai object đó bằng nhau.
+- Nếu giá trị `hashCode` của hai object không bằng nhau, chúng ta có thể trực tiếp coi hai object đó không bằng nhau.
 
-相信大家看了我前面对 `hashCode()` 和 `equals()` 的介绍之后，下面这个问题已经难不倒你们了。
+Tin rằng sau khi đọc phần giới thiệu của tôi về `hashCode()` và `equals()` ở trên, câu hỏi dưới đây sẽ không làm khó được các bạn nữa.
 
-### 为什么重写 equals() 时必须重写 hashCode() 方法？
+### Tại sao khi override equals() thì phải override hashCode()?
 
-因为两个相等的对象的 `hashCode` 值必须是相等。也就是说如果 `equals` 方法判断两个对象是相等的，那这两个对象的 `hashCode` 值也要相等。
+Bởi vì giá trị `hashCode` của hai object bằng nhau thì phải bằng nhau. Nói cách khác, nếu method `equals` xác định hai object là bằng nhau, thì giá trị `hashCode` của hai object đó cũng phải bằng nhau.
 
-如果重写 `equals()` 时没有重写 `hashCode()` 方法的话就可能会导致 `equals` 方法判断是相等的两个对象，`hashCode` 值却不相等。
+Nếu khi override `equals()` mà không override method `hashCode()` thì có thể dẫn đến tình huống method `equals` xác định là hai object bằng nhau, nhưng giá trị `hashCode` lại không bằng nhau.
 
-**思考**：重写 `equals()` 时没有重写 `hashCode()` 方法的话，使用 `HashMap` 可能会出现什么问题。
+**Suy nghĩ**: Khi override `equals()` mà không override method `hashCode()`, sử dụng `HashMap` có thể gặp vấn đề gì?
 
-**总结**：
+**Tổng kết**:
 
-- `equals` 方法判断两个对象是相等的，那这两个对象的 `hashCode` 值也要相等。
-- 两个对象有相同的 `hashCode` 值，他们也不一定是相等的（哈希碰撞）。
+- Method `equals` xác định hai object là bằng nhau, thì giá trị `hashCode` của hai object đó cũng phải bằng nhau.
+- Hai object có cùng giá trị `hashCode`, chúng cũng không nhất thiết là bằng nhau (hash collision).
 
-更多关于 `hashCode()` 和 `equals()` 的内容可以查看：[Java hashCode() 和 equals()的若干问题解答](https://www.cnblogs.com/skywang12345/p/3324958.html)
+Thêm nội dung về `hashCode()` và `equals()` có thể xem tại: [Java hashCode() 和 equals()的若干问题解答](https://www.cnblogs.com/skywang12345/p/3324958.html)
 
 ## String
 
-### ⭐️ String、StringBuffer、StringBuilder 的区别？
+### ⭐️ Sự khác biệt giữa String, StringBuffer, StringBuilder?
 
-**可变性**
+**Tính khả biến (Mutability)**
 
-`String` 是不可变的（后面会详细分析原因），每次修改都会生成新的对象，并将引用指向新的实例，而 `StringBuffer` 和 `StringBuilder` 都是可变的，它们在修改字符串时不会创建新对象，而是直接在原有字符数组上进行操作。
+`String` là immutable (sẽ phân tích chi tiết nguyên nhân sau), mỗi lần sửa đổi đều tạo ra object mới và trỏ reference đến instance mới, trong khi `StringBuffer` và `StringBuilder` đều là mutable, chúng không tạo object mới khi sửa đổi string mà thao tác trực tiếp trên mảng ký tự gốc.
 
-`StringBuilder` 与 `StringBuffer` 都继承自 `AbstractStringBuilder` 类，在 `AbstractStringBuilder` 中也是使用字符数组保存字符串，不过没有使用 `final` 和 `private` 关键字修饰，最关键的是这个 `AbstractStringBuilder` 类还提供了很多修改字符串的方法比如 `append` 方法。
+`StringBuilder` và `StringBuffer` đều kế thừa từ class `AbstractStringBuilder`, trong `AbstractStringBuilder` cũng dùng mảng ký tự để lưu string, nhưng không dùng từ khóa `final` và `private` để修饰. Quan trọng nhất là class `AbstractStringBuilder` này còn cung cấp nhiều method sửa đổi string như method `append`.
 
 ```java
 abstract class AbstractStringBuilder implements Appendable, CharSequence {
@@ -623,30 +673,30 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
 }
 ```
 
-**线程安全性**
+**Tính an toàn luồng (Thread safety)**
 
-`String` 中的对象是不可变的，也就可以理解为常量，线程安全。`AbstractStringBuilder` 是 `StringBuilder` 与 `StringBuffer` 的公共父类，定义了一些字符串的基本操作，如 `expandCapacity`、`append`、`insert`、`indexOf` 等公共方法。`StringBuffer` 对方法加了同步锁或者对调用的方法加了同步锁，所以是线程安全的。`StringBuilder` 并没有对方法进行加同步锁，所以是非线程安全的。
+Object trong `String` là immutable, cũng có thể hiểu là constant, thread-safe. `AbstractStringBuilder` là parent class chung của `StringBuilder` và `StringBuffer`, định nghĩa một số thao tác cơ bản của string như `expandCapacity`, `append`, `insert`, `indexOf` và các method chung khác. `StringBuffer` đã thêm synchronized lock cho method hoặc cho method được gọi, nên là thread-safe. `StringBuilder` không thêm synchronized lock cho method, nên là non-thread-safe.
 
 <img src="https://oss.javaguide.cn/github/javaguide/java/basis/stringbuffer-methods.png" style="zoom:50%;" />
 
-**性能**
+**Hiệu năng**
 
-两者的性能差异主要来源于线程安全机制：
+Sự khác biệt về hiệu năng giữa hai loại chủ yếu đến từ cơ chế thread safety:
 
-- `StringBuffer` 的方法通常是同步的（线程安全），因此会带来一定的性能开销；
-- `StringBuilder` 没有同步开销（非线程安全），在单线程场景下通常具有更好的性能表现。
-  相同情况下使用 `StringBuilder` 相比使用 `StringBuffer` 仅能获得 10%~15% 左右的性能提升，但却要冒多线程不安全的风险。
-  另外，具体的性能差异并不是固定的，在现代 JVM 中由于锁优化（如锁消除），两者在某些场景下性能差距可能较小。
+- Method của `StringBuffer` thường là synchronized (thread-safe), do đó sẽ mang lại một lượng overhead nhất định về hiệu năng;
+- `StringBuilder` không có overhead đồng bộ (non-thread-safe), trong kịch bản single-thread thường có hiệu năng tốt hơn.
+  Trong cùng điều kiện, sử dụng `StringBuilder` so với `StringBuffer` chỉ có thể đạt được mức cải thiện hiệu năng khoảng 10%~15%, nhưng lại phải chịu rủi ro không an toàn trong multi-thread.
+  Ngoài ra, sự khác biệt hiệu năng cụ thể không phải là cố định, trong JVM hiện đại do lock optimization (như lock elimination), khoảng cách hiệu năng giữa hai loại trong một số kịch bản có thể khá nhỏ.
 
-**对于三者使用的总结：**
+**Tổng kết về cách sử dụng ba loại:**
 
-- 操作少量的数据: 适用 `String`
-- 单线程操作字符串缓冲区下操作大量数据: 适用 `StringBuilder`
-- 多线程操作字符串缓冲区下操作大量数据: 适用 `StringBuffer`
+- Thao tác với lượng dữ liệu nhỏ: dùng `String`
+- Single-thread thao tác lượng dữ liệu lớn trong string buffer: dùng `StringBuilder`
+- Multi-thread thao tác lượng dữ liệu lớn trong string buffer: dùng `StringBuffer`
 
-### ⭐️ String 为什么是不可变的？
+### ⭐️ Tại sao String là immutable?
 
-`String` 类中使用 `final` 关键字修饰字符数组来保存字符串，~~所以 `String` 对象是不可变的。~~
+Class `String` dùng từ khóa `final` để修饰 mảng ký tự nhằm lưu string, ~~因此 `String` 对象是不可变的。~~
 
 ```java
 public final class String implements java.io.Serializable, Comparable<String>, CharSequence {
@@ -668,7 +718,7 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 >
 > ```java
 > public final class String implements java.io.Serializable,Comparable<String>, CharSequence {
->     // @Stable 注解表示变量最多被修改一次，称为“稳定的”。
+>     // @Stable 注解表示变量最多被修改一次，称为"稳定的"。
 >     @Stable
 >     private final byte[] value;
 > }
@@ -691,7 +741,7 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 >
 > 这是官方的介绍：<https://openjdk.java.net/jeps/254>。
 
-### ⭐️ 字符串拼接用“+” 还是 StringBuilder?
+### ⭐️ Nối string dùng "+" hay StringBuilder?
 
 Java 不支持用户自定义运算符重载，但语言规范为字符串连接专门定义了 `+` 和 `+=` 运算符。
 
@@ -706,9 +756,9 @@ String str4 = str1 + str2 + str3;
 
 ![](https://oss.javaguide.cn/github/javaguide/java/image-20220422161637929.png)
 
-对于这里展示的 JDK 8 字节码，字符串“+”拼接被 `javac` 转换为 `StringBuilder.append()` 调用。JDK 9 起，`javac` 默认改用 `invokedynamic` 和 `StringConcatFactory`，因此不能把 `StringBuilder` 视为所有版本都必须采用的实现方式。
+对于这里展示的 JDK 8 字节码，字符串"+"拼接被 `javac` 转换为 `StringBuilder.append()` 调用。JDK 9 起，`javac` 默认改用 `invokedynamic` 和 `StringConcatFactory`，因此不能把 `StringBuilder` 视为所有版本都必须采用的实现方式。
 
-不过，在循环内使用“+”进行字符串的拼接的话，存在比较明显的缺陷：**编译器不会创建单个 `StringBuilder` 以复用，会导致创建过多的 `StringBuilder` 对象**。
+不过，在循环内使用"+"进行字符串的拼接的话，存在比较明显的缺陷：**编译器不会创建单个 `StringBuilder` 以复用，会导致创建过多的 `StringBuilder` 对象**。
 
 ```java
 String[] arr = {"he", "llo", "world"};
@@ -738,7 +788,7 @@ System.out.println(s);
 
 如果你使用 IDEA 的话，IDEA 自带的代码检查机制也会提示你修改代码。
 
-在 JDK 9 中，字符串相加“+”改为用动态方法 `makeConcatWithConstants()` 来实现，通过提前分配空间从而减少了部分临时对象的创建。然而这种优化主要针对简单的字符串拼接，如： `a+b+c`。对于循环中的大量拼接操作，仍然会逐个动态分配内存（类似于两个两个 append 的概念），并不如手动使用 StringBuilder 来进行拼接效率高。这个改进是 JDK9 的 [JEP 280](https://openjdk.org/jeps/280) 提出的，关于这部分改进的详细介绍，推荐阅读这篇文章：还在无脑用 [StringBuilder？来重温一下字符串拼接吧](https://juejin.cn/post/7182872058743750715) 以及参考 [issue#2442](https://github.com/Snailclimb/JavaGuide/issues/2442)。
+在 JDK 9 中，字符串相加"+"改为用动态方法 `makeConcatWithConstants()` 来实现，通过提前分配空间从而减少了部分临时对象的创建。然而这种优化主要针对简单的字符串拼接，如： `a+b+c`。对于循环中的大量拼接操作，仍然会逐个动态分配内存（类似于两个两个 append 的概念），并不如手动使用 StringBuilder 来进行拼接效率高。这个改进是 JDK9 的 [JEP 280](https://openjdk.org/jeps/280) 提出的，关于这部分改进的详细介绍，推荐阅读这篇文章：还在无脑用 [StringBuilder？来重温一下字符串拼接吧](https://juejin.cn/post/7182872058743750715) 以及参考 [issue#2442](https://github.com/Snailclimb/JavaGuide/issues/2442)。
 
 ### String#equals() 和 Object#equals() 有何区别？
 
@@ -770,7 +820,7 @@ System.out.println(aa==bb); // true
 
 下面开始详细分析。
 
-1、如果字符串常量池中不存在字符串对象 “abc”，那么它首先会在字符串常量池中创建字符串对象 "abc"，然后在堆内存中再创建其中一个字符串对象 "abc"。
+1、如果字符串常量池中不存在字符串对象 "abc"，那么它首先会在字符串常量池中创建字符串对象 "abc"，然后在堆内存中再创建其中一个字符串对象 "abc"。
 
 示例代码（JDK 1.8）：
 
@@ -808,14 +858,14 @@ String s1 = new String("abc");
 2. **复用已有字符串对象**：如果字符串常量池中已经存在内容相同的字符串对象，`ldc` 会将该对象的引用加载到操作数栈上。
 3. **没有则创建新对象并加入常量池**：如果字符串常量池中没有相同内容的字符串对象，JVM 会在常量池中创建一个新的字符串对象，并将其引用加载到操作数栈中。
 
-2、如果字符串常量池中已存在字符串对象“abc”，则只会在堆中创建 1 个字符串对象“abc”。
+2、如果字符串常量池中已存在字符串对象"abc"，则只会在堆中创建 1 个字符串对象"abc"。
 
 示例代码（JDK 1.8）：
 
 ```java
-// 字符串常量池中已存在字符串对象“abc”
+// 字符串常量池中已存在字符串对象"abc"
 String s1 = "abc";
-// 下面这段代码只会在堆中创建 1 个字符串对象“abc”
+// 下面这段代码只会在堆中创建 1 个字符串对象"abc"
 String s2 = new String("abc");
 ```
 
@@ -832,9 +882,9 @@ String s2 = new String("abc");
 13 return
 ```
 
-这里就不对上面的字节码进行详细注释了，7 这个位置的 `ldc` 命令不会在堆中创建新的字符串对象“abc”，这是因为 0 这个位置已经执行了一次 `ldc` 命令，已经在堆中创建过一次字符串对象“abc”了。7 这个位置执行 `ldc` 命令会直接返回字符串常量池中字符串对象“abc”对应的引用。
+这里就不对上面的字节码进行详细注释了，7 这个位置的 `ldc` 命令不会在堆中创建新的字符串对象"abc"，这是因为 0 这个位置已经执行了一次 `ldc` 命令，已经在堆中创建过一次字符串对象"abc"了。7 这个位置执行 `ldc` 命令会直接返回字符串常量池中字符串对象"abc"对应的引用。
 
-### String#intern 方法有什么作用？
+### String#intern 方法有什么作用?
 
 `String.intern()` 是一个 `native`（本地） 方法，用来处理字符串常量池中的字符串对象引用。它的工作流程可以概括为以下两种情况：
 
@@ -865,7 +915,7 @@ System.out.println(s3 == s4); // false
 System.out.println(s1 == s4); // true
 ```
 
-### String 类型的变量和常量做“+”运算时发生了什么？
+### String 类型的变量和常量做"+"运算时发生了什么？
 
 先来看字符串不加 `final` 关键字拼接的情况（JDK1.8）：
 
@@ -898,11 +948,11 @@ System.out.println(str4 == str5);//false
 
 - 基本数据类型( `byte`、`boolean`、`short`、`char`、`int`、`float`、`long`、`double`)以及字符串常量。
 - `final` 修饰的基本数据类型和字符串变量
-- 字符串通过 “+”拼接得到的字符串、基本数据类型之间算数运算（加减乘除）、基本数据类型的位运算（<<、\>>、\>>>）
+- 字符串通过 "+"拼接得到的字符串、基本数据类型之间算数运算（加减乘除）、基本数据类型的位运算（<<、\>>、\>>>）
 
 **引用的值在程序编译期是无法确定的，编译器无法对其进行优化。**
 
-对象引用和“+”的字符串拼接方式，实际上是通过 `StringBuilder` 调用 `append()` 方法实现的，拼接完成之后调用 `toString()` 得到一个 `String` 对象。
+对象引用和"+"的字符串拼接方式，实际上是通过 `StringBuilder` 调用 `append()` 方法实现的，拼接完成之后调用 `toString()` 得到一个 `String` 对象。
 
 ```java
 String str4 = new StringBuilder().append(str1).append(str2).toString();
@@ -947,3 +997,347 @@ public static String getStr() {
 - R 大（RednaxelaFX）关于常量折叠的回答：<https://www.zhihu.com/question/55976094/answer/147302764>
 
 <!-- @include: @article-footer.snippet.md -->
+
+> 🐛 **Đính chính:** Chúng ta biết rằng class được khai báo với từ khóa `final` thì không thể được kế thừa, method được khai báo với `final` thì không thể bị ghi đè, còn biến được khai báo với `final` nếu là kiểu nguyên thủy thì giá trị không thể thay đổi; nếu là kiểu tham chiếu thì không thể trỏ sang một đối tượng khác. Vì vậy, việc mảng lưu trữ chuỗi được khai báo với `final` **không phải là nguyên nhân cốt lõi khiến `String` bất biến**, bởi vì chuỗi được lưu trong mảng đó vẫn có thể thay đổi (trong trường hợp biến kiểu tham chiếu được khai báo với `final`).
+>
+> `String` thực sự bất biến vì các nguyên nhân sau:
+>
+> 1. Mảng lưu trữ chuỗi được khai báo với `final` và `private`, đồng thời class `String` không cung cấp/không công khai phương thức cho phép thay đổi chuỗi này.
+> 2. Class `String` được khai báo với `final`, khiến nó không thể được kế thừa, từ đó ngăn class con phá vỡ tính bất biến của `String`.
+>
+> Đọc thêm: [Hiểu thế nào về tính bất biến của giá trị kiểu String? - Câu hỏi trên Zhihu](https://www.zhihu.com/question/20618891/answer/114125846?utm_source=chatgpt.com)
+>
+> **Bổ sung** (từ issue 675): Kể từ Java 9, `String`, `StringBuilder` và `StringBuffer` chuyển sang sử dụng mảng `byte` để lưu trữ chuỗi.
+>
+> ```java
+> public final class String implements java.io.Serializable,Comparable<String>, CharSequence {
+>     // Annotation @Stable biểu thị rằng biến nhiều nhất chỉ được thay đổi một lần,
+>     // được gọi là "ổn định".
+>     @Stable
+>     private final byte[] value;
+> }
+>
+> abstract class AbstractStringBuilder implements Appendable, CharSequence {
+>     byte[] value;
+> }
+> ```
+>
+> **Tại sao Java 9 thay đổi cách triển khai bên dưới của** **`String`** **từ** **`char[]`** **sang** **`byte[]`** **?**
+>
+> Phiên bản mới của `String` hỗ trợ hai cơ chế mã hóa: Latin-1 và UTF-16. Nếu tất cả ký tự trong chuỗi đều có thể biểu diễn bằng Latin-1 thì `String` sử dụng Latin-1; nếu không thì sử dụng UTF-16. Các ký tự tiếng Trung không nằm trong phạm vi ký tự của Latin-1. Với cơ chế Latin-1, mỗi ký tự chỉ cần một byte để lưu trữ, vì vậy so với `char[]` trước đây có thể tiết kiệm một nửa dung lượng dùng để lưu dữ liệu ký tự.
+>
+> JDK cũng chỉ ra rằng phần lớn các đối tượng chuỗi chỉ chứa những ký tự có thể biểu diễn bằng Latin-1.
+>
+> Nếu chuỗi chứa các ký tự mà Latin-1 không thể biểu diễn, chẳng hạn như tiếng Trung, thì bên trong sẽ sử dụng UTF-16; mỗi code unit được lưu bằng hai byte.
+>
+> Đây là phần giới thiệu chính thức về thay đổi này: [JEP 254 - Compact Strings](https://openjdk.java.net/jeps/254?utm_source=chatgpt.com)
+
+### ⭐️ Nối chuỗi bằng `+` hay `StringBuilder`?
+
+Java không hỗ trợ **operator overloading** do người dùng tự định nghĩa, nhưng đặc tả ngôn ngữ Java định nghĩa riêng toán tử `+` và `+=` cho phép nối chuỗi.
+
+```java
+String str1 = "he";
+String str2 = "llo";
+String str3 = "world";
+String str4 = str1 + str2 + str3;
+```
+
+Bytecode tương ứng với đoạn code trên như sau:
+
+Đối với bytecode của JDK 8 được minh họa ở đây, phép nối chuỗi bằng toán tử `+` được `javac` chuyển đổi thành các lời gọi `StringBuilder.append()`.
+
+Từ JDK 9 trở đi, `javac` mặc định sử dụng `invokedynamic` và `StringConcatFactory`, vì vậy không nên coi `StringBuilder` là cơ chế triển khai bắt buộc cho mọi phiên bản Java.
+
+Tuy nhiên, nếu sử dụng toán tử `+` để nối chuỗi bên trong vòng lặp thì tồn tại một nhược điểm khá rõ ràng: **trình biên dịch không tạo một `StringBuilder` duy nhất để tái sử dụng, dẫn đến việc tạo ra quá nhiều đối tượng `StringBuilder`.**
+
+```java
+String[] arr = {"he", "llo", "world"};
+String s = "";
+for (int i = 0; i < arr.length; i++) {
+    s += arr[i];
+}
+System.out.println(s);
+```
+
+Đối tượng `StringBuilder` được tạo bên trong vòng lặp. Điều này có nghĩa là mỗi lần lặp lại tạo ra một đối tượng `StringBuilder`.
+
+Nếu sử dụng trực tiếp đối tượng `StringBuilder` để nối chuỗi thì sẽ không gặp vấn đề này:
+
+```java
+String[] arr = {"he", "llo", "world"};
+StringBuilder s = new StringBuilder();
+for (String value : arr) {
+    s.append(value);
+}
+System.out.println(s);
+```
+
+Nếu sử dụng IntelliJ IDEA, cơ chế kiểm tra code tích hợp của IDEA cũng sẽ cảnh báo và đề xuất bạn sửa đoạn code.
+
+Trong JDK 9, phép nối chuỗi bằng toán tử `+` được thay đổi để sử dụng phương thức động `makeConcatWithConstants()`. Cơ chế này phân bổ trước không gian cần thiết, từ đó giảm một phần số lượng object tạm thời được tạo ra.
+
+Tuy nhiên, tối ưu hóa này chủ yếu nhắm đến các phép nối chuỗi đơn giản, chẳng hạn `a+b+c`. Đối với một lượng lớn phép nối chuỗi trong vòng lặp, bộ nhớ vẫn được cấp phát động cho từng lần nối, tương tự như việc thực hiện `append` từng phần, và nhìn chung vẫn không hiệu quả bằng việc chủ động sử dụng `StringBuilder`.
+
+Thay đổi này được đề xuất trong **JEP 280** của JDK 9. [JEP 280 - Indify String Concatenation](https://openjdk.org/jeps/280?utm_source=chatgpt.com)
+
+### `String#equals()` và `Object#equals()` khác nhau như thế nào?
+
+Phương thức `equals` trong `String` đã được **ghi đè (override)**. Nó dùng để so sánh xem **giá trị của hai chuỗi String có bằng nhau hay không**.
+
+Trong khi đó, phương thức `equals` của `Object` mặc định kiểm tra xem **hai tham chiếu có trỏ đến cùng một đối tượng hay không**.
+
+### ⭐️ Bạn có biết tác dụng của String Constant Pool không?
+
+**String Constant Pool (bể hằng chuỗi)** là một khu vực mà JVM dành riêng cho các chuỗi (`String`) nhằm cải thiện hiệu năng và giảm mức tiêu thụ bộ nhớ. Mục đích chính là tránh việc tạo ra các chuỗi trùng lặp.
+
+```java
+// 1. Tìm đối tượng chuỗi "ab" trong String Constant Pool.
+// Nếu chưa tồn tại thì tạo "ab" và đưa vào String Constant Pool.
+//
+// 2. Gán tham chiếu đến đối tượng chuỗi "ab" cho aa.
+String aa = "ab";
+
+// Trực tiếp trả về đối tượng chuỗi "ab" trong String Constant Pool
+// và gán cho tham chiếu bb.
+String bb = "ab";
+
+System.out.println(aa == bb); // true
+```
+
+Có thể xem thêm phần giới thiệu về String Constant Pool trong bài [Chi tiết về các vùng bộ nhớ Java](https://javaguide.cn/java/jvm/memory-area.html?utm_source=chatgpt.com).
+
+### ⭐️ Câu lệnh `String s1 = new String("abc");` tạo ra bao nhiêu đối tượng String?
+
+Đầu tiên, đáp án là: **có thể tạo 1 hoặc 2 đối tượng String.**
+
+1. **Nếu String Constant Pool chưa tồn tại `"abc"`:** sẽ tạo 2 đối tượng String. Một đối tượng nằm trong String Constant Pool, được tạo/được đảm bảo tồn tại khi thực hiện `ldc`. Một đối tượng nằm trên heap, được tạo bởi `new String()` và được khởi tạo bằng `"abc"` trong String Constant Pool.
+2. **Nếu String Constant Pool đã tồn tại `"abc"`:** chỉ tạo 1 đối tượng String. Đối tượng này nằm trên heap, được tạo bởi `new String()` và sử dụng `"abc"` trong String Constant Pool để khởi tạo.
+
+Bây giờ phân tích chi tiết.
+
+#### 1. String Constant Pool chưa tồn tại `"abc"`
+
+Nếu String Constant Pool chưa tồn tại đối tượng chuỗi `"abc"`, JVM trước tiên sẽ đảm bảo đối tượng chuỗi `"abc"` tồn tại trong String Constant Pool, sau đó tạo thêm một đối tượng `String` `"abc"` trên heap.
+
+Code mẫu (JDK 1.8):
+
+```java
+String s1 = new String("abc");
+```
+
+Bytecode tương ứng:
+
+```java
+// Cấp phát một đối tượng String chưa được khởi tạo trên heap.
+// #2 là một symbolic reference trong constant pool, trỏ đến class java/lang/String.
+// Trong giai đoạn linking của quá trình class loading, symbolic reference này
+// sẽ được resolve thành direct reference, tức trỏ đến class java/lang/String thực tế.
+0 new #2 <java/lang/String>
+
+// Sao chép reference của đối tượng String trên đỉnh operand stack,
+// chuẩn bị cho việc gọi constructor.
+// Lúc này operand stack có hai reference giống nhau:
+// một dùng để truyền vào constructor,
+// một dùng để giữ reference của object mới để sau đó lưu vào local variable table.
+3 dup
+
+// JVM kiểm tra String Constant Pool trước xem "abc" đã tồn tại hay chưa.
+// Nếu đã tồn tại thì trực tiếp trả về reference của chuỗi đó.
+// Nếu chưa tồn tại thì JVM tạo string literal "abc" trong pool
+// và trả về reference của nó.
+// Reference này được push lên operand stack để làm tham số cho constructor.
+4 ldc #3 <abc>
+
+// Gọi constructor, sử dụng "abc" được load từ constant pool
+// để khởi tạo đối tượng String trên heap.
+// Đối tượng String mới có nội dung giống "abc" trong constant pool,
+// nhưng là một object độc lập được lưu trên heap.
+6 invokespecial #4 <java/lang/String.<init> : (Ljava/lang/String;)V>
+
+// Lưu reference của đối tượng String trên heap vào local variable table.
+9 astore_1
+
+// Trả về và kết thúc method.
+10 return
+```
+
+Lệnh `ldc` (load constant) thực sự dùng để load nhiều loại constant từ constant pool, bao gồm string constant, integer constant, floating-point constant, thậm chí cả class reference.
+
+Đối với string constant, lệnh `ldc` hoạt động như sau:
+
+1. **Load chuỗi từ constant pool:** `ldc` trước tiên kiểm tra String Constant Pool xem đã có đối tượng chuỗi có cùng nội dung hay chưa.
+2. **Tái sử dụng object chuỗi đã tồn tại:** nếu String Constant Pool đã có đối tượng chuỗi có cùng nội dung, `ldc` sẽ load reference của đối tượng đó lên operand stack.
+3. **Nếu chưa tồn tại thì tạo và đưa vào pool:** nếu String Constant Pool chưa có đối tượng chuỗi có cùng nội dung, JVM sẽ tạo một đối tượng chuỗi mới trong pool và load reference của nó lên operand stack.
+
+#### 2. String Constant Pool đã tồn tại `"abc"`
+
+Nếu String Constant Pool đã tồn tại đối tượng chuỗi `"abc"` thì chỉ tạo **1 đối tượng String mới trên heap**.
+
+Ví dụ:
+
+```java
+// String Constant Pool đã tồn tại đối tượng chuỗi "abc".
+String s1 = "abc";
+
+// Đoạn code dưới đây chỉ tạo thêm 1 đối tượng String "abc" trên heap.
+String s2 = new String("abc");
+```
+
+Bytecode tương ứng:
+
+```java
+0 ldc #2 <abc>
+2 astore_1
+3 new #3 <java/lang/String>
+6 dup
+7 ldc #2 <abc>
+9 invokespecial #4 <java/lang/String.<init> : (Ljava/lang/String;)V>
+12 astore_2
+13 return
+```
+
+Ở đây không cần giải thích chi tiết toàn bộ bytecode phía trên nữa.
+
+Tại vị trí `7`, lệnh `ldc` **không tạo một đối tượng String `"abc"` mới trên heap**, bởi tại vị trí `0`, một lệnh `ldc` đã được thực thi và JVM đã đảm bảo đối tượng chuỗi `"abc"` tương ứng trong String Constant Pool.
+
+Lệnh `ldc` tại vị trí `7` sẽ trực tiếp trả về reference đến đối tượng chuỗi `"abc"` trong String Constant Pool.
+
+### Phương thức `String#intern()` có tác dụng gì?
+
+`String.intern()` là một phương thức `native` (phương thức bản địa), dùng để xử lý reference của các đối tượng chuỗi trong String Constant Pool.
+
+Có thể tóm tắt quy trình hoạt động thành hai trường hợp:
+
+1. **Constant Pool đã có chuỗi có cùng nội dung:** nếu String Constant Pool đã có một đối tượng `String` có nội dung giống với chuỗi gọi `intern()`, phương thức `intern()` sẽ trực tiếp trả về reference của đối tượng đó trong pool.
+2. **Constant Pool chưa có chuỗi có cùng nội dung:** nếu String Constant Pool chưa có đối tượng có nội dung giống với chuỗi gọi `intern()`, phương thức `intern()` sẽ đưa reference của đối tượng String hiện tại vào String Constant Pool và trả về reference đó.
+
+**Tóm lại:**
+
+- Tác dụng chính của `intern()` là đảm bảo tính duy nhất của reference chuỗi trong String Constant Pool.
+- Khi gọi `intern()`, nếu constant pool đã tồn tại chuỗi có cùng nội dung thì trả về reference của object đã có trong pool; nếu chưa tồn tại thì đưa chuỗi hiện tại vào pool và trả về reference của nó.
+
+Ví dụ (JDK 1.8):
+
+```java
+// s1 trỏ đến đối tượng "Java" trong String Constant Pool.
+String s1 = "Java";
+
+// s2 cũng trỏ đến đối tượng "Java" trong String Constant Pool,
+// cùng là một object với s1.
+String s2 = s1.intern();
+
+// Tạo một đối tượng "Java" mới trên heap, s3 trỏ đến object này.
+String s3 = new String("Java");
+
+// s4 trỏ đến đối tượng "Java" trong String Constant Pool,
+// cùng là một object với s1.
+String s4 = s3.intern();
+
+// s1 và s2 trỏ đến cùng một object trong String Constant Pool.
+System.out.println(s1 == s2); // true
+
+// s3 trỏ đến object trên heap, s4 trỏ đến object trong String Constant Pool,
+// nên hai reference khác nhau.
+System.out.println(s3 == s4); // false
+
+// s1 và s4 đều trỏ đến cùng một object trong String Constant Pool.
+System.out.println(s1 == s4); // true
+```
+
+### Điều gì xảy ra khi biến kiểu `String` và constant thực hiện phép toán `+`?
+
+Trước tiên, xét trường hợp nối chuỗi mà không sử dụng từ khóa `final` (JDK 1.8):
+
+```java
+String str1 = "str";
+String str2 = "ing";
+String str3 = "str" + "ing";
+String str4 = str1 + str2;
+String str5 = "string";
+
+System.out.println(str3 == str4);// false
+System.out.println(str3 == str5);// true
+System.out.println(str4 == str5);// false
+```
+
+> **Lưu ý:** Để so sánh xem giá trị của hai chuỗi `String` có bằng nhau hay không, nên sử dụng phương thức `equals()`.
+>
+> Phương thức `equals` trong `String` đã được ghi đè. `equals` của `Object` kiểm tra xem hai reference có trỏ đến cùng một object hay không, trong khi `equals` của `String` so sánh giá trị của hai chuỗi có bằng nhau hay không.
+>
+> Nếu sử dụng `==` để so sánh hai chuỗi, IntelliJ IDEA cũng sẽ cảnh báo và đề xuất thay thế bằng `equals()`.
+
+**Đối với các biểu thức chuỗi mà giá trị có thể được xác định tại thời điểm biên dịch, compiler sẽ thực hiện Constant Folding và ghi kết quả dưới dạng string constant vào constant pool của file class; đối tượng String tương ứng sẽ được tạo và intern vào String Pool tại runtime.**
+
+Trong quá trình biên dịch, compiler `javac` sẽ thực hiện một tối ưu hóa code gọi là **Constant Folding**.
+
+Constant Folding sẽ tính trước giá trị của một constant expression và đưa giá trị đó trực tiếp vào code được sinh ra. Đây là một trong số rất ít các biện pháp tối ưu hóa mà compiler `javac` thực hiện trên source code (phần lớn tối ưu hóa code được thực hiện bởi JIT compiler).
+
+Ví dụ, với:
+
+```java
+String str3 = "str" + "ing";
+```
+
+compiler sẽ tối ưu thành:
+
+```java
+String str3 = "string";
+```
+
+Không phải tất cả constant đều được Constant Folding. Chỉ những constant mà compiler có thể xác định giá trị ngay trong quá trình biên dịch mới có thể được tối ưu:
+
+- Các kiểu dữ liệu nguyên thủy (`byte`, `boolean`, `short`, `char`, `int`, `float`, `long`, `double`) và string constant.
+- Biến kiểu dữ liệu nguyên thủy và biến `String` được khai báo với `final`.
+- Chuỗi tạo ra bằng phép nối `+`, phép toán số học giữa các kiểu dữ liệu nguyên thủy (cộng, trừ, nhân, chia), và phép toán bit trên các kiểu dữ liệu nguyên thủy (`<<`, `>>`, `>>>`).
+
+**Giá trị của reference không thể được xác định tại thời điểm biên dịch, vì vậy compiler không thể tối ưu nó.**
+
+Cách nối chuỗi giữa object reference và toán tử `+` thực tế được triển khai thông qua việc gọi `append()` của `StringBuilder`. Sau khi nối xong, `toString()` được gọi để tạo ra một đối tượng `String`.
+
+```java
+String str4 = new StringBuilder().append(str1).append(str2).toString();
+```
+
+Trong quá trình viết code thông thường, nên hạn chế việc nối nhiều đối tượng chuỗi nếu không cần thiết, bởi mỗi lần nối có thể tạo ra object mới. Nếu cần xây dựng hoặc thay đổi nội dung chuỗi, có thể sử dụng `StringBuilder` hoặc `StringBuffer`.
+
+Tuy nhiên, sau khi biến `String` được khai báo với từ khóa `final`, compiler có thể coi nó như một constant để xử lý.
+
+Ví dụ:
+
+```java
+final String str1 = "str";
+final String str2 = "ing";
+
+// Hai biểu thức dưới đây thực chất tương đương nhau.
+String c = "str" + "ing"; // object trong String Constant Pool
+String d = str1 + str2;   // object trong String Constant Pool
+
+System.out.println(c == d); // true
+```
+
+Sau khi được khai báo với từ khóa `final`, `String` có thể được compiler xử lý như một constant. Compiler có thể xác định giá trị của nó ngay trong quá trình biên dịch, tương đương với việc truy cập một constant.
+
+Nếu compiler chỉ có thể biết giá trị chính xác của biến tại runtime thì không thể thực hiện tối ưu hóa này.
+
+Ví dụ (`str2` chỉ có thể xác định giá trị tại runtime):
+
+```java
+final String str1 = "str";
+final String str2 = getStr();
+
+String c = "str" + "ing"; // object trong String Constant Pool
+String d = str1 + str2;   // tạo object mới trên heap
+
+System.out.println(c == d); // false
+
+public static String getStr() {
+    return "ing";
+}
+```
+
+## Tài liệu tham khảo
+
+- Phân tích chuyên sâu về `String#intern`: [In-depth Understanding String.intern() - Meituan](https://tech.meituan.com/2014/03/06/in-depth-understanding-string-intern.html?utm_source=chatgpt.com)
+- Phân tích source code `Java String`: [Java String 源码解读](http://keaper.cn/2020/09/08/java-string-mian-mian-guan/?utm_source=chatgpt.com)
+- Câu trả lời của R 大 (RednaxelaFX) về Constant Folding: [Zhihu - Constant Folding](https://www.zhihu.com/question/55976094/answer/147302764?utm_source=chatgpt.com)
