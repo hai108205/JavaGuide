@@ -1,6 +1,6 @@
 ---
-title: 从面试官和候选者的角度谈如何准备技术初试
-description: "从面试官和候选者的角度谈如何准备技术初试：围绕技术知识与面试总结梳理关键概念、常见问题与实践要点，帮助你高效学习与备战面试。"
+title: Bàn về cách chuẩn bị cho vòng kỹ thuật đầu tiên từ góc nhìn của người phỏng vấn và ứng viên
+description: "Bàn về cách chuẩn bị cho vòng kỹ thuật đầu tiên từ góc nhìn của người phỏng vấn và ứng viên: hệ thống lại các khái niệm then chốt, câu hỏi thường gặp và điểm mấu chốt thực hành xoay quanh tri thức kỹ thuật và tổng kết phỏng vấn, giúp bạn học tập hiệu quả và sẵn sàng cho buổi phỏng vấn."
 category: 技术文章精选集
 author: 琴水玉
 tag:
@@ -11,211 +11,211 @@ head:
       content: 技术面试准备,面试官视角,候选人视角,技术基础,业务考察,面试技巧,技术深度广度,面试方法论
 ---
 
-> **推荐语**：从面试官和面试者两个角度探讨了技术面试！非常不错！
+> **Lời đề cử**: Bàn về kỹ thuật phỏng vấn từ cả góc nhìn của người phỏng vấn lẫn người được phỏng vấn! Rất đáng đọc!
 >
-> **内容概览：**
+> **Tổng quan nội dung:**
 >
-> - 通过技术基础考察候选者，才能考察到候选者的真实技术实力：技术深度和广度。
-> - 实战与理论结合。比如，候选人叙述 JVM 内存模型布局之后，可以接着问：有哪些原因可能会导致 OOM , 有哪些预防措施? 你是否遇到过内存泄露的问题? 如何排查和解决这类问题?
-> - 项目经历考察不宜超过两个。因为要深入考察一个项目的详情，所占用的时间还是比较大的。一般来说，会让候选人挑选一个他或她觉得最有收获的/最有挑战的/印象最深刻的/自己觉得特有意思的项目。然后围绕这个项目进行发问。通常是从项目背景出发，考察项目的技术栈、项目模块及交互的整体理解、项目中遇到的有挑战性的技术问题及解决方案、排查和解决问题、代码可维护性问题、工程质量保障等。
-> - 多问少说，让候选者多表现。根据候选者的回答适当地引导或递进或横向移动。
+> - Chỉ thông qua đánh giá nền tảng kỹ thuật mới có thể kiểm tra được thực lực kỹ thuật thật sự của ứng viên: chiều sâu và chiều rộng kỹ thuật.
+> - Kết hợp thực chiến và lý thuyết. Ví dụ, sau khi ứng viên trình bày về cấu trúc bố cục mô hình bộ nhớ JVM, có thể hỏi tiếp: những nguyên nhân nào có thể dẫn đến OOM, có những biện pháp phòng ngừa nào? Bạn đã từng gặp sự cố rò rỉ bộ nhớ (memory leak) chưa? Làm thế nào để truy tìm và giải quyết những vấn đề dạng này?
+> - Số dự án được đánh giá trong phần kinh nghiệm dự án không nên quá hai. Bởi vì để đánh giá sâu chi tiết của một dự án, thời gian tiêu tốn là khá lớn. Thông thường, sẽ để ứng viên chọn ra một dự án mà anh ấy hoặc cô ấy cảm thấy thu hoạch được nhiều nhất / thách thức nhất / để lại ấn tượng sâu sắc nhất / tự thấy thú vị đặc biệt. Sau đó xoay quanh dự án này để đặt câu hỏi. Thường bắt đầu từ bối cảnh dự án, đánh giá tech stack của dự án, hiểu biết tổng thể về các module và tương tác (interaction) của dự án, những vấn đề kỹ thuật đầy thách thức và giải pháp gặp phải trong dự án, việc truy tìm và giải quyết vấn đề, vấn đề khả năng bảo trì code, đảm bảo chất lượng công trình, v.v.
+> - Hỏi nhiều nói ít, để ứng viên thể hiện nhiều hơn. Dựa trên câu trả lời của ứng viên để dẫn dắt, đào sâu hoặc mở rộng ngang một cách thích hợp.
 >
-> **原文地址：** <https://www.cnblogs.com/lovesqcc/p/15169365.html>
+> **Địa chỉ bài viết gốc:** <https://www.cnblogs.com/lovesqcc/p/15169365.html>
 
-## 考察目标和思路
+## Mục tiêu và tư duy đánh giá
 
-首先明确，技术初试的考察目标：
+Trước tiên hãy làm rõ, mục tiêu đánh giá của vòng kỹ thuật đầu tiên:
 
-- 候选人的技术基础；
-- 候选人解决问题的思路和能力。
+- Nền tảng kỹ thuật của ứng viên;
+- Tư duy và năng lực giải quyết vấn đề của ứng viên.
 
-技术基础是基石（冰山之下的东西），占七分， 解决问题的思路和能力是落地（冰山之上露出的部分），占三分。 业务和技术基础考察，三七开。
+Nền tảng kỹ thuật là nền móng (phần nằm dưới mặt nước của tảng băng), chiếm bảy phần; tư duy và năng lực giải quyết vấn đề là phần hiện thực (phần nhô lên trên mặt nước của tảng băng), chiếm ba phần. Đánh giá nghiệp vụ và nền tảng kỹ thuật theo tỷ lệ bảy-ba.
 
-## 技术基础考察
+## Đánh giá nền tảng kỹ thuật
 
-### 为什么要考察技术基础?
+### Vì sao phải đánh giá nền tảng kỹ thuật?
 
-程序员最重要的两种技术思维能力，是逻辑思维能力和抽象设计能力。逻辑思维能力是基础，抽象设计能力是高阶。 考察技术基础，正好可以同时考察这两种思维能力。能不能理解基础技术概念及关联，是考察逻辑思维能力；能不能把业务问题抽象成技术问题并合理的组织映射，是考察抽象设计能力。
+Hai loại tư duy kỹ thuật quan trọng nhất của lập trình viên là tư duy logic và tư duy thiết kế trừu tượng. Tư duy logic là nền tảng, tư duy thiết kế trừu tượng là cấp độ cao hơn. Đánh giá nền tảng kỹ thuật vừa vặn có thể đồng thời kiểm tra được hai loại tư duy này. Việc có hiểu được các khái niệm kỹ thuật cơ bản và mối liên hệ giữa chúng hay không là kiểm tra tư duy logic; việc có thể trừu tượng hóa bài toán nghiệp vụ thành bài toán kỹ thuật và tổ chức ánh xạ một cách hợp lý hay không là kiểm tra tư duy thiết kế trừu tượng.
 
-绝大部分业务问题，都可以抽象成技术问题。在某种意义上，业务问题只是技术问题的领域化表述。
+Phần lớn các bài toán nghiệp vụ đều có thể trừu tượng hóa thành bài toán kỹ thuật. Theo một nghĩa nào đó, bài toán nghiệp vụ chỉ là cách diễn đạt bài toán kỹ thuật theo lĩnh vực (domain) cụ thể.
 
-因此，**通过技术基础考察候选者，才能考察到候选者的真实技术实力：技术深度和广度。**
+Vì vậy, **chỉ thông qua đánh giá nền tảng kỹ thuật mới có thể kiểm tra được thực lực kỹ thuật thật sự của ứng viên: chiều sâu và chiều rộng kỹ thuật.**
 
-### 技术基础怎么考察？
+### Nền tảng kỹ thuật được đánh giá như thế nào?
 
-技术基础怎么考察？通过有效的多角度的发问模式来考察。
+Nền tảng kỹ thuật được đánh giá như thế nào? Thông qua mô hình hỏi đáp hiệu quả từ nhiều góc độ.
 
-#### 是什么-为什么
+#### Là gì - Tại sao
 
-是什么考察对概念的基本理解，为什么考察对概念的实现原理。
+"Là gì" kiểm tra hiểu biết cơ bản về khái niệm, "tại sao" kiểm tra nguyên lý triển khai của khái niệm.
 
-比如：索引是什么？ 索引是如何实现的？
+Ví dụ: Chỉ mục (index) là gì? Chỉ mục được triển khai như thế nào?
 
-#### 引导-横向发问-深入发问
+#### Dẫn dắt - Hỏi ngang - Hỏi sâu
 
-引导性，比如 “你对 Java 同步工具熟悉吗？” 作个试探，得到肯定答复后，可以进一步问：“你熟悉哪些同步工具类？” 了解候选者的广度；
+Tính dẫn dắt, ví dụ thử dò với câu hỏi "Bạn có quen thuộc với các công cụ đồng bộ (synchronization) của Java không?", sau khi nhận được câu trả lời khẳng định, có thể hỏi tiếp: "Bạn quen thuộc những lớp công cụ đồng bộ nào?", để đánh giá chiều rộng của ứng viên;
 
-获取候选者的回答后，可以进一步问：“ 谈谈 `ConcurrentHashMap` 或 `AQS` 的实现原理？”
+Sau khi nhận được câu trả lời của ứng viên, có thể hỏi tiếp: "Hãy trình bày nguyên lý triển khai của `ConcurrentHashMap` hoặc `AQS`?"
 
-一个人在多大程度上把技术原理能讲得清晰，包括思路和细节，说明他对技术的掌握能力有多强。
+Một người trình bày nguyên lý kỹ thuật rõ ràng đến mức nào, bao gồm cả tư duy và chi tiết, thể hiện khả năng nắm vững kỹ thuật của người đó mạnh đến đâu.
 
-#### 跳跃式/交叉式发问
+#### Hỏi nhảy cóc / Hỏi chéo
 
-比如：讲到哈希高效查找，可以谈谈哈希一致性算法 。 两者既有关联又有很多不同点。也是一种技术广度的考察方法。
+Ví dụ: khi nói đến tra cứu hiệu quả bằng băm (hash), có thể bàn về thuật toán băm nhất quán (consistent hashing). Hai thứ vừa có liên quan vừa có nhiều điểm khác biệt. Đây cũng là một cách đánh giá chiều rộng kỹ thuật.
 
-#### 总结性发问
+#### Hỏi tổng kết
 
-比如：你在做 XXX 中，获得了哪些可以分享的经验？ 考察候选人的归纳总结能力。
+Ví dụ: Trong quá trình làm XXX, bạn rút ra được những kinh nghiệm nào có thể chia sẻ? Điều này kiểm tra khả năng khái quát, tổng kết của ứng viên.
 
-#### 实战与理论结合
+#### Kết hợp thực chiến và lý thuyết
 
-比如，候选人叙述 JVM 内存模型布局之后，可以接着问：有哪些原因可能会导致 OOM , 有哪些预防措施? 你是否遇到过内存泄露的问题? 如何排查和解决这类问题?
+Ví dụ, sau khi ứng viên trình bày về cấu trúc bố cục mô hình bộ nhớ JVM, có thể hỏi tiếp: những nguyên nhân nào có thể dẫn đến OOM, có những biện pháp phòng ngừa nào? Bạn đã từng gặp sự cố rò rỉ bộ nhớ chưa? Làm thế nào để truy tìm và giải quyết những vấn đề dạng này?
 
-比如，候选人有谈到 SQL 优化和索引优化，那就正好谈谈索引的实现原理，如何建立最佳索引？
+Ví dụ, nếu ứng viên có nhắc đến tối ưu SQL và tối ưu chỉ mục, thì đó là dịp tốt để trao đổi về nguyên lý triển khai chỉ mục, làm thế nào để xây dựng chỉ mục tối ưu nhất?
 
-再比如，候选人有谈到事务，那就正好谈谈事务实现原理，隔离级别，快照实现等；
+Một ví dụ khác, nếu ứng viên có nhắc đến giao dịch (transaction), thì hãy nhân dịp đó trao đổi về nguyên lý triển khai giao dịch, mức cô lập (isolation level), cách triển khai snapshot, v.v.;
 
-#### 熟悉与不熟悉结合
+#### Kết hợp phần quen thuộc và chưa quen thuộc
 
-针对候选人简历上写的熟悉的部分，和没有写出的都问下。比如候选人简历上写着：熟悉 JVM 内存模型， 那我就考察下内存管理相关（熟悉部分），再考察下 Java 并发工具类（不确定是否熟悉部分）。
+Hỏi cả những phần ứng viên ghi là quen thuộc trên CV lẫn những phần không ghi. Ví dụ nếu CV của ứng viên ghi: quen thuộc mô hình bộ nhớ JVM, thì tôi sẽ kiểm tra phần quản lý bộ nhớ (phần quen thuộc), rồi kiểm tra thêm các lớp công cụ đồng bộ của Java (phần chưa chắc ứng viên có quen thuộc hay không).
 
-#### 死知识与活知识结合
+#### Kết hợp kiến thức chết và kiến thức sống
 
-比如，查找算法有哪些？顺序查找、二分查找、哈希查找。这些大家通常能说出来，也是“死知识”。
+Ví dụ, có những thuật toán tìm kiếm nào? Tìm kiếm tuần tự, tìm kiếm nhị phân, tìm kiếm băm. Những điều này người ta thường có thể nói ra, và đó cũng là "kiến thức chết".
 
-这些查找算法各适用于什么场景？在你工作中，有哪些场景用到了哪些查找算法？为什么？ 这些是“活知识”。
+Từng thuật toán tìm kiếm này phù hợp với những tình huống nào? Trong công việc của bạn, có những tình huống nào đã dùng thuật toán tìm kiếm nào? Vì sao? Những điều này mới là "kiến thức sống".
 
-#### 学习或工作中遇到的
+#### Vấn đề gặp phải khi học tập hoặc làm việc
 
-有时，在学习和工作中遇到的问题，也可以作为面试题。
+Đôi khi, những vấn đề gặp phải trong học tập và công việc cũng có thể dùng làm câu hỏi phỏng vấn.
 
-比如，最近在学习《操作系统导论》并发部分，有一章节是如何使数据结构成为线程安全的。这里就有一些可以提问的地方：如何实现一个锁？如何实现一个线程安全的计数器？如何实现一个线程安全的链表？如何实现一个线程安全的 `Map` ？如何提升并发的性能？
+Ví dụ, gần đây tôi đang học phần đồng thời (concurrency) trong sách 《Nhập môn Hệ điều hành》 (Operating Systems: Three Easy Pieces), có một chương về cách làm cho cấu trúc dữ liệu trở nên an toàn cho luồng (thread-safe). Ở đây có một số điều có thể đặt câu hỏi: làm thế nào để triển khai một khóa (lock)? Làm thế nào để triển khai một bộ đếm an toàn cho luồng? Làm thế nào để triển khai một danh sách liên kết an toàn cho luồng? Làm thế nào để triển khai một `Map` an toàn cho luồng? Làm thế nào để nâng cao hiệu năng đồng thời?
 
-工作中遇到的问题，也可以抽象提炼出来，作为技术基础面试题。
+Những vấn đề gặp phải trong công việc cũng có thể được trừu tượng hóa, chắt lọc thành câu hỏi phỏng vấn nền tảng kỹ thuật.
 
-#### 技术栈适配度发问
+#### Hỏi về mức độ phù hợp với tech stack
 
-如果候选人（简历上所写的）使用的某些技术与本公司的技术栈比较契合，则可以针对这些技术点进行深入提问，考察候选人在这些技术点的掌握程度。如果掌握程度比较好，则技术适配度相对更高一些。
+Nếu một số công nghệ mà ứng viên sử dụng (như ghi trên CV) khá tương đồng với tech stack của công ty, thì có thể đặt câu hỏi chuyên sâu về những điểm kỹ thuật này, để kiểm tra mức độ nắm vững của ứng viên tại các điểm kỹ thuật đó. Nếu mức độ nắm vững tốt thì mức độ phù hợp kỹ thuật tương đối cao hơn.
 
-当然，这一点并不能作为筛掉那些没有使用该技术栈的候选人的依据。比如本公司使用 `MongoDB` 和 `MySQL`， 而一个候选人没有用过 `Mongodb，` 但使用过 `MySQL`, `Redis`, `ES`, `HBase` 等多种存储系统，那么适配度并不比仅使用过 `MySQL` 和 `MongoDB` 的候选人逊色，因为他所涉及的技术广度更大，可以推断出他有足够能力掌握 `Mongodb`。
+Tất nhiên, điều này không thể được dùng làm căn cứ để loại những ứng viên không sử dụng tech stack đó. Ví dụ công ty chúng tôi dùng `MongoDB` và `MySQL`, còn một ứng viên chưa từng dùng `Mongodb，` nhưng đã sử dụng nhiều hệ thống lưu trữ như `MySQL`, `Redis`, `ES`, `HBase`, thì mức độ phù hợp không hề kém cạnh ứng viên chỉ mới dùng `MySQL` và `MongoDB`, bởi vì chiều rộng kỹ thuật mà anh ta tiếp xúc lớn hơn, có thể suy ra anh ta có đủ năng lực để nắm vững `Mongodb`.
 
-#### 创造有个性的面试题库
+#### Xây dựng bộ câu hỏi phỏng vấn mang đặc trưng riêng
 
-每个技术面试官都会有一个面试题库。持续积累面试题库，日常中突然想到的问题，就随手记录下来。
+Mỗi người phỏng vấn kỹ thuật đều có một bộ câu hỏi phỏng vấn. Hãy không ngừng tích lũy bộ câu hỏi, những câu hỏi chợt nghĩ ra trong cuộc sống hằng ngày thì tiện tay ghi lại.
 
-## 业务维度考察
+## Đánh giá khía cạnh nghiệp vụ
 
-### 为什么要考察业务维度？
+### Vì sao phải đánh giá khía cạnh nghiệp vụ?
 
-技术基础考察，容易错过的地方是，候选人的非技术能力特质，比如沟通组织能力、带项目能力、抗压能力、解决实际问题的能力、团队影响力、其它性格特质等。
+Điểm dễ bị bỏ sót khi đánh giá nền tảng kỹ thuật là những phẩm chất năng lực phi kỹ thuật của ứng viên, chẳng hạn như năng lực giao tiếp và tổ chức, năng lực dẫn dắt dự án, năng lực chịu áp lực, năng lực giải quyết vấn đề thực tế, mức độ ảnh hưởng trong đội nhóm, cùng các đặc điểm tính cách khác.
 
-### 为什么不能单考察业务维度？
+### Vì sao không thể chỉ đánh giá khía cạnh nghiệp vụ?
 
-因为业务方面通常比较熟悉，可能就直接按照现有方案说出来了，很难考察到候选人的深入理解、横向拓展和归纳总结能力。
+Bởi vì khía cạnh nghiệp vụ thường khá quen thuộc, ứng viên có thể trực tiếp trình bày theo giải pháp hiện có, nên rất khó kiểm tra được năng lực hiểu sâu, mở rộng ngang và khái quát tổng kết của ứng viên.
 
-这一点，建议有针对性地考察下候选人的归纳总结能力：比如， 微服务搭建或开发或维护/保证系统稳定性或性能方面的过程中，你收获了哪些可以分享的经验？
+Về điểm này, nên có mục tiêu kiểm tra khả năng khái quát tổng kết của ứng viên: ví dụ, trong quá trình xây dựng, phát triển hay duy trì microservices / đảm bảo tính ổn định hoặc hiệu năng của hệ thống, bạn rút ra được những kinh nghiệm nào có thể chia sẻ?
 
-## 解决问题能力考察
+## Đánh giá năng lực giải quyết vấn đề
 
-仅仅只是技术基础还不够，通常最好结合实际业务，针对他项目里的业务，抽象出技术问题进行考察。
+Chỉ có nền tảng kỹ thuật thôi là chưa đủ, thông thường tốt nhất nên kết hợp với nghiệp vụ thực tế, dựa trên nghiệp vụ trong dự án của ứng viên để trừu tượng hóa thành bài toán kỹ thuật mà đánh giá.
 
-解决思路重在层层递进。这一点对于面试官的要求也比较高，兼具良好的倾听能力、技术深度和业务经验。首先要仔细倾听候选人的阐述，找到适当的技术切入点，然后进行发问。如果进不去，那就容易考察失败。
+Tư duy giải quyết vấn đề chú trọng ở việc tiến dần theo từng lớp. Điều này đặt ra yêu cầu khá cao cho người phỏng vấn, đòi hỏi đồng thời có khả năng lắng nghe tốt, chiều sâu kỹ thuật và kinh nghiệm nghiệp vụ. Trước tiên phải chăm chú lắng nghe phần trình bày của ứng viên, tìm ra điểm vào kỹ thuật thích hợp, rồi mới đặt câu hỏi. Nếu không vào được vấn đề thì việc đánh giá dễ thất bại.
 
-### 设计问题
+### Bài toán thiết kế
 
-- 比如多个机器间共享大量业务对象，这些业务对象之间有些联合字段是重复的，如何去重？
-- 如果瞬时有大量请求涌入，如何保证服务器的稳定性？
+- Ví dụ, nhiều máy cùng chia sẻ một lượng lớn đối tượng nghiệp vụ, giữa các đối tượng nghiệp vụ này có một số trường tổ hợp (combined field) bị trùng lặp, làm thế nào để loại bỏ trùng lặp?
+- Nếu một lượng lớn yêu cầu ồ ạt đổ vào trong tức thời, làm thế nào để đảm bảo sự ổn định của máy chủ?
 
-### 项目经历
+### Kinh nghiệm dự án
 
-项目经历考察不宜超过两个。因为要深入考察一个项目的详情，所占用的时间还是比较大的。
+Số dự án được đánh giá không nên quá hai. Bởi vì để đánh giá sâu chi tiết của một dự án, thời gian tiêu tốn là khá lớn.
 
-一般来说，会让候选人挑选一个他或她觉得最有收获的/最有挑战的/印象最深刻的/自己觉得特有意思的项目。然后围绕这个项目进行发问。通常是从项目背景出发，考察项目的技术栈、项目模块及交互的整体理解、项目中遇到的有挑战性的技术问题及解决方案、排查和解决问题、代码可维护性问题、工程质量保障等。
+Thông thường, sẽ để ứng viên chọn ra một dự án mà anh ấy hoặc cô ấy cảm thấy thu hoạch được nhiều nhất / thách thức nhất / để lại ấn tượng sâu sắc nhất / tự thấy thú vị đặc biệt. Sau đó xoay quanh dự án này để đặt câu hỏi. Thường bắt đầu từ bối cảnh dự án, đánh giá tech stack của dự án, hiểu biết tổng thể về các module và tương tác (interaction) của dự án, những vấn đề kỹ thuật đầy thách thức và giải pháp gặp phải trong dự án, việc truy tìm và giải quyết vấn đề, vấn đề khả năng bảo trì code, đảm bảo chất lượng công trình, v.v.
 
-## 面试官如何做好一场面试?
+## Người phỏng vấn làm thế nào để có một buổi phỏng vấn tốt?
 
-### 预先准备
+### Chuẩn bị trước
 
-面试官也需要做一些准备。比如熟悉候选者的技能优势、工作经历等，做一个面试设计。
+Người phỏng vấn cũng cần chuẩn bị một số điều. Ví dụ nắm rõ thế mạnh kỹ năng, kinh nghiệm làm việc của ứng viên, v.v., rồi thiết kế kế hoạch phỏng vấn.
 
-在面试将要开始时，做好面试准备。此外，面试官也需要对公司的一些基本情况有所了解，尤其是公司所使用技术栈、业务全景及方向、工作内容、晋升制度等，这一点技术型候选人问得比较多。
+Trước khi buổi phỏng vấn bắt đầu, hãy chuẩn bị đầy đủ. Ngoài ra, người phỏng vấn cũng cần nắm được một số thông tin cơ bản về công ty, đặc biệt là tech stack công ty sử dụng, bức tranh toàn cảnh và định hướng nghiệp vụ, nội dung công việc, chế độ thăng tiến, v.v., bởi những ứng viên thiên về kỹ thuật thường hỏi khá nhiều về các điều này.
 
-### 面试启动
+### Khởi động buổi phỏng vấn
 
-一般以候选人自我介绍启动，不过候选人往往会谈得比较散，因此，我会直接提问：谈谈你有哪些优势以及自己觉得可以改进的地方？
+Thông thường buổi phỏng vấn bắt đầu bằng phần tự giới thiệu của ứng viên, nhưng ứng viên thường trình bày khá lan man, vì vậy tôi sẽ hỏi thẳng: hãy chia sẻ về những thế mạnh của bạn cũng như những điểm bạn tự thấy có thể cải thiện?
 
-然后以一个相对简单的基础题作为技术提问的开始：你熟悉哪些查找算法？大多数人是能答上顺序查找、二分查找、哈希查找的。
+Sau đó bắt đầu phần hỏi kỹ thuật bằng một câu hỏi nền tảng tương đối đơn giản: bạn quen thuộc những thuật toán tìm kiếm nào? Phần lớn mọi người có thể trả lời được tìm kiếm tuần tự, tìm kiếm nhị phân, tìm kiếm băm.
 
-### 问题设计
+### Thiết kế câu hỏi
 
-提前阅读候选人简历，从简历中筛选出关键词，根据这些关键词进行有针对性地问题设计。
+Đọc trước CV của ứng viên, lọc ra các từ khóa từ CV, và dựa trên những từ khóa đó để thiết kế câu hỏi có mục tiêu.
 
-比如候选人简历里提到 `MVVM` ，可以问 `MVVM` 与 `MVC` 的区别； 提到了观察者模式，可以谈谈观察者模式，顺便问问他还熟悉哪些设计模式。
+Ví dụ nếu CV của ứng viên có nhắc đến `MVVM`, có thể hỏi về sự khác biệt giữa `MVVM` và `MVC`; nếu nhắc đến mẫu thiết kế Observer, có thể trao đổi về mẫu Observer, và tiện thể hỏi xem anh ta còn quen thuộc những mẫu thiết kế nào khác.
 
-### 宽松氛围
+### Không khí thoải mái
 
-即使问的问题比较多比较难，也要注意保持宽松氛围。
+Dù câu hỏi có nhiều và khó đến đâu, cũng cần chú ý duy trì một bầu không khí thoải mái.
 
-在面试前，根据候选人基本信息适当调侃一下，比如一位候选人叫汪奎，那我就说：之前我们团队有位叫袁奎，我们都喊他奎爷。
+Trước buổi phỏng vấn, có thể đùa giỡn một cách thích hợp dựa trên thông tin cơ bản của ứng viên, ví dụ một ứng viên tên là 汪奎, thì tôi sẽ nói: trước đây đội chúng tôi có một người tên 袁奎, chúng tôi đều gọi anh ấy là 奎爷.
 
-在面试过程中，适当提示，或者给出少量自己的看法，也能缓解候选人的紧张情绪。
+Trong quá trình phỏng vấn, gợi ý một cách thích hợp, hoặc đưa ra một chút quan điểm của bản thân, cũng có thể làm giảm bớt sự căng thẳng của ứng viên.
 
-### 学会倾听
+### Học cách lắng nghe
 
-多问少说，让候选者多表现。根据候选者的回答适当地引导或递进或横向移动。
+Hỏi nhiều nói ít, để ứng viên thể hiện nhiều hơn. Dựa trên câu trả lời của ứng viên để dẫn dắt, đào sâu hoặc mở rộng ngang một cách thích hợp.
 
-引导候选人表现他最优势的一面，让他或她感觉好一些：毕竟一场面试双方都付出了时间和精力，不应该是面试官 Diss 候选人的场合，而应该让彼此有更好的交流。很大可能，你也能从候选人那里学到不少东西。
+Dẫn dắt ứng viên thể hiện mặt mạnh nhất của mình, để anh ấy hoặc cô ấy cảm thấy dễ chịu hơn: dù sao một buổi phỏng vấn cả hai bên đều bỏ ra thời gian và công sức, không nên là nơi để người phỏng vấn chê bai (Diss) ứng viên, mà nên để hai bên có sự trao đổi tốt hơn. Rất có thể bạn cũng sẽ học được không ít điều từ ứng viên.
 
-面试这件事，只不过双方的角色和立场有所不同，但并不代表面试官的水平就一定高于候选人。
+Việc phỏng vấn, chỉ là vai trò và lập trường của hai bên khác nhau, chứ không có nghĩa là trình độ của người phỏng vấn nhất định cao hơn ứng viên.
 
-### 记录重点
+### Ghi chép trọng điểm
 
-认真客观地记录候选人的回答，尽可能避免任何主观评价，亦不作任何加工（比如自己给总结一下，总结能力也是候选人的一个特质）。
+Ghi chép câu trả lời của ứng viên một cách nghiêm túc và khách quan, tránh tối đa mọi đánh giá chủ quan, cũng không thêm thắt bất kỳ điều gì (ví dụ tự mình tổng kết giúp — bởi khả năng tổng kết cũng là một đặc điểm của ứng viên).
 
-## 作出判断
+## Đưa ra phán đoán
 
-面试过程是一种铺垫，关键的是作出判断。
+Quá trình phỏng vấn là phần đệm để chuẩn bị, điều quan trọng là đưa ra phán đoán.
 
-作出判断最容易陷入误区的是：贪深求全。总希望候选人技术又深入又全面。实际上，这是一种奢望。如果候选人的技术能力又深入又全面，很可能也会面临两种情况：
+Điều dễ rơi vào ngộ nhận nhất khi đưa ra phán đoán chính là: tham lam chiều sâu lại muốn sự toàn diện. Luôn hy vọng ứng viên có kỹ thuật vừa sâu vừa toàn diện. Thực ra, đây là một điều xa xỉ. Nếu năng lực kỹ thuật của ứng viên vừa sâu vừa toàn diện, rất có thể cũng sẽ phải đối mặt với hai tình huống:
 
-1. 候选人有更好的选择；
-2. 候选人在其它方面可能存在不足，比如团队协作方面。
+1. Ứng viên có lựa chọn tốt hơn;
+2. Ứng viên có thể tồn tại những điểm hạn chế ở các khía cạnh khác, chẳng hạn như hợp tác đội nhóm.
 
-一个比较合适的尺度是：
+Một thước đo tương đối hợp lý là:
 
-1. 他或她的技术水平能否胜任当前工作；
-2. 他或她的技术水平与同组团队成员水平如何；
-3. 他或她的技术水平是否与年限相对匹配，是否有潜力胜任更复杂的任务。
+1. Trình độ kỹ thuật của anh ấy hoặc cô ấy có đủ đảm nhiệm công việc hiện tại hay không;
+2. Trình độ kỹ thuật của anh ấy hoặc cô ấy so với các thành viên trong cùng đội như thế nào;
+3. Trình độ kỹ thuật của anh ấy hoặc cô ấy có tương đối phù hợp với số năm kinh nghiệm hay không, và có tiềm năng đảm nhiệm những nhiệm vụ phức tạp hơn hay không.
 
-**不同年龄看重的东西不一样。**
+**Đối với ứng viên có số năm kinh nghiệm khác nhau, điều được coi trọng là khác nhau.**
 
-对于三年以下的工程师，应当更看重其技术基础，因为这代表着他的未来潜能；同时也考察下他在实际开发中的体现，比如团队协作、业务经验、抗压能力、主动学习的热情和能力等。
+Đối với kỹ sư dưới ba năm kinh nghiệm, nên coi trọng hơn nền tảng kỹ thuật của họ, bởi vì điều đó thể hiện tiềm năng tương lai của họ; đồng thời cũng kiểm tra sự thể hiện của họ trong phát triển thực tế, chẳng hạn như hợp tác đội nhóm, kinh nghiệm nghiệp vụ, năng lực chịu áp lực, nhiệt huyết và năng lực chủ động học hỏi, v.v.
 
-对于三年以上的工程师，应当更看重其业务经验、解决问题能力，看看他或她是如何分析具体问题，在业务范畴内考察其技术基础的深度和广度。
+Đối với kỹ sư trên ba năm kinh nghiệm, nên coi trọng hơn kinh nghiệm nghiệp vụ và năng lực giải quyết vấn đề của họ, xem anh ấy hoặc cô ấy phân tích vấn đề cụ thể như thế nào, và đánh giá chiều sâu lẫn chiều rộng nền tảng kỹ thuật của họ trong phạm vi nghiệp vụ.
 
-如何判断一个候选人的真实技术水平及是否适合所需，这方面，我也在学习中。
+Làm thế nào để phán đoán trình độ kỹ thuật thật sự của một ứng viên và liệu họ có phù hợp với những gì cần tuyển không — về khía cạnh này, tôi cũng đang trên con đường học hỏi.
 
-## 给候选人的话
+## Lời nhắn dành cho ứng viên
 
-### 关注技术基础
+### Chú trọng nền tảng kỹ thuật
 
-一个常见的疑惑是：开发业务系统的大多数时候，基本不涉及数据结构与算法的设计与实现，为什么要考察 `HashMap` 的实现原理？为什么要学好数据结构与算法、操作系统、网络通信这些基础课程？
+Một thắc mắc thường gặp là: hầu hết thời gian phát triển hệ thống nghiệp vụ thường không liên quan đến việc thiết kế và triển khai cấu trúc dữ liệu và thuật toán, vậy tại sao phải đánh giá nguyên lý triển khai của `HashMap`? Vì sao phải học tốt các môn nền tảng như cấu trúc dữ liệu và thuật toán, hệ điều hành, giao tiếp mạng?
 
-现在我可以给出一个答案了：
+Giờ tôi có thể đưa ra một câu trả lời:
 
-- 正如上面所述，绝大多数的业务问题，实际上最终都会映射到基础技术问题上：数据结构与算法的实现、内存管理、并发控制、网络通信等；这些是理解现代互联网大规模程序以及解决程序疑难问题的基石，—— 除非能祝福自己永远都不会遇到疑难问题，永远都只满足于编写 CRUD；
-- 这些技术基础正是程序世界里最有趣最激动人心的地方。如果对这些不感兴趣，就很难在这个领域里深入进去，不如及早转行从事其它职业，非技术的世界一直都很精彩广阔（有时我也想多出去走走，不想局限于技术世界）；
-- 技术基础是程序员的内功，而具体技术则是招式。徒有招式而内功不深，遇到高手（优秀同行从业者的竞争及疑难杂症）容易不堪一击；
-- 具备扎实的专业技术基础，能达到的上限更高，未来更有可能胜任复杂的技术问题求解，或者在同样的问题上能够做到更好的方案；
-- 人们喜欢跟与自己相似的人合作，牛人倾向于与牛人合作能得到更好的效果；如果一个团队大部分人技术基础比较好，那么进来一个技术基础比较薄弱的人，协作成本会变高；如果你想和牛人一起合作拿到更好的结果，那就要让自己至少在技术基础上能够与牛人搭配的上；
-- 在 CRUD 的基础上拓展其它才能也不失为一种好的选择，但这不会是一个真正的程序员的姿态，顶多是有技术基础的产品经理、项目经理、HR、运营、客满等其它岗位人才。这是职业选择的问题，已经超出了考察程序员的范畴。
+- Như đã trình bày ở trên, phần lớn các bài toán nghiệp vụ thực chất cuối cùng đều sẽ được ánh xạ về các vấn đề kỹ thuật nền tảng: triển khai cấu trúc dữ liệu và thuật toán, quản lý bộ nhớ, kiểm soát đồng thời, giao tiếp mạng, v.v.; những điều này chính là nền móng để hiểu các chương trình quy mô lớn của internet hiện đại cũng như giải quyết các vấn đề phức tạp khó chữa của chương trình — trừ khi bạn tự chúc phúc cho mình rằng sẽ mãi mãi không bao giờ gặp vấn đề khó, mãi mãi chỉ thỏa mãn với việc viết CRUD;
+- Chính những nền tảng kỹ thuật này là nơi thú vị và gay cấn nhất trong thế giới lập trình. Nếu không hứng thú với những điều này, sẽ rất khó để đi sâu vào lĩnh vực này, chi bằng sớm chuyển ngành làm nghề khác — thế giới phi kỹ thuật luôn rực rỡ và rộng lớn (đôi khi tôi cũng muốn ra ngoài đi nhiều chút, không muốn chỉ bó hẹp trong thế giới kỹ thuật);
+- Nền tảng kỹ thuật là nội công của lập trình viên, còn những công nghệ cụ thể là chiêu thức. Chỉ có chiêu thức mà nội công không sâu, khi gặp cao thủ (sự cạnh tranh của những người cùng ngành giỏi và những vấn đề phức tạp khó chữa) thì dễ bị đánh bại chỉ trong một đòn;
+- Có nền tảng kỹ thuật chuyên môn vững chắc, giới hạn trên đạt được sẽ cao hơn, tương lai càng có khả năng đảm nhiệm việc giải quyết các bài toán kỹ thuật phức tạp, hoặc trên cùng một vấn đề có thể đưa ra giải pháp tốt hơn;
+- Con người thích hợp tác với những người giống mình, người giỏi (牛人) có xu hướng hợp tác với người giỏi để đạt được hiệu quả tốt hơn; nếu phần lớn người trong một đội có nền tảng kỹ thuật tốt, thì khi có một người nền tảng kỹ thuật khá yếu bước vào, chi phí hợp tác sẽ tăng lên; nếu bạn muốn hợp tác với người giỏi để đạt được kết quả tốt hơn, thì ít nhất bản thân cũng phải đủ sức sánh ngang với người giỏi về nền tảng kỹ thuật;
+- Phát triển thêm những tài năng khác trên nền tảng CRUD cũng không phải là một lựa chọn tồi, nhưng đó không phải là tư thế của một lập trình viên thực thụ, nhiều nhất cũng chỉ là nhân tài của các vị trí khác như product manager, project manager, HR, vận hành, chăm sóc khách hàng (客满)... có nền tảng kỹ thuật. Đây là vấn đề lựa chọn nghề nghiệp, đã vượt ra ngoài phạm vi đánh giá một lập trình viên.
 
-### 不要在意某个问题回答不上来
+### Đừng bận tâm nếu có câu trả lời không được
 
-如果面试官问你很多问题，而有些没有回答上来，不要在意。面试官很可能只是在测试你的技术深度和广度，然后判断你是否达到某个水位线。
+Nếu người phỏng vấn hỏi bạn rất nhiều câu, mà có vài câu bạn không trả lời được, đừng bận tâm. Người phỏng vấn rất có thể chỉ đang kiểm tra chiều sâu và chiều rộng kỹ thuật của bạn, rồi phán đoán xem bạn đã đạt đến mức nước (waterline) nào.
 
-重点是：有些问题你答得很有深度，也体现了你的深度思考能力。
+Điểm mấu chốt là: một số câu hỏi bạn trả lời rất sâu sắc, đã thể hiện được năng lực tư duy sâu của bạn.
 
-这一点是我当了技术面试官才领会到的。当然，并不是每位技术面试官都是这么想的，但我觉得这应该是个更合适的方式。
+Đây là điều tôi chỉ lĩnh hội được sau khi trở thành người phỏng vấn kỹ thuật. Tất nhiên, không phải người phỏng vấn kỹ thuật nào cũng nghĩ như vậy, nhưng tôi cho rằng đây nên là một cách phù hợp hơn.
 
 <!-- @include: @article-footer.snippet.md -->

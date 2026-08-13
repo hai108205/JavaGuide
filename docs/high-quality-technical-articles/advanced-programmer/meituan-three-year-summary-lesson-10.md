@@ -1,6 +1,6 @@
 ---
-title: 美团三年，总结的10条血泪教训
-description: "美团三年，总结的10条血泪教训：围绕技术知识与面试总结梳理关键概念、常见问题与实践要点，帮助你高效学习与备战面试。"
+title: Ba năm ở Meituan, 10 bài học đắt giá được rút ra
+description: "Ba năm ở Meituan, 10 bài học đắt giá được rút ra: bao quanh kiến thức kỹ thuật và tổng kết phỏng vấn, hệ thống hóa các khái niệm then chốt, câu hỏi thường gặp và điểm mấu chốt thực hành, giúp bạn học tập hiệu quả và sẵn sàng chinh phục phỏng vấn."
 category: 技术文章精选集
 author: CityDreamer部落
 tag:
@@ -11,167 +11,167 @@ head:
       content: 美团工作经验,职场成长,结构化思考,数据思维,职场沟通,金字塔原理,工作效率,职业发展
 ---
 
-> **推荐语**：作者用了很多生动的例子和故事展示了自己在美团的成长和感悟，看了之后受益颇多！
+> **Lời giới thiệu**: Tác giả đã dùng rất nhiều ví dụ và câu chuyện sinh động để thể hiện quá trình trưởng thành và suy ngẫm của mình tại Meituan, đọc xong nhận được rất nhiều điều bổ ích!
 >
-> **内容概览**：
+> **Tổng quan nội dung**:
 >
-> 本文的作者提出了以下十条建议，希望能对其他职场人有所启发和帮助：
+> Tác giả của bài viết này đưa ra mười lời khuyên sau đây, hy vọng có thể mang lại cho những người đi làm khác chút gợi mở và giúp ích:
 >
-> 1. 结构化思考与表达，提高个人影响力
-> 2. 忘掉职级，该怼就怼，推动事情往前走
-> 3. 用好平台资源，结识优秀的人，学习通识课
-> 4. 一切都是争取来的，不要等待机会，要主动寻求
-> 5. 关注商业，升维到老板思维，看清趋势，及时止损
-> 6. 培养数据思维，利用数据了解世界，指导决策
-> 7. 做一个好"销售"，无论是自己还是产品，都要学会展示和说服
-> 8. 少加班多运动，保持身心健康，提高工作效率
-> 9. 有随时可以离开的底气，不要被职场所困，借假修真，提升自己
-> 10. 只是一份工作，不要过分纠结，相信自己，走出去看看
+> 1. Tư duy và diễn đạt có cấu trúc, nâng cao tầm ảnh hưởng cá nhân
+> 2. Quên cấp bậc đi, nên "cạch mặt" thì cứ "cạch mặt", để đẩy công việc đi tiếp
+> 3. Tận dụng tốt tài nguyên nền tảng, kết giao những người xuất sắc, học các khóa học đại cương
+> 4. Mọi thứ đều phải giành lấy, đừng chờ đợi cơ hội, hãy chủ động tìm kiếm
+> 5. Quan tâm đến kinh doanh, nâng tầm tư duy lên góc nhìn của sếp, nhìn rõ xu hướng, kịp thời cắt lỗ
+> 6. Rèn luyện tư duy dữ liệu (data thinking), dùng dữ liệu để hiểu thế giới, định hướng quyết định
+> 7. Làm một "người bán hàng" giỏi, dù là bản thân hay sản phẩm, đều phải biết cách trình bày và thuyết phục
+> 8. Bớt tăng ca, chăm vận động, giữ gìn sức khỏe thể chất lẫn tinh thần, nâng cao hiệu quả công việc
+> 9. Có đủ tự tin để có thể rời đi bất cứ lúc nào, đừng để công sở trói buộc, "mượn giả tu chân", không ngừng nâng cao bản thân
+> 10. Chỉ là một công việc mà thôi, đừng quá dằn vặt, hãy tin vào chính mình, bước ra ngoài ngắm nhìn thế giới
 >
-> **原文地址**：<https://mp.weixin.qq.com/s/XidSVIwd4oKkDKEICaY1mQ>
+> **Địa chỉ bài gốc**: <https://mp.weixin.qq.com/s/XidSVIwd4oKkDKEICaY1mQ>
 
-在美团的三年多时光，如同一部悠长的交响曲，高高低低，而今离开已有一段时间。闲暇之余，梳理了三年多的收获与感慨，总结成 10 条，既是对过去一段时光的一个深情回眸，也是对未来之路的一份期许。
+Hơn ba năm ở Meituan, như một bản giao hưởng dài, khi lên khi xuống, và giờ đây rời đi đã được một thời gian. Trong lúc rảnh rỗi, tôi đã gom góp lại những thu hoạch và cảm xúc của hơn ba năm, đúc kết thành 10 điều, vừa là một cái nhìn lại trìu mến về quãng thời gian đã qua, vừa là một niềm kỳ vọng cho con đường phía trước.
 
-倘若一些感悟能为刚步入职场的年轻人，或是刚在职业生涯中崭露头角的后起之秀，带来一点点启示与帮助，也是莫大的荣幸。
+Nếu những suy ngẫm này có thể mang lại cho những người trẻ vừa bước vào công sở, hay những tài năng mới nổi vừa ghi dấu ấn trong sự nghiệp, một chút gợi mở và giúp ích nào đó, thì cũng là một vinh hạnh lớn lao.
 
-## 01 结构化思考与表达
+## 01 Tư duy và diễn đạt có cấu trúc
 
-美团是一家特别讲究方法论的公司，人人都要熟读四大名著《高效能人士的七个习惯》、《金字塔原理》、《用图表说话》和《学会提问》。
+Meituan là một công ty đặc biệt coi trọng phương pháp luận, ai ai cũng phải đọc thuộc lòng "bốn bộ kinh điển" gồm: _Bảy thói quen của người thành đạt_, _Nguyên tắc Kim tự tháp_, _Nói chuyện bằng biểu đồ_ và _Học cách đặt câu hỏi_.
 
-与结构化思考和表达相关的，是《金字塔原理》，作者是麦肯锡公司第一位女性咨询顾问。这本书告诉我们，思考和表达的过程，就像构建金字塔（或者构建一棵树），先有整体结论，再寻找证据，证据之间要讲究相互独立、而且能穷尽（MECE 原则），论证的过程也要按特定的顺序进行，比如时间顺序、空间顺序、重要性顺序……
+Liên quan đến tư duy và diễn đạt có cấu trúc, chính là cuốn _Nguyên tắc Kim tự tháp_, tác giả là nữ chuyên viên tư vấn đầu tiên của công ty McKinsey. Cuốn sách này cho chúng ta biết rằng, quá trình tư duy và diễn đạt giống như việc xây dựng một kim tự tháp (hay xây một cái cây), trước tiên có kết luận tổng thể, rồi mới đi tìm bằng chứng, các bằng chứng phải độc lập lẫn nhau và bao quát đầy đủ (nguyên tắc MECE), quá trình lập luận cũng phải tuân theo một trình tự nhất định, chẳng hạn như trình tự thời gian, trình tự không gian, trình tự mức độ quan trọng...
 
-作为大厂社畜，日常很大一部分工作就是写文档、看别人文档。大家做的事，但最后呈现的结果却有很大差异。一篇逻辑清晰、详略得当的文档，给人一种如沐春风的感受，能提炼出重要信息，是好的参考指南。
+Là "xã súc" của công ty lớn, phần lớn công việc hằng ngày của chúng ta là viết tài liệu và đọc tài liệu của người khác. Mọi người đều làm việc như nhau, nhưng kết quả cuối cùng lại có sự khác biệt rất lớn. Một tài liệu logic rõ ràng, chi tiết hợp lý mang lại cảm giác như có gió xuân thổi qua, có thể chắt lọc ra thông tin quan trọng, là một tài liệu tham khảo tốt.
 
-结构化思考与表达算是职场最通用的能力，也是打造个人影响力最重要的途径之一。
+Tư duy và diễn đạt có cấu trúc được xem là năng lực thông dụng nhất trong công sở, cũng là một trong những con đường quan trọng nhất để tạo dựng tầm ảnh hưởng cá nhân.
 
-## 02 忘掉职级，该怼就怼
+## 02 Quên cấp bậc đi, nên "cạch mặt" thì cứ "cạch mặt"
 
-在阿里工作时，能看到每个人的 Title，看到江湖地位高（职级高+入职时间早）的同学，即便跟自己没有汇报关系，不自然的会多一层敬畏。推进工作时，会多一层压力，对方未读或已读未回时，不知如何应对。
+Khi làm việc tại Alibaba, có thể nhìn thấy Title của từng người, khi thấy những đồng nghiệp có "địa vị giang hồ" cao (cấp bậc cao + thâm niên lâu), dù không có quan hệ báo cáo với mình, tự nhiên cũng dâng lên một tầng kính nể. Khi đẩy tiến công việc, lại có thêm một tầng áp lực, khi đối phương không đọc hoặc đã đọc nhưng không trả lời, không biết phải xử lý thế nào.
 
-美团只能看到每个人的坑位信息，还有 Ta 的上级。工作相关的问题，可以向任何人提问，如果协同方没有及时响应，隔段时间@一次，甚至"怼一怼"，都没啥问题，事情一直往前推进才最重要。除了大象消息直接提问外，还有个大杀器--TT（公司级问题流转系统），在上面提问时，加上对方主管，如果对方未及时回应，问题会自动升级，每天定时 Push，直到解决为止。
+Ở Meituan chỉ có thể thấy thông tin vị trí của từng người, cùng với cấp trên của họ. Những vấn đề liên quan đến công việc, có thể hỏi bất kỳ ai, nếu bên phối hợp không phản hồi kịp thời, thì cứ cách một khoảng thời gian @ một lần, thậm chí "cạch mặt" một chút cũng chẳng sao, việc cứ được đẩy tiến về phía trước mới là quan trọng nhất. Ngoài việc đặt câu hỏi trực tiếp qua 大象 (Elephant) message, còn có một "vũ khí tối thượng" — TT (hệ thống luân chuyển vấn đề cấp công ty), khi đặt câu hỏi trên đó, hãy gắn thêm quản lý trực tiếp của đối phương, nếu đối phương không phản hồi kịp thời, vấn đề sẽ tự động được nâng cấp, mỗi ngày đều tự động Push, cho đến khi được giải quyết.
 
-我见到一些很年轻的同事，他们在推动 OKR、要资源的事上，很有一套，只要能达到自己的目标，不会考虑别人的感受，最终，他们还真能把事办成。
+Tôi từng thấy một số đồng nghiệp rất trẻ, trong việc đẩy tiến OKR, xin tài nguyên, họ rất có bài bản, chỉ cần đạt được mục tiêu của mình, họ không cân nhắc đến cảm nhận của người khác, và cuối cùng, họ thực sự làm được việc.
 
-当然了，段位越高的人，越能用自己的人格魅力、影响力、资源等，去影响和推动事情的进程，而不是靠对他人的 Push。只是在拿结果的事上，不要把自己太当回事，把别人太当回事，大家在一起，也只是为了完成各自的任务，忘掉职级，该怼时还得怼。
+Đương nhiên, cấp độ càng cao, người ta càng dùng sức hút cá nhân, tầm ảnh hưởng, tài nguyên... để tác động và thúc đẩy tiến trình của sự việc, thay vì chỉ dựa vào việc Push người khác. Chỉ là trong chuyện giành lấy kết quả, đừng quá coi trọng bản thân, cũng đừng quá coi trọng người khác, mọi người tụ họp với nhau, cũng chỉ để hoàn thành nhiệm vụ của riêng mình, quên cấp bậc đi, nên "cạch mặt" thì vẫn phải "cạch mặt".
 
-## 03 用好平台资源
+## 03 Tận dụng tốt tài nguyên nền tảng
 
-没有人能在一家公司待一辈子，公司再牛，跟自己关系不大，重要的是，在有限的时间内，最大化用好平台资源。
+Không ai có thể gắn bó với một công ty cả đời, công ty có giỏi đến đâu cũng không liên quan nhiều đến mình, điều quan trọng là, trong khoảng thời gian hữu hạn, tận dụng tối đa tài nguyên của nền tảng.
 
-在美团除了认识自己节点的同事外，有幸认识一群特别棒的协作方，还有其他 BU 的同学。
+Ở Meituan, ngoài việc quen biết những đồng nghiệp trong cùng node của mình, tôi còn may mắn quen được một nhóm các bên phối hợp tuyệt vời, cùng các đồng nghiệp ở những BU khác.
 
-这些优秀的人身上，有很多共同的特质：谦虚、利他、乐于分享、双赢思维。
+Những người xuất sắc này có rất nhiều đặc điểm chung: khiêm tốn, vị tha, sẵn sàng chia sẻ, tư duy đôi bên cùng thắng (win-win).
 
-有两位做运营的同学。
+Có hai đồng nghiệp làm công tác vận hành (operations).
 
-一位是无意中关注他公众号结识上的。他公众号记录了很多职场成长、家庭建造上的思考和收获，还有定期个人复盘。他和太太都是大厂中层管理者，从文章中看到的不是他多厉害，而是非常接地气的故事。我们约饭了两次，有很多共同话题，现在还时不时有一些互动。
+Một người là tôi tình cờ quen qua việc theo dõi blog cá nhân của anh ấy. Blog của anh ấy ghi lại rất nhiều suy nghĩ và thu hoạch về trưởng thành trong công sở, xây dựng gia đình, cùng với việc tự tổng kết định kỳ. Anh và vợ đều là quản lý cấp trung của công ty lớn, điều đọc được từ bài viết không phải anh ấy giỏi đến mức nào, mà là những câu chuyện rất đời thường, gần gũi. Chúng tôi đã ăn tối cùng nhau hai lần, có rất nhiều chủ đề chung, đến nay vẫn thỉnh thoảng tương tác với nhau.
 
-一位职级更高的同学，他在内网发起了一个"请我喝一杯咖啡，和我一起聊聊个人困惑"的活动，我报名参与了一期。和他聊天的过程，特别像是一场教练对话（最近学习教练课程时才感受到的），帮我排除干扰、聚焦目标的同时，也从他分享个人成长蜕变的过程，收获很多动力。（刚好自己最近也学习了教练技术，后面也准备采用类似的方式，去帮助曾经像我一样迷茫的人）
+Một người có cấp bậc cao hơn, anh ấy đã phát động một hoạt động trên mạng nội bộ với tên gọi "Mời tôi một ly cà phê, cùng tôi trò chuyện về những băn khoăn cá nhân của bạn", tôi đã đăng ký tham gia một kỳ. Quá trình trò chuyện với anh ấy rất giống một buổi coaching (mãi đến khi gần đây học khóa học coaching tôi mới nhận ra), giúp tôi loại bỏ nhiễu loạn, tập trung vào mục tiêu, đồng thời từ việc anh ấy chia sẻ hành trình trưởng thành và lột xác của bản thân, tôi cũng nhận được rất nhiều động lực. (Vừa khéo gần đây tôi cũng học kỹ thuật coaching, sắp tới cũng dự định dùng cách tương tự để giúp đỡ những người từng giống tôi, đang mê man tìm đường)
 
-还有一些协作方同学。他们工作做得超级到位，能感受到，他们在乎他人时间；稍微有点出彩的事儿，不忘记拉上更多人。利他和双赢思维，在他们身上是最好的阐释。
+Còn có một số đồng nghiệp là bên phối hợp. Họ làm việc cực kỳ chu toàn, có thể cảm nhận được rằng họ trân trọng thời gian của người khác; hễ có chút gì đó nổi bật, họ luôn nhớ kéo thêm nhiều người cùng tham gia. Tư duy vị tha và đôi bên cùng thắng, ở họ được thể hiện một cách trọn vẹn nhất.
 
-除了结识优秀的人，向他们学习外，还可以关注各个通道/工种的课程资源。
+Ngoài việc kết giao những người xuất sắc, học hỏi từ họ, còn có thể chú ý đến các tài nguyên khóa học của từng khối/ngành nghề.
 
-在大厂，多数人的角色都是螺丝钉，但千万不要局限于做一颗螺丝钉。多去学习一些通识课，了解商业交付的各个环节，看清商业世界，明白自己的定位，超越自己的定位。
+Trong công ty lớn, phần lớn mọi người đóng vai trò là một con ốc vít, nhưng tuyệt đối đừng giới hạn bản thân trong vai trò một con ốc vít. Hãy tích cực học thêm các khóa học đại cương, hiểu được từng mắt xích của quá trình giao nhận trong kinh doanh, nhìn rõ thế giới thương mại, hiểu rõ định vị của mình, và vượt lên trên định vị của chính mình.
 
-## 04 一切都是争取来的
+## 04 Mọi thứ đều phải giành lấy
 
-工作很多年了，很晚才明白这个道理。
+Đi làm đã nhiều năm, mãi rất lâu mới hiểu ra đạo lý này.
 
-之前一直认为，只要做好自己该做的，一定会被看见，被赏识，也会得到更多机会。但很多时候，这只是个人的一厢情愿。除了自己，不会有人关心你的权益。
+Trước đây luôn cho rằng, chỉ cần làm tốt những gì mình nên làm, nhất định sẽ được nhìn thấy, được trọng dụng, và cũng sẽ nhận được nhiều cơ hội hơn. Nhưng rất nhiều khi, đó chỉ là sự tự mình đa tưởng. Ngoài bản thân ra, sẽ không ai quan tâm đến quyền lợi của bạn.
 
-社会主义初级阶段，我国国内的主要矛盾是人民日益增长的物质文化需要同落后的社会生产之间的矛盾。无论在哪里，资源都是稀缺的，自己在乎的，就得去争取。
+Trong giai đoạn đầu của chủ nghĩa xã hội, mâu thuẫn chủ yếu trong nước ta là mâu thuẫn giữa nhu cầu vật chất và văn hóa ngày càng tăng của nhân dân với nền sản xuất xã hội lạc hậu. Bất kể ở đâu, tài nguyên đều khan hiếm, thứ mình coi trọng, thì phải tự mình giành lấy.
 
-想成长某个技能、想参与哪个模块、想做哪个项目，升职加薪……自己不提，不去争取，不会有人主动给你。
+Muốn phát triển kỹ năng nào đó, muốn tham gia vào module nào, muốn làm dự án nào, thăng chức tăng lương... nếu mình không nói ra, không đi giành lấy, sẽ không ai chủ động trao cho bạn.
 
-争不争取是一回事，能不能得到是一回事，只有争取，才有可能得到。争取了，即便没有得到，最终也没失去什么。
+Giành hay không giành là một chuyện, có giành được hay không là một chuyện khác, chỉ có giành lấy thì mới có khả năng đạt được. Đã giành lấy rồi, dù không đạt được, cuối cùng cũng chẳng mất gì.
 
-## 05 关注商业
+## 05 Quan tâm đến kinh doanh
 
-大公司，极度关注效率，大部分岗位，拆解的粒度越细，效率会越高，这些对组织是有利的。但对个人来说，则很容易螺丝钉化。
+Các công ty lớn cực kỳ quan tâm đến hiệu quả, phần lớn các vị trí, phân rã càng nhỏ, hiệu quả càng cao, điều này có lợi cho tổ chức. Nhưng đối với cá nhân, thì rất dễ bị "ốc vít hóa".
 
-做技术的同学，更是这样。
+Các đồng nghiệp làm kỹ thuật, lại càng như vậy.
 
-做前端的同学，不会关注数据是如何落库的；做后端的同学，不会思考页面是否存在兼容性问题；做业务开发的，不用考虑微服务诸多中间件是如何搭建起来的……
+Đồng nghiệp làm frontend sẽ không quan tâm dữ liệu được lưu vào database như thế nào; đồng nghiệp làm backend sẽ không cân nhắc trang web có vấn đề tương thích hay không; người làm phát triển nghiệp vụ thì không cần nghĩ đến việc các middleware của microservice được dựng lên ra sao...
 
-大部分人都想着怎么把自己这摊子事搞好，不会去思考上下游同学在做些什么，更少有人真正关注商业，关心公司的盈利模式，关心每一次产品迭代到底带来哪些业务价值。
+Phần lớn mọi người đều chỉ nghĩ làm sao để hoàn thành tốt phần việc của mình, không nghĩ đến việc các đồng nghiệp ở khâu thượng nguồn, hạ nguồn đang làm gì, càng ít người thực sự quan tâm đến kinh doanh, quan tâm đến mô hình lợi nhuận của công ty, quan tâm đến việc mỗi lần lặp sản phẩm (product iteration) mang lại giá trị kinh doanh gì.
 
-把手头的事做好是应该的，但绝不能停留在此。所有的产品，只有在商业社会产生交付，让客户真正获益，才是有价值的。
+Làm tốt việc đang cầm trong tay là điều nên làm, nhưng tuyệt đối không được dừng lại ở đó. Tất cả sản phẩm, chỉ khi được giao nhận trong xã hội thương mại, khiến khách hàng thực sự được lợi, mới là có giá trị.
 
-关注商业，能帮我们升维到老板思维，明白投入产出比，抓大放小；也帮助我们，在碰到不好的业务时，及时止损；更重要的是，它帮助我们真正看清趋势，提前做好准备。
+Quan tâm đến kinh doanh, có thể giúp chúng ta nâng tầm lên tư duy của sếp, hiểu được tỉ suất đầu vào - đầu ra, biết nắm cái lớn buông cái nhỏ; cũng giúp chúng ta, khi gặp phải nghiệp vụ không tốt, kịp thời cắt lỗ; quan trọng hơn là, nó giúp chúng ta thực sự nhìn rõ xu hướng, chuẩn bị trước từ sớm.
 
-《五分钟商学院》系列，是很好的商业入门级书籍。尽管作者刘润最近存在争议，但不可否认，他比我们大多数人段位还是高很多，他的书值得一读。
+Bộ sách _Trường Kinh doanh 5 phút_ là những cuốn sách nhập môn kinh doanh rất hay. Dù tác giả Lưu Nhuận gần đây có nhiều tranh cãi, nhưng không thể phủ nhận rằng, anh ấy vẫn cao hơn phần lớn chúng ta rất nhiều, sách của anh ấy đáng để đọc.
 
-## 06 培养数据思维
+## 06 Rèn luyện tư duy dữ liệu
 
-当今数字化时代，数据思维显得尤为重要。数据不仅可以帮助我们更好地了解世界，还可以指导我们的决策和行动。
+Trong kỷ nguyên số hóa ngày nay, tư duy dữ liệu trở nên đặc biệt quan trọng. Dữ liệu không chỉ giúp chúng ta hiểu thế giới tốt hơn, mà còn có thể định hướng cho quyết định và hành động của chúng ta.
 
-非常幸运的是，在阿里和美团的两份经历，都是做商业化广告业务，在离钱💰最近的地方，也培养了数据的敏感性。见过商业数据指标的定义、加工、生产和应用全流程，也在不断熏陶下，能看懂大部分指标背后的价值。
+Rất may mắn là, hai lần làm việc tại Alibaba và Meituan, đều làm nghiệp vụ quảng cáo thương mại hóa, ở nơi gần tiền 💰 nhất, tôi cũng đã rèn luyện được sự nhạy cảm với dữ liệu. Đã từng chứng kiến toàn bộ quy trình định nghĩa, xử lý, sản xuất và ứng dụng của các chỉ số dữ liệu kinh doanh, và dưới sự thấm dần không ngừng đó, tôi có thể hiểu được giá trị đằng sau phần lớn các chỉ số.
 
-除了直接面向业务的数据，还有研发协作全流程产生的数据。数据被记录和汇总统计后，能直观地看到每个环节的效率和质量。螺丝钉们的工作，也彻彻底底被数字量化，除了积极面对虚拟化、线上化、数字化外，我们别无他法。
+Ngoài dữ liệu trực tiếp phục vụ nghiệp vụ, còn có dữ liệu sinh ra trong toàn bộ quy trình hợp tác phát triển. Sau khi dữ liệu được ghi lại và tổng hợp thống kê, có thể nhìn thấy trực quan hiệu quả và chất lượng của từng khâu. Công việc của những con ốc vít, cũng bị số hóa một cách triệt để, ngoài việc tích cực đối mặt với ảo hóa (virtualization), online hóa, số hóa, chúng ta không còn cách nào khác.
 
-受工作数据化的影响，生活中，我也渐渐变成了一个数据记录狂，日常运动（骑行、跑步、健走等）必须通过智能手表记录下来，没带 Apple Watch，感觉这次白运动了。每天也在很努力地完成三个圆环。
+Chịu ảnh hưởng của việc số hóa công việc, trong cuộc sống, tôi dần dần cũng biến thành một người cuồng ghi chép dữ liệu, mọi hoạt động thể thao hằng ngày (đạp xe, chạy bộ, đi bộ nhanh...) nhất định phải được ghi lại qua đồng hồ thông minh, nếu không đeo Apple Watch, tôi cảm thấy như buổi tập đó vô nghĩa. Mỗi ngày cũng đang rất cố gắng hoàn thành ba vòng tròn.
 
-数据时代，我们沦为了透明人。也得益于数据被记录和分析，我们做任何事，都能快速得到反馈，这也是自我提升的一个重要环节。
+Trong kỷ nguyên dữ liệu, chúng ta trở thành những người "trong suốt". Nhưng cũng nhờ dữ liệu được ghi lại và phân tích, chúng ta làm bất cứ việc gì cũng có thể nhanh chóng nhận được phản hồi, đây cũng là một khâu quan trọng trong việc tự nâng cao bản thân.
 
-## 07 做一个好"销售"
+## 07 Làm một "người bán hàng" giỏi
 
-就某种程度来说，所有的工作，本质都是销售。
+Ở một mức độ nào đó, mọi công việc, bản chất đều là bán hàng.
 
-这是很多大咖的观点，我也是很晚才明白这个道理。
+Đây là quan điểm của rất nhiều chuyên gia, tôi cũng mãi về sau mới hiểu ra đạo lý này.
 
-我们去一家公司应聘，本质上是在讲一个「我很牛」的故事，销售的是自己；日常工作汇报、季度/年度述职、晋升答辩，是在销售自己；在任何一个场合曝光，也是在销售自己。
+Chúng ta đi ứng tuyển một công ty, bản chất là đang kể một câu chuyện "tôi rất giỏi", thứ bán đi chính là bản thân mình; báo cáo công việc hằng ngày, báo cáo tổng kết quý/năm, bảo vệ luận án thăng tiến, đều là bán chính mình; xuất hiện ở bất kỳ dịp nào, cũng là bán chính mình.
 
-如果我们所服务的组织，对外提供的是一件产品或一项服务，所有上下游协作的同学，唯一在做的事就是，齐心协力把产品/服务卖出去， 我们本质做的还是销售。
+Nếu tổ chức mà chúng ta phục vụ, cung cấp ra bên ngoài một sản phẩm hoặc một dịch vụ, thì tất cả những đồng nghiệp hợp tác ở thượng nguồn, hạ nguồn, điều duy nhất họ làm là, đồng lòng nhất trí đem sản phẩm/dịch vụ bán ra ngoài, thực chất chúng ta làm vẫn là bán hàng.
 
-所以， 千万不要看不起任何销售，也不要认为认为销售是一件很丢面子的事。
+Cho nên, tuyệt đối đừng coi thường bất kỳ người bán hàng nào, cũng đừng cho rằng bán hàng là một việc mất mặt.
 
-真正的大佬，随时随地都在销售。
+Những người giỏi thực sự, ở bất cứ đâu, bất cứ lúc nào cũng đang bán hàng.
 
-## 08 少加班多运动
+## 08 Bớt tăng ca, chăm vận động
 
-在职场，大家都认同一个观点，工作是做不完的。
+Nơi công sở, mọi người đều đồng tình với một quan điểm: công việc là làm không hết.
 
-我们要做的是，用好时间管理四象限法，识别重要程度和优先级，有限时间，聚焦在固定几件事上。
+Điều chúng ta cần làm là, sử dụng tốt phương pháp tứ phân (bốn góc phần tư) quản lý thời gian, nhận diện mức độ quan trọng và mức độ ưu tiên, trong khoảng thời gian hữu hạn, tập trung vào một vài việc cố định.
 
-这要求我们不断提高自己的问题识别能力、拆解能力，还有专注力。
+Điều này đòi hỏi chúng ta không ngừng nâng cao năng lực nhận diện vấn đề, năng lực phân rã vấn đề, cùng với khả năng tập trung.
 
-我们会因为部分项目的需要而加班，但不会长期加班。
+Chúng ta sẽ tăng ca vì nhu cầu của một số dự án, nhưng sẽ không tăng ca kéo dài lâu.
 
-加班时间短一点，就能腾出更多时间运动。
+Thời gian tăng ca ngắn lại một chút, thì có thể dành ra được nhiều thời gian hơn để vận động.
 
-最近一次线下培训课，认识一位老师 Hubert，Hubert 是一位超级有魅力的中年大叔（可以通过「有意思教练」的课程链接到他），从外企高管的位置离开后，和太太一起创办了一家培训机构。作为公司高层，日常工作非常忙，头发也有些花白了，但一身腱子肉胜过很多健身教练，给人的状态也是很年轻。聊天得知，Hubert 经常 5 点多起来泡健身房~
+Trong một buổi đào tạo trực tiếp gần đây, tôi quen một thầy giáo tên Hubert, Hubert là một chú trung niên cực kỳ có sức hút (có thể kết nối với ông qua khóa học của "有意思教练" - Coach Xuất Sắc), sau khi rời khỏi vị trí quản lý cấp cao của một công ty nước ngoài, ông cùng vợ sáng lập một tổ chức đào tạo. Với vai trò lãnh đạo cấp cao của công ty, công việc hằng ngày rất bận rộn, tóc cũng đã điểm bạc, nhưng bộ cơ bắp của ông còn đẹp hơn nhiều huấn luyện viên thể hình, trạng thái nhìn qua cũng rất trẻ trung. Trò chuyện mới biết, Hubert thường xuyên dậy từ hơn 5 giờ sáng để đến phòng gym~
 
-我身边还有一些同事，跟我年龄差不多，因为长期加班，发福严重，比实际年龄看起来苍老 10+岁；
+Bên cạnh tôi còn có một số đồng nghiệp, tuổi tác xấp xỉ tôi, vì tăng ca kéo dài, phát phì nghiêm trọng, trông già hơn tuổi thật 10+ tuổi;
 
-还有同事曾经加班进 ICU，幸好后面身体慢慢恢复过来。
+Còn có đồng nghiệp từng vì tăng ca mà vào ICU, may mà sau đó sức khỏe dần hồi phục lại.
 
-某某厂员工长期加班猝死的例子，更是屡见不鲜。
+Những ví dụ về nhân viên các công ty tăng ca kéo dài đột tử, thì càng không hiếm gặp.
 
-减少加班，增加运动，绝对是一件性价比极高的事。
+Giảm tăng ca, tăng vận động, tuyệt đối là một việc có tỉ lệ lợi ích - chi phí cực cao.
 
-## 09 有随时可以离开的底气
+## 09 Có đủ tự tin để có thể rời đi bất cứ lúc nào
 
-当今职场，跟父辈时候完全不一样，职业的多样性和变化性越来越快，很少有人能够在同一份工作或同一个公司待一辈子。除了某些特定的岗位，如公务员、事业单位等，大多数人都会在职业生涯中经历多次的职业变化和调整。
+Công sở ngày nay hoàn toàn khác với thời của cha mẹ chúng ta, sự đa dạng và biến động của nghề nghiệp ngày càng nhanh, rất ít người có thể gắn bó cả đời với một công việc hay một công ty. Ngoài một số vị trí đặc thù như công chức, đơn vị sự nghiệp, phần lớn mọi người đều sẽ trải qua nhiều lần thay đổi và điều chỉnh nghề nghiệp trong sự nghiệp của mình.
 
-在商业组织里，个体是弱势群体，但不要做弱者。每一段职场，每一项工作，都是上天给我们的修炼。
+Trong các tổ chức thương mại, cá nhân là nhóm yếu thế, nhưng đừng làm kẻ yếu. Mỗi một quãng đường công sở, mỗi một công việc, đều là sự rèn luyện mà ông trời ban cho chúng ta.
 
-我很喜欢"借假修真"这个词。我们参与的大大小小的项目， 重要吗？对公司来说可能重要，对个人来说，则未必。我们去做，一方面是迫于生计；
+Tôi rất thích cụm từ "mượn giả tu chân" (mượn những thứ giả tạm bên ngoài để tu luyện cái chân thật bên trong). Những dự án lớn nhỏ mà chúng ta tham gia, có quan trọng không? Đối với công ty có thể là quan trọng, nhưng đối với cá nhân thì chưa chắc. Chúng ta làm việc đó, một mặt là vì mưu sinh;
 
-另外一方面，参与每个项目的感悟、心得、体会，是真实存在的，很多的能力，都是在这个过程得到提升。
+Mặt khác, những cảm ngộ, tâm đắc, trải nghiệm từ việc tham gia mỗi dự án, là có thật, rất nhiều năng lực đều được nâng cao trong chính quá trình đó.
 
-明白这一点，就不会被职场所困，会刻意在各样事上提升自己，积累的越多，对事务的本质理解的越深、越广，也越发相信很多底层知识是通用的，内心越平静，也会建立起随时都可以离开的底气。
+Hiểu được điều này, sẽ không bị công sở trói buộc, sẽ chủ động nâng cao bản thân trong mọi việc, tích lũy càng nhiều, hiểu về bản chất sự việc càng sâu, càng rộng, cũng càng tin rằng rất nhiều kiến thức nền tảng là dùng được ở mọi nơi, nội tâm càng bình thản, và cũng sẽ xây dựng được sự tự tin có thể rời đi bất cứ lúc nào.
 
-## 10 只是一份工作
+## 10 Chỉ là một công việc mà thôi
 
-工作中，我们时常会遇到各种挑战和困难，如发展瓶颈、难以处理的人和事，甚至职场 PUA 等。这些经历可能会让我们感到疲惫、沮丧，甚至怀疑自己的能力和价值。然而，重要的是要明白，困难只是成长道路上的暂时阻碍，而不是我们的定义。
+Trong công việc, chúng ta thường xuyên gặp phải đủ loại thử thách và khó khăn, chẳng hạn như nút thắt phát triển, những con người và sự việc khó xử lý, thậm chí cả PUA nơi công sở. Những trải nghiệm này có thể khiến chúng ta mệt mỏi, chán nản, thậm chí hoài nghi năng lực và giá trị của bản thân. Tuy nhiên, điều quan trọng là phải hiểu rằng, khó khăn chỉ là trở ngại tạm thời trên con đường trưởng thành, chứ không định nghĩa con người chúng ta.
 
-写总结和复盘是很好的方式，可以帮我们理清思路，找到问题的根源，并学习如何应对类似的情况。但也要注意不要陷入自我怀疑和内耗的陷阱。遇到困难时，应该学会相信自己，积极寻找解决问题的方法，而不是过分纠结于自己的不足和错误。
+Viết tổng kết và tự vấn là một cách rất tốt, có thể giúp chúng ta gỡ rối suy nghĩ, tìm ra gốc rễ của vấn đề, và học cách ứng phó với những tình huống tương tự. Nhưng cũng cần chú ý đừng rơi vào cái bẫy của sự tự hoài nghi và nội hao (tiêu hao nội tâm). Khi gặp khó khăn, nên học cách tin vào bản thân, tích cực tìm kiếm cách giải quyết vấn đề, thay vì quá mức dằn vặt về những thiếu sót và sai lầm của mình.
 
-内网常有同学匿名分享工作压力过大，常常失眠甚至中度抑郁，每次看到这些话题，非常难过。大环境不好，是不争的事实，但并不代表个体就没有出路。
+Trên mạng nội bộ thường có đồng nghiệp ẩn danh chia sẻ rằng họ chịu áp lực công việc quá lớn, thường xuyên mất ngủ, thậm chí trầm cảm ở mức độ trung bình, mỗi lần nhìn thấy những chủ đề này, tôi đều rất buồn. Môi trường vĩ mô không tốt, là sự thật không thể phủ nhận, nhưng không có nghĩa là cá nhân không có lối thoát.
 
-我们容易预设困难，容易加很多"可是"，当窗户布满灰尘时，不要试图努力把窗户擦干净，走出去吧，你将看到一片蔚蓝的天空。
+Chúng ta dễ dàng tự đặt ra khó khăn trước, dễ thêm vào rất nhiều chữ "nhưng mà", khi cửa sổ phủ đầy bụi bẩn, đừng cố gắng lau cho sạch cửa sổ, hãy bước ra ngoài đi, bạn sẽ thấy một bầu trời xanh trong vắt.
 
-## 最后
+## Kết lại
 
-写到最后，特别感恩美团三年多的经历。感谢我的 Leader 们，感谢曾经并肩作战过的小伙伴，感谢遇到的每一位和我一样在平凡的岗位，努力想带给身边一片微光的同学。所有的相遇，都是缘分。
+Viết đến cuối cùng, tôi đặc biệt biết ơn hơn ba năm kinh nghiệm tại Meituan. Cảm ơn các Leader của tôi, cảm ơn những người bạn từng sát cánh chiến đấu bên tôi, cảm ơn từng người tôi từng gặp, những người cũng giống tôi, trên những vị trí bình thường, vẫn nỗ lực muốn mang lại một chút ánh sáng cho những người xung quanh. Tất cả những cuộc gặp gỡ, đều là duyên phận.

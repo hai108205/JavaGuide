@@ -1,6 +1,6 @@
 ---
-title: 阿里技术面试的一些秘密
-description: "阿里技术面试的一些秘密：围绕技术知识与面试总结梳理关键概念、常见问题与实践要点，帮助你高效学习与备战面试。"
+title: Một số bí quyết trong phỏng vấn kỹ thuật tại Alibaba
+description: "Một số bí quyết trong phỏng vấn kỹ thuật tại Alibaba: xoay quanh kiến thức kỹ thuật và tổng kết phỏng vấn, sắp xếp rõ các khái niệm then chốt, câu hỏi thường gặp và điểm thực hành, giúp bạn học hiệu quả và chuẩn bị cho phỏng vấn."
 category: 技术文章精选集
 author: 龙叔
 tag:
@@ -11,114 +11,114 @@ head:
       content: 阿里面试,技术面试,简历筛选,面试技巧,基础知识,动手能力,八股文,校招面试
 ---
 
-> **推荐语**：详细介绍了求职者在面试中应该具备哪些能力才会有更大概率脱颖而出。
+> **Lời giới thiệu**: Bài viết giới thiệu chi tiết ứng viên cần có những năng lực nào trong phỏng vấn để có xác suất nổi bật hơn.
 >
-> **原文地址：** <https://mp.weixin.qq.com/s/M2M808PwQ2JcMqfLQfXQMw>
+> **Địa chỉ bài viết gốc:** <https://mp.weixin.qq.com/s/M2M808PwQ2JcMqfLQfXQMw>
 
-最近我的工作稍微轻松些，就被安排去校招面试了
+Gần đây công việc của tôi khá nhàn hơn, nên được phân công đi phỏng vấn tuyển dụng sinh viên mới tốt nghiệp (校招)
 
-当时还是有些**激动**的，以前都是被面试的，现在我自己也成为一个面试别人的面试官
+Lúc đó vẫn thấy khá **phấn khích**, trước đây toàn đi bị phỏng vấn, giờ tôi cũng trở thành người phỏng vấn đi phỏng vấn người khác
 
-接下来就谈谈我的面试心得(谈谈阿里面试的秘籍)
+Tiếp theo hãy cùng nói về kinh nghiệm phỏng vấn của tôi (nói về bí quyết phỏng vấn tại Alibaba)
 
-## 我是怎么筛选简历的？
+## Tôi sàng lọc hồ sơ như thế nào?
 
-面试之前都是要筛选简历，这个大家应该知道
+Trước khi phỏng vấn đều phải sàng lọc hồ sơ, điều này chắc mọi người cũng biết
 
-阿里对待招聘非常负责任，面试官必须对每位同学的简历进行查看和筛选，如果不合适还需要写清楚理由
+Alibaba rất có trách nhiệm trong tuyển dụng, người phỏng vấn bắt buộc phải xem và sàng lọc hồ sơ của từng ứng viên, nếu không phù hợp còn phải ghi rõ lý do
 
-对于校招生来说，第一份工作非常重要，而且校招的面试机会也只有一次，一旦收到大家的简历意味着大家非常认可和喜爱阿里这家公司
+Đối với sinh viên mới tốt nghiệp, công việc đầu tiên vô cùng quan trọng, mà cơ hội phỏng vấn tuyển dụng sinh viên mới chỉ có một lần, một khi nhận được hồ sơ của mọi người nghĩa là mọi người rất công nhận và yêu thích Alibaba
 
-所以我们对每份简历都会认真看，大家可以非常放心，不会无缘无故挂掉大家的简历
+Vì vậy chúng tôi sẽ xem xét kỹ lưỡng từng hồ sơ, mọi người có thể hoàn toàn yên tâm, sẽ không vô cớ loại bỏ hồ sơ của các bạn
 
-尽管我们报以非常负责任的态度，但有些同学们的简历实在是难以下看
+Dù chúng tôi giữ thái độ rất có trách nhiệm, nhưng hồ sơ của một số bạn sinh viên thật sự khó mà xem được
 
-关于如何写简历，我之前写过类似的文章，这里就把之前的文章放这里让大家看看 [一份好的简历应该有哪些内容](https://mp.weixin.qq.com/s?__biz=MzI4MDYzNDc1Mg==&mid=2247484010&idx=1&sn=afbe90c8446f5f21631cae750431d3ee&scene=21#wechat_redirect)
+Về cách viết hồ sơ, tôi từng viết bài tương tự, giờ để bài viết đó ở đây cho mọi người xem [Một hồ sơ tốt nên có những nội dung gì](https://mp.weixin.qq.com/s?__biz=MzI4MDYzNDc1Mg==&mid=2247484010&idx=1&sn=afbe90c8446f5f21631cae750431d3ee&scene=21#wechat_redirect)
 
-在筛选简历的时候会有以下信息非常重要，大家一定要认真写
+Khi sàng lọc hồ sơ sẽ có những thông tin sau đây là vô cùng quan trọng, mọi người nhất định phải viết cẩn thận
 
-- **项目经历**，具体写法可以看上面提到的文章
-- **个人含金量比较高的奖项**，比如 ACM 奖牌、计算机竞赛等
-- **个人技能** 这块会看，但是大多数简历写法都差不多，尽量写得**言简意赅**
-- **重要期刊论文发表、开源项目** 加分项
+- **Kinh nghiệm dự án**, cách viết cụ thể có thể xem bài viết đã nêu ở trên
+- **Các giải thưởng có giá trị cao của cá nhân**, ví dụ huy chương ACM, các cuộc thi tin học v.v.
+- **Kỹ năng cá nhân** phần này cũng sẽ xem, nhưng đa số hồ sơ đều viết tương tự nhau, hãy cố gắng viết thật **ngắn gọn súc tích**
+- **Bài báo đăng trên tạp chí quan trọng, dự án mã nguồn mở** là điểm cộng
 
-这些信息非常重要，我筛选简历的时候这些信息占整份简历的比重 4/5 左右
+Những thông tin này vô cùng quan trọng, khi tôi sàng lọc hồ sơ, những thông tin này chiếm khoảng 4/5 trọng lượng của cả hồ sơ
 
-## 面试的时候我会注重哪些方面？
+## Khi phỏng vấn tôi sẽ chú trọng những khía cạnh nào?
 
-### **表达要清楚**
+### **Diễn đạt phải rõ ràng**
 
-这点是硬伤，在面试的时候有些同学半天说不清楚自己做的项目，我都在替你着急
+Đây là điểm yếu chí mạng, khi phỏng vấn có một số bạn nói nửa ngày vẫn không rõ dự án mình làm, tôi còn thấy sốt ruột thay cho bạn
 
-描述项目有个简单的方法论，我自己总结的 大家看看适不适合自己
+Có một phương pháp luận đơn giản để mô tả dự án, do tôi tự tổng kết, mọi người xem thử có phù hợp với mình không
 
-- 最好言简意赅的描述一下你的项目背景，让面试官很快知道项目干了啥(让面试官很快对项目感兴趣)
-- 说下项目用了哪些技术，做技术的用了哪些技术得说清楚，面试官会对你的技术比较感兴趣
-- 解决了什么问题，做项目肯定是为了解决问题，总不能为了做项目而做项目吧(解决问题的能力非常重要)
-- 遇到哪些难题，如何突破这些难题，项目遇到困难问题很正常，突破困难才是一次好的成长
-- 项目还有哪些完善的地方，不可能设计出完美的执行方案，有待改进说明你对项目认识深刻，思考深入
+- Tốt nhất nên mô tả ngắn gọn súc tích bối cảnh của dự án, để người phỏng vấn nhanh chóng biết dự án làm những gì (để người phỏng vấn nhanh chóng hứng thú với dự án)
+- Nêu rõ dự án sử dụng những công nghệ nào, làm kỹ thuật thì dùng công nghệ nào phải nói rõ ràng, người phỏng vấn sẽ khá hứng thú với công nghệ của bạn
+- Giải quyết được vấn đề gì, làm dự án chắc chắn là để giải quyết vấn đề, chứ không thể làm vì mục đích làm dự án được (năng lực giải quyết vấn đề vô cùng quan trọng)
+- Gặp phải những khó khăn gì, vượt qua những khó khăn đó như thế nào, dự án gặp phải vấn đề khó là chuyện hết sức bình thường, vượt qua khó khăn mới là một lần trưởng thành tốt
+- Dự án còn những điểm nào cần hoàn thiện, không thể thiết kế ra được phương án hoàn hảo tuyệt đối, còn chỗ cần cải thiện chứng tỏ bạn hiểu sâu về dự án, suy nghĩ thấu đáo
 
-一场面试时间一般 60—80 分钟，好的表达有助于彼此之间了解更多的问题
+Một buổi phỏng vấn thường kéo dài 60—80 phút, diễn đạt tốt sẽ giúp hai bên hiểu nhau hơn qua nhiều câu hỏi
 
-### **基础知识要扎实**
+### **Kiến thức nền tảng phải vững chắc**
 
-校招非常注重基础知识，所以这块问的问题比较多，我一般会结合你项目去问，看看同学对技术是停留在用的阶段还是有自己的深入思考
+Tuyển dụng sinh viên mới rất chú trọng kiến thức nền tảng, nên phần này hỏi khá nhiều câu hỏi, tôi thường kết hợp với dự án của bạn để hỏi, xem bạn dừng lại ở mức sử dụng công nghệ hay có suy nghĩ sâu sắc riêng
 
-每个方向对基础知识要求不同，但有些基础知识是通用的
+Mỗi định hướng có yêu cầu kiến thức nền tảng khác nhau, nhưng có một số kiến thức nền tảng là dùng chung
 
-比如**数据结构与算法**、**操作系统**、**计算机网络** 等
+Ví dụ **cấu trúc dữ liệu và thuật toán**, **hệ điều hành**, **mạng máy tính** v.v.
 
-这些基础技术知识一定要掌握扎实，技术岗位都会或多或少去问这些基础
+Những kiến thức kỹ thuật nền tảng này nhất định phải nắm vững, các vị trí kỹ thuật đều sẽ hỏi ít nhiều những kiến thức nền tảng này
 
-### **动手能力很重要**
+### **Năng lực thực hành rất quan trọng**
 
-action，action，action ，重要的事情说三遍，做技术的不可能光靠一张嘴，能落地才是最重要的
+action, action, action, việc quan trọng phải nói ba lần, làm kỹ thuật không thể chỉ dựa vào một cái miệng, có thể hiện thực hóa được mới là điều quan trọng nhất
 
-面试官除了问你基础知识和项目还会去考考你的动手能力，面试时间一般不会太长，根据岗位的不同一般会让同学们写一些算法题目
+Người phỏng vấn ngoài hỏi kiến thức nền tảng và dự án còn sẽ kiểm tra năng lực thực hành của bạn, thời gian phỏng vấn thường không quá dài, tùy vị trí khác nhau mà thường sẽ cho các bạn viết một số bài toán thuật toán
 
-阿里面试，不会给你出非常变态的算法题目
+Phỏng vấn Alibaba sẽ không ra những bài toán thuật toán quá khó nhằn
 
-主要还是考察大家的动手能力、思考问题的能力、数据结构的应用能力
+Chủ yếu vẫn là kiểm tra năng lực thực hành, năng lực tư duy giải quyết vấn đề, năng lực vận dụng cấu trúc dữ liệu
 
-在写代码的过程中，我也总结了自己的方法论：
+Trong quá trình viết code, tôi cũng tự tổng kết được phương pháp luận của mình:
 
-- 上来不要先写，审题、问清楚题目意图，不要自以为是的去理解思路，工作中 沟通需求、明确需求、提出质疑和建议是非常好的习惯
-- 接下来说思路 思路错了写到一半再去改会非常浪费时间
-- 描述清楚之后，先写代码思路的步骤注释，一边写注释，脑子里迭代一遍自己的思路是否正确，是否是最优解
-- 最后，代码规范
+- Lên bảng đừng vội viết ngay, hãy đọc kỹ đề, hỏi rõ ý định của đề bài, đừng tự cho là đúng mà hiểu hướng đi, trong công việc việc trao đổi yêu cầu, làm rõ yêu cầu, đưa ra nghi vấn và kiến nghị là thói quen rất tốt
+- Tiếp theo hãy nói hướng suy nghĩ, nếu hướng suy nghĩ sai mà viết được nửa chừng mới sửa thì sẽ rất tốn thời gian
+- Sau khi mô tả rõ ràng, hãy viết comment từng bước cho hướng suy nghĩ trước, vừa viết comment vừa tự lặp lại trong đầu xem hướng suy nghĩ có đúng không, có phải lời giải tối ưu không
+- Cuối cùng, tuân thủ chuẩn code
 
-## 除了上面这些常规的方面
+## Ngoài những khía cạnh thông thường trên
 
-其实，现在面试已经非常**卷**了，上面说的这些很多都是 **八股文**
+Thực ra, hiện nay phỏng vấn đã rất **nội cuộn**, rất nhiều thứ nói trên đều là **bát cổ văn** (kiến thức lý thuyết thuộc lòng)
 
-有些学生会拿到很多面试题目和答案，反复的去记忆，面试官问问题他就开始在脑子里面检索答案
+Có một số sinh viên sẽ lấy được nhiều câu hỏi và đáp án phỏng vấn, lặp đi lặp lại để ghi nhớ, người phỏng vấn vừa hỏi là anh ta bắt đầu lục tìm đáp án trong đầu
 
-我一般问几个问题就知道该学生是不是在背八股文了。
+Tôi thường chỉ cần hỏi vài câu là biết sinh viên đó có đang học thuộc bát cổ văn hay không.
 
-对于背八股文的同学，我真的非常难过。
+Đối với những bạn học thuộc bát cổ văn, tôi thật sự thấy rất buồn.
 
-尽管你背的很好，但不能给你过啊，得对得起自己职责，得对公司负责啊！
+Dù bạn thuộc rất tốt, nhưng không thể cho bạn qua được, phải xứng đáng với trách nhiệm của mình, phải có trách nhiệm với công ty chứ!
 
-背的在好，不如理解一个知识点，理解一个知识点会有助于你去理解很多其他的知识点，很多知识点连起来就是一个知识体系。
+Thuộc lòng giỏi đến mấy, cũng không bằng hiểu sâu một kiến thức, hiểu sâu một kiến thức sẽ giúp bạn hiểu được nhiều kiến thức khác, nhiều kiến thức liên kết với nhau sẽ tạo thành một hệ thống kiến thức.
 
-当面试官问你体系中的任何一个问题，都可以把这个体系讲给他听，不是**背诵** 。
+Khi người phỏng vấn hỏi bất kỳ một vấn đề nào trong hệ thống, bạn đều có thể trình bày nguyên cả hệ thống đó cho họ nghe, chứ không phải là **đọc thuộc lòng**.
 
-深入理解问题，我会比较关注。
+Hiểu sâu vấn đề là điều tôi khá chú trọng.
 
-我在面试过程中，会通过一个问题去问一串问题，慢慢就把整体体系串起来。
+Trong quá trình phỏng vấn, tôi sẽ dùng một câu hỏi để hỏi ra một chuỗi câu hỏi, dần dần xâu chuỗi toàn bộ hệ thống lại với nhau.
 
-你的**比赛**和**论文**是你的亮点，这些东西是非常重要的加分项。
+**Giải thưởng** và **bài báo** của bạn là điểm sáng, những thứ này là những điểm cộng rất quan trọng.
 
-我也会在面试中穿插一些**开放性题目**，都是思考题 考验一个同学思考问题的方式。
+Tôi cũng sẽ đan xen một số **câu hỏi mở** trong phỏng vấn, đều là những câu hỏi tư duy, kiểm tra cách suy nghĩ vấn đề của một sinh viên.
 
-## 最后
+## Cuối cùng
 
-作为一个面试官，我很想对大家说，每个企业都非常渴望人才，都希望找到最适合企业发展的人
+Là một người phỏng vấn, tôi rất muốn nói với mọi người rằng, mọi doanh nghiệp đều vô cùng khao khát nhân tài, đều hy vọng tìm được người phù hợp nhất với sự phát triển của doanh nghiệp
 
-面试的时候面试官会尽量去挖掘你的价值。
+Khi phỏng vấn, người phỏng vấn sẽ cố gắng khai thác giá trị của bạn.
 
-但是，面试时间有限，同学们一定要在有限的时间里展现出自己的**能力**和**无限的潜力** 。
+Nhưng thời gian phỏng vấn có hạn, các bạn nhất định phải thể hiện được **năng lực** và **tiềm năng vô hạn** của mình trong khoảng thời gian có hạn đó.
 
-最后，祝愿优秀的你能找到自己理想的工作！
+Cuối cùng, xin chúc những bạn ưu tú tìm được công việc lý tưởng của mình!
 
 <!-- @include: @article-footer.snippet.md -->

@@ -1,6 +1,6 @@
 ---
-title: 普通人的春招总结（阿里、腾讯offer）
-description: "普通人的春招总结（阿里、腾讯offer）：围绕技术知识与面试总结梳理关键概念、常见问题与实践要点，帮助你高效学习与备战面试。"
+title: Tổng kết kỳ tuyển mùa xuân của người bình thường (offer Alibaba, Tencent)
+description: "Tổng kết kỳ tuyển mùa xuân của người bình thường (offer Alibaba, Tencent): xoay quanh kiến thức kỹ thuật và tổng kết phỏng vấn, sắp xếp lại các khái niệm then chốt, câu hỏi thường gặp và điểm mấu chốt thực hành, giúp bạn học tập hiệu quả và chuẩn bị phỏng vấn."
 category: 技术文章精选集
 author: 钟期既遇
 tag:
@@ -11,156 +11,156 @@ head:
       content: 春招经验,阿里面试,腾讯面试,Java学习路线,面试准备,项目经验,算法刷题,双非本科
 ---
 
-> **推荐语**：牛客网热帖，写的很全面！暑期实习，投了阿里、腾讯、字节，拿到了阿里和腾讯的 offer。
+> **Lời giới thiệu**: Bài đăng hot trên Niuke (牛客网), viết rất đầy đủ! Kỳ thực tập hè, nộp đơn vào Alibaba, Tencent, ByteDance, nhận được offer của Alibaba và Tencent.
 >
-> **原文地址：** <https://www.nowcoder.com/discuss/640519>
+> **Địa chỉ bài gốc:** <https://www.nowcoder.com/discuss/640519>
 >
-> **下篇**：[十年饮冰，难凉热血——秋招总结](https://www.nowcoder.com/discuss/804679)
+> **Phần tiếp theo**: [Mười năm uống băng, khó nguôi máu nóng - Tổng kết kỳ tuyển mùa thu](https://www.nowcoder.com/discuss/804679)
 
-## 背景
+## Bối cảnh
 
-写这篇文章的时候，腾讯 offer 已经下来了，春招也算结束了，这次找暑期实习没有像去年找日常实习一样海投，只投了 BAT 三家，阿里和腾讯收获了 offer，字节没有给面试机会，可能是笔试太拉垮了。
+Khi viết bài này, offer của Tencent đã về, kỳ tuyển mùa xuân (春招) coi như kết thúc. Lần này tìm thực tập hè tôi không nộp đơn tràn lan (海投) như năm ngoái tìm thực tập thường, chỉ nộp vào 3 công ty BAT, Alibaba và Tencent nhận được offer, ByteDance không cho cơ hội phỏng vấn, có lẽ do bài kiểm tra viết (笔试) quá kém.
 
-楼主大三，双非本科，我的春招的起始时间应该是 2 月 20 日到 3 月 23 日收到阿里意向书为止，但是从 3 月 7 日蚂蚁技术终面面完之后就没有面过技术面了，只面过两个 HR 面，剩下的时间都在等 offer。最开始是找朋友内推了字节财经的日常实习，但是到现在还在简历评估，后面又投了财经的暑期实习，笔试之后就一直卡在流程里了。腾讯是一开始被天美捞了，一面挂了之后被 PCG 捞了，最后走完了流程。阿里提前批投了好多部门，蚂蚁最先走完了终面，就录入了系统，最后拿了 offer。这一路走过来真的是酸甜苦辣都经历过，因为学历自卑过，以至于想去考研。总而言之，一定要找一个搭档和你一起复习，比如说 @你怕是个憨批哦，这是我实验室的同学，也是我们实验室的队长，这个人是真的强，阿里核心部门都拿遍了，他在我复习的过程中给了我很多帮助。
+Tôi (楼主) năm nay học năm 3, trường đại học không thuộc 985/211 (双非本科). Thời gian bắt đầu kỳ tuyển mùa xuân của tôi là từ 20/2 đến khi nhận được thư ngỏ ý (意向书) của Alibaba vào 23/3, nhưng từ sau vòng phỏng vấn kỹ thuật cuối cùng (终面) của Ant vào 7/3 thì không còn phỏng vấn kỹ thuật nào nữa, chỉ trải qua hai vòng phỏng vấn HR, thời gian còn lại đều dành để chờ offer. Ban đầu tôi nhờ bạn bè giới thiệu nội bộ (内推) cho vị trí thực tập thường của bộ phận Finance ByteDance (字节财经), nhưng đến giờ vẫn còn kẹt ở bước đánh giá hồ sơ, sau đó lại nộp đơn thực tập hè cho Finance, sau bài kiểm tra viết thì bị kẹt trong quy trình mãi. Với Tencent thì ban đầu tôi được bộ phận TiMi (天美) vớt lên, sau khi trượt vòng 1 thì được PCG vớt, cuối cùng đi hết toàn bộ quy trình. Với đợt tuyển sớm (提前批) của Alibaba, tôi nộp vào rất nhiều bộ phận, Ant Group là bên sớm nhất hoàn thành vòng phỏng vấn cuối, được nhập vào hệ thống, và cuối cùng nhận được offer. Cả chặng đường này tôi thật sự đã trải qua đủ mọi cay đắng ngọt bùi, từng mặc cảm vì học vấn đến mức muốn thi lên cao học (考研). Nói tóm lại, nhất định phải tìm một người bạn đồng hành cùng ôn tập, ví dụ như @你怕是个憨批哦, đây là bạn cùng phòng thí nghiệm với tôi, cũng là đội trưởng phòng thí nghiệm của chúng tôi, người này thật sự rất mạnh, các bộ phận cốt lõi của Alibaba đều lấy hết, cậu ấy đã giúp tôi rất nhiều trong quá trình ôn tập.
 
-## 写这个帖子的目的
+## Mục đích viết bài này
 
-1. 写给自己：总结反思一下大学前三年以及找工作的一些经历与感悟。
-2. 写给还在找实习的朋友：希望自己的经历以及面经]能给你们一些启发和帮助。
-3. 写给和我一样有着大厂梦的学弟学妹们：你们还有很长的准备时间，无论你之前在干什么，没有目标也好，碌碌无为也好，没找对方向也好，只要从现在开始，找对学习的方向，并且坚持不懈的学上一年两年，一定可以实现你的梦想的。
+1. Viết cho chính mình: tổng kết và suy ngẫm về ba năm đầu đại học cùng một số trải nghiệm và cảm nhận trong quá trình tìm việc.
+2. Viết cho những người bạn vẫn đang tìm thực tập: hy vọng kinh nghiệm và chia sẻ phỏng vấn (面经) của mình có thể mang lại cho các bạn chút gợi mở và giúp ích.
+3. Viết cho các đàn em cùng có ước mơ vào công ty lớn (大厂) như tôi: các em còn rất nhiều thời gian chuẩn bị, dù trước đây đang làm gì, chưa có mục tiêu, mơ hồ vô vị, hay chưa tìm đúng hướng đi, chỉ cần bắt đầu từ bây giờ, tìm đúng hướng học tập, và kiên trì học một hai năm, nhất định sẽ thực hiện được ước mơ của mình.
 
-## 我的大学经历
+## Trải nghiệm đại học của tôi
 
-先简单聊聊一下自己大学的经历。
+Trước tiên hãy nói sơ qua một chút về trải nghiệm đại học của mình.
 
-本人无论文、无比赛、无 ACM，要啥奖没啥奖，绩点还行，不是很拉垮，也不亮眼。保研肯定保不了，考研估计也考不上。
+Tôi không có bài báo (论文), không có giải cuộc thi, không có ACM, muốn giải gì cũng không có, điểm GPA (绩点) cũng khá ổn, không quá kém nhưng cũng không xuất sắc. Xét tuyển thẳng lên cao học (保研) chắc chắn không được, thi lên cao học chắc cũng không đậu.
 
-大一时候加入了工作室，上学期自学了 C 语言和数据结构，从寒假开始学 Java，当时还不知道 Java 那么卷，我得到的消息是 Java 好找工作，这里就不由得感叹信息差的重要性了，我当时只知道前端、后端和安卓开发，而我确实对后端开发感兴趣，但是因为信息差，我只知道 Java 可以做后端开发，并不知道后端开发其实是一个很局限的概念，后面才慢慢了解到后台开发、服务端开发这些名词，也不知道 C++、Golang 等语言也可以做后台开发，所以就学了 Java。但其实 Java 更适合做业务，C++ 更适合做底层开发、服务端开发，我虽然对业务不反感，但是对 OS、Network 这些更感兴趣一些，当然这些会作为我的一些兴趣，业余时间会自己去研究下。
+Năm nhất tôi tham gia một studio (làm việc nhóm), học kỳ đầu tự học C và cấu trúc dữ liệu, từ kỳ nghỉ đông bắt đầu học Java. Lúc đó tôi chưa biết Java cạnh tranh khốc liệt (卷) đến vậy, tin tôi nhận được là Java dễ xin việc. Ở đây không khỏi cảm thán về tầm quan trọng của chênh lệch thông tin (信息差). Lúc đó tôi chỉ biết đến frontend, backend và phát triển Android, và tôi thực sự quan tâm đến phát triển backend, nhưng vì chênh lệch thông tin, tôi chỉ biết Java có thể làm backend, không hề biết backend thực ra là một khái niệm khá hạn chế, sau này mới dần biết đến các thuật ngữ như phát triển hậu cần (后台开发), phát triển phía server (服务端开发), cũng không biết C++, Golang và các ngôn ngữ khác cũng có thể làm backend, vì vậy tôi đã học Java. Nhưng thực ra Java phù hợp hơn với mảng nghiệp vụ (business), C++ phù hợp hơn với phát triển tầng đáy (底层开发) và phát triển phía server. Tôi tuy không bài xích làm nghiệp vụ, nhưng quan tâm hơn đến OS, Network, tất nhiên những thứ này sẽ là sở thích của tôi, thời gian rảnh tôi sẽ tự tìm hiểu.
 
-### 学习路线
+### Lộ trình học tập
 
-大概学习的路线就是：Java SE 基础 -> MySQL -> Java Web（主要包括 JDBC、Servlet、JSP 等）-> SSM（其实当时 Spring Boot 已经兴起，但是我觉得没有 SSM 基础很难学会 Spring Boot，就先学了 SSM）-> Spring Boot -> Spring Cloud（当时虽然学了 Spring Cloud，但是缺少项目的锤炼，完全不会用，只是了解了分布式的一些概念）-> Redis -> Nginx -> 计算机网络（本来是计算机专业的必修课，可是我们专业要到大三下才学，所以就提前自学了）-> Dubbo -> Zookeeper -> JVM -> JUC -> Netty -> Rabbit MQ -> 操作系统（同计算机网络）-> 计算机组成原理（直接不开这门课）。
+Lộ trình học tập đại khái của tôi là: Java SE cơ bản -> MySQL -> Java Web (bao gồm chủ yếu JDBC, Servlet, JSP v.v.) -> SSM (thực ra lúc đó Spring Boot đã bắt đầu nổi lên, nhưng tôi nghĩ không có nền tảng SSM thì khó học được Spring Boot, nên tôi học SSM trước) -> Spring Boot -> Spring Cloud (lúc đó tuy đã học Spring Cloud, nhưng thiếu sự rèn luyện qua dự án, hoàn toàn không biết dùng, chỉ hiểu được một số khái niệm về phân tán) -> Redis -> Nginx -> Mạng máy tính (vốn là môn bắt buộc của ngành máy tính, nhưng ngành của tôi phải đến học kỳ cuối năm 3 mới học, nên tôi tự học trước) -> Dubbo -> Zookeeper -> JVM -> JUC -> Netty -> Rabbit MQ -> Hệ điều hành (giống mạng máy tính) -> Nguyên lý cấu tạo máy tính (trường trực tiếp không mở môn này).
 
-这就是我的一个具体的学习路线，大概是在大二的下学期学完的这些东西，都是通过看视频学的，只会用，并不了解底层原理，达不到面试八股文的水准，把这些东西学完之后，搭建起了知识体系，就开始准备面试了，大概的开始时间是去年的六月份，开始在牛客网上看一些面经，然后会自己总结。准备面试的阶段我觉得最重要的是啃书 + 刷题，八股文只是辅助，我们只是自嘲说面试就背背八股文，但其实像阿里这样的公司，背八股文是完全不能蒙混过关的，除非你有非常亮眼的项目或者实习经历。
+Đây chính là một lộ trình học tập cụ thể của tôi, đại khái hoàn thành các kiến thức này vào học kỳ cuối năm 2, đều là học qua video, chỉ biết dùng, không hiểu nguyên lý tầng đáy, chưa đạt đến trình độ bát cổ văn (八股文) trong phỏng vấn. Sau khi học hết những thứ này, xây dựng được hệ thống kiến thức, tôi bắt đầu chuẩn bị phỏng vấn, thời điểm bắt đầu đại khái là tháng 6 năm ngoái, bắt đầu xem các bài chia sẻ phỏng vấn trên Niuke rồi tự tổng kết. Giai đoạn chuẩn bị phỏng vấn, tôi nghĩ quan trọng nhất là cày sách + luyện đề (刷题), bát cổ văn chỉ là phụ trợ, chúng tôi chỉ tự giễu rằng phỏng vấn thì học thuộc bát cổ văn là được, nhưng thực ra với những công ty như Alibaba, học thuộc bát cổ văn hoàn toàn không thể qua loa lấy lệ được, trừ khi bạn có dự án hoặc kinh nghiệm thực tập thật sự nổi bật.
 
-### 书籍推荐
+### Sách gợi ý
 
-- 《Thinking in Java》：不多说了，好书，但太厚了，买了没看。
-- 《深入理解 Java 虚拟机》：JVM 的圣经，看了两遍，每一遍都有不同的收获。
-- 《Java 并发编程的艺术》：阿里人写的，基本涵盖了面试会问的并发编程的问题。
-- 《MySQL 技术内幕》：写的很深入，但是对初学者可能不太友好，第一感觉写的比较深而杂，后面单独去看每一章节，觉得收获很大。
-- 《Redis 设计与实现》：书如其名，结合源码深入讲解了 Redis 的实现原理，必看。
-- 《深入理解计算机系统》：大名鼎鼎的 CSAPP，对你面 Java 可能帮助不是很大，但是不得不说这是一本经典，涵盖了计算机系统、体系结构、组成原理、操作系统等知识，我蚂蚁二面的时候就被问了遇到的最大的困难，我就和面试官交流了读这本书中遇到的一些问题，淘系二面的时候也和面试官交流了这本书，我们都觉得这本书还需要二刷。
-- 《TCP/IP 详解卷 1》：我只看了 TCP 相关的章节，但是是有必要通读一遍的，面天美时候和面试官交流了这本书。
-- 《操作系统导论》：颇具盛名的 OSTEP，南大操作系统的课本，看的时候可以结合在 B 站蒋炎岩老师的视频，我会在下面放链接。
+- 《Thinking in Java》：Không cần nói nhiều, sách hay, nhưng quá dày, mua về chưa đọc.
+- 《深入理解 Java 虚拟机》：Kinh thánh của JVM, tôi đã đọc hai lần, mỗi lần đều có những thu hoạch khác nhau.
+- 《Java 并发编程的艺术》：Do người Alibaba viết, về cơ bản bao phủ các câu hỏi về lập trình đồng thời thường gặp trong phỏng vấn.
+- 《MySQL 技术内幕》：Viết rất sâu, nhưng có thể không thân thiện với người mới bắt đầu, ấn tượng đầu tiên là viết khá sâu và rối, sau đó đọc từng chương riêng lẻ thì thấy thu hoạch rất lớn.
+- 《Redis 设计与实现》：Đúng như tên sách, kết hợp với mã nguồn trình bày sâu về nguyên lý triển khai của Redis, nhất định phải đọc.
+- 《深入理解计算机系统》：CSAPP nổi tiếng, có thể không giúp ích được nhiều cho việc phỏng vấn Java của bạn, nhưng phải nói đây là một cuốn kinh điển, bao phủ các kiến thức về hệ thống máy tính, kiến trúc (体系结构), nguyên lý cấu tạo, hệ điều hành v.v. Khi phỏng vấn vòng 2 tiếp, tôi được hỏi về khó khăn lớn nhất từng gặp phải, tôi đã trao đổi với interviewer về một số vấn đề khi đọc cuốn sách này, phỏng vấn vòng 2 bên Taobao (淘系) cũng trao đổi với interviewer về cuốn sách này, cả hai chúng tôi đều thấy cuốn sách này cần đọc lần thứ hai.
+- 《TCP/IP 详解卷 1》：Tôi chỉ đọc các chương liên quan đến TCP, nhưng rất nên đọc hết một lượt, khi phỏng vấn TiMi tôi đã trao đổi cuốn sách này với interviewer.
+- 《操作系统导论》：OSTEP khá nổi tiếng, là giáo trình hệ điều hành của Đại học Nam Kinh (南大), khi đọc có thể kết hợp với video của thầy Jiang Yanyan (蒋炎岩) trên Bilibili (B站), tôi sẽ để link bên dưới.
 
-这几本书理解透彻了，我相信面试的时候可以面试官面试官聊的很深入了，面试官也会对你印象非常好。但是对于普通人来说，看一遍是肯定记不住的，遗忘是非常正常的现象，我很多也只看了一遍，很多细节也记不清了，最近准备二刷。
+Nếu hiểu thấu đáo mấy cuốn sách này, tôi tin khi phỏng vấn bạn có thể trò chuyện rất sâu với interviewer, interviewer cũng sẽ có ấn tượng rất tốt về bạn. Nhưng với người bình thường, đọc một lần chắc chắn không nhớ được, quên là hiện tượng hoàn toàn bình thường, tôi cũng có nhiều cuốn chỉ đọc một lần, nhiều chi tiết cũng không nhớ rõ, gần đây đang chuẩn bị đọc lần hai.
 
-更多书籍推荐建议大家看 [JavaGuide](https://javaguide.cn/books/) 这个网站上的书籍推荐，比较全面。
+Xem thêm các gợi ý sách trên website [JavaGuide](https://javaguide.cn/books/), khá là đầy đủ.
 
 ![](https://oss.javaguide.cn/p3-juejin/62099c9b2fd24d3cb6511e49756f486b~tplv-k3u1fbpfcp-zoom-1.png)
 
-### 教程推荐
+### Khóa học gợi ý
 
-我上面谈到的学习路线，我建议是跟着视频学，尚硅谷和黑马的教程都可以，一定要手敲一遍。
+Với lộ trình học tập tôi nói ở trên, tôi khuyên nên học qua video, tutorial của Shang Silicon Valley (尚硅谷) và Heima (黑马) đều được, nhất định phải tự gõ tay một lần.
 
-- [2021 南京大学 “操作系统：设计与实现” (蒋炎岩)](https://www.bilibili.com/video/BV1HN41197Ko)：我不多说了，看评论就知道了。
-- [SpringSecurity-Social-OAuth2 社交登录接口授权鉴权系列课程](https://www.bilibili.com/video/BV16J41127jq)：字母哥讲的 Spring Security 也很好，Spring Security 或者 Shiro 是做项目必备的，会一个就好，根据实际场景以及个人喜好（笑）来选型。
-- [清华大学邓俊辉数据结构与算法](https://www.bilibili.com/video/BV1jt4y117KR)：清华不解释了。
-- [MySQL 实战 45 讲](https://time.geekbang.org/column/intro/100020801)：前 27 讲多看几遍基本可以秒杀面试中遇到的 MySQL 问题了。
-- [Redis 核心技术与实战](https://time.geekbang.org/column/intro/100056701)：讲解了大量的 Redis 在生产上的使用场景，和《Redis 设计与实现》配合着看，也可以秒杀面试中遇到的 Redis 问题了。
-- [JavaGuide](https://javaguide.cn/books/)：「Java 学习+面试指南」一份涵盖大部分 Java 程序员所需要掌握的核心知识。
-- [《Java 面试指北》](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247519384&idx=1&sn=bc7e71af75350b755f04ca4178395b1a&chksm=cea1c353f9d64a458f797696d4144b4d6e58639371a4612b8e4d106d83a66d2289e7b2cd7431&token=660789642&lang=zh_CN&scene=21#wechat_redirect)：这是一份教你如何更高效地准备面试的小册，涵盖常见八股文（系统设计、常见框架、分布式、高并发 ……）、优质面经等内容。
+- [2021 南京大学 "操作系统：设计与实现" (蒋炎岩)](https://www.bilibili.com/video/BV1HN41197Ko)：Tôi không nói nhiều, xem phần bình luận là biết.
+- [SpringSecurity-Social-OAuth2 社交登录接口授权鉴权系列课程](https://www.bilibili.com/video/BV16J41127jq)：Spring Security do anh 字母哥 (Zìmǔgē) giảng cũng rất tốt, Spring Security hoặc Shiro là thứ bắt buộc khi làm dự án, biết một cái là đủ, tùy theo kịch bản thực tế và sở thích cá nhân (cười) để chọn.
+- [清华大学邓俊辉数据结构与算法](https://www.bilibili.com/video/BV1jt4y117KR)：Đại học Thanh Hoa thì khỏi cần giải thích.
+- [MySQL 实战 45 讲](https://time.geekbang.org/column/intro/100020801)：Xem kỹ 27 bài đầu nhiều lần là về cơ bản có thể giải quyết gọn các câu hỏi MySQL gặp phải trong phỏng vấn.
+- [Redis 核心技术与实战](https://time.geekbang.org/column/intro/100056701)：Trình bày rất nhiều tình huống sử dụng Redis trong production, kết hợp với 《Redis 设计与实现》 để đọc, cũng có thể giải quyết gọn các câu hỏi Redis trong phỏng vấn.
+- [JavaGuide](https://javaguide.cn/books/)：「Java 学习+面试指南」một tài liệu bao phủ phần lớn kiến thức cốt lõi mà lập trình viên Java cần nắm vững.
+- [《Java 面试指北》](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247519384&idx=1&sn=bc7e71af75350b755f04ca4178395b1a&chksm=cea1c353f9d64a458f797696d4144b4d6e58639371a4612b8e4d106d83a66d2289e7b2cd7431&token=660789642&lang=zh_CN&scene=21#wechat_redirect)：Đây là một tập sách nhỏ hướng dẫn cách chuẩn bị phỏng vấn hiệu quả hơn, bao gồm các bát cổ văn thường gặp (thiết kế hệ thống, framework phổ biến, phân tán, high concurrency ...) và các bài chia sẻ phỏng vấn chất lượng.
 
-## 找工作
+## Tìm việc
 
-大概是去年 11 月的时候，牛客上日常实习的面经开始多了起来，我也有了找实习的意识，然后就开始一边复习一边海投，投了很多公司，给面试机会的就那几家，腾讯二面挂了两次，当时心态完全崩了，甚至有了看空春招的想法。很幸运最后收获了一个实习机会，在实习的时候，除了完成日常的工作以外，其余时间也没有松懈，晚上下班后、周末的时间都用来复习，心里也暗暗下定决心，春招一定要卷土重来！
+Khoảng tháng 11 năm ngoái, trên Niuke bắt đầu xuất hiện nhiều bài chia sẻ phỏng vấn thực tập thường, tôi cũng có ý thức đi tìm thực tập, rồi bắt đầu vừa ôn tập vừa nộp đơn tràn lan, nộp rất nhiều công ty, nhưng chỉ vài công ty cho cơ hội phỏng vấn. Tencent trượt vòng 2 hai lần, lúc đó tinh thần tôi hoàn toàn sụp đổ, thậm chí có ý định từ bỏ kỳ tuyển mùa xuân. Rất may cuối cùng cũng có được một cơ hội thực tập, trong thời gian thực tập, ngoài công việc hàng ngày ra, thời gian còn lại tôi cũng không lơi lỏng, sau giờ tan làm, cuối tuần đều dành để ôn tập, trong lòng thầm quyết tâm, kỳ tuyển mùa xuân nhất định phải quật khởi lần nữa!
 
-从二月下旬开始海投阿里提前批，基本都有了面试，开系统那天收到了 16 封内推邮件，具体的面经可以看我以前发的文章。
+Từ cuối tháng 2 bắt đầu nộp tràn lan đợt tuyển sớm của Alibaba, về cơ bản đều có phỏng vấn, ngày mở hệ thống nhận được 16 email giới thiệu nội bộ, các bài chia sẻ phỏng vấn chi tiết có thể xem các bài viết tôi đăng trước đây.
 
-从 3.1 到 3.7 那一个周平均每天三场面试，真的非常崩溃，一度想考研，也焦虑过、哭过、笑过，还好结果是好的，最后也去了一直想去的支付宝。
+Từ 1/3 đến 7/3, tuần đó trung bình mỗi ngày ba buổi phỏng vấn, thật sự rất suy sụp, có lúc muốn thi lên cao học, cũng từng lo lắng, khóc, cười, may mà kết quả tốt đẹp, cuối cùng cũng đến được Alipay mà mình hằng mong muốn.
 
-我主要是想通过自己对面试过程的总结给大家提一些建议，大佬不喜勿喷。
+Tôi chủ yếu muốn thông qua việc tổng kết quá trình phỏng vấn của bản thân để đưa ra một số lời khuyên cho mọi người, các cao nhân (大佬) không thích thì xin đừng ném đá.
 
-### 面试准备
+### Chuẩn bị phỏng vấn
 
-要去面试首先要准备一份简历，我个人认为一份好的简历应该有一下三个部分：
+Muốn đi phỏng vấn trước tiên phải chuẩn bị một bộ hồ sơ (简历), cá nhân tôi cho rằng một bộ hồ sơ tốt nên có ba phần sau:
 
-1. 完整的个人信息，这个不多说了吧，个人信息不完整面试官或 HR 都联系不上你，就算学校不好也要写上去，因为听说有些公司没有学校无法进行简历评估，非科班或者说学校不太出名可以将教育信息写在最下面。
-2. 项目/实习经历，项目真的很重要，面试大部分时间会围绕着项目来，你项目准备好了可以把控面试的节奏，引导面试官问你擅长的方向，我就是在这方面吃了亏。如果没有项目怎么办，可以去 GitHub 上找一些开源的项目，自己跟着做一遍，加入一些自己的思考和理解。还有做项目不能简单实现功能，还要考虑性能和优化，面试官并不关注你这个功能是怎么实现的，他想知道的是你是如何一步步思考的，一开始的方案是什么，后面选了什么方案，对性能有哪些提升，还能再改进吗？
-3. 具备的专业技能，这个可以简单的写一下你学过的专业知识，这样可以让面试官有针对的问一些基础知识，切忌长篇罗列，最擅长的一定要写在上面，依次往下。
+1. Thông tin cá nhân đầy đủ, cái này không cần nói nhiều, thông tin cá nhân không đầy đủ thì interviewer hoặc HR không thể liên hệ được với bạn, dù trường học không tốt cũng phải viết lên, vì nghe nói có một số công ty không có thông tin trường học thì không thể đánh giá hồ sơ, nếu không đúng chuyên ngành (非科班) hoặc trường không nổi tiếng thì có thể ghi thông tin giáo dục ở dưới cùng.
+2. Kinh nghiệm dự án/thực tập, dự án thật sự rất quan trọng, phần lớn thời gian phỏng vấn sẽ xoay quanh dự án, bạn chuẩn bị tốt dự án thì có thể kiểm soát nhịp độ phỏng vấn, dẫn dắt interviewer hỏi về hướng bạn giỏi, tôi chính là đã thiệt thòi ở điểm này. Không có dự án thì làm sao? Có thể lên GitHub tìm các dự án mã nguồn mở, tự làm theo một lần, thêm vào một số suy nghĩ và hiểu biết của riêng mình. Với lại làm dự án không thể chỉ đơn giản hiện thực hóa chức năng, còn phải cân nhắc đến hiệu năng và tối ưu hóa, interviewer không quan tâm chức năng này bạn hiện thực hóa như thế nào, họ muốn biết là bạn đã suy nghĩ từng bước ra sao, phương án ban đầu là gì, sau đó chọn phương án nào, hiệu năng được cải thiện những gì, còn có thể cải tiến thêm được không?
+3. Kỹ năng chuyên môn nắm vững, cái này có thể viết đơn giản các kiến thức chuyên môn bạn đã học, để interviewer có thể hỏi có trọng tâm một số kiến thức cơ bản, tuyệt đối tránh liệt kê dài dòng, thứ giỏi nhất nhất định phải viết ở trên, rồi giảm dần xuống.
 
-简历写好了之后就进入了投递环节，最好找一个靠谱的内推人，因为内推人可以帮你跟进面试的进度，必要时候和 HR 沟通，哪怕挂了也可以告诉你原因，哪些方面表现的不好。现在内推已经不再是门槛，而是最低的入场券，没有认识的人内推也可以在牛客上找一些师兄内推，他们往往也很热情。
+Viết xong hồ sơ thì bước vào giai đoạn nộp đơn, tốt nhất nên tìm một người giới thiệu nội bộ đáng tin cậy, vì người giới thiệu nội bộ có thể giúp bạn theo dõi tiến độ phỏng vấn, khi cần thiết trao đổi với HR, dù có trượt cũng có thể nói cho bạn biết lý do, khía cạnh nào thể hiện không tốt. Hiện nay giới thiệu nội bộ không còn là ngưỡng cửa, mà là tấm vé vào sân ở mức tối thiểu, nếu không quen ai để giới thiệu nội bộ thì cũng có thể lên Niuke tìm các anh chị khóa trên (师兄) nhờ giới thiệu, họ thường cũng rất nhiệt tình.
 
-在面试过程中一定不要紧张，因为一面面试官可能比我们大不了几岁，也工作没几年，所以 duck 不必紧张的不会说话，不会就说不会，然后笑一下，会就流利的表达出来，面试并不是一问一答，面试是沟通，是交流，你可以大胆的说出自己的思考，表达沟通能力也是面试的一个衡量指标。
+Trong quá trình phỏng vấn nhất định đừng căng thẳng, vì interviewer vòng 1 có thể lớn hơn chúng ta không mấy tuổi, cũng mới đi làm vài năm, nên hoàn toàn không cần (duck 不必) căng thẳng đến mức không nói nên lời, không biết thì nói không biết, rồi cười một cái, biết thì diễn đạt trôi chảy. Phỏng vấn không phải là hỏi một đáp một, phỏng vấn là giao tiếp, là trao đổi, bạn có thể mạnh dạn nói ra suy nghĩ của mình, khả năng diễn đạt và giao tiếp cũng là một chỉ số đánh giá trong phỏng vấn.
 
-我个人认为面试和追妹子是差不多的，都是尽快的让对方了解自己，发现你身上的闪光点，只不过面试是让面试官了解你在技术上的造诣。所以，自我介绍环节就变得非常重要，你可以简单介绍完自己的个人信息之后，介绍一下你做过的项目，自我介绍最好长一些，因为在面试前，面试官可能没看过你的简历（逃），你最好留给面试官充足的时间去看你的简历。自我介绍包括项目的介绍可以写成一遍文档，多读几遍，在面试的时候能够背下来，实在不行也可以照着读。
+Cá nhân tôi cho rằng phỏng vấn cũng giống như tán gái (追妹子), đều là làm cho đối phương hiểu mình càng nhanh càng tốt, phát hiện ra những điểm sáng của bạn, chỉ khác là phỏng vấn là để interviewer hiểu được trình độ kỹ thuật của bạn. Vì vậy phần giới thiệu bản thân trở nên rất quan trọng, bạn có thể giới thiệu ngắn gọn thông tin cá nhân xong rồi giới thiệu các dự án đã làm, phần giới thiệu bản thân tốt nhất nên dài một chút, vì trước khi phỏng vấn, interviewer có thể chưa xem hồ sơ của bạn (逃), bạn tốt nhất để cho interviewer đủ thời gian xem hồ sơ của bạn. Phần giới thiệu bản thân bao gồm cả giới thiệu dự án có thể viết thành một tài liệu, đọc nhiều lần, đến khi phỏng vấn đọc thuộc được, thực sự không được thì cũng có thể nhìn theo mà đọc.
 
-### 项目
+### Dự án
 
-我还是要重点讲一下项目，我以前认为项目是一个不确定性非常大的地方，后来经过面试才知道项目是最容易带面试官节奏的地方。问项目的意义是通过项目来问基础知识，所以就要求你对自己的项目非常熟悉，考虑各种极端情况以及优化方案，熟悉用到的中间件原理，以及这些中间件是如何处理这些情况的，比如说，MQ 的宕机恢复，Redis 集群、哨兵，缓存雪崩、缓存击穿、缓存穿透等。
+Tôi vẫn muốn tập trung nói về dự án, trước đây tôi nghĩ dự án là một nơi có độ bất định rất lớn, sau này trải qua phỏng vấn mới biết dự án là nơi dễ dẫn dắt nhịp điệu interviewer nhất. Ý nghĩa của việc hỏi dự án là thông qua dự án để hỏi kiến thức cơ bản, vì vậy yêu cầu bạn phải rất quen thuộc với dự án của mình, cân nhắc các tình huống biên và phương án tối ưu, quen thuộc nguyên lý của các middleware đã dùng, và các middleware này xử lý những tình huống đó như thế nào, ví dụ như phục hồi sau sự cố (宕机) của MQ, Redis cluster, sentinel, cache avalanche (缓存雪崩), cache breakdown (缓存击穿), cache penetration (缓存穿透) v.v.
 
-优化主要可以从缓存、MQ 解耦、加索引、多线程、异步任务、用 ElasticSearch 做检索等方面考虑，我认为项目优化主要的着手点就是减少数据库的访问量，减少同步调用的次数，比如说加缓存、用 ElasticSearch 做检索就是通过减少数据库的访问来实现的优化，MQ 解耦、异步任务等就是通过减少同步调用的次数来实现的优化。
+Tối ưu hóa chủ yếu có thể cân nhắc từ các khía cạnh như cache, MQ tách rời, thêm index, đa luồng, tác vụ bất đồng bộ, dùng ElasticSearch để tìm kiếm v.v. Tôi cho rằng điểm khởi đầu chính của tối ưu hóa dự án là giảm số lần truy cập database, giảm số lần gọi đồng bộ (synchronous call), ví dụ thêm cache, dùng ElasticSearch để tìm kiếm chính là các tối ưu hóa đạt được bằng cách giảm truy cập database, MQ tách rời, tác vụ bất đồng bộ v.v. là các tối ưu hóa đạt được bằng cách giảm số lần gọi đồng bộ.
 
-项目中还可以学到很多东西，比如下面的这些就是通过项目来学习的：
+Trong dự án còn có thể học được rất nhiều thứ, ví dụ những thứ sau đây là học qua dự án:
 
-1. 权限控制（ABAC、RBAC）
+1. Kiểm soát quyền hạn (权限控制) (ABAC、RBAC)
 2. JWT
-3. 单点登录
-4. 分库分表
-5. 分片上传/导出
-6. 分布式锁
-7. 负载均衡
+3. Đăng nhập một lần (单点登录)
+4. Chia tách database/bảng (分库分表)
+5. Upload/export phân mảnh (分片上传/导出)
+6. Khóa phân tán (分布式锁)
+7. Cân bằng tải (负载均衡)
 
-当然还有很多东西，每个人的项目不一样，能学到的东西也天差地别，但是你要相信的是，你接触到的东西，面试官应该是都会的，所以一定要好好准备，不然容易被怼。
+Tất nhiên còn rất nhiều thứ, mỗi người có dự án khác nhau, những gì học được cũng khác nhau một trời một vực, nhưng bạn phải tin rằng, những thứ bạn tiếp xúc, interviewer chắc hẳn đều biết, nên nhất định phải chuẩn bị tốt, không thì dễ bị bắt bẻ.
 
-本质上来讲，项目也可以拆解成八股文，可以用准备基础知识的方式来准备项目。
+Về bản chất, dự án cũng có thể tách ra thành bát cổ văn, có thể dùng cách chuẩn bị kiến thức cơ bản để chuẩn bị dự án.
 
-### 算法
+### Thuật toán
 
-项目的八股文化，会进一步导致无法准确的甄选候选人，所以就到了面试的第三个衡量标准，那就是算法，我曾经在反问阶段问过面试官刷算法对哪些方面有帮助，面试官直截了当的对我说，刷题对你以后找工作有帮助。我的观点是算法其实也是可以通过记忆来提高的，LeetCode 前 200 道题能刷上 3 遍，我不信面试时候还能手撕不了，所以在复习的过程中一定要保持算法的训练。
+Việc biến dự án thành bát cổ văn sẽ càng khiến không thể tuyển chọn chính xác ứng viên, vì vậy mới đến tiêu chuẩn đánh giá thứ ba của phỏng vấn, đó là thuật toán. Tôi từng ở giai đoạn hỏi ngược (反问) hỏi interviewer việc luyện thuật toán giúp ích cho những khía cạnh nào, interviewer nói thẳng với tôi rằng, luyện đề có ích cho việc tìm việc sau này của bạn. Quan điểm của tôi là thuật toán thực ra cũng có thể nâng cao thông qua ghi nhớ, 200 câu đầu của LeetCode có thể luyện được 3 lần, tôi không tin đến khi phỏng vấn vẫn không viết ra được (手撕), nên trong quá trình ôn tập nhất định phải duy trì luyện tập thuật toán.
 
-### 面试建议
+### Lời khuyên phỏng vấn
 
-1. 自我介绍尽量丰富一下，项目提前准备好如何介绍。
-2. 在面试的时候，遇到不会的问题最好不要直接说不会，然后愣着，等面试官问下一个问题，你可以说自己对这方面不太了解，但是对 XX 有一些了解，然后讲一下，如果面试官感兴趣，你就可以继续说，不感兴趣他就会问下一个问题，面试官一般是不会打断的，这也是让面试官快速了解你的一个小技巧。
-3. 尽量向面试官展示你的技术热情，比如说你可以和面试官聊 Java 每个版本的新特性，最近技术圈的一些新闻等等，因为就我所知，技术热情也是阿里面试考察的一方面。
-4. 面试是一个双向选择的过程，不要表现的太过去谄媚。
-5. 好好把握好反问阶段，问一些有价值的内容，比如说新人培养机制、转正机制等。
+1. Phần giới thiệu bản thân cố gắng phong phú hơn, dự án chuẩn bị trước cách giới thiệu.
+2. Khi phỏng vấn, gặp câu hỏi không biết thì tốt nhất đừng nói thẳng không biết rồi ngồi im, chờ interviewer hỏi câu tiếp theo, bạn có thể nói mình không hiểu rõ khía cạnh này lắm, nhưng có hiểu biết chút về XX, rồi trình bày, nếu interviewer hứng thú thì bạn có thể tiếp tục nói, không hứng thú thì họ sẽ hỏi câu tiếp theo, interviewer thường sẽ không ngắt lời, đây cũng là một mẹo nhỏ giúp interviewer nhanh chóng hiểu bạn.
+3. Cố gắng thể hiện sự nhiệt huyết với công nghệ trước interviewer, ví dụ có thể trò chuyện với interviewer về tính năng mới của từng phiên bản Java, các tin tức gần đây của giới công nghệ v.v., vì theo tôi được biết, nhiệt huyết công nghệ cũng là một khía cạnh được Alibaba đánh giá trong phỏng vấn.
+4. Phỏng vấn là một quá trình lựa chọn hai chiều, đừng tỏ ra quá nịnh bợ.
+5. Nắm chắc giai đoạn hỏi ngược, hỏi những nội dung có giá trị, ví dụ như cơ chế đào tạo nhân viên mới, cơ chế chuyển chính thức (转正) v.v.
 
-## 经验
+## Kinh nghiệm
 
-1. 如果你现在大一，OK，我希望你能多了解一下互联网就业的方向，看看自己的兴趣在哪，先把基础打好，比如说数据结构、操作性、计算机网络、计算机组成原理，因为这四门课既是大部分学校考研的专业课，也是面试中常常会被问到的问题。
-2. 如果已经大二了，那就要明确自己的方向，要有自驱力，知道你学习的这个方向都要学哪些知识，学到什么程度能够就业，合理安排好时间，知道自己在什么阶段要达到什么样的水准。
-3. 如果你学历比较吃亏，亦或是非科班出身，那么我建议你一定要付出超过常人的努力，因为在我混迹牛客这么多年，我看到的面经一般是学校好一些的问的简单一些，相对差一些的问的难一些，其实也可以理解，毕竟普遍上来说名校出身的综合实力要强一些。
-4. 尽量早点实习，如果你现在大二，已经有了能够实习的水平，我建议你早点投简历，尽量找暑期实习，你相信我，如果你这个暑假去实习了，明年一定是乱杀。
-5. 接上条，如果找不到实习，尽量要做几个有挑战的项目，并且找到这个项目的抓手。
-6. 多刷刷牛客，我在牛客上就认识了很多志同道合的人，他们在我找工作过程中给了我很多帮助。
+1. Nếu bạn đang năm nhất, OK, tôi hy vọng bạn có thể tìm hiểu thêm về các hướng nghề nghiệp internet, xem sở thích của mình ở đâu, trước tiên hãy đánh chắc nền tảng, ví dụ như cấu trúc dữ liệu, hệ điều hành, mạng máy tính, nguyên lý cấu tạo máy tính, vì bốn môn này vừa là môn chuyên ngành trong kỳ thi lên cao học của hầu hết các trường, vừa là những câu hỏi thường được hỏi trong phỏng vấn.
+2. Nếu đã năm hai, thì phải xác định rõ hướng đi của mình, phải có tinh thần tự lực (自驱力), biết hướng mình đang học cần học những kiến thức gì, học đến mức nào thì có thể đi làm, sắp xếp thời gian hợp lý, biết mình ở giai đoạn nào cần đạt trình độ gì.
+3. Nếu bạn bị thiệt thòi về học vấn, hoặc không đúng chuyên ngành, thì tôi khuyên bạn nhất định phải nỗ lực vượt xa người thường, vì những năm lăn lộn trên Niuke, tôi thấy các bài chia sẻ phỏng vấn thường là trường tốt hơn thì hỏi dễ hơn, trường tương đối kém hơn thì hỏi khó hơn, thực ra cũng có thể hiểu được, dù sao nhìn chung sinh viên các trường danh tiếng thì thực lực tổng hợp mạnh hơn.
+4. Cố gắng đi thực tập càng sớm càng tốt, nếu bạn đang năm hai và đã có trình độ đi thực tập, tôi khuyên bạn nộp hồ sơ sớm, cố gắng tìm thực tập hè, bạn tin tôi đi, nếu mùa hè này bạn đi thực tập, năm sau nhất định sẽ oanh tạc (乱杀) tất cả.
+5. Nối tiếp ý trên, nếu không tìm được thực tập, cố gắng làm vài dự án có tính thử thách, và tìm ra điểm mấu chốt (抓手) của dự án.
+6. Luyện nhiều trên Niuke, trên Niuke tôi quen được rất nhiều người cùng chí hướng, họ đã giúp tôi rất nhiều trong quá trình tìm việc.
 
-## 建议
+## Lời khuyên
 
-1. 一定要抱团取暖，一起找工作的同学可以拉一个群，无论是自己学校的还是网上认识的，平常多交流复习心得，n 个 1 相加的和一定是大于 n 的。
-2. 知识的深度和广度都很重要，平常一定要多了解新技术，而且每学一门技术一定要争取了解它的原理，不然你学的不算是计算机，而是英语系，工作职位也不是研发工程师，而是 API 调用工程师。
-3. 运营好自己的 CSDN、掘金等博客平台，我有个学弟大二是 CSDN 博客专家，已经有猎头联系他了，平常写的代码尽量都提交到 GitHub 上，无论是项目也好，实验也好，如果有能力的话最好能录制一些视频发到哔哩哔哩上，因为这是面试官在面试你之前了解你表达能力的一个重要途径。
-4. 心态一定要好，面试不顺利，不一定是你的能力问题，也可能是因为他们招人很少，或者说某一些客观条件与他们不匹配，一定要多尝试不同的选择。
-5. 多和人沟通交流，不要自己埋头苦干，因为你以后进公司里也需要和别人合作，所以表达和沟通能力是一项基本的技能，要提前培养。
+1. Nhất định phải "bó củi sưởi ấm" (抱团取暖), các bạn cùng đi tìm việc có thể lập một nhóm, dù là bạn cùng trường hay quen trên mạng, bình thường trao đổi nhiều kinh nghiệm ôn tập, n số 1 cộng lại chắc chắn lớn hơn n.
+2. Độ sâu và độ rộng của kiến thức đều rất quan trọng, bình thường nhất định phải tìm hiểu nhiều công nghệ mới, và mỗi khi học một công nghệ phải cố gắng hiểu nguyên lý của nó, không thì bạn học không phải là khoa học máy tính, mà là khoa tiếng Anh, vị trí công việc cũng không phải kỹ sư nghiên cứu phát triển (研发工程师), mà là kỹ sư gọi API (API 调用工程师).
+3. Vận hành tốt các nền tảng blog của mình như CSDN, Juejin (掘金) v.v., tôi có một đàn em năm hai đã là chuyên gia blog CSDN, đã có headhunter liên hệ với cậu ấy, code viết thường ngày cố gắng đều đẩy lên GitHub, dù là dự án hay thí nghiệm, nếu có khả năng thì tốt nhất có thể quay một số video đăng lên Bilibili (哔哩哔哩), vì đây là một con đường quan trọng để interviewer hiểu khả năng diễn đạt của bạn trước khi phỏng vấn.
+4. Tâm lý nhất định phải tốt, phỏng vấn không thuận lợi không hẳn là vấn đề năng lực của bạn, cũng có thể vì họ tuyển người rất ít, hoặc một số điều kiện khách quan không khớp với họ, nhất định phải thử nhiều lựa chọn khác nhau.
+5. Giao tiếp nhiều với mọi người, đừng cắm đầu làm việc một mình, vì sau này vào công ty bạn cũng cần hợp tác với người khác, nên khả năng diễn đạt và giao tiếp là một kỹ năng cơ bản, cần bồi dưỡng từ trước.
 
-## 闲聊
+## Tán gẫu
 
-### 谈谈信息差
+### Về chênh lệch thông tin
 
-我觉得学校的差距并不只是体现在教学水平上，诚然名校的老师讲课水平、实验水平都是高于弱校的，但是信息差才是主要的差距。在 985 学校里面读书，不仅能接触到更多优质企业的校招宣讲、讲座，还能接触到更好的就业氛围，因为名校里面去大厂、去外企的人、甚至出国的人更多，学长学姐的内推只是一方面，另一方面是你可以从他们身上学到技术以外的东西，而双非学校去大厂的人少，他们能影响的只是很少一部分人，这就是信息差。信息差的劣势主要体现在哪些方面呢？比如人家大二已经开始找日常实习了，而你认为找工作是大四的事情，人家大三已经找到暑期实习了，你暑假还需要去参加学校组织的培训，一步步的就这样拉下了。
+Tôi cho rằng khoảng cách giữa các trường không chỉ thể hiện ở trình độ giảng dạy, đúng là trình độ giảng dạy, trình độ thí nghiệm của thầy cô trường danh tiếng đều cao hơn trường yếu, nhưng chênh lệch thông tin mới là khoảng cách chủ yếu. Học trong các trường 985, không chỉ tiếp xúc được với nhiều buổi tuyên truyền tuyển dụng (校招宣讲), diễn giảng của các doanh nghiệp chất lượng cao hơn, mà còn tiếp xúc được với bầu không khí việc làm tốt hơn, vì trong trường danh tiếng người vào công ty lớn, vào công ty nước ngoài, thậm chí đi nước ngoài nhiều hơn, sự giới thiệu nội bộ của anh chị khóa trên chỉ là một mặt, mặt khác là bạn có thể học được những thứ ngoài kỹ thuật từ họ, còn trường shuangfei (双非) người vào công ty lớn ít, họ chỉ có thể ảnh hưởng đến một bộ phận rất nhỏ người, đây chính là chênh lệch thông tin. Bất lợi của chênh lệch thông tin thể hiện chủ yếu ở những khía cạnh nào? Ví dụ người ta năm hai đã bắt đầu tìm thực tập thường, còn bạn cho rằng tìm việc là chuyện của năm 4, người ta năm ba đã tìm được thực tập hè, còn bạn mùa hè vẫn phải tham gia buổi đào tạo do trường tổ chức, từng bước từng bước như vậy mà bị bỏ lại phía sau.
 
-好在，互联网的出现让信息更加透明，你可以在网上检索各种各样你想要的信息，比如我就在牛客]上认识了一些志同道合的朋友，他们在找工作的过程中给了我很多帮助。平常可以多刷刷牛客，能够有效的减小信息差。
+May thay, sự xuất hiện của internet khiến thông tin minh bạch hơn, bạn có thể tìm kiếm đủ loại thông tin mình muốn trên mạng, ví dụ tôi đã quen một số người bạn cùng chí hướng trên Niuke, họ đã giúp tôi rất nhiều trong quá trình tìm việc. Bình thường có thể luyện nhiều trên Niuke, có thể giảm chênh lệch thông tin một cách hiệu quả.
 
-### 谈谈 Java 的内卷
+### Về sự cạnh tranh khốc liệt của Java (内卷)
 
-Java 卷吗？毫无疑问，很卷，我个人认为开发属于没有什么门槛的工作，本科生来干正合适，但是因为算法岗更是神仙打架，导致很多的研究生也转了开发，而且基本都转了 Java 开发。Java 的内卷只是这个原因造成的吗？当然不是，我认为还有一个原因就是培训机构的兴起，让这个行业的门槛进一步降低，你要学什么东西，怎么学，都有人给你安排好了，这是造成内卷的第二个原因。第三个原因就是非科班转码，其它行业的凋落和互联网行业的繁荣形成了鲜明对比，导致很多其它专业的人也自学计算机，找互联网的工作，导致这个行业的人越来越多，蛋糕就那么大，分蛋糕的人却越来越多。
+Java có cạnh tranh khốc liệt không? Không nghi ngờ gì, rất khốc liệt. Cá nhân tôi cho rằng phát triển (开发) thuộc dạng công việc không có ngưỡng cửa gì, sinh viên đại học làm là vừa, nhưng vì các vị trí thuật toán (算法岗) càng là "thần tiên đánh nhau" (神仙打架), khiến rất nhiều học viên cao học cũng chuyển sang làm phát triển, và cơ bản đều chuyển sang phát triển Java. Sự cạnh tranh khốc liệt của Java chỉ do nguyên nhân này tạo ra? Dĩ nhiên không phải, tôi cho rằng còn một nguyên nhân nữa là sự trỗi dậy của các trung tâm đào tạo (培训机构), khiến ngưỡng cửa của ngành này càng hạ thấp hơn, bạn muốn học gì, học thế nào, đều có người sắp xếp cho bạn, đây là nguyên nhân thứ hai gây ra nội cuốn. Nguyên nhân thứ ba là những người không đúng chuyên ngành chuyển sang code (非科班转码), sự suy tàn của các ngành khác tương phản rõ rệt với sự thịnh vượng của ngành internet, khiến nhiều người thuộc ngành khác cũng tự học máy tính, tìm công việc internet, làm cho người trong ngành này ngày càng nhiều, chiếc bánh thì chỉ lớn như vậy, mà người chia bánh lại ngày càng nhiều.
 
-其实内卷也不一定是个坏现象，这说明阶级上升的通道还没有完全关闭，还是有不少人愿意通过努力来改变现状，这也一定程度上会加快行业的发展，社会的发展。选择权在你自己手上，你可以选择回老家躺平或者进互联网公司内卷，如果选择后者的话，我的建议还是尽早占下坑位，因为唯一不变的是变化，你永远不知道三年后是什么样子。
+Thực ra nội cuốn chưa chắc đã là hiện tượng xấu, điều này cho thấy kênh thăng tiến giai tầng (阶级上升) vẫn chưa đóng hoàn toàn, vẫn có không ít người sẵn sàng nỗ lực để thay đổi hiện trạng, điều này cũng ở mức độ nhất định sẽ thúc đẩy sự phát triển của ngành, sự phát triển của xã hội. Quyền lựa chọn nằm trong tay bạn, bạn có thể chọn về quê "nằm thẳng" (躺平) hoặc vào công ty internet nội cuốn, nếu chọn vế sau, lời khuyên của tôi là nên sớm chiếm chỗ (占坑), vì điều duy nhất không đổi là sự thay đổi, bạn không bao giờ biết ba năm sau sẽ ra sao.
 
-## 祝福
+## Lời chúc
 
-惟愿诸君，前程似锦！
+Chỉ mong các bạn, tiền đồ xán lạn!
 
 <!-- @include: @article-footer.snippet.md -->

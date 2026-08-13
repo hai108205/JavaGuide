@@ -1,6 +1,6 @@
 ---
-title: 聊聊大厂的绩效考核
-description: "聊聊大厂的绩效考核：围绕技术知识与面试总结梳理关键概念、常见问题与实践要点，帮助你高效学习与备战面试。"
+title: Bàn về đánh giá hiệu quả công việc (performance review) ở công ty lớn
+description: "Chuyện về đánh giá hiệu quả công việc (performance review) ở công ty lớn: hệ thống hóa các khái niệm then chốt, câu hỏi thường gặp và điểm mấu chốt thực hành xoay quanh kiến thức kỹ thuật và tổng kết phỏng vấn, giúp bạn học tập hiệu quả và sẵn sàng cho phỏng vấn."
 category: 技术文章精选集
 tag:
   - 工作
@@ -10,128 +10,127 @@ head:
       content: 大厂绩效,绩效考核,KPI,OKR,271制度,年终奖,职级晋升,向上管理
 ---
 
-> **内容概览**：
+> **Tổng quan nội dung**:
 >
-> - 在大部分公司，绩效跟你的年终奖、职级晋升、薪水涨幅等等福利是直接相关的。
-> - 你的上级、上上级对你的绩效拥有绝对的话语权，这是潜规则，放到任何公司都是。成年人的世界，没有绝对的公平，绩效考核尤为明显。
-> - 提升绩效的打法：
->   - 短期打法：找出 1-2 件事，体现出你的独特价值（抓关键事件）。
->   - 长期打法：通过一步步信任的建立，成为团队的核心人员或者是老板的心腹，具备不可替代性。
+> - Ở hầu hết các công ty, hiệu quả công việc (performance) liên quan trực tiếp đến thưởng cuối năm, thăng tiến cấp bậc, tăng lương và các phúc lợi khác.
+> - Cấp trên và cấp trên của cấp trên có quyền quyết định tuyệt đối về hiệu quả công việc của bạn, đây là quy tắc ngầm, áp dụng ở bất kỳ công ty nào. Trong thế giới người lớn, không có công bằng tuyệt đối, và điều đó thể hiện rõ nhất ở việc đánh giá hiệu quả công việc.
+> - Cách nâng cao hiệu quả công việc (performance):
+>   - Chiến thuật ngắn hạn: tìm ra 1-2 việc thể hiện giá trị độc đáo của bạn (nắm bắt các sự kiện then chốt).
+>   - Chiến thuật dài hạn: thông qua việc xây dựng niềm tin từng bước, trở thành người nòng cốt của đội nhóm hoặc tâm phúc của sếp, sở hữu tính không thể thay thế.
 >
-> **原文地址**：<https://mp.weixin.qq.com/s/D1s8p7z8Sp60c-ndGyh2yQ>
+> **Địa chỉ bài gốc**: <https://mp.weixin.qq.com/s/D1s8p7z8Sp60c-ndGyh2yQ>
 
-在新公司度过了一个完整的 Q3 季度，被打了绩效，也给下属打了绩效，感慨颇深。
+Vừa trải qua một quý Q3 trọn vẹn ở công ty mới, vừa bị chấm hiệu quả công việc, vừa chấm hiệu quả cho cấp dưới, cảm khái rất sâu sắc.
 
-今天就好好聊聊**大厂打工人最最关心的「绩效考核」**，谈谈它背后的逻辑以及潜规则，摸清楚了它，你在大厂这片丛林里才能更好的生存下去。
+Hôm nay hãy cùng tán gẫu kỹ về **「đánh giá hiệu quả công việc (performance review)」— thứ mà dân văn phòng công ty lớn quan tâm nhất**, bàn về logic ẩn sau nó cùng những quy tắc ngầm. Nắm rõ được nó, bạn mới có thể sinh tồn tốt hơn trong khu rừng công ty lớn này.
 
-## 大厂的绩效到底有多重要？
+## Hiệu quả công việc ở công ty lớn quan trọng đến mức nào?
 
-先从公司角度，谈谈为什么需要绩效考核？
+Trước tiên, từ góc nhìn của công ty, hãy bàn xem vì sao cần đánh giá hiệu quả công việc?
 
-有一个著名的管理者言论，即：企业战略的上三路和下三路。
+Có một phát ngôn nổi tiếng của các nhà quản lý, đó là: ba đường trên và ba đường dưới của chiến lược doanh nghiệp.
 
-> 上三路是使命、愿景、价值观，下三路是组织、人才、KPI。下三路需要确保上三路能执行下去，否则便是空谈。那怎么才能达成呢？
+> Ba đường trên là sứ mệnh, tầm nhìn, giá trị; ba đường dưới là tổ chức, nhân tài, KPI. Ba đường dưới cần đảm bảo ba đường trên có thể thực thi, nếu không thì chỉ là nói suông. Vậy làm thế nào để đạt được điều đó?
 
-马老板在湖畔大学的课堂上，对底下众多 CEO 学员说，“只能靠 KPI。没有 KPI，一切都是空话，组织和公司是不会进步的”。
+Ông Mã (Jack Ma) trên lớp học ở Đại học Hồ Bán (Hupan University), nói với đám học viên là CEO rằng: "Chỉ có thể dựa vào KPI. Không có KPI, mọi thứ đều là lời nói suông, tổ chức và công ty sẽ không tiến bộ được".
 
-所以，KPI 一般是用来承接企业战略的。身处大厂的打工者们，也能深深感受到：每个季度的 KPI 是如何从大 Boss、到 Boss、再到基层，一层层拆解下来的，最终让所有人朝着一个方向行动，这便是 KPI 对于公司的意义。
+Vì vậy, KPI thường được dùng để gánh vác chiến lược doanh nghiệp. Những người làm thuê ở công ty lớn đều có thể cảm nhận sâu sắc: mỗi quý, KPI được phân rã từng tầng một, từ Boss lớn, đến Boss, rồi đến cơ sở, cuối cùng khiến tất cả mọi người hành động theo cùng một hướng, đó chính là ý nghĩa của KPI đối với công ty.
 
-然鹅，并非每个员工都会站在 CEO 的高度去理解 KPI 的价值，大家更关注的是 KPI 对于我个人来说到底有什么意义？
+Nhưng mà, không phải nhân viên nào cũng đứng ở tầm CEO để hiểu giá trị của KPI, mọi người quan tâm hơn là KPI rốt cuộc có ý nghĩa gì đối với cá nhân mình?
 
-在互联网大厂，每家公司都会设定一套绩效考核体系，字节用的是 OKR，阿里用的是 KPI，通常都是「271」 制度，即：
+Ở các công ty Internet lớn, mỗi công ty đều thiết lập một hệ thống đánh giá hiệu quả công việc: ByteDance dùng OKR, Alibaba dùng KPI, và thường áp dụng chế độ 「271」, tức là:
 
-> 20% 的比例是 A+ 和 A，对应明星员工。
+> 20% là A+ và A, tương ứng với nhân viên xuất sắc (star).
 >
-> 70% 的比例是 B，对应普通员工。
+> 70% là B, tương ứng với nhân viên bình thường.
 >
-> 10% 的比例是 C 和 C-，对应需要绩效改进或者淘汰的员工。
+> 10% là C và C-, tương ứng với nhân viên cần cải thiện hiệu quả công việc hoặc bị đào thải.
 
-有了三六九等，然后才有了利益分配。
+Có thứ bậc cao thấp, rồi mới có phân chia lợi ích.
 
-**在大厂，绩效结果跟奖金、晋升、薪水涨幅、股票授予是直接相关的。在内卷的今天，甚至可以直接划上等号。**
+**Ở công ty lớn, kết quả hiệu quả công việc liên quan trực tiếp đến tiền thưởng, thăng tiến, tăng lương, cấp cổ phiếu (stock grant). Trong thời đại cạnh tranh khốc liệt ngày nay, thậm chí có thể coi chúng là một.**
 
-绩效好的员工，奖金必然多，一年可能调薪两次，晋升答辩时能 PK 掉绩效一般的人，职级低的人甚至可以晋升免试。
+Nhân viên có hiệu quả công việc tốt, tiền thưởng tất nhiên nhiều, một năm có thể tăng lương hai lần, khi trình bày bảo vệ cho việc thăng tiến (promotion defense) có thể hạ gục những người hiệu quả trung bình, ngay cả người có cấp bậc thấp cũng có thể được miễn thi thăng tiến.
 
-而绩效差的人，有可能一年白干，甚至走人（大厂的末尾淘汰是不成文的规定）。
+Còn người hiệu quả kém, có thể làm cả năm trắng tay, thậm chí phải cuốn gói ra đi (chính sách đào thải người đứng cuối bảng ở công ty lớn là một quy định bất thành văn).
 
-总之，你能想到的直接利益都和「绩效」息息相关。所以，在大厂这片高手众多的丛林里，多琢磨下绩效背后的逻辑，既是生存之道，更是一技之长。
+Tóm lại, mọi lợi ích trực tiếp mà bạn nghĩ tới đều liên quan mật thiết đến 「hiệu quả công việc」. Vì vậy, trong khu rừng công ty lớn với đầy cao thủ này, ngẫm nghĩ nhiều hơn về logic đằng sau hiệu quả công việc, vừa là đạo sinh tồn, càng là một kỹ năng riêng của bạn.
 
-## 你是怎么看待绩效的？
+## Bạn nhìn nhận hiệu quả công việc như thế nào?
 
-凡是用来考核人的规则，大部分人在潜意识里都想去突破它，而不是被束缚。
+Bất kỳ quy tắc nào dùng để đánh giá con người, phần lớn mọi người trong tiềm thức đều muốn phá vỡ nó, thay vì bị ràng buộc.
 
-至少在我刚工作的前几年，看着身边有些同事因为背个 C 黯然离开的时候，觉得绩效考核就是一个冷血的管理工具。
+Ít nhất là trong vài năm đầu đi làm của tôi, khi nhìn những đồng nghiệp xung quanh vì bị dính C (đánh giá kém) mà buồn bã rời đi, tôi từng nghĩ đánh giá hiệu quả công việc chỉ là một công cụ quản lý lạnh lùng.
 
-尤其遇到自己看不上的领导时，对于他给我打的绩效，其实也是很不屑的。
+Đặc biệt khi gặp phải những người lãnh đạo mà mình không coi trọng, với mức hiệu quả công việc mà họ chấm cho tôi, thực ra tôi cũng rất khinh thường.
 
-到今天，实在见过太多的反面案例了，自己也踩过一些坑，逐渐认识到：当初的想法除了让自己心里爽一点，好像起不到任何作用，甚至会让我的工作方式变形。
+Cho đến hôm nay, thực sự đã thấy quá nhiều trường hợp phản diện, bản thân cũng từng nếm vài bài học, dần nhận ra: những suy nghĩ ban đầu ngoài việc khiến bản thân thấy dễ chịu một chút, dường như chẳng giúp ích gì, thậm chí còn làm méo mó cách làm việc của mình.
 
-当思维方式变了，也就改变了我对绩效的态度，至少有两点我认为是打工人需要看清的。
+Khi tư duy thay đổi, cũng làm thay đổi thái độ của tôi với hiệu quả công việc, có ít nhất hai điểm tôi cho rằng dân văn phòng cần nhìn rõ.
 
-**第一，你的上级、上上级对你的绩效拥有绝对的话语权，这是潜规则，放到任何公司都是。**
+**Thứ nhất, cấp trên và cấp trên của cấp trên có quyền quyết định tuyệt đối về hiệu quả công việc của bạn, đây là quy tắc ngầm, áp dụng ở bất kỳ công ty nào.**
 
-大家可以去看看身边发展特别好的人，除了有很强的个人能力以外，几乎都是善于利用规则，而不是去挑战规则的人。
+Mọi người có thể nhìn những người xung quanh phát triển rất tốt, ngoài năng lực cá nhân mạnh mẽ, họ gần như đều là những người giỏi lợi dụng quy tắc, thay vì thách thức quy tắc.
 
-当然，我并不是说你要一味地去跪舔你的领导，而是表达：工作中不要站在领导的对立面去做对抗，如果领导做法很过分，要么直接沟通去影响他，要么选择离开。
+Tất nhiên, tôi không nói bạn phải một mực nịnh bợ lãnh đạo của mình, mà muốn nói rằng: trong công việc đừng đứng ở phe đối lập với lãnh đạo để chống đối, nếu lãnh đạo làm quá đáng, thì hoặc trực tiếp trao đổi để tác động đến họ, hoặc chọn cách rời đi.
 
-**第二，成年人的世界，没有绝对的公平，绩效考核尤为明显。**
+**Thứ hai, trong thế giới người lớn, không có công bằng tuyệt đối, và điều đó thể hiện đặc biệt rõ ở việc đánh giá hiệu quả công việc.**
 
-我所待过的团队，绩效考核还是相对公平的，虽然也存在受照顾的情况，但都是个例。
+Đội nhóm tôi từng làm, việc đánh giá hiệu quả công việc vẫn tương đối công bằng, dù cũng tồn tại trường hợp được ưu ái, nhưng đều là cá biệt.
 
-另外就是，技术岗的绩效考核不同于销售或者运营岗，很容易指标化。
+Ngoài ra, đánh giá hiệu quả công việc ở vị trí kỹ thuật khác với vị trí sales hay vận hành — những vị trí rất dễ định lượng bằng chỉ tiêu.
 
-需求吞吐量、BUG 数、线上事故... 的确有一大堆研发效能指标，但这些指标在绩效考核时是否会被参考？具体又该如何分配比重？本身就是一个扯不清楚的难题。
+Thông lượng xử lý yêu cầu (requirement throughput), số lượng BUG, sự cố trên môi trường production... đúng là có cả đống chỉ số hiệu quả phát triển (R&D efficiency), nhưng những chỉ số này khi đánh giá hiệu quả công việc có được tham khảo hay không? Cụ thể nên phân bổ tỷ trọng ra sao? Bản thân nó đã là một bài toán khó nói cho rõ.
 
-最终决定你绩效结果的还是你领导的主观判断。你所见到的 360 环评，以及弄一些指标排序，这些都只是将绩效结果合理化的一种方式，并非关键所在。
+Cuối cùng quyết định kết quả hiệu quả công việc của bạn vẫn là phán đoán chủ quan của lãnh đạo. Những thứ bạn thấy như đánh giá 360 độ (360 review), hay sắp xếp thứ hạng theo chỉ số, đều chỉ là một cách hợp lý hóa kết quả hiệu quả công việc, không phải điều mấu chốt.
 
-因此，多琢磨如何去影响你的领导？站在他的视角去审视他在绩效考核时到底关注哪些核心点？这才是至关重要的。
+Vì vậy, hãy ngẫm nghĩ nhiều hơn về cách tác động đến lãnh đạo của bạn? Đứng ở góc nhìn của họ để xem xét khi đánh giá hiệu quả công việc họ thực sự quan tâm đến những điểm cốt lõi nào? Điều đó mới là vô cùng quan trọng.
 
-上面讲了一堆潜规则，是不是意味着绩效考核是可以投机取巧，完全不看工作业绩呢，当然不是。
+Trên đây nói một loạt quy tắc ngầm, liệu có nghĩa là đánh giá hiệu quả công việc có thể trục lợi, hoàn toàn không nhìn vào thành tích làm việc? Tất nhiên là không.
 
-“你的努力不一定会被看见”、“你的努力应该有的放矢”，大家先记住这两条。
+"Nỗ lực của bạn chưa chắc sẽ được nhìn thấy", "Nỗ lực của bạn nên có mục tiêu rõ ràng", mọi người hãy ghi nhớ hai điều này trước.
 
-下面我再展开聊聊，大家最最关心的 A 和 C，它们背后的逻辑。
+Dưới đây tôi sẽ nói kỹ hơn về A và C — thứ mà mọi người quan tâm nhất, cùng logic đằng sau chúng.
 
-## 绩效被打 A 和 C 的逻辑是什么？
+## Logic của việc bị chấm A và C là gì?
 
-“铆足了劲拿不到 A，一不留神居然拿了个 C”，这是绝大多数打工人最真实的职场现状。
+"Dồn hết sức lực vẫn không lấy được A, lơ đễnh một chút lại dính C", đây là hiện trạng công sở chân thực nhất của đại đa số dân văn phòng.
 
-A 和 C 属于绩效的两个极端，背后的逻辑类似，反着理解即可，下面我详细分析下 C。
+A và C thuộc hai thái cực của hiệu quả công việc, logic đằng sau tương tự nhau, chỉ cần hiểu ngược lại là được, dưới đây tôi phân tích chi tiết về C.
 
-先从我身边人的情况说起，我所看到的案例绝大多数都属于：绩效被打了 C，完全没有任何预感，主管跟他沟通结果时，还是一脸懵逼，“为什么会给我打 C？一定是黑我呀！”。
+Trước hết hãy nói về tình huống của những người xung quanh tôi, phần lớn các trường hợp tôi thấy đều thuộc kiểu: bị chấm C hiệu quả công việc, hoàn toàn không có chút linh cảm nào, khi quản lý trực tiếp trao đổi kết quả, vẫn ngơ ngác: "Vì sao lại chấm tôi C? Chắc chắn là chơi xấu tôi rồi!".
 
-前阵子听公司一位大佬分享，用他的话说，这种人就是没有「角色认知」，他不知道他所处的角色和职级该做好哪些事？做成什么样才算「做好了」？被打 C 后自然觉得是在背锅。
+Mới đây nghe một đại lão (senior) trong công ty chia sẻ, theo lời anh ấy, loại người này là không có 「nhận thức về vai trò」, họ không biết ở vai trò và cấp bậc của mình cần làm tốt những việc gì? Làm đến mức nào mới gọi là 「làm tốt」? Bị chấm C xong tất nhiên cảm thấy mình đang phải gánh tội thay.
 
-所以，务必确保你对于当前角色是认知到位的，这样才称得上进入了「工作状态」，否则你的一次松懈，一段不太好的表现，很可能导致 C 落在你的头上，岗位越高，摔得越重。
+Vì vậy, hãy đảm bảo bạn nhận thức đúng về vai trò hiện tại, như vậy mới có thể coi là đã bước vào 「trạng thái làm việc」, nếu không, một lần lơ là, một quãng thời gian thể hiện không tốt, rất có thể khiến C rơi xuống đầu bạn, vị trí càng cao, ngã càng đau.
 
-有了角色认知，再说下对绩效的认知。
+Có nhận thức về vai trò rồi, nói tiếp về nhận thức về hiệu quả công việc.
 
-第一，团队很优秀，是不是不用背 C？不是！大厂的 C 都是强制分配的，再优秀的团队也会有 C。所以团队越厉害，竞争越惨烈。
+Thứ nhất, đội nhóm rất xuất sắc, có phải là không cần gánh C? Không phải! C ở công ty lớn đều được phân bổ cưỡng chế, dù đội nhóm xuất sắc đến đâu cũng sẽ có C. Vì vậy đội nhóm càng giỏi, cạnh tranh càng khốc liệt.
 
-第二，完成了 KPI，没有工作失误，是不是就万事大吉，不用背 C？不是，绩效是相对的，你必须清楚你在团队所处的位置，你在老板眼中的排序，慢慢练出这种嗅觉。
+Thứ hai, hoàn thành KPI, không có sai sót trong công việc, có phải là mọi việc yên ổn, không cần gánh C? Không phải, hiệu quả công việc là tương đối, bạn phải hiểu rõ vị trí của mình trong đội nhóm, thứ hạng của mình trong mắt sếp, dần dần rèn luyện ra khả năng nhạy cảm này.
 
-懂了上面这些道理，很自然就能知道打 C 的逻辑，C 会集中在两类人上：
+Hiểu được những đạo lý trên, rất tự nhiên sẽ hiểu được logic của việc chấm C, C sẽ tập trung vào hai loại người:
 
-> 1、工作表现称不上角色要求的人。
->
-> 2、在老板眼里排序靠后，就算离开，对团队影响也很小的人。
+> 1. Những người có biểu hiện công việc không xứng với yêu cầu của vai trò.
+> 2. Những người xếp hạng cuối trong mắt sếp, dù rời đi thì ảnh hưởng đến đội nhóm cũng rất nhỏ.
 
-要规避 C，有两种打法。
+Để tránh bị C, có hai cách đánh.
 
-第 1 种是短期打法：抓关键事件，能不能找出 1-2 件事，体现出你的独特价值（比如本身影响力很大的项目，或者是领导最重视的事），相当于让你的排序有了最基本的保障。
+Cách 1 là chiến thuật ngắn hạn: nắm bắt sự kiện then chốt, tìm ra 1-2 việc thể hiện giá trị độc đáo của bạn (ví dụ dự án có sức ảnh hưởng lớn, hoặc việc lãnh đạo coi trọng nhất), tương đương với việc giúp thứ hạng của bạn có được sự bảo đảm cơ bản nhất.
 
-这种打法，你不能等到评价时再去改变，一定是在前期就抓住机会，承担起最有挑战的任务，然后全力以赴，做好了拿 A，不弄砸也不至于背 C，就怕静水潜流，躺平了去工作。
+Với cách đánh này, bạn không thể chờ đến lúc đánh giá mới thay đổi, nhất định phải nắm bắt cơ hội từ giai đoạn đầu, đảm nhận những nhiệm vụ đầy thử thách nhất, rồi dồn toàn lực, làm tốt thì lấy A, không làm hỏng thì cũng không đến mức gánh C, chỉ sợ nước tĩnh chảy ngầm, nằm im bỏ cuộc mà làm việc.
 
-第 2 种是长期打法：通过一步步信任的建立，成为团队的核心人员或者是老板的心腹，具备不可替代性。
+Cách 2 là chiến thuật dài hạn: thông qua việc xây dựng niềm tin từng bước, trở thành người nòng cốt của đội nhóm hoặc tâm phúc của sếp, sở hữu tính không thể thay thế.
 
-上面两种打法都是大的思路，还有很多锦上添花的技巧，比如：加强主动汇报（抹平领导的信息差）、让关键干系人给你点赞（能影响到你领导做出绩效决策的人）。
+Hai cách đánh trên đều là những tư duy lớn, còn nhiều kỹ xảo thêm phần hoàn mỹ, ví dụ: tăng cường báo cáo chủ động (xóa bỏ chênh lệch thông tin với lãnh đạo), để những bên liên quan then chốt ủng hộ bạn (những người có thể tác động đến quyết định hiệu quả công việc của lãnh đạo bạn).
 
-## 写在最后
+## Kết lại
 
-有人的地方就有江湖，有江湖就一定有规则，大厂平面看似平静，其实在绩效考核、晋升等利益点面前，都是一场厮杀。
+Có người là có giang hồ, có giang hồ ắt có quy tắc. Công ty lớn bề ngoài trông yên bình, thực ra khi đứng trước những điểm lợi ích như đánh giá hiệu quả công việc, thăng tiến, đều là một trận sát phạt.
 
-当大家攻山头的能力都很强时，**到底做成什么样才算做好了？**当你弄清楚了这个玄机，职场也就看透了。
+Khi năng lực công phá ngọn đồi của mọi người đều rất mạnh, **rốt cuộc làm đến mức nào mới coi là làm tốt?** Khi bạn hiểu rõ được huyền cơ này, công sở cũng đã nhìn thấu.
 
-如果这篇文章让你有一点启发，来个点赞和在看呀！我是武哥，我们下期见！
+Nếu bài viết này khiến bạn có chút gợi mở, hãy bấm like và 在看 nhé! Tôi là Vũ Ca, hẹn gặp lại ở số tiếp theo!
 
 <!-- @include: @article-footer.snippet.md -->

@@ -1,6 +1,6 @@
 ---
-title: 滴滴和头条两年后端工作经验分享
-description: "滴滴和头条两年后端工作经验分享：围绕技术知识与面试总结梳理关键概念、常见问题与实践要点，帮助你高效学习与备战面试。"
+title: Chia sẻ kinh nghiệm backend hai năm tại DiDi và Toutiao
+description: "Chia sẻ kinh nghiệm backend hai năm tại DiDi và Toutiao: tổng hợp và sắp xếp các khái niệm chính, câu hỏi thường gặp và điểm thực hành mấu chốt xoay quanh kiến thức kỹ thuật và phỏng vấn, giúp bạn học tập hiệu quả và chuẩn bị cho phỏng vấn."
 category: 技术文章精选集
 tag:
   - 个人经历
@@ -10,148 +10,148 @@ head:
       content: 滴滴工作经验,头条工作经验,后端开发,技术成长,职场经验,深入思考,总结沉淀,主动承担
 ---
 
-> **推荐语**：很实用的工作经验分享，看完之后十分受用！
+> **Lời giới thiệu**: Một bài chia sẻ kinh nghiệm làm việc rất thực tế, đọc xong rất có ích!
 >
-> **内容概览**：
+> **Tổng quan nội dung**:
 >
-> - 要学会深入思考，总结沉淀，这是我觉得最重要也是最有意义的一件事。
-> - 积极学习，保持技术热情。如果我们积极学习，保持技术能力、知识储备与工作年限成正比，这到了 35 岁哪还有什么焦虑呢，这样的大牛我觉得应该也是各大公司抢着要吧？
-> - 在能为公司办成事，创造价值这一点上，我觉得最重要的两个字就是主动，主动承担任务，主动沟通交流，主动推动项目进展，主动协调资源，主动向上反馈，主动创造影响力等等。
-> - 脸皮要厚一点，多找人聊，快速融入，最忌讳有问题也不说，自己把自己孤立起来。
-> - 想舔就舔，不想舔也没必要酸别人，Respect Greatness。
-> - 时刻准备着，技术在手就没什么可怕的，哪天干得不爽了直接跳槽。
-> - 平时积极总结沉淀，多跟别人交流，形成方法论。
+> - Phải học cách suy nghĩ sâu sắc, tổng kết và tích lũy, đây là điều tôi cho là quan trọng và cũng ý nghĩa nhất.
+> - Tích cực học tập, giữ vững niềm đam mê kỹ thuật. Nếu chúng ta tích cực học tập, giữ cho năng lực kỹ thuật, vốn kiến thức tỷ lệ thuận với số năm kinh nghiệm, thì đến 35 tuổi còn lo lắng gì nữa? Những "đại cao thủ" như vậy tôi nghĩ chắc chắn các công ty lớn cũng tranh nhau mời về chứ?
+> - Về việc làm nên chuyện, tạo ra giá trị cho công ty, tôi nghĩ hai chữ quan trọng nhất chính là chủ động: chủ động nhận nhiệm vụ, chủ động giao tiếp, chủ động thúc đẩy tiến độ dự án, chủ động điều phối tài nguyên, chủ động báo cáo lên cấp trên, chủ động tạo ảnh hưởng, v.v.
+> - Mặt dày một chút, chủ động tìm người trò chuyện, hòa nhập nhanh, tối kỵ nhất là có vấn đề cũng không nói, tự cô lập chính mình.
+> - Muốn nịnh thì cứ nịnh, không muốn nịnh thì cũng không cần ghen tị với người khác, Respect Greatness.
+> - Luôn trong tư thế sẵn sàng, kỹ thuật trong tay thì chẳng có gì đáng sợ, ngày nào làm không vui thì nhảy việc.
+> - Bình thường tích cực tổng kết tích lũy, giao lưu với nhiều người, hình thành phương pháp luận.
 > - ……
 >
-> **原文地址**：<https://www.nowcoder.com/discuss/351805>
+> **Địa chỉ bài gốc**: <https://www.nowcoder.com/discuss/351805>
 
-先简单交代一下背景吧，某不知名 985 的本硕，17 年毕业加入滴滴，当时找工作时候也是在牛客这里跟大家一起奋战的。今年下半年跳槽到了头条，一直从事后端研发相关的工作。之前没有实习经历，算是两年半的工作经验吧。这两年半之间完成了一次晋升，换了一家公司，有过开心满足的时光，也有过迷茫挣扎的日子，不过还算顺利地从一只职场小菜鸟转变为了一名资深划水员。在这个过程中，总结出了一些还算实用的划水经验，有些是自己领悟到的，有些是跟别人交流学到的，在这里跟大家分享一下。
+Trước tiên xin nói sơ qua về bối cảnh: tôi học thạc sĩ liên thông tại một trường 985 không mấy tên tuổi, tốt nghiệp năm 2017 và gia nhập DiDi. Thời điểm tìm việc hồi đó cũng chính là chiến đấu cùng mọi người trên Niuke (牛客). Nửa cuối năm nay tôi nhảy sang Toutiao, vẫn làm công việc liên quan đến phát triển backend. Trước đây không có kinh nghiệm thực tập, nên coi như có khoảng hai năm rưỡi kinh nghiệm làm việc. Trong hai năm rưỡi này, tôi đã thăng chức một lần, đổi một công ty, có những khoảng thời gian vui vẻ mãn nguyện, cũng có những ngày mơ hồ giằng xé, nhưng dù sao cũng khá suôn sẻ khi từ một "gà mới" nơi công sở trở thành một "lão làng lười biếng". Trong quá trình này, tôi rút ra được một số kinh nghiệm "lười biếng" khá thực dụng, có cái tự ngộ ra, có cái học được từ việc trao đổi với người khác, hôm nay xin chia sẻ với mọi người.
 
-## 学会深入思考，总结沉淀
+## Học cách suy nghĩ sâu sắc, tổng kết và tích lũy
 
-**我想说的第一条就是要学会深入思考，总结沉淀，这是我觉得最重要也是最有意义的一件事。**
+**Điều đầu tiên tôi muốn nói chính là phải học cách suy nghĩ sâu sắc, tổng kết và tích lũy, đây là điều tôi cho là quan trọng nhất và cũng ý nghĩa nhất.**
 
-**先来说深入思考。** 在程序员这个圈子里，常能听到一些言论：_“我这个工作一点技术含量都没有，每天就 CRUD，再写写 if-else，这 TM 能让我学到什么东西？”_
+**Trước tiên nói về suy nghĩ sâu sắc.** Trong giới lập trình viên, thường nghe thấy những câu như: _"Công việc của tôi chẳng có chút hàm lượng kỹ thuật nào, ngày nào cũng chỉ có CRUD, thêm chút if-else, thế này thì học được cái gì?"_
 
-抛开一部分调侃和戏谑的论调不谈，这可能确实是一部分同学的真实想法，至少曾经的我，就这么认为过。后来随着工作经验的积累，加上和一些高 level 的同学交流探讨之后，我发现这个想法其实是非常错误的。之所以出现没什么可学的这样的看法，基本上是思维懒惰的结果。**任何一件看起来很不起眼的小事，只要进行深入思考，稍微纵向挖深或者横向拓宽一下，都是足以让人沉溺的知识海洋。**
+Nếu gạt bỏ một phần tông giọng đùa cợt và trêu chọc, đây có thể thực sự là suy nghĩ thật của một bộ phận các bạn, ít nhất thì bản thân tôi ngày xưa cũng từng nghĩ như vậy. Sau này cùng với việc tích lũy kinh nghiệm làm việc, cộng thêm trao đổi thảo luận với một số bạn có cấp độ (level) cao hơn, tôi phát hiện ra suy nghĩ này thực ra rất sai lầm. Sở dĩ xuất hiện quan điểm "chẳng có gì để học", về cơ bản là kết quả của sự lười biếng trong tư duy. **Bất kỳ một việc nhỏ nhặt nào trông có vẻ chẳng đáng để tâm, chỉ cần suy nghĩ sâu sắc, đào sâu theo chiều dọc hoặc mở rộng theo chiều ngang một chút, đều là đại dương kiến thức khiến người ta đắm chìm.**
 
-举一个例子。某次有个同学跟我说，这周有个服务 OOM 了，查了一周发现有个地方 defer 写的有问题，改了几行代码上线修复了，周报都没法写。可能大家也遇到过这样的场景，还算是有一定的代表性。其实就查 bug 这件事来说，是一个发现问题，排查问题，解决问题的过程，包含了触发、定位、复现、根因、修复、复盘等诸多步骤，花了一周来做这件事，一定有不断尝试与纠错的过程，这里面其实就有很多思考的空间。比如说定位，如何缩小范围的？走了哪些弯路？用了哪些分析工具？比如说根因，可以研究的点起码有 linux 的 OOM，k8s 的 OOM，go 的内存管理，defer 机制，函数闭包的原理等等。如果这些真的都不涉及，仍然花了一周时间做这件事，那复盘应该会有很多思考，提出来几十个 WHY 没问题吧...
+Tôi lấy một ví dụ. Có lần một bạn học cùng nói với tôi, tuần này có một service bị OOM, tra cứu cả tuần mới phát hiện ra có chỗ defer viết có vấn đề, sửa vài dòng code lên production là xong, đến báo cáo tuần (weekly report) cũng chẳng biết viết gì. Có lẽ mọi người cũng từng gặp tình huống như vậy, cũng khá mang tính đại diện. Thực ra xét về chuyện sửa lỗi (debug), đó là một quá trình phát hiện vấn đề, điều tra vấn đề, giải quyết vấn đề, bao gồm rất nhiều bước như kích hoạt (trigger), định vị (locate), tái hiện (reproduce), nguyên nhân gốc (root cause), sửa chữa, rà soát tổng kết (retrospective), v.v. Dành cả một tuần làm việc này, nhất định có quá trình không ngừng thử nghiệm và sửa sai, trong đó thực ra có rất nhiều không gian để suy nghĩ. Ví dụ như định vị, làm thế nào để thu hẹp phạm vi? Đã đi những đường vòng nào? Đã dùng những công cụ phân tích nào? Ví dụ như nguyên nhân gốc, điểm có thể nghiên cứu ít nhất có OOM của linux, OOM của k8s, quản lý bộ nhớ của go, cơ chế defer, nguyên lý closure của hàm, v.v. Nếu thực sự không liên quan đến những thứ này, vẫn dành cả tuần làm việc đó, thì buổi rà soát tổng kết hẳn sẽ có nhiều suy ngẫm, đặt ra vài chục cái WHY cũng không vấn đề gì chứ...
 
-**再来说下总结沉淀。** 这个我觉得也是大多数程序员比较欠缺的地方，只顾埋头干活，可以把一件事做的很好。但是几乎从来不做抽象总结，以至于工作好几年了，所掌握的知识还是零星的几点，不成体系，不仅容易遗忘，而且造成自己视野比较窄，看问题比较局限。适时地做一些总结沉淀是很重要的，这是一个从术到道的过程，会让自己看问题的角度更广，层次更高。遇到同类型的问题，可以按照总结好的方法论，系统化、层次化地推进和解决。
+**Nói tiếp về tổng kết và tích lũy.** Tôi nghĩ đây cũng là điểm mà hầu hết lập trình viên còn thiếu: chỉ biết cắm đầu làm việc, có thể làm tốt một việc. Nhưng gần như không bao giờ làm tổng kết trừu tượng hóa, đến mức làm việc mấy năm rồi, kiến thức nắm được vẫn chỉ là những mảnh rời rạc, không thành hệ thống, không chỉ dễ quên mà còn khiến tầm nhìn của mình bị hẹp, nhìn vấn đề bị giới hạn. Việc kịp thời tổng kết và tích lũy là rất quan trọng, đây là một quá trình đi từ "thuật" (术) đến "đạo" (道), sẽ giúp mình nhìn vấn đề ở góc độ rộng hơn, tầng thứ cao hơn. Gặp những vấn đề cùng loại, có thể căn cứ vào phương pháp luận đã tổng kết để đẩy tiến và giải quyết một cách hệ thống, phân tầng.
 
-还是举一个例子。做后台服务，今天优化了 1G 内存，明天优化了 50%的读写耗时，是不是可以做一下性能优化的总结？比如说在应用层，可以管理服务对接的应用方，梳理他们访问的合理性；在架构层，可以做缓存、预处理、读写分离、异步、并行等等；在代码层，可以做的事情更多了，资源池化、对象复用、无锁化设计、大 key 拆分、延迟处理、编码压缩、gc 调优还有各种语言相关的高性能实践...等下次再遇到需要性能优化的场景，一整套思路立马就能套用过来了，剩下的就是工具和实操的事儿了。
+Vẫn lấy một ví dụ. Làm dịch vụ backend, hôm nay tối ưu được 1G bộ nhớ, ngày mai tối ưu được 50% thời gian đọc ghi, đâu phải là không thể làm một bản tổng kết về tối ưu hiệu năng? Ví dụ ở tầng ứng dụng, có thể quản lý các ứng dụng kết nối với service, rà soát tính hợp lý trong truy cập của họ; ở tầng kiến trúc, có thể làm cache, tiền xử lý (preprocessing), tách đọc ghi (read-write separation), bất đồng bộ (async), song song (parallel), v.v.; ở tầng code, có thể làm được nhiều hơn nữa: gom tài nguyên (resource pooling), tái sử dụng đối tượng (object reuse), thiết kế không khóa (lock-free), tách key lớn, xử lý trễ (delayed processing), nén mã hóa, tinh chỉnh gc và đủ loại thực hành hiệu năng cao liên quan đến ngôn ngữ... Lần sau gặp lại tình huống cần tối ưu hiệu năng, một bộ suy nghĩ hoàn chỉnh lập tức áp dụng được ngay, phần còn lại chỉ là chuyện công cụ và thực hành.
 
-还有的同学说了，我就每天跟 PM 撕撕逼，做做需求，也不做性能优化啊。先不讨论是否可以搞性能优化，单就做业务需求来讲，也有可以总结的地方。比如说，如何做系统建设？系统核心能力，系统边界，系统瓶颈，服务分层拆分，服务治理这些问题有思考过吗？每天跟 PM 讨论需求，那作为技术同学该如何培养产品思维，引导产品走向，如何做到架构先行于业务，这些问题也是可以思考和总结的吧。就想一下，连接手维护别人烂代码这种蛋疼的事情，都能让 Martin Fowler 整出来一套重构理论，还显得那么高大上，我们确实也没啥必要对自己的工作妄自菲薄...
+Có bạn lại nói, tôi ngày nào cũng chỉ cãi nhau với PM, làm yêu cầu (requirement), chứ có làm tối ưu hiệu năng gì đâu. Tạm không bàn đến chuyện có thể tối ưu hiệu năng hay không, chỉ riêng việc làm yêu cầu nghiệp vụ thôi, cũng có chỗ để tổng kết. Ví dụ, làm thế nào để xây dựng hệ thống? Tính năng cốt lõi của hệ thống, ranh giới hệ thống, nút thắt cổ chai của hệ thống, phân tầng và tách rời service, quản trị service (service governance) — những vấn đề này đã suy nghĩ qua chưa? Mỗi ngày thảo luận yêu cầu với PM, vậy với tư cách là một người làm kỹ thuật, làm thế nào để bồi dưỡng tư duy sản phẩm, định hướng chiều hướng phát triển của sản phẩm, làm thế nào để kiến trúc đi trước nghiệp vụ, những vấn đề này cũng đáng để suy nghĩ và tổng kết chứ. Cứ nghĩ mà xem, ngay cả chuyện nhận về duy trì code rác của người khác — một việc vô cùng đau đầu — cũng có thể khiến Martin Fowler nghĩ ra cả một hệ lý thuyết refactoring, còn trông thật cao siêu, vậy thì chúng ta thực sự không cần thiết phải tự ti về công việc của mình...
 
-所以说：**学习和成长是一个自驱的过程，如果觉得没什么可学的，大概率并不是真的没什么可学的，而是因为自己太懒了，不仅是行动上太懒了，思维上也太懒了。可以多写技术文章，多分享，强迫自己去思考和总结，毕竟如果文章深度不够，大家也不好意思公开分享。**
+Vì vậy: **Học tập và trưởng thành là một quá trình tự thúc đẩy (self-driven), nếu cảm thấy chẳng có gì để học, thì khả năng lớn là không phải thực sự không có gì để học, mà là vì bản thân quá lười, không chỉ lười trong hành động mà còn lười trong tư duy nữa. Có thể viết nhiều bài viết kỹ thuật, chia sẻ nhiều hơn, ép bản thân suy nghĩ và tổng kết, dù sao nếu bài viết thiếu chiều sâu, người ta cũng ngại công khai chia sẻ.**
 
-## 积极学习，保持技术热情
+## Tích cực học tập, giữ vững niềm đam mê kỹ thuật
 
-最近两年在互联网圈里广泛传播的一种焦虑论叫做 35 岁程序员现象，大意是说程序员这个行业干到 35 岁就基本等着被裁员了。不可否认，互联网行业在这一点上确实不如公务员等体制内职业。但是，这个问题里 35 岁程序员并不是绝对生理意义上的 35 岁，应该是指那些工作十几年和工作两三年没什么太大区别的程序员。后面的工作基本是在吃老本，没有主动学习与充电，35 岁和 25 岁差不多，而且没有了 25 岁时对学习成长的渴望，反而添了家庭生活的诸多琐事，薪资要求往往也较高，在企业看来这确实是没什么竞争力。
+Trong hai năm gần đây, cộng đồng internet lan truyền rộng rãi một thuyết lo lắng gọi là "hiện tượng lập trình viên 35 tuổi", đại ý nói rằng ngành lập trình viên làm đến 35 tuổi về cơ bản là chờ bị sa thải. Không thể phủ nhận, ngành internet ở điểm này quả thực không bằng những nghề trong hệ thống như công chức. Nhưng, trong vấn đề này, "lập trình viên 35 tuổi" không phải là 35 tuổi theo nghĩa sinh lý tuyệt đối, mà là ám chỉ những lập trình viên làm mười mấy năm chẳng khác gì mấy so với những người làm hai ba năm. Những năm sau đó về cơ bản là sống dựa vào vốn cũ, không chủ động học tập và nạp thêm năng lượng, 35 tuổi cũng na ná 25 tuổi, mà lại không còn khát khao học tập và trưởng thành như hồi 25 tuổi, ngược lại còn thêm bao nhiêu chuyện vụn vặt của cuộc sống gia đình, yêu cầu lương thường cũng cao hơn, trong mắt doanh nghiệp thì quả thực là không có mấy sức cạnh tranh.
 
-**如果我们积极学习，保持技术能力、知识储备与工作年限成正比，这到了 35 岁哪还有什么焦虑呢，这样的大牛我觉得应该也是各大公司抢着要吧？** 但是，**学习这件事，其实是一个反人类的过程，这就需要我们强迫自己跳出自己的安逸区，主动学习，保持技术热情。** 在滴滴时有一句话大概是，**主动跳出自己的舒适区，感到挣扎与压力的时候，往往是黎明前的黑暗，那才是成长最快的时候。相反如果感觉自己每天都过得很安逸，工作只是在混时长，那可能真的是温水煮青蛙了。**
+**Nếu chúng ta tích cực học tập, giữ cho năng lực kỹ thuật và vốn kiến thức tỷ lệ thuận với số năm kinh nghiệm, thì đến 35 tuổi còn lo lắng gì nữa, những "đại cao thủ" như vậy tôi nghĩ chắc chắn các công ty lớn cũng tranh nhau mời về chứ?** Nhưng, **việc học tập thực ra là một quá trình phản lại bản năng con người, đòi hỏi chúng ta phải ép mình nhảy ra khỏi vùng an toàn, chủ động học tập, giữ vững niềm đam mê kỹ thuật.** Ở DiDi có một câu đại loại là: **chủ động nhảy ra khỏi vùng an toàn của bản thân, khi cảm thấy giằng xé và áp lực, thường đó chính là bóng tối trước bình minh, mới là lúc trưởng thành nhanh nhất. Ngược lại, nếu cảm thấy ngày nào cũng sống quá an nhàn, công việc chỉ là câu giờ thời gian, thì có lẽ thực sự đang bị "nấu ếch trong nước ấm" rồi.**
 
-刚毕业的这段时间，往往空闲时间还比较多，正是努力学习技术的好时候。借助这段时间夯实基础，培养出良好的学习习惯，保持积极的学习态度，应该是受益终身的。至于如何高效率学习，网上有很多大牛写这样的帖子，到了公司后内网也能找到很多这样的分享，我就不多谈了。
+Khoảng thời gian mới tốt nghiệp, thường thì thời gian rảnh còn tương đối nhiều, đúng là thời điểm tốt để chăm chỉ học kỹ thuật. Nhờ khoảng thời gian này để củng cố nền tảng, bồi dưỡng thói quen học tập tốt, giữ thái độ học tập tích cực, hẳn sẽ có ích cho cả đời. Còn về việc học tập hiệu quả như thế nào, trên mạng có rất nhiều bài viết của các cao thủ, sau khi vào công ty thì trên mạng nội bộ cũng tìm thấy rất nhiều bài chia sẻ như vậy, tôi không bàn thêm nữa.
 
-**_可以加入学习小组和技术社区，公司内和公司外的都可以，关注前沿技术。_**
+**_Có thể tham gia các nhóm học tập và cộng đồng kỹ thuật, trong công ty hay ngoài công ty đều được, theo dõi công nghệ tiên tiến._**
 
-## 主动承担，及时交流反馈
+## Chủ động nhận việc, kịp thời trao đổi và phản hồi
 
-前两条还是从个人的角度出发来说的，希望大家可以提升个人能力，保持核心竞争力，但从公司角度来讲，公司招聘员工入职，最重要的是让员工创造出业务价值，为公司服务。虽然对于校招生一般都会有一定的培养体系，但实际上公司确实没有帮助我们成长的义务。
+Hai điều trước vẫn đứng từ góc độ cá nhân để nói, hy vọng mọi người có thể nâng cao năng lực cá nhân, giữ vững năng lực cạnh tranh cốt lõi, nhưng đứng từ góc độ công ty, công ty tuyển nhân viên vào làm, quan trọng nhất là để nhân viên tạo ra giá trị nghiệp vụ, phục vụ cho công ty. Mặc dù đối với sinh viên mới tốt nghiệp (校招生) thường có một hệ thống đào tạo nhất định, nhưng thực tế công ty không có nghĩa vụ giúp chúng ta trưởng thành.
 
-**在能为公司办成事，创造价值这一点上，我觉得最重要的两个字就是主动，主动承担任务，主动沟通交流，主动推动项目进展，主动协调资源，主动向上反馈，主动创造影响力等等。**
+**Về điểm làm nên chuyện, tạo ra giá trị cho công ty, tôi nghĩ hai chữ quan trọng nhất chính là chủ động: chủ động nhận nhiệm vụ, chủ động giao tiếp, chủ động thúc đẩy tiến độ dự án, chủ động điều phối tài nguyên, chủ động báo cáo lên cấp trên, chủ động tạo ảnh hưởng, v.v.**
 
-我当初刚入职的时候，基本就是 leader 给分配什么任务就把本职工作做好，然后就干自己的事了，几乎从来不主动去跟别人交流或者主动去思考些能帮助项目发展的点子。自以为把本职工作保质保量完成就行了，后来发现这么做其实是非常不够的，这只是最基本的要求。而有些同学的做法则是 leader 只需要同步一下最近要做什么方向，下面的一系列事情基本不需要 leader 操心了 ，这样的同学我是 leader 我也喜欢啊。入职后经常会听到的一个词叫 owner 意识，大概就是这个意思吧。
+Lúc tôi mới vào công ty, về cơ bản là leader giao nhiệm vụ gì thì làm tốt công việc bổn phận đó, rồi làm việc riêng của mình, gần như chưa bao giờ chủ động giao lưu với người khác hay chủ động suy nghĩ những ý tưởng có thể giúp dự án phát triển. Tự cho rằng hoàn thành tốt công việc bổn phận là đủ, sau này mới phát hiện làm như vậy thực ra là rất không đủ, đó chỉ là yêu cầu cơ bản nhất. Còn cách làm của một số bạn là leader chỉ cần đồng bộ (sync) định hướng sắp tới làm gì, còn một loạt việc phía sau về cơ bản không cần leader phải bận tâm. Nếu tôi là leader, tôi cũng thích những bạn như vậy. Sau khi vào công ty thường nghe thấy một từ gọi là tinh thần owner (owner 意识), đại khái chính là ý này.
 
-在这个过程中，另外很重要的一点就是及时向上沟通反馈。项目进展不顺利，遇到什么问题，及时跟 leader 同步，技术方案拿捏不准可以跟 leader 探讨，一些资源协调不了可以找 leader 帮忙，不要有太多顾忌，认为这些会太麻烦，leader 其实就是干这个事的。。如果项目进展比较顺利，确实也不需要 leader 介入，那也需要及时把项目的进度，取得的收益及时反馈，自己有什么想法也提出来探讨，问问 leader 对当前进展的建议，还有哪些地方需要改进，消除信息误差。做这些事一方面是合理利用 leader 的各种资源，另一方面也可以让 leader 了解到自己的工作量，对项目整体有所把控，毕竟 leader 也有 leader，也是要汇报的。可能算是大家比较反感的向上管理吧，有内味了，这个其实我也做得不好。但是最基本的一点，不要接了一个任务闷着头干活甚至与世隔绝了，一个月了也没跟 leader 同步过，想着憋个大招之类的，那基本凉凉。
+Trong quá trình này, một điểm rất quan trọng nữa là kịp thời báo cáo và phản hồi lên cấp trên. Dự án tiến triển không suôn sẻ, gặp vấn đề gì thì kịp thời đồng bộ (sync) với leader, phương án kỹ thuật chưa chắc chắn thì có thể trao đổi với leader, một số tài nguyên không điều phối được thì có thể nhờ leader giúp đỡ, đừng quá kiêng dè, cho rằng như vậy sẽ làm phiền người ta, leader thực ra chính là làm việc này. Nếu dự án tiến triển khá suôn sẻ, thực sự không cần leader can thiệp, thì cũng cần kịp thời phản hồi tiến độ dự án và lợi ích đạt được, có ý tưởng gì cũng nêu ra để trao đổi, hỏi leader xem có góp ý gì về tiến độ hiện tại không, còn những chỗ nào cần cải thiện, loại bỏ sai lệch thông tin. Làm những việc này, một mặt là tận dụng hợp lý các nguồn tài nguyên của leader, mặt khác cũng giúp leader nắm được khối lượng công việc của mình, kiểm soát tổng thể dự án, dù sao leader cũng có leader của mình, cũng phải báo cáo. Có lẽ đây chính là thứ mà mọi người khá phản cảm gọi là "quản lý cấp trên" (upward management), đúng vị đó luôn, thực ra cái này tôi cũng làm không tốt. Nhưng điểm cơ bản nhất là, đừng nhận một nhiệm vụ rồi cắm đầu làm việc, thậm chí cách biệt với thế giới, cả tháng cũng không đồng bộ (sync) với leader lần nào, cứ nghĩ tới việc giấu một "chiêu lớn" gì đó, thì về cơ bản là toang.
 
-**一定要主动，可以先从强迫自己在各种公开场合发言开始，有问题或想法及时 one-one。**
+**Nhất định phải chủ động, có thể bắt đầu từ việc ép mình phát biểu ở nhiều nơi công khai, có vấn đề hoặc ý tưởng thì kịp thời one-one.**
 
-除了以上几点，还有一些小点我觉得也是比较重要的，列在下面：
+Ngoài những điểm trên, còn có một số điểm nhỏ mà tôi cảm thấy cũng khá quan trọng, liệt kê dưới đây:
 
-## 第一件事建立信任
+## Việc đầu tiên: xây dựng lòng tin
 
-无论是校招还是社招，刚入职的第一件事是非常重要的，直接决定了 leader 和同事对自己的第一印象。入职后要做的第一件事一定要做好，最起码的要顺利完成而且不能出线上事故。这件事的目的就是为了建立信任，让团队觉得自己起码是靠谱的。如果这件事做得比较好，后面一路都会比较顺利。如果这件事就搞杂了，可能有的 leader 还会给第二次机会，再搞不好，后面就很难了，这一条对于社招来说更为重要。
+Dù là tuyển dụng sinh viên mới (校招) hay tuyển dụng xã hội (社招), việc đầu tiên khi mới vào công ty là rất quan trọng, trực tiếp quyết định ấn tượng đầu tiên của leader và đồng nghiệp về mình. Việc đầu tiên cần làm sau khi vào công ty nhất định phải làm tốt, tối thiểu là hoàn thành thuận lợi và không được gây ra sự cố production (线上事故). Mục đích của việc này chính là xây dựng lòng tin, để đội nhóm cảm thấy mình ít nhất là đáng tin cậy. Nếu việc này làm tương đối tốt, sau này cả đoạn đường đều khá thuận lợi. Nếu việc này làm hỏng, có thể một số leader còn cho cơ hội thứ hai, làm hỏng thêm nữa thì sau này sẽ rất khó, điều này đối với tuyển dụng xã hội còn quan trọng hơn.
 
-而刚入职，公司技术栈不熟练，业务繁杂很难理清什么头绪，压力确实比较大。这时候一方面需要自己投入更多的精力，另一方面要多跟组内的同学交流，不懂就问。**最有效率的学习方式，我觉得不是什么看书啊学习视频啊，而是直接去找对应的人聊，让别人讲一遍自己基本就全懂了，这效率比看文档看代码快多了，不仅省去了过滤无用信息的过程，还了解到了业务的演变历史。当然，这需要一定的沟通技巧，毕竟同事们也都很忙。**
+Còn mới vào công ty, technical stack của công ty chưa thành thạo, nghiệp vụ phức tạp khó mà gỡ ra được đầu mối, áp lực quả thực khá lớn. Lúc này, một mặt cần đầu tư nhiều công sức hơn của bản thân, mặt khác phải giao lưu nhiều với các bạn trong nhóm, không hiểu thì hỏi. **Cách học hiệu quả nhất, tôi nghĩ không phải là đọc sách hay xem video học tập, mà là trực tiếp tìm người tương ứng để trò chuyện, để người ta giảng một lượt là mình cơ bản hiểu hết, hiệu quả này nhanh hơn hẳn so với xem tài liệu, xem code, không chỉ tiết kiệm quá trình lọc bỏ thông tin vô dụng, mà còn hiểu được lịch sử tiến hóa của nghiệp vụ. Tất nhiên, điều này cần một chút kỹ năng giao tiếp, dù sao các đồng nghiệp cũng đều rất bận.**
 
-**脸皮要厚一点，多找人聊，快速融入，最忌讳有问题也不说，自己把自己孤立起来。**
+**Mặt dày một chút, chủ động tìm người trò chuyện, hòa nhập nhanh, tối kỵ nhất là có vấn đề cũng không nói, tự cô lập chính mình.**
 
-## 超出预期
+## Vượt quá kỳ vọng
 
-超出预期这个词的外延范围很广，比如 leader 让去做个值周，解答用户群里大家的问题，结果不仅解答了大家的问题，还收集了这些问题进行分类，进而做了一个智能问答机器人解放了值周的人力，这可以算超出预期。比如 leader 让给运营做一个小工具，结果建设了一系列的工具甚至发展成了一个平台，成为了一个完整的项目，这也算超出预期。超出预期要求我们有把事情做大的能力，也就是想到了 leader 没想到的地方，并且创造了实际价值，拿到了业务收益。这个能力其实也比较重要，在工作中发现，有的人能把一个小盘子越做越大，而有的人恰好反之，那么那些有创新能力，经常超出预期的同学发展空间显然就更大一点。
+Ngoại diên của từ "vượt quá kỳ vọng" rất rộng, ví dụ leader giao cho làm tuần trực (值周), giải đáp thắc mắc của mọi người trong nhóm người dùng, kết quả không chỉ giải đáp được thắc mắc của mọi người, mà còn thu thập các câu hỏi này phân loại, rồi làm thêm một robot trả lời thông minh giải phóng nhân lực trực tuần, đó có thể tính là vượt quá kỳ vọng. Ví dụ leader giao cho làm một công cụ nhỏ cho vận hành (operation), kết quả xây dựng được cả một loạt công cụ thậm chí phát triển thành một nền tảng, trở thành một dự án hoàn chỉnh, đó cũng tính là vượt quá kỳ vọng. Vượt quá kỳ vọng đòi hỏi chúng ta có năng lực làm lớn việc, tức là nghĩ được những chỗ mà leader chưa nghĩ tới, đồng thời tạo ra giá trị thực tế, đạt được lợi ích nghiệp vụ. Năng lực này thực ra cũng khá quan trọng, trong công việc phát hiện ra rằng, có người có thể làm cho một "mâm nhỏ" ngày càng lớn, mà có người lại ngược lại, vậy thì những bạn có năng lực đổi mới, thường xuyên vượt quá kỳ vọng rõ ràng có không gian phát triển lớn hơn một chút.
 
-**这块其实比较看个人能力，暂时没想到什么太好的捷径，多想一步吧。**
+**Phần này thực ra khá phụ thuộc vào năng lực cá nhân, tạm thời chưa nghĩ ra được con đường tắt nào tốt, cứ nghĩ trước một bước vậy.**
 
-## 体系化思考，系统化建设
+## Suy nghĩ hệ thống hóa, xây dựng có hệ thống
 
-这句话是晋升时候总结出来的，大意就是做系统建设要有全局视野，不要局限于某一个小点，应该有良好的规划能力和清晰的演进蓝图。比如，今天加了一个监控，明天加一个报警，这些事不应该成为一个个孤岛，而是属于稳定性建设一期其中的一小步。这一期稳定性建设要做的工作是报警配置和监控梳理，包括机器监控、系统监控、业务监控、数据监控等，预期能拿到 XXX 的收益。这个工作还有后续的 roadmap，稳定性建设二期要做容量规划，接入压测，三期要做降级演练，多活容灾，四期要做...给人的感觉就是这个人思考非常全面，办事有体系有规划。
+Câu này được tổng kết ra khi thăng chức, đại ý là làm xây dựng hệ thống phải có tầm nhìn toàn cục, đừng giới hạn ở một điểm nhỏ, nên có năng lực quy hoạch tốt và bản đồ phát triển (roadmap) rõ ràng. Ví dụ, hôm nay thêm một cái monitoring, ngày mai thêm một cái cảnh báo, những việc này không nên trở thành từng ốc đảo riêng lẻ, mà phải thuộc về một bước nhỏ trong giai đoạn một của việc xây dựng ổn định. Công việc của giai đoạn một xây dựng ổn định này là cấu hình cảnh báo và rà soát monitoring, bao gồm monitoring máy chủ, monitoring hệ thống, monitoring nghiệp vụ, monitoring dữ liệu, v.v., dự kiến đạt được lợi ích XXX. Công việc này còn có roadmap tiếp theo: giai đoạn hai xây dựng ổn định làm quy hoạch dung lượng (capacity planning), đưa vào kiểm thử áp lực (stress test); giai đoạn ba làm diễn tập hạ cấp (degradation drill), khôi phục thảm họa đa hoạt động (multi-active disaster recovery); giai đoạn bốn làm... Cảm giác mang lại chính là người này suy nghĩ rất toàn diện, làm việc có hệ thống và có quy hoạch.
 
-**平时积极总结沉淀，多跟别人交流，形成方法论。**
+**Bình thường tích cực tổng kết tích lũy, giao lưu với nhiều người, hình thành phương pháp luận.**
 
-## 提升自己的软素质能力
+## Nâng cao năng lực kỹ năng mềm của bản thân
 
-这里的软素质能力其实想说的就是 PPT、沟通、表达、时间管理、设计、文档等方面的能力。说实话，我觉得我当时能晋升就是因为 PPT 做的好了一点...可能大家平时对这些能力都不怎么关注，以前我也不重视，觉得比较简单，用时候直接上就行了，但事实可能并不像想象得那样简单。比如晋升时候 PPT+演讲+答辩这个工作，其实有很多细节的思考在里面，内容如何选取，排版怎么设计，怎样引导听众的情绪，如何回答评委的问题等等。晋升时候我见过很多同学 PPT 内容编排杂乱无章，演讲过程也不流畅自然，虽然确实做了很多实际工作，但在表达上欠缺了很多，属于会做不会说，如果再遇到不了解实际情况的外部门评委，吃亏是可以预见的。
+Năng lực kỹ năng mềm ở đây thực ra muốn nói tới các năng lực về PPT, giao tiếp, diễn đạt, quản lý thời gian, thiết kế, tài liệu, v.v. Nói thật, tôi cảm thấy lúc đó tôi có thể thăng chức chính là nhờ PPT làm khá hơn một chút... Có lẽ mọi người bình thường không mấy quan tâm đến những năng lực này, trước đây tôi cũng không coi trọng, cảm thấy khá đơn giản, lúc cần thì dùng ngay là được, nhưng thực tế có lẽ không đơn giản như tưởng tượng. Ví dụ việc PPT + thuyết trình (presentation) + trả lời chất vấn (defense) khi thăng chức, thực ra có rất nhiều chi tiết cần suy nghĩ trong đó: nội dung chọn như thế nào, bố cục (layout) thiết kế ra sao, làm thế nào dẫn dắt cảm xúc của người nghe, trả lời câu hỏi của hội đồng thẩm định như thế nào, v.v. Khi thăng chức, tôi thấy rất nhiều bạn bố cục nội dung PPT lộn xộn, quá trình thuyết trình cũng không trôi chảy tự nhiên, mặc dù thực sự làm rất nhiều việc thực tế, nhưng lại thiếu nhiều trong diễn đạt, thuộc dạng "làm được mà không nói được", nếu gặp thêm hội đồng thẩm định đến từ bộ phận ngoài không hiểu tình hình thực tế, thì việc thiệt thòi là điều có thể thấy trước.
 
-**_公司内网一般都会有一些软素质培训课程，可以找一些场合刻意训练。_**
+**_Mạng nội bộ của công ty thường có một số khóa đào tạo kỹ năng mềm, có thể tìm một số dịp để luyện tập có chủ đích._**
 
-以上都是这些分享还都算比较伟光正，但是社会吧也不全是那么美好的。。下面这些内容有负能量倾向，三观特别正的同学以及观感不适者建议跳过。
+Những chia sẻ trên đều khá "cao cả chính trực", nhưng xã hội đâu phải lúc nào cũng tươi đẹp như vậy. Nội dung bên dưới có xu hướng năng lượng tiêu cực, các bạn có quan niệm sống (三观) đặc biệt chuẩn chỉnh và những ai cảm thấy không thoải mái thì nên bỏ qua.
 
-## 拍马屁是真的香
+## Nịnh bợ thật sự "thơm"
 
-拍马屁这东西入职前我是很反感的，我最初想加入互联网公司的原因就是觉得互联网公司的人情世故没那么多，事实证明，我错了...入职前几天，部门群里大 leader 发了一条消息，后面几十条带着大拇指的消息立马跟上，学习了，点赞，真不错，优秀，那场面，说是红旗招展锣鼓喧天鞭炮齐鸣一点也不过分。除了惊叹大家超强的信息接收能力和处理速度外，更进一步我还发现，连拍马屁都是有队形的，一级部门 leader 发消息，几个二级部门 leader 跟上，后面各组长跟上，最后是大家的狂欢，让我一度怀疑拍马屁的速度就决定了职业生涯的发展前景（没错，现在我已经不怀疑了）。
+Cái trò nịnh bợ, trước khi vào làm tôi khá phản cảm, lý do ban đầu tôi muốn gia nhập công ty internet chính là cảm thấy công ty internet không nhiều "phép xã giao" người người nhà nhà như vậy, sự thực chứng minh, tôi đã sai... Mấy ngày đầu vào công ty, trong nhóm chat của bộ phận, leader lớn gửi một tin nhắn, ngay lập tức mấy chục tin nhắn kèm ngón tay cái đuổi theo: "học được", "thích", "đúng là hay", "xuất sắc". Cái cảnh tượng đó, nói là "cờ đỏ phấp phới, trống chiêng rền vang, pháo nổ tưng bừng" cũng chẳng hề quá lời. Ngoài việc kinh ngạc về khả năng tiếp nhận thông tin và tốc độ xử lý siêu phàm của mọi người, xa hơn nữa tôi còn phát hiện ra, nịnh bợ cũng có đội hình cả: leader bộ phận cấp một gửi tin nhắn, mấy leader bộ phận cấp hai nối theo, phía sau là các trưởng nhóm nối theo, cuối cùng là sự cuồng nhiệt của tất cả mọi người. Điều đó từng khiến tôi nghi ngờ rằng tốc độ nịnh bợ quyết định tiền đồ phát triển sự nghiệp (đúng vậy, giờ tôi đã không còn nghi ngờ gì nữa).
 
-坦诚地说，我到现在也没习惯在群里拍马屁，但也不反感了，可以说把这个事当成一乐了。倒不是说我没有那个口才和能力（事实上也不需要什么口才，大家都简单直接），在某些场合，为活跃气氛的需要，我也能小嘴儿抹了蜜，甚至能把古诗文彩虹屁给 leader 安排上。而是我发现我的直属 leader 也不怎么在群里拍马屁，所以我表面上不公开拍马屁其实属于暗地里事实上迎合了 leader 的喜好...
+Thành thật mà nói, đến giờ tôi vẫn chưa quen nịnh bợ trong nhóm chat, nhưng cũng không còn phản cảm nữa, có thể coi việc này như một niềm vui. Không phải tôi không có tài hùng biện và năng lực (thực ra cũng chẳng cần gì tài hùng biện, mọi người đều đơn giản trực tiếp), trong một số dịp nhất định, vì nhu cầu làm sôi động bầu không khí, tôi cũng có thể "miệng lưỡi ngọt như mật", thậm chí có thể "thả cầu vồng" (nịnh) bằng cả thơ ca cổ điển cho leader. Mà tôi phát hiện ra leader trực tiếp của tôi cũng không mấy nịnh bợ trong nhóm chat, vì vậy việc tôi bề ngoài không công khai nịnh bợ thực chất lại là âm thầm chiều theo sở thích của leader...
 
-但是拍马屁这个事只要掌握好度，整体来说还是香的，最多是没用，至少不会有什么坏处嘛。大家能力都差不多，每一次在群里拍马屁的机会就是一次露脸的机会，按某个同事的说法，这就叫打造个人技术影响力...
+Nhưng chuyện nịnh bợ này chỉ cần nắm được mức độ, nhìn chung vẫn là "thơm", tệ nhất là vô dụng, ít nhất cũng không có hại gì. Năng lực mọi người đều na ná nhau, mỗi lần cơ hội nịnh bợ trong nhóm chat chính là một lần cơ hội lộ diện, theo cách nói của một đồng nghiệp nào đó, đây gọi là xây dựng ảnh hưởng kỹ thuật cá nhân...
 
-**想舔就舔，不想舔也没必要酸别人，Respect Greatness。**
+**Muốn nịnh thì cứ nịnh, không muốn nịnh thì cũng không cần ghen ghét người khác, Respect Greatness.**
 
-## 永不缺席的撕逼甩锅实战
+## Trận chiến cãi vã đổ lỗi không bao giờ vắng mặt
 
-有人的地方，就有江湖。虽然搞技术的大多城府也不深，但撕逼甩锅邀功抢活这些闹心的事儿基本也不会缺席，甚至我还见到过公开群发邮件撕逼的...这部分话题涉及到一些敏感信息就不多说了，而且我们低职级的遇到这些事儿的机会也不会太多。只是给大家提个醒，在工作的时候迟早都会吃到这方面的瓜，到时候留个心眼。
+Nơi nào có người, nơi đó có giang hồ. Mặc dù người làm kỹ thuật đa phần không có nhiều toan tính sâu xa, nhưng những chuyện phiền lòng như cãi vã (撕逼), đổ lỗi (甩锅), nhận công (邀功), tranh việc (抢活) về cơ bản cũng không bao giờ vắng mặt, thậm chí tôi còn từng thấy người ta cãi vã công khai qua email gửi hàng loạt nữa... Chủ đề này liên quan đến một số thông tin nhạy cảm nên không nói nhiều, mà những người cấp bậc thấp như chúng tôi cũng không có nhiều cơ hội gặp những chuyện này. Chỉ là nhắc nhở mọi người một câu, trong lúc làm việc sớm muộn gì cũng sẽ "ăn dưa" (chứng kiến drama) liên quan đến mấy chuyện này, đến lúc đó hãy để ý một chút.
 
-**稍微注意一下，咱不会去欺负别人，但也不能轻易让别人给欺负了。**
+**Hơi để ý một chút, chúng ta không đi bắt nạt người khác, nhưng cũng không thể để người khác bắt nạt mình một cách dễ dàng.**
 
-## 不要被画饼蒙蔽了双眼
+## Đừng để bị "vẽ bánh" che mắt
 
-说实话，我个人是比较反感灌鸡汤、打鸡血、谈梦想、讲奋斗这一类行为的，9102 年都快过完了，这一套\*\*\*治还在大行其道，真不知道是该可笑还是可悲。当然，这些词本身并没有什么问题，但是这些东西应该是自驱的，而不应该成为外界的一种强 push。『我必须努力奋斗』这个句式我觉得是正常的，但是『你必须努力奋斗』这种话多少感觉有点诡异，努力奋斗所以让公司的股东们发家致富？尤其在钱没给够的情况下，这些行为无异于耍流氓。我们需要对 leader 的这些画饼操作保持清醒的认知，理性分析，作出决策。比如感觉钱没给够（或者职级太低，同理）的时候，可能有以下几种情况：
+Nói thật, cá nhân tôi khá phản cảm với những hành vi kiểu "đổ canh gà" (động viên suông), "tiêm máu gà" (tiếp lửa), nói về giấc mơ, nói về phấn đấu, năm 9102 sắp qua hết rồi, mà bộ "\*\*\* trị" này vẫn còn đang thịnh hành, thật không biết nên buồn cười hay đáng thương. Tất nhiên, bản thân những từ này không có vấn đề gì, nhưng những thứ này nên là tự thúc đẩy, chứ không nên trở thành một thứ bị ép từ bên ngoài (push). Câu "Tôi nhất định phải phấn đấu nỗ lực" tôi nghĩ là bình thường, nhưng câu "Anh nhất định phải phấn đấu nỗ lực" kiểu này nghe có chút kỳ quặc, phấn đấu nỗ lực để cho cổ đông công ty phát tài phát lộc? Đặc biệt trong trường hợp tiền không được trả đủ, những hành vi này chẳng khác gì chơi xấu. Chúng ta cần giữ nhận thức tỉnh táo với những chiêu "vẽ bánh" (画饼) của leader, phân tích lý trí, đưa ra quyết định. Ví dụ khi cảm thấy tiền không được trả đủ (hoặc cấp bậc quá thấp, suy luận tương tự), có thể có mấy trường hợp sau:
 
-1. leader 并没有注意到你薪资较低这一事实
-2. leader 知道这个事实，但是不知道你有多强烈的涨薪需求
-3. leader 知道你有涨薪的需求，但他觉得你能力还不够
-4. leader 知道你有涨薪的需求，能力也够，但是他不想给你涨
-5. leader 想给你涨，也向上反馈和争取了，但是没有资源
+1. leader không hề chú ý đến sự thật là lương của bạn đang ở mức thấp
+2. leader biết sự thật này, nhưng không biết nhu cầu tăng lương của bạn mạnh mẽ đến mức nào
+3. leader biết bạn có nhu cầu tăng lương, nhưng anh ấy cảm thấy năng lực của bạn chưa đủ
+4. leader biết bạn có nhu cầu tăng lương, năng lực cũng đủ, nhưng anh ấy không muốn tăng cho bạn
+5. leader muốn tăng cho bạn, cũng đã báo cáo lên và tranh thủ rồi, nhưng không có tài nguyên (ngân sách)
 
-这时候我们需要做的是向上反馈，跟 leader 沟通确认。如果是 1 和 2，那么通过沟通可以消除信息误差。如果是 3，需要分情况讨论。如果是 4 和 5，已经可以考虑撤退了。对于这些事儿，也没必要抱怨，抱怨解决不了任何问题。我们要做的就是努力提升好个人能力，保持个人竞争力，等一个合适的时机，跳槽就完事了。
+Lúc này việc chúng ta cần làm là báo cáo lên cấp trên, trao đổi xác nhận với leader. Nếu là trường hợp 1 và 2, thì thông qua giao tiếp có thể loại bỏ sai lệch thông tin. Nếu là trường hợp 3, cần thảo luận theo từng tình huống. Nếu là trường hợp 4 và 5, thì đã có thể cân nhắc rút lui rồi. Đối với những chuyện này, cũng không cần thiết phàn nàn, phàn nàn không giải quyết được vấn đề gì. Việc chúng ta cần làm chính là nỗ lực nâng cao năng lực cá nhân, giữ vững sức cạnh tranh cá nhân, chờ một thời điểm thích hợp, nhảy việc là xong.
 
-**时刻准备着，技术在手就没什么可怕的，哪天干得不爽了直接跳槽。**
+**Luôn trong tư thế sẵn sàng, kỹ thuật nắm trong tay thì chẳng có gì đáng sợ, ngày nào làm không vui thì nhảy việc luôn.**
 
-## 学会包装
+## Học cách "đóng gói" (packaging)
 
-这一条说白了就是，要会吹。忘了从哪儿看到的了，能说、会写、善做是对职场人的三大要求。能说是很重要的，能说才能要来项目，拉来资源，招来人。同样一件事，不同的人能说出来完全不一样的效果。比如我做了个小工具上线了，我就只能说出来基本事实，而让 leader 描述一下，这就成了，打造了 XXX 的工具抓手，改进了 XXX 的完整生态，形成了 XXX 的业务闭环。老哥，我服了，硬币全给你还不行嘛。据我的观察，每个互联网公司都有这么几个词，抓手、生态、闭环、拉齐、梳理、迭代、owner 意识等等等等，我们需要做的就是熟读并背诵全文，啊不，是牢记并熟练使用。
+Điều này nói thẳng ra là, phải biết "thổi". Không nhớ xem từ đâu đọc được, "biết nói, biết viết, giỏi làm" là ba yêu cầu lớn đối với người đi làm. Biết nói rất quan trọng, biết nói mới xin được dự án, kéo được tài nguyên, chiêu mộ được người. Cùng một việc, người khác nhau nói ra hiệu quả hoàn toàn khác nhau. Ví dụ tôi làm một công cụ nhỏ lên production, tôi chỉ nói ra được những sự thật cơ bản, mà để leader mô tả một chút, thì thành ra: "tạo ra điểm bám tay (抓手) công cụ XXX, cải thiện hệ sinh thái hoàn chỉnh của XXX, hình thành vòng khép kín (闭环) nghiệp vụ XXX". Anh bạn à, tôi phục rồi, xu tất cả đưa anh cũng được mà. Theo quan sát của tôi, công ty internet nào cũng có mấy từ này: điểm bám tay (抓手), hệ sinh thái (生态), vòng khép kín (闭环), kéo ngang bằng (拉齐), rà soát (梳理), lặp (迭代), tinh thần owner, v.v. v.v. Việc chúng ta cần làm chính là đọc thuộc và học thuộc lòng toàn văn, à không, là ghi nhớ sâu và sử dụng thành thạo.
 
-这是对事情的包装，对人的包装也是一样的，尤其是在晋升和面试这样的应试型场合，特点是流程短一锤子买卖，包装显得尤为重要。晋升和面试这里就不展开说了，这里面的道和术太多了。。下面的场景提炼自面试过程中和某公司面试官的谈话，大家可以感受一下：
+Đây là "đóng gói" sự việc, "đóng gói" con người cũng như vậy, đặc biệt trong những dịp kiểu "thi cử" như thăng chức và phỏng vấn, đặc điểm là quy trình ngắn, một phát ăn ngay, thì "đóng gói" càng trở nên quan trọng. Thăng chức và phỏng vấn ở đây không bàn rộng ra, trong đó "đạo" và "thuật" quá nhiều. Tình huống bên dưới được chắt lọc từ cuộc trò chuyện trong quá trình phỏng vấn với người phỏng vấn của một công ty nào đó, mọi người có thể cảm nhận một chút:
 
-1. 我们背后是一个四五百亿美金的市场...
-2. 我负责过每天千亿级别访问量的系统...
-3. 工作两年能达到这个程度挺不错的...
-4. 贵司技术氛围挺好的，业务发展前景也很广阔...
-5. 啊，彼此彼此...
-6. 嗯，久仰久仰...
+1. Phía sau chúng tôi là một thị trường trị giá bốn năm chục tỷ USD...
+2. Tôi từng phụ trách hệ thống có lượng truy cập cấp trăm tỷ mỗi ngày...
+3. Làm việc hai năm mà đạt được mức này cũng khá tốt đấy...
+4. Bầu không khí kỹ thuật của quý công ty khá tốt, triển vọng phát triển nghiệp vụ cũng rất rộng mở...
+5. À, anh nào cũng vậy cả...
+6. Ừm, ngưỡng mộ lâu rồi, ngưỡng mộ lâu rồi...
 
-人生如戏，全靠演技
+Cuộc đời như tuồng, tất cả nhờ diễn xuất
 
-**可以多看 leader 的 PPT，多听老板的向上汇报和宣讲会。**
+**Có thể xem nhiều PPT của leader, nghe nhiều bài báo cáo lên cấp trên và buổi thuyết trình của sếp.**
 
-## 选择和努力哪个更重要？
+## Lựa chọn và nỗ lực, cái nào quan trọng hơn?
 
-这还用问么，当然是选择。在完美的选择面前，努力显得一文不值，我有个多年没联系的高中同学今年已经在时代广场敲钟了...但是这样的案例太少了，做出完美选择的随机成本太高，不确定性太大。对于大多数刚毕业的同学，对行业的判断力还不够成熟，对自身能力和创业难度把握得也不够精准，此时拉几个人去创业，显得风险太高。我觉得更为稳妥的一条路是，先加入规模稍大一点的公司，找一个好 leader，抱好大腿，提升自己的个人能力。好平台加上大腿，再加上个人努力，这个起飞速度已经可以了。等后面积累了一定人脉和资金，深刻理解了市场和需求，对自己有信心了，可以再去考虑创业的事。
+Câu này cần gì phải hỏi, tất nhiên là lựa chọn. Trước sự lựa chọn hoàn hảo, nỗ lực trở nên chẳng đáng một xu, tôi có một người bạn học cùng cấp 3 đã mấy năm không liên lạc, năm nay đã đi đánh chuông ở Quảng trường Thời Đại (Times Square) rồi... Nhưng những trường hợp như vậy quá hiếm, cái giá ngẫu nhiên để đưa ra lựa chọn hoàn hảo quá cao, độ bất định quá lớn. Đối với đa số các bạn mới tốt nghiệp, khả năng phán đoán ngành nghề chưa đủ chín chắn, nắm bắt năng lực bản thân và độ khó của việc khởi nghiệp cũng chưa đủ chuẩn xác, lúc này kéo vài người đi khởi nghiệp thì rủi ro quá cao. Tôi nghĩ một con đường vững chắc hơn là trước tiên gia nhập một công ty quy mô hơi lớn hơn một chút, tìm một leader tốt, ôm chặt "đùi" (chỗ dựa), nâng cao năng lực cá nhân của mình. Nền tảng tốt cộng thêm chỗ dựa tốt, cộng thêm nỗ lực cá nhân, tốc độ cất cánh này đã là đủ. Chờ sau này tích lũy được một lượng quan hệ và vốn nhất định, hiểu sâu về thị trường và nhu cầu, tự tin vào bản thân rồi, thì mới có thể cân nhắc đến chuyện khởi nghiệp.
 
-## 后记
+## Lời kết
 
-本来还想分享一些生活方面的故事，发现已经这么长了，那就先这样叭。上面写的一些总结和建议我自己做的也不是很好，还需要继续加油，和大家共勉。另外，其中某些观点，由于个人视角的局限性也不保证是普适和正确的，可能再工作几年这些观点也会发生改变，欢迎大家跟我交流~（甩锅成功）
+Vốn định còn chia sẻ thêm một số câu chuyện về cuộc sống, phát hiện ra đã dài như vậy rồi, thì cứ dừng ở đây vậy. Một số tổng kết và góp ý viết ở trên bản thân tôi làm cũng không tốt lắm, vẫn cần tiếp tục cố gắng, cùng nhau đồng hành với mọi người. Ngoài ra, một số quan điểm trong đó, do hạn chế về góc nhìn cá nhân, cũng không đảm bảo là phổ quát và chính xác, có thể làm thêm vài năm nữa những quan điểm này cũng sẽ thay đổi, hoan nghênh mọi người trao đổi với tôi~ (đổ lỗi thành công)
 
-最后祝大家都能找到心仪的工作，快乐工作，幸福生活，广阔天地，大有作为。
+Cuối cùng chúc mọi người đều tìm được công việc ưng ý, làm việc vui vẻ, sống hạnh phúc, đất trời rộng mở, có nhiều thành tựu.
 
 <!-- @include: @article-footer.snippet.md -->
