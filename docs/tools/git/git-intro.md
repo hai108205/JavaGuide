@@ -1,272 +1,272 @@
 ---
-title: Git 核心概念总结
-description: 总结 Git 的核心概念与工作流，涵盖分支与合并、提交管理与冲突解决，助力团队协作与代码质量提升。
+title: Tổng hợp các khái niệm cốt lõi của Git
+description: Tổng hợp các khái niệm và quy trình làm việc (workflow) cốt lõi của Git, bao gồm branch và merge, quản lý commit và giải quyết conflict, hỗ trợ làm việc nhóm và nâng cao chất lượng code.
 category: 开发工具
 tag:
   - Git
 head:
   - - meta
     - name: keywords
-      content: Git,版本控制,分布式,分支,提交,合并,冲突解决,工作流
+      content: Git,version control,distributed,branch,commit,merge,conflict resolution,workflow
 ---
 
-## 版本控制
+## Version control (kiểm soát phiên bản)
 
-### 什么是版本控制
+### Version control là gì
 
-版本控制是一种记录一个或若干文件内容变化，以便将来查阅特定版本修订情况的系统。 除了项目源代码，你可以对任何类型的文件进行版本控制。
+Version control là một hệ thống ghi lại sự thay đổi nội dung của một hoặc một số file, để sau này có thể tra cứu tình trạng sửa đổi của từng phiên bản cụ thể. Ngoài source code của dự án, bạn có thể thực hiện version control với bất kỳ loại file nào.
 
-### 为什么要版本控制
+### Tại sao cần version control
 
-有了它你就可以将某个文件回溯到之前的状态，甚至将整个项目都回退到过去某个时间点的状态，你可以比较文件的变化细节，查出最后是谁修改了哪个地方，从而找出导致怪异问题出现的原因，又是谁在何时报告了某个功能缺陷等等。
+Nhờ có nó, bạn có thể đưa một file nào đó quay về trạng thái trước đó, thậm chí đưa toàn bộ dự án trở lại trạng thái tại một thời điểm trong quá khứ. Bạn có thể so sánh chi tiết các thay đổi của file, tìm ra ai là người cuối cùng đã sửa ở đâu, từ đó xác định nguyên nhân gây ra các vấn đề kỳ lạ, hay ai đã báo cáo một lỗi chức năng nào đó vào lúc nào, v.v.
 
-### 本地版本控制系统
+### Hệ thống version control cục bộ
 
-许多人习惯用复制整个项目目录的方式来保存不同的版本，或许还会改名加上备份时间以示区别。 这么做唯一的好处就是简单，但是特别容易犯错。 有时候会混淆所在的工作目录，一不小心会写错文件或者覆盖意想外的文件。
+Nhiều người có thói quen lưu các phiên bản khác nhau bằng cách copy toàn bộ thư mục dự án, có thể còn đổi tên kèm theo thời gian backup để phân biệt. Cách làm này chỉ có một ưu điểm duy nhất là đơn giản, nhưng lại rất dễ gây lỗi. Đôi khi bạn sẽ nhầm lẫn thư mục làm việc hiện tại, lỡ tay ghi nhầm file hoặc ghi đè lên file không mong muốn.
 
-为了解决这个问题，人们很久以前就开发了许多种本地版本控制系统，大多都是采用某种简单的数据库来记录文件的历次更新差异。
+Để giải quyết vấn đề này, từ rất lâu trước đây người ta đã phát triển nhiều loại hệ thống version control cục bộ, phần lớn sử dụng một database đơn giản để ghi lại các khác biệt (diff) giữa những lần cập nhật của file.
 
-![本地版本控制系统](https://oss.javaguide.cn/github/javaguide/tools/git/%E6%9C%AC%E5%9C%B0%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6%E7%B3%BB%E7%BB%9F.png)
+![Hệ thống version control cục bộ](https://oss.javaguide.cn/github/javaguide/tools/git/%E6%9C%AC%E5%9C%B0%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6%E7%B3%BB%E7%BB%9F.png)
 
-### 集中化的版本控制系统
+### Hệ thống version control tập trung
 
-接下来人们又遇到一个问题，如何让在不同系统上的开发者协同工作？ 于是，集中化的版本控制系统（Centralized Version Control Systems，简称 CVCS）应运而生。
+Tiếp đó, người ta lại gặp phải một vấn đề: làm sao để các developer trên các hệ thống khác nhau có thể cộng tác với nhau? Vì vậy, hệ thống version control tập trung (Centralized Version Control Systems, viết tắt là CVCS) đã ra đời.
 
-集中化的版本控制系统都有一个单一的集中管理的服务器，保存所有文件的修订版本，而协同工作的人们都通过客户端连到这台服务器，取出最新的文件或者提交更新。
+Các hệ thống version control tập trung đều có một server quản lý tập trung duy nhất, lưu trữ tất cả các phiên bản sửa đổi của file, còn những người cộng tác sẽ kết nối tới server này thông qua client để lấy file mới nhất hoặc gửi lên (commit) các bản cập nhật.
 
-![集中化的版本控制系统](https://oss.javaguide.cn/github/javaguide/tools/git/%E9%9B%86%E4%B8%AD%E5%8C%96%E7%9A%84%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6%E7%B3%BB%E7%BB%9F.png)
+![Hệ thống version control tập trung](https://oss.javaguide.cn/github/javaguide/tools/git/%E9%9B%86%E4%B8%AD%E5%8C%96%E7%9A%84%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6%E7%B3%BB%E7%BB%9F.png)
 
-这么做虽然解决了本地版本控制系统无法让在不同系统上的开发者协同工作的诟病，但也还是存在下面的问题：
+Cách này tuy giải quyết được nhược điểm của hệ thống version control cục bộ là không thể cho các developer trên các hệ thống khác nhau cộng tác với nhau, nhưng vẫn tồn tại những vấn đề sau:
 
-- **单点故障：** 中央服务器宕机，则其他人无法使用；如果中心数据库磁盘损坏又没有进行备份，你将丢失所有数据。本地版本控制系统也存在类似问题，只要整个项目的历史记录被保存在单一位置，就有丢失所有历史更新记录的风险。
-- **必须联网才能工作：** 受网络状况、带宽影响。
+- **Lỗi điểm đơn (single point of failure):** Nếu server trung tâm bị down, những người khác sẽ không thể sử dụng; nếu đĩa của database trung tâm bị hỏng mà lại không được backup, bạn sẽ mất toàn bộ dữ liệu. Hệ thống version control cục bộ cũng có vấn đề tương tự: chỉ cần toàn bộ lịch sử của dự án được lưu ở một nơi duy nhất thì luôn có nguy cơ mất toàn bộ lịch sử cập nhật.
+- **Bắt buộc phải có mạng mới làm việc được:** Chịu ảnh hưởng của tình trạng mạng và băng thông.
 
-### 分布式版本控制系统
+### Hệ thống version control phân tán
 
-于是分布式版本控制系统（Distributed Version Control System，简称 DVCS）面世了。 Git 就是一个典型的分布式版本控制系统。
+Vì vậy, hệ thống version control phân tán (Distributed Version Control System, viết tắt là DVCS) đã ra đời. Git chính là một hệ thống version control phân tán điển hình.
 
-这类系统，客户端并不只提取最新版本的文件快照，而是把代码仓库完整地镜像下来。 这么一来，任何一处协同工作用的服务器发生故障，事后都可以用任何一个镜像出来的本地仓库恢复。 因为每一次的克隆操作，实际上都是一次对代码仓库的完整备份。
+Ở loại hệ thống này, client không chỉ lấy file snapshot của phiên bản mới nhất, mà mirror (sao chép nguyên bản) toàn bộ repository. Nhờ vậy, khi bất kỳ server nào dùng để cộng tác gặp sự cố, sau đó đều có thể dùng bất kỳ bản mirror cục bộ nào để khôi phục. Bởi vì mỗi lần clone thực chất là một lần backup đầy đủ repository.
 
-![分布式版本控制系统](https://oss.javaguide.cn/github/javaguide/tools/git/%E5%88%86%E5%B8%83%E5%BC%8F%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6%E7%B3%BB%E7%BB%9F.png)
+![Hệ thống version control phân tán](https://oss.javaguide.cn/github/javaguide/tools/git/%E5%88%86%E5%B8%83%E5%BC%8F%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6%E7%B3%BB%E7%BB%9F.png)
 
-分布式版本控制系统可以不用联网就可以工作，因为每个人的电脑上都是完整的版本库，当你修改了某个文件后，你只需要将自己的修改推送给别人就可以了。但是，在实际使用分布式版本控制系统的时候，很少会直接进行推送修改，而是使用一台充当“中央服务器”的东西。这个服务器的作用仅仅是用来方便“交换”大家的修改，没有它大家也一样干活，只是交换修改不方便而已。
+Hệ thống version control phân tán có thể hoạt động mà không cần kết nối mạng, vì trên máy tính của mỗi người đều là một repository đầy đủ. Khi bạn sửa một file nào đó, bạn chỉ cần push thay đổi của mình cho người khác là được. Tuy nhiên, trong thực tế khi sử dụng hệ thống version control phân tán, người ta hiếm khi push trực tiếp cho nhau, mà sử dụng một máy đóng vai trò "server trung tâm". Server này chỉ có tác dụng giúp mọi người "trao đổi" các thay đổi một cách thuận tiện; không có nó mọi người vẫn làm việc bình thường, chỉ là việc trao đổi thay đổi kém tiện lợi hơn mà thôi.
 
-分布式版本控制系统的优势不单是不必联网这么简单，后面我们还会看到 Git 极其强大的分支管理等功能。
+Ưu điểm của hệ thống version control phân tán không chỉ đơn giản là không cần kết nối mạng, phần sau chúng ta còn thấy những tính năng cực kỳ mạnh mẽ của Git như quản lý branch.
 
-## 认识 Git
+## Tìm hiểu về Git
 
-### Git 简史
+### Lịch sử ngắn gọn của Git
 
-Linux 内核项目组当时使用分布式版本控制系统 BitKeeper 来管理和维护代码。但是，后来开发 BitKeeper 的商业公司同 Linux 内核开源社区的合作关系结束，他们收回了 Linux 内核社区免费使用 BitKeeper 的权力。 Linux 开源社区（特别是 Linux 的缔造者 Linus Torvalds）基于使用 BitKeeper 时的经验教训，开发出自己的版本系统，而且对新的版本控制系统做了很多改进。
+Nhóm phát triển nhân Linux khi đó sử dụng hệ thống version control phân tán BitKeeper để quản lý và bảo trì code. Tuy nhiên, sau đó mối quan hệ hợp tác giữa công ty thương mại phát triển BitKeeper và cộng đồng mã nguồn mở nhân Linux kết thúc, họ thu hồi quyền sử dụng BitKeeper miễn phí của cộng đồng nhân Linux. Cộng đồng mã nguồn mở Linux (đặc biệt là Linus Torvalds, cha đẻ của Linux) dựa trên những kinh nghiệm và bài học rút ra khi sử dụng BitKeeper, đã phát triển hệ thống version control của riêng mình, đồng thời thực hiện rất nhiều cải tiến cho hệ thống version control mới.
 
-### Git 与其他版本管理系统的主要区别
+### Điểm khác biệt chính giữa Git và các hệ thống quản lý phiên bản khác
 
-Git 在保存和对待各种信息的时候与其它版本控制系统有很大差异，尽管操作起来的命令形式非常相近，理解这些差异将有助于防止你使用中的困惑。
+Git có sự khác biệt rất lớn so với các hệ thống version control khác trong cách lưu trữ và xử lý các loại thông tin, mặc dù hình thức các câu lệnh khi thao tác lại rất giống nhau. Việc hiểu rõ những khác biệt này sẽ giúp bạn tránh được những bối rối trong quá trình sử dụng.
 
-下面我们主要说一个关于 Git 与其他版本管理系统的主要差别：**对待数据的方式**。
+Dưới đây chúng ta chủ yếu nói về một điểm khác biệt chính giữa Git và các hệ thống quản lý phiên bản khác: **cách xử lý dữ liệu**.
 
-**Git 采用的是直接记录快照的方式，而非差异比较。我后面会详细介绍这两种方式的差别。**
+**Git ghi lại snapshot trực tiếp, chứ không so sánh sự khác biệt (diff). Phần sau sẽ giới thiệu chi tiết sự khác nhau giữa hai cách này.**
 
-大部分版本控制系统（CVS、Subversion、Perforce、Bazaar 等等）都是以文件变更列表的方式存储信息，这类系统**将它们保存的信息看作是一组基本文件和每个文件随时间逐步累积的差异。**
+Phần lớn các hệ thống version control (CVS, Subversion, Perforce, Bazaar, v.v.) đều lưu trữ thông tin dưới dạng danh sách các thay đổi của file. Những hệ thống loại này **coi thông tin mà chúng lưu trữ là một tập hợp các file cơ bản và phần khác biệt được tích lũy dần theo thời gian của mỗi file.**
 
-具体原理如下图所示，理解起来其实很简单，每当我们提交更新一个文件之后，系统都会记录这个文件做了哪些更新，以增量符号 Δ(Delta)表示。
+Nguyên lý cụ thể như hình dưới đây, thực ra rất dễ hiểu: mỗi khi chúng ta commit cập nhật một file, hệ thống sẽ ghi lại file đó đã được cập nhật những gì, biểu thị bằng ký hiệu gia tăng Δ (Delta).
 
 ![](https://oss.javaguide.cn/github/javaguide/tools/git/2019-3deltas.png)
 
-**我们怎样才能得到一个文件的最终版本呢？**
+**Làm thế nào để có được phiên bản cuối cùng của một file?**
 
-很简单，高中数学的基本知识，我们只需要将这些原文件和这些增加进行相加就行了。
+Rất đơn giản, chỉ cần kiến thức cơ bản của toán phổ thông: chúng ta chỉ cần cộng các file gốc với các phần gia tăng này là được.
 
-**这种方式有什么问题呢？**
+**Cách này có vấn đề gì?**
 
-比如我们的增量特别特别多的话，如果我们要得到最终的文件是不是会耗费时间和性能。
+Ví dụ, nếu số lượng phần gia tăng đặc biệt nhiều, thì để có được file cuối cùng chẳng phải sẽ tốn thời gian và hiệu năng hay sao.
 
-Git 不按照以上方式对待或保存数据。 反之，Git 更像是把数据看作是对小型文件系统的一组快照。 每次你提交更新，或在 Git 中保存项目状态时，它主要对当时的全部文件制作一个快照并保存这个快照的索引。 为了高效，如果文件没有修改，Git 不再重新存储该文件，而是只保留一个链接指向之前存储的文件。 Git 对待数据更像是一个 **快照流**。
+Git không xử lý hay lưu trữ dữ liệu theo cách trên. Ngược lại, Git giống như coi dữ liệu là một tập hợp các snapshot của một hệ thống file nhỏ. Mỗi khi bạn commit cập nhật, hoặc lưu trạng thái dự án trong Git, nó chủ yếu tạo một snapshot của toàn bộ file tại thời điểm đó và lưu lại chỉ mục (index) của snapshot này. Để đạt hiệu quả cao, nếu file không bị sửa đổi, Git sẽ không lưu lại file đó nữa, mà chỉ giữ một liên kết trỏ đến file đã lưu trước đó. Git xử lý dữ liệu giống như một **dòng snapshot (snapshot stream)**.
 
 ![](https://oss.javaguide.cn/github/javaguide/tools/git/2019-3snapshots.png)
 
-### Git 的三种状态
+### Ba trạng thái của Git
 
-Git 有三种状态，你的文件可能处于其中之一：
+Git có ba trạng thái, file của bạn có thể nằm ở một trong số đó:
 
-1. **已提交（committed）**：数据已经安全的保存在本地数据库中。
-2. **已修改（modified）**：已修改表示修改了文件，但还没保存到数据库中。
-3. **已暂存（staged）**：表示对一个已修改文件的当前版本做了标记，使之包含在下次提交的快照中。
+1. **Đã commit (committed)**: Dữ liệu đã được lưu an toàn vào database cục bộ.
+2. **Đã sửa đổi (modified)**: Đã sửa đổi nghĩa là file đã được thay đổi, nhưng chưa được lưu vào database.
+3. **Đã stage (staged)**: Nghĩa là đã đánh dấu một phiên bản hiện tại của file đã sửa đổi, để đưa nó vào snapshot của lần commit tiếp theo.
 
-由此引入 Git 项目的三个工作区域的概念：**Git 仓库(.git directory)**、**工作目录(Working Directory)** 以及 **暂存区域(Staging Area)** 。
+Từ đó hình thành khái niệm về ba vùng làm việc của dự án Git: **Git repository (thư mục .git)**, **thư mục làm việc (Working Directory)** và **vùng staging (Staging Area)**.
 
 ![](https://oss.javaguide.cn/github/javaguide/tools/git/2019-3areas.png)
 
-**基本的 Git 工作流程如下：**
+**Quy trình làm việc cơ bản của Git như sau:**
 
-1. 在工作目录中修改文件。
-2. 暂存文件，将文件的快照放入暂存区域。
-3. 提交更新，找到暂存区域的文件，将快照永久性存储到 Git 仓库目录。
+1. Sửa file trong thư mục làm việc.
+2. Stage file, đưa snapshot của file vào vùng staging.
+3. Commit cập nhật, tìm các file trong vùng staging và lưu trữ vĩnh viễn snapshot vào thư mục Git repository.
 
-## Git 使用快速入门
+## Bắt đầu nhanh với Git
 
-### 获取 Git 仓库
+### Lấy Git repository
 
-有两种取得 Git 项目仓库的方法。
+Có hai cách để lấy repository của dự án Git.
 
-1. 在现有目录中初始化仓库：进入项目目录运行 `git init` 命令，该命令会创建一个名为 `.git` 的子目录。
-2. 从一个服务器克隆一个现有的 Git 仓库：`git clone [url]`。如果想自定义本地目录名，可以使用 `git clone [url] directoryname`。
+1. Khởi tạo repository trong một thư mục hiện có: vào thư mục dự án và chạy lệnh `git init`, lệnh này sẽ tạo một thư mục con tên là `.git`.
+2. Clone một Git repository có sẵn từ một server: `git clone [url]`. Nếu muốn tùy chỉnh tên thư mục cục bộ, có thể dùng `git clone [url] directoryname`.
 
-### 记录每次更新到仓库
+### Ghi lại mỗi lần cập nhật vào repository
 
-1. **检测当前文件状态** : `git status`
-2. **提出更改（把它们添加到暂存区）**：`git add filename`（针对特定文件）、`git add .`（当前目录下所有改动）、`git add *.txt`（支持通配符，所有 `.txt` 文件）。
-3. **忽略文件**：`.gitignore` 文件
-4. **提交更新**：`git commit -m "代码提交信息"`。每次准备提交前，先用 `git status` 看一下是否都已暂存。
-5. **跳过使用暂存区域更新的方式**：`git commit -a -m "代码提交信息"`。`git commit` 加上 `-a` 选项，Git 会自动把所有已经跟踪过的文件暂存起来一并提交，从而跳过 `git add` 步骤。
-6. **移除文件**：`git rm filename` （从暂存区域移除，然后提交。）
-7. **对文件重命名**：`git mv README.md README`(这个命令相当于`mv README.md README`、`git rm README.md`、`git add README` 这三条命令的集合)
+1. **Kiểm tra trạng thái file hiện tại** : `git status`
+2. **Đề xuất thay đổi (đưa chúng vào staging area)**: `git add filename` (với một file cụ thể), `git add .` (tất cả thay đổi trong thư mục hiện tại), `git add *.txt` (hỗ trợ wildcard, tất cả các file `.txt`).
+3. **Bỏ qua file**: file `.gitignore`
+4. **Commit cập nhật**: `git commit -m "Thông điệp commit code"`. Mỗi lần chuẩn bị commit, hãy dùng `git status` để kiểm tra xem mọi thứ đã được stage chưa.
+5. **Bỏ qua bước sử dụng staging area khi cập nhật**: `git commit -a -m "Thông điệp commit code"`. `git commit` thêm tùy chọn `-a`, Git sẽ tự động stage tất cả các file đã được theo dõi (tracked) và commit cùng lúc, từ đó bỏ qua bước `git add`.
+6. **Xóa file**: `git rm filename` (xóa khỏi staging area, sau đó commit.)
+7. **Đổi tên file**: `git mv README.md README` (lệnh này tương đương với tập hợp của ba lệnh `mv README.md README`, `git rm README.md`, `git add README`)
 
-### 一个好的 Git 提交消息
+### Một thông điệp commit Git tốt
 
-一个好的 Git 提交消息如下：
+Một thông điệp commit Git tốt như sau:
 
 ```plain
-标题行：用这一行来描述和解释你的这次提交
+Dòng tiêu đề: dùng dòng này để mô tả và giải thích lần commit này của bạn
 
-主体部分可以是很少的几行，来加入更多的细节来解释提交，最好是能给出一些相关的背景或者解释这个提交能修复和解决什么问题。
+Phần thân có thể là một vài dòng ngắn, thêm các chi tiết để giải thích commit, tốt nhất là đưa ra một số bối cảnh liên quan hoặc giải thích commit này sửa chữa và giải quyết vấn đề gì.
 
-主体部分当然也可以有几段，但是一定要注意换行和句子不要太长。因为这样在使用 "git log" 的时候会有缩进比较好看。
+Phần thân tất nhiên cũng có thể gồm vài đoạn, nhưng nhất định phải chú ý xuống dòng và câu không nên quá dài. Vì như vậy khi dùng "git log" sẽ có thụt lề trông đẹp mắt hơn.
 ```
 
-提交的标题行描述应该尽量的清晰和尽量的一句话概括。这样就方便相关的 Git 日志查看工具显示和其他人的阅读。
+Phần mô tả ở dòng tiêu đề của commit nên thật rõ ràng và cố gắng tóm gọn trong một câu. Như vậy sẽ tiện cho các công cụ xem Git log hiển thị và cho người khác đọc.
 
-### 推送改动到远程仓库
+### Push thay đổi lên remote repository
 
-- 如果你还没有克隆现有仓库，并想将你的仓库连接到某个远程服务器，可以使用如下命令添加：`git remote add origin <server>`。比如要让本地仓库和 GitHub 上创建的仓库关联，可以这样写：`git remote add origin https://github.com/Snailclimb/test.git`。
-- 将这些改动提交到远端仓库：`git push origin main`。这里的 `main` 可以换成你想要推送的任何分支。很多老项目的默认分支仍然叫 `master`，以实际仓库为准。
+- Nếu bạn chưa clone repository nào và muốn kết nối repository của mình với một server từ xa, có thể dùng lệnh sau để thêm: `git remote add origin <server>`. Ví dụ, để liên kết repository cục bộ với repository đã tạo trên GitHub, có thể viết như sau: `git remote add origin https://github.com/Snailclimb/test.git`.
+- Commit các thay đổi này lên remote repository: `git push origin main`. Ở đây `main` có thể thay bằng bất kỳ branch nào bạn muốn push. Nhiều dự án cũ vẫn có branch mặc định tên là `master`, hãy lấy repository thực tế làm chuẩn.
 
-  如此你就能够将你的改动推送到所添加的服务器上去了。
+  Như vậy là bạn đã có thể push các thay đổi của mình lên server đã thêm.
 
-### 远程仓库的移除与重命名
+### Xóa và đổi tên remote repository
 
-- 将 test 重命名为 test1：`git remote rename test test1`
-- 移除远程仓库 test1:`git remote rm test1`
+- Đổi tên test thành test1: `git remote rename test test1`
+- Xóa remote repository test1: `git remote rm test1`
 
-### 查看提交历史
+### Xem lịch sử commit
 
-在提交了若干更新，又或者克隆了某个项目之后，你也许想回顾下提交历史。 完成这个任务最简单而又有效的工具是 `git log` 命令。`git log` 会按提交时间列出所有的更新，最近的更新排在最上面。
+Sau khi đã commit một số bản cập nhật, hoặc sau khi clone một dự án nào đó, có thể bạn sẽ muốn xem lại lịch sử commit. Công cụ đơn giản mà hiệu quả nhất để làm việc này là lệnh `git log`. `git log` sẽ liệt kê tất cả các bản cập nhật theo thời gian commit, bản cập nhật gần nhất xếp trên cùng.
 
-**可以添加一些参数来查看自己希望看到的内容：**
+**Có thể thêm một số tham số để xem nội dung mình muốn:**
 
-只看某个人的提交记录：
+Chỉ xem lịch sử commit của một người nào đó:
 
 ```shell
 git log --author=bob
 ```
 
-### 撤销操作
+### Thao tác hoàn tác
 
-有时候我们提交完了才发现漏掉了几个文件没有添加，或者提交信息写错了。 此时，可以运行带有 `--amend` 选项的提交命令尝试重新提交：
+Đôi khi chúng ta commit xong mới phát hiện bỏ sót vài file chưa thêm vào, hoặc viết sai thông điệp commit. Lúc này, có thể chạy lệnh commit với tùy chọn `--amend` để thử commit lại:
 
 ```shell
 git commit --amend
 ```
 
-取消暂存的文件：
+Hủy stage một file:
 
 ```shell
 git restore --staged filename
 ```
 
-老版本 Git 也常见下面这种写法：
+Ở các phiên bản Git cũ cũng thường gặp cách viết sau:
 
 ```shell
 git reset filename
 ```
 
-撤消对文件的修改：
+Hủy bỏ các thay đổi của một file:
 
 ```shell
 git restore filename
 ```
 
-老版本 Git 也常见下面这种写法：
+Ở các phiên bản Git cũ cũng thường gặp cách viết sau:
 
 ```shell
 git checkout -- filename
 ```
 
-假如你想丢弃你在本地的所有改动与提交，可以到服务器上获取最新的版本历史，并将你本地主分支指向它：
+Nếu bạn muốn hủy bỏ toàn bộ thay đổi và commit ở cục bộ, có thể lấy lịch sử phiên bản mới nhất từ server và trỏ branch chính cục bộ của bạn vào đó:
 
 ```shell
 git fetch origin
 git reset --hard origin/main
 ```
 
-注意：`git reset --hard` 会丢弃本地未提交改动，执行前一定要确认没有需要保留的内容。老项目如果默认分支是 `master`，对应命令改成 `git reset --hard origin/master`。
+Lưu ý: `git reset --hard` sẽ hủy bỏ các thay đổi chưa commit ở cục bộ, trước khi thực hiện nhất định phải xác nhận không có nội dung nào cần giữ lại. Với các dự án cũ, nếu branch mặc định là `master` thì lệnh tương ứng đổi thành `git reset --hard origin/master`.
 
-### 分支
+### Branch
 
-分支是用来隔离不同开发任务的。在其他分支上开发功能或修复问题，完成后再合并回主分支。现在很多仓库默认分支叫 `main`，老项目中也经常能看到 `master`。
+Branch dùng để cô lập các nhiệm vụ phát triển khác nhau. Phát triển tính năng hoặc sửa lỗi trên các branch khác, sau khi hoàn thành thì merge lại vào branch chính. Hiện nay nhiều repository có branch mặc định tên là `main`, trong các dự án cũ cũng thường thấy `master`.
 
-我们通常在开发新功能、修复一个紧急 bug 等等时候会选择创建分支。单分支开发好还是多分支开发好，还是要看具体场景来说。
+Chúng ta thường chọn tạo branch khi phát triển tính năng mới, sửa một bug khẩn cấp, v.v. Phát triển trên một branch hay nhiều branch tốt hơn thì còn tùy thuộc vào từng tình huống cụ thể.
 
-创建一个名字叫做 test 的分支
+Tạo một branch có tên là test
 
 ```shell
 git branch test
 ```
 
-切换当前分支到 `test`（当你切换分支的时候，Git 会重置你的工作目录，使其看起来像回到了你在那个分支上最后一次提交的样子。Git 会自动添加、删除、修改文件，以确保此时你的工作目录和这个分支最后一次提交时的样子一致）。
+Chuyển branch hiện tại sang `test` (khi bạn chuyển branch, Git sẽ đặt lại thư mục làm việc của bạn, khiến nó trông giống như lần commit cuối cùng trên branch đó. Git sẽ tự động thêm, xóa, sửa file để đảm bảo thư mục làm việc của bạn lúc này trùng khớp với trạng thái ở lần commit cuối cùng của branch đó).
 
 ```shell
 git switch test
 ```
 
-老版本 Git 也常见 `git checkout test` 这种写法。
+Ở các phiên bản Git cũ cũng thường gặp cách viết `git checkout test`.
 
 ![](https://oss.javaguide.cn/github/javaguide/tools/git/2019-3%E5%88%87%E6%8D%A2%E5%88%86%E6%94%AF.png)
 
-你也可以直接这样创建分支并切换过去：
+Bạn cũng có thể tạo branch và chuyển sang ngay bằng cách sau:
 
 ```shell
 git switch -c feature_x
 ```
 
-老版本 Git 也常见 `git checkout -b feature_x` 这种写法。
+Ở các phiên bản Git cũ cũng thường gặp cách viết `git checkout -b feature_x`.
 
-切换到主分支
+Chuyển sang branch chính
 
 ```shell
 git switch main
 ```
 
-合并分支(可能会有冲突)
+Merge branch (có thể xảy ra conflict)
 
 ```shell
 git merge test
 ```
 
-把新建的分支删掉
+Xóa branch vừa tạo
 
 ```shell
 git branch -d feature_x
 ```
 
-将分支推送到远端仓库（推送成功后其他人可见）：
+Push branch lên remote repository (sau khi push thành công, người khác có thể nhìn thấy):
 
 ```shell
 git push origin feature_x
 ```
 
-## 学习资料推荐
+## Tài liệu học tập gợi ý
 
-**在线演示学习工具：**
+**Công cụ học tập qua demo trực tuyến:**
 
-「补充，来自[issue729](https://github.com/Snailclimb/JavaGuide/issues/729)」Learn Git Branching <https://oschina.gitee.io/learn-git-branching/> 。该网站可以方便的演示基本的 git 操作，讲解得明明白白。每一个基本命令的作用和结果。
+「Bổ sung, từ [issue729](https://github.com/Snailclimb/JavaGuide/issues/729)」Learn Git Branching <https://oschina.gitee.io/learn-git-branching/>. Trang web này có thể demo thuận tiện các thao tác git cơ bản, giải thích cực kỳ rõ ràng. Tác dụng và kết quả của từng lệnh cơ bản.
 
-**推荐阅读：**
+**Gợi ý đọc thêm:**
 
-- [Git 入门图文教程(1.5W 字 40 图)](https://www.cnblogs.com/anding/p/16987769.html)：超用心的一篇文章，内容全面且附带详细的图解，强烈推荐！
-- [Git - 简明指南](https://rogerdudler.github.io/git-guide/index.zh.html)：涵盖 Git 常见操作，非常清晰。
-- [图解 Git](https://marklodato.github.io/visual-git-guide/index-zh-cn.html)：图解 Git 中的最常用命令。如果你稍微理解 git 的工作原理，这篇文章能够让你理解的更透彻。
-- [猴子都能懂得 Git 入门](https://backlog.com/git-tutorial/cn/intro/intro1_1.html)：有趣的讲解。
-- [Pro Git book](https://git-scm.com/book/zh/v2)：国外的一本 Git 书籍，被翻译成多国语言，质量很高。
+- [Git 入门图文教程(1.5W 字 40 图)](https://www.cnblogs.com/anding/p/16987769.html): Một bài viết cực kỳ tâm huyết, nội dung đầy đủ kèm theo hình minh họa chi tiết, rất đáng đọc!
+- [Git - 简明指南](https://rogerdudler.github.io/git-guide/index.zh.html): Bao quát các thao tác Git thường gặp, rất rõ ràng.
+- [图解 Git](https://marklodato.github.io/visual-git-guide/index-zh-cn.html): Minh họa bằng hình các lệnh thường dùng nhất trong Git. Nếu bạn đã hiểu sơ về nguyên lý hoạt động của git, bài viết này sẽ giúp bạn hiểu sâu hơn.
+- [猴子都能懂得 Git 入门](https://backlog.com/git-tutorial/cn/intro/intro1_1.html): Cách giải thích thú vị.
+- [Pro Git book](https://git-scm.com/book/zh/v2): Một cuốn sách về Git của nước ngoài, đã được dịch ra nhiều ngôn ngữ, chất lượng rất cao.
 
 <!-- @include: @article-footer.snippet.md -->

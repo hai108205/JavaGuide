@@ -1,93 +1,93 @@
 ---
-title: Docker 实战
-description: 通过实战理解 Docker 的镜像与容器管理，解决环境一致性与交付效率问题，提升开发测试部署的协同效率。
-category: 开发工具
+title: Docker thực chiến
+description: Thông qua thực hành để hiểu về quản lý image và container trong Docker, giải quyết vấn đề nhất quán môi trường và hiệu quả bàn giao, nâng cao hiệu quả phối hợp giữa phát triển, kiểm thử và triển khai.
+category: Công cụ phát triển
 tag:
   - Docker
 head:
   - - meta
     - name: keywords
-      content: Docker 实战,镜像构建,容器管理,环境一致性,部署,性能
+      content: Docker thực chiến,xây dựng image,quản lý container,nhất quán môi trường,triển khai,hiệu năng
 ---
 
-## Docker 介绍
+## Giới thiệu Docker
 
-开始之前，先简单回顾一下 Docker。更完整的概念介绍可以看前一篇文章：[Docker 核心概念总结](./docker-intro.md)。
+Trước khi bắt đầu, hãy ôn lại một chút về Docker. Phần giới thiệu khái niệm đầy đủ hơn có thể xem ở bài viết trước: [Tổng hợp các khái niệm cốt lõi của Docker](./docker-intro.md).
 
-### 什么是 Docker？
+### Docker là gì?
 
-可以从下面几个角度理解 Docker：
+Có thể hiểu Docker từ một vài góc độ sau:
 
-- Docker 是常见的软件容器平台，基于 Go 语言开发实现。
-- Docker 可以把应用和运行依赖打包到镜像中，减少开发、测试、部署环境不一致带来的问题。
-- 用户可以方便地创建和使用容器，把自己的应用放入容器。容器还可以进行版本管理、复制、分享、修改，就像管理普通的代码一样。
-- Docker 可以**对进程进行封装隔离，属于操作系统层面的虚拟化技术。** 由于隔离的进程独立于宿主和其他隔离进程，因此也称其为容器。
+- Docker là nền tảng container phần mềm phổ biến, được phát triển dựa trên ngôn ngữ Go.
+- Docker có thể đóng gói ứng dụng cùng các phụ thuộc runtime vào một image, giảm thiểu các vấn đề do môi trường phát triển, kiểm thử và triển khai không nhất quán gây ra.
+- Người dùng có thể dễ dàng tạo và sử dụng container, đưa ứng dụng của mình vào container. Container còn có thể được quản lý phiên bản, sao chép, chia sẻ, chỉnh sửa giống như quản lý code thông thường.
+- Docker có thể **đóng gói và cô lập các tiến trình, thuộc nhóm công nghệ ảo hóa ở tầng hệ điều hành.** Do các tiến trình được cô lập hoạt động độc lập với máy chủ và các tiến trình được cô lập khác, nên chúng còn được gọi là container.
 
-官网地址：<https://www.docker.com/> 。
+Trang chủ: <https://www.docker.com/> .
 
-![认识容器](https://oss.javaguide.cn/github/javaguide/tools/docker/container.png)
+![Nhận biết container](https://oss.javaguide.cn/github/javaguide/tools/docker/container.png)
 
-### 为什么要用 Docker?
+### Tại sao nên dùng Docker?
 
-Docker 可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。
+Docker cho phép nhà phát triển đóng gói ứng dụng cùng các gói phụ thuộc vào một container nhẹ, dễ di chuyển, sau đó phát hành lên bất kỳ máy Linux phổ biến nào, đồng thời cũng có thể thực hiện ảo hóa.
 
-容器是完全使用沙箱机制，相互之间不会有任何接口（类似 iPhone 的 app），更重要的是容器性能开销极低。
+Container hoàn toàn sử dụng cơ chế sandbox, giữa các container không có bất kỳ giao diện nào với nhau (tương tự như các app trên iPhone), và quan trọng hơn là chi phí hiệu năng của container cực kỳ thấp.
 
-传统的开发流程中，我们的项目通常需要使用 MySQL、Redis、Kafka 等依赖服务。这些环境如果都手动安装和配置，不同系统下的操作差异很大，也容易出现“我本地可以，你本地不行”的问题。
+Trong quy trình phát triển truyền thống, dự án của chúng ta thường cần sử dụng các dịch vụ phụ thuộc như MySQL, Redis, Kafka... Nếu tất cả những môi trường này đều cài đặt và cấu hình thủ công, thao tác trên các hệ điều hành khác nhau sẽ rất khác biệt, và cũng dễ xảy ra vấn đề "trên máy tôi chạy được, trên máy bạn thì không".
 
-Docker 的出现完美地解决了这一问题，我们可以在容器中安装 MySQL、Redis 等软件环境，使得应用和环境架构分开，它的优势在于：
+Sự ra đời của Docker đã giải quyết triệt để vấn đề này. Chúng ta có thể cài đặt các môi trường phần mềm như MySQL, Redis trong container, tách biệt ứng dụng và kiến trúc môi trường. Ưu điểm của nó là:
 
-1. 一致的运行环境，能够更轻松地迁移
-2. 对进程进行封装隔离，容器与容器之间互不影响，更高效地利用系统资源
-3. 可以通过镜像复制多个一致的容器
+1. Môi trường chạy nhất quán, dễ dàng di chuyển (migrate) hơn
+2. Đóng gói và cô lập tiến trình, các container không ảnh hưởng lẫn nhau, sử dụng tài nguyên hệ thống hiệu quả hơn
+3. Có thể nhân bản nhiều container giống hệt nhau từ một image
 
-另外，[《Docker 从入门到实践》](https://yeasy.gitbook.io/docker_practice/introduction/why) 这本开源书籍中也已经给出了使用 Docker 的原因。
+Ngoài ra, cuốn sách mã nguồn mở [《Docker — Từ nhập môn đến thực hành》](https://yeasy.gitbook.io/docker_practice/introduction/why) cũng đã đưa ra những lý do nên sử dụng Docker.
 
 ![](https://oss.javaguide.cn/github/javaguide/tools/docker/20210412220015698.png)
 
-## Docker 的安装
+## Cài đặt Docker
 
 ### Windows
 
-Windows 推荐安装 Docker Desktop。访问 Docker 官网下载安装包：
+Trên Windows, nên cài đặt Docker Desktop. Truy cập trang chủ Docker để tải gói cài đặt:
 
-![安装 Docker](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-install-windows.png)
+![Cài đặt Docker](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-install-windows.png)
 
-然后点击 `Get Started`：
+Sau đó nhấn `Get Started`:
 
-![安装 Docker](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-install-windows-download.png)
+![Cài đặt Docker](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-install-windows-download.png)
 
-在此处点击 `Download for Windows` 即可下载。
+Tại đây nhấn `Download for Windows` để tải về.
 
-目前 Docker Desktop for Windows 推荐使用 WSL 2 后端。安装前建议确认系统满足 Docker Desktop 的版本要求，并已经启用 WSL 2。部分场景也可以使用 Hyper-V 后端，开启方式如下。打开控制面板，选择程序：
+Hiện tại Docker Desktop for Windows khuyến nghị sử dụng backend WSL 2. Trước khi cài đặt, nên kiểm tra hệ thống có đáp ứng yêu cầu phiên bản của Docker Desktop hay không và đã bật WSL 2 chưa. Trong một số trường hợp cũng có thể dùng backend Hyper-V, cách bật như sau. Mở Control Panel, chọn Programs:
 
-![开启 Hyper-V](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-windows-hyperv.png)
+![Bật Hyper-V](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-windows-hyperv.png)
 
-点击 `启用或关闭 Windows 功能`：
+Nhấn `Turn Windows features on or off` (启用或关闭 Windows 功能):
 
-![开启 Hyper-V](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-windows-hyperv-enable.png)
+![Bật Hyper-V](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-windows-hyperv-enable.png)
 
-勾选 `Hyper-V`，点击确定即可：
+Tích chọn `Hyper-V`, sau đó nhấn OK:
 
-![开启 Hyper-V](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-windows-hyperv-check.png)
+![Bật Hyper-V](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-windows-hyperv-check.png)
 
-完成更改后需要重启一下计算机。
+Sau khi hoàn tất thay đổi, cần khởi động lại máy tính.
 
-开启 `Hyper-V` 后，就可以安装 Docker Desktop 了。打开安装程序后，等待片刻点击 `Ok` 即可：
+Sau khi bật `Hyper-V`, bạn có thể cài đặt Docker Desktop. Mở trình cài đặt, đợi một lát rồi nhấn `Ok`:
 
-![安装 Docker](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-windows-hyperv-install.png)
+![Cài đặt Docker](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-windows-hyperv-install.png)
 
-安装完成后，我们仍然需要重启计算机，重启后，若提示如下内容：
+Sau khi cài đặt xong, chúng ta vẫn cần khởi động lại máy tính. Sau khi khởi động lại, nếu xuất hiện thông báo như sau:
 
-![安装 Docker](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-windows-hyperv-wsl2.png)
+![Cài đặt Docker](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-windows-hyperv-wsl2.png)
 
-如果安装过程中提示使用 WSL 2，一般建议优先选择 WSL 2 后端。它是 Windows 上运行 Linux 容器更常用的方式；如果你的环境必须使用 Hyper-V，再切换到 Hyper-V 后端。
+Nếu trong quá trình cài đặt có gợi ý sử dụng WSL 2, thông thường nên ưu tiên chọn backend WSL 2. Đây là cách phổ biến hơn để chạy container Linux trên Windows; chỉ khi môi trường của bạn bắt buộc phải dùng Hyper-V thì mới chuyển sang backend Hyper-V.
 
-因为是图形界面的操作，这里就不介绍 Docker Desktop 的具体用法了。
+Vì đây là thao tác trên giao diện đồ họa nên bài viết sẽ không giới thiệu chi tiết cách sử dụng Docker Desktop.
 
 ### macOS
 
-直接使用 Homebrew 安装即可
+Chỉ cần cài đặt trực tiếp bằng Homebrew:
 
 ```shell
 brew install --cask docker
@@ -95,9 +95,9 @@ brew install --cask docker
 
 ### Linux
 
-下面来看看 Linux 中如何安装 Docker。不同发行版的安装命令略有差异，生产环境建议优先参考 Docker 官方文档。这里用官方安装脚本演示测试或开发环境的快速安装方式。
+Dưới đây là cách cài đặt Docker trên Linux. Lệnh cài đặt giữa các bản phân phối (distribution) hơi khác nhau, với môi trường production nên ưu tiên tham khảo tài liệu chính thức của Docker. Ở đây dùng script cài đặt chính thức để minh họa cách cài nhanh cho môi trường kiểm thử hoặc phát triển.
 
-在测试或开发环境中，Docker 官方为了简化安装流程，提供了一套便捷的安装脚本，执行这个脚本后就会自动地将一切准备工作做好，并且把 Docker 的稳定版本安装在系统中。
+Trong môi trường kiểm thử hoặc phát triển, để đơn giản hóa quy trình cài đặt, Docker chính thức cung cấp một script cài đặt tiện lợi. Sau khi chạy script này, mọi công tác chuẩn bị sẽ được tự động hoàn tất và phiên bản ổn định (stable) của Docker sẽ được cài vào hệ thống.
 
 ```shell
 curl -fsSL get.docker.com -o get-docker.sh
@@ -107,77 +107,77 @@ curl -fsSL get.docker.com -o get-docker.sh
 sh get-docker.sh --mirror Aliyun
 ```
 
-安装完成后直接启动服务：
+Sau khi cài đặt xong, khởi động dịch vụ trực tiếp:
 
 ```shell
 systemctl start docker
 ```
 
-推荐设置开机自启，执行指令：
+Khuyến nghị thiết lập tự khởi động cùng hệ thống, chạy lệnh:
 
 ```shell
 systemctl enable docker
 ```
 
-## Docker 中的几个概念
+## Một số khái niệm trong Docker
 
-在正式学习 Docker 之前，我们需要了解 Docker 中的几个核心概念：
+Trước khi chính thức học Docker, chúng ta cần nắm được một vài khái niệm cốt lõi trong Docker:
 
-### 镜像
+### Image (镜像)
 
-镜像就是一个只读的模板，镜像可以用来创建 Docker 容器，一个镜像可以创建多个容器
+Image là một template chỉ đọc, image có thể dùng để tạo container Docker, một image có thể tạo ra nhiều container.
 
-### 容器
+### Container (容器)
 
-容器是用镜像创建的运行实例，Docker 利用容器独立运行一个或一组应用。它可以被启动、开始、停止、删除，每个容器都是相互隔离的、保证安全的平台。 可以把容器看作是一个简易的 Linux 环境和运行在其中的应用程序。容器的定义和镜像几乎一模一样，也是一堆层的统一视角，唯一区别在于容器的最上面那一层是可读可写的
+Container là một thể hiện đang chạy (running instance) được tạo từ image. Docker sử dụng container để chạy độc lập một hoặc một nhóm ứng dụng. Container có thể được khởi động, bắt đầu, dừng, xóa; mỗi container đều được cô lập với nhau và là một nền tảng an toàn. Có thể xem container như một môi trường Linux đơn giản cùng các ứng dụng chạy bên trong nó. Định nghĩa của container và image gần như giống hệt nhau, đều là góc nhìn thống nhất của nhiều tầng (layer), điểm khác biệt duy nhất là tầng trên cùng của container có thể đọc và ghi.
 
-### 仓库
+### Repository (仓库)
 
-仓库是集中存放镜像文件的场所。仓库和仓库注册服务器是有区别的，仓库注册服务器上往往存放着多个仓库，每个仓库中又包含了多个镜像，每个镜像有不同的标签。仓库分为公开仓库和私有仓库两种形式，最常见的公开仓库是 Docker Hub，存放了大量可直接下载的镜像。
+Repository là nơi lưu trữ tập trung các file image. Repository và registry server (máy chủ đăng ký repository) là khác nhau: trên registry server thường chứa nhiều repository, mỗi repository lại chứa nhiều image, mỗi image có các tag khác nhau. Repository chia thành hai dạng là repository công khai và repository riêng tư; repository công khai phổ biến nhất là Docker Hub, nơi lưu trữ rất nhiều image có thể tải về trực tiếp.
 
-### 总结
+### Tổng kết
 
-通俗点说，一个镜像就代表一个软件；而基于某个镜像运行就是生成一个程序实例，这个程序实例就是容器；而仓库是用来存储 Docker 中所有镜像的。
+Nói một cách dễ hiểu, một image đại diện cho một phần mềm; còn chạy dựa trên một image nào đó chính là tạo ra một thể hiện chương trình, thể hiện chương trình đó chính là container; còn repository dùng để lưu trữ tất cả image trong Docker.
 
-其中仓库又分为远程仓库和本地仓库，和 Maven 类似，倘若每次都从远程下载依赖，则会大大降低效率，为此，Maven 的策略是第一次访问依赖时，将其下载到本地仓库，第二次、第三次使用时直接用本地仓库的依赖即可，Docker 的远程仓库和本地仓库的作用也是类似的。
+Trong đó, repository lại chia thành repository từ xa (remote) và repository cục bộ (local). Tương tự Maven, nếu lần nào cũng tải phụ thuộc từ remote thì hiệu quả sẽ giảm đáng kể. Vì vậy, chiến lược của Maven là: lần đầu truy cập phụ thuộc thì tải về repository cục bộ, lần thứ hai, thứ ba sử dụng thì dùng trực tiếp phụ thuộc trong repository cục bộ. Vai trò của repository từ xa và repository cục bộ trong Docker cũng tương tự như vậy.
 
-## Docker 初体验
+## Trải nghiệm Docker lần đầu
 
-下面我们来对 Docker 进行一个初步的使用，这里以下载一个 MySQL 镜像为例。
+Dưới đây chúng ta sẽ bắt đầu sử dụng Docker một cách sơ bộ, ví dụ ở đây là tải về một image MySQL.
 
-和 GitHub 一样，Docker 也提供了 Docker Hub 用于查询各种镜像的地址和使用说明。我们先访问 Docker Hub：[https://hub.docker.com/](https://hub.docker.com/)
+Giống như GitHub, Docker cũng cung cấp Docker Hub để tra cứu địa chỉ và hướng dẫn sử dụng của các image. Trước tiên truy cập Docker Hub: [https://hub.docker.com/](https://hub.docker.com/)
 
 ![Docker Hub](https://oss.javaguide.cn/github/javaguide/tools/docker/dockerhub-com.png)
 
-在左上角的搜索框中输入 `mysql` 并回车：
+Nhập `mysql` vào ô tìm kiếm ở góc trên bên trái rồi nhấn Enter:
 
-![Docker Hub 搜索 MySQL](https://oss.javaguide.cn/github/javaguide/tools/docker/dockerhub-mysql.png)
+![Tìm kiếm MySQL trên Docker Hub](https://oss.javaguide.cn/github/javaguide/tools/docker/dockerhub-mysql.png)
 
-可以看到相关 MySQL 的镜像非常多，若右上角有 `OFFICIAL IMAGE` 标识，则说明是官方镜像，所以我们点击第一个 MySQL 镜像：
+Có thể thấy các image liên quan đến MySQL rất nhiều. Nếu góc trên bên phải có nhãn `OFFICIAL IMAGE` thì đó là image chính thức, vì vậy chúng ta nhấn vào image MySQL đầu tiên:
 
-![MySQL 官方镜像](https://oss.javaguide.cn/github/javaguide/tools/docker/dockerhub-mysql-official-image.png)
+![Image MySQL chính thức](https://oss.javaguide.cn/github/javaguide/tools/docker/dockerhub-mysql-official-image.png)
 
-右边提供了下载 MySQL 镜像的指令为 `docker pull mysql`，但该指令会拉取默认标签对应的版本。实际项目中更建议显式指定版本标签，避免环境不可控。
+Bên phải cung cấp lệnh tải image MySQL là `docker pull mysql`, nhưng lệnh này sẽ kéo phiên bản tương ứng với tag mặc định. Trong dự án thực tế, nên chỉ định rõ tag phiên bản để tránh môi trường không kiểm soát được.
 
-若是想下载指定版本的镜像，则点击下面的`View Available Tags`：
+Nếu muốn tải phiên bản image cụ thể, hãy nhấn vào `View Available Tags` bên dưới:
 
-![查看其他版本的 MySQL](https://oss.javaguide.cn/github/javaguide/tools/docker/dockerhub-mysql-view-available-tags.png)
+![Xem các phiên bản MySQL khác](https://oss.javaguide.cn/github/javaguide/tools/docker/dockerhub-mysql-view-available-tags.png)
 
-这里就可以看到各种版本的镜像，右边有下载指令。比如想下载 8.4 版本的 MySQL 镜像，可以执行：
+Tại đây có thể thấy image của nhiều phiên bản khác nhau, bên phải có lệnh tải về. Ví dụ muốn tải image MySQL phiên bản 8.4, có thể chạy:
 
 ```shell
 docker pull mysql:8.4
 ```
 
-然而下载镜像的过程是非常慢的，所以我们需要配置一下镜像源加速下载，访问`阿里云`官网，点击控制台：
+Tuy nhiên, quá trình tải image thường rất chậm, nên chúng ta cần cấu hình mirror để tăng tốc tải. Truy cập trang chủ `Aliyun` (阿里云), nhấn Console (控制台):
 
-![阿里云镜像加速](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-aliyun-mirror-admin.png)
+![Tăng tốc mirror Aliyun](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-aliyun-mirror-admin.png)
 
-然后点击左上角的菜单，在弹窗的窗口中，将鼠标悬停在产品与服务上，并在右侧搜索容器镜像服务，最后点击容器镜像服务：
+Sau đó nhấn vào menu ở góc trên bên trái; trong cửa sổ bật lên, di chuột vào Products & Services (产品与服务), rồi tìm kiếm Container Registry (容器镜像服务) ở bên phải, cuối cùng nhấn vào Container Registry:
 
-![阿里云镜像加速](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-aliyun-mirror-admin-accelerator.png)
+![Tăng tốc mirror Aliyun](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-aliyun-mirror-admin-accelerator.png)
 
-点击左侧的镜像加速器，并依次执行右侧的配置指令即可。
+Nhấn vào Mirror Accelerator (镜像加速器) ở bên trái, rồi lần lượt chạy các lệnh cấu hình ở bên phải.
 
 ```shell
 sudo mkdir -p /etc/docker
@@ -190,11 +190,11 @@ sudo systemctl daemon-reload
 sudo systemctl restart docker
 ```
 
-## Docker 镜像指令
+## Các lệnh về image trong Docker
 
-Docker 需要频繁地操作相关的镜像，所以我们先来了解一下 Docker 中的镜像指令。
+Docker cần thao tác thường xuyên với các image liên quan, nên trước tiên chúng ta hãy tìm hiểu các lệnh về image trong Docker.
 
-若想查看 Docker 中当前拥有哪些镜像，则可以使用 `docker images` 命令。
+Nếu muốn xem Docker hiện có những image nào, có thể dùng lệnh `docker images`.
 
 ```shell
 [root@izrcf5u3j3q8xaz ~]# docker images
@@ -205,15 +205,15 @@ nginx         latest    ae2feff98a0c   2 weeks ago     133MB
 hello-world   latest    bf756fb1ae65   12 months ago   13.3kB
 ```
 
-其中`REPOSITORY`为镜像名，`TAG`为版本标志，`IMAGE ID`为镜像 id(唯一的)，`CREATED`为创建时间，注意这个时间并不是我们将镜像下载到 Docker 中的时间，而是镜像创建者创建的时间，`SIZE`为镜像大小。
+Trong đó `REPOSITORY` là tên image, `TAG` là dấu hiệu phiên bản, `IMAGE ID` là id của image (duy nhất), `CREATED` là thời gian tạo. Lưu ý thời gian này không phải là lúc chúng ta tải image về Docker, mà là thời gian do người tạo image tạo ra; `SIZE` là kích thước image.
 
-该指令能够查询指定镜像名：
+Lệnh này có thể tra cứu theo tên image chỉ định:
 
 ```shell
 docker images mysql
 ```
 
-若如此做，则会查询出 Docker 中的所有 MySQL 镜像：
+Làm như vậy sẽ tra cứu ra tất cả image MySQL trong Docker:
 
 ```shell
 [root@izrcf5u3j3q8xaz ~]# docker images mysql
@@ -222,7 +222,7 @@ mysql        8.4       0ebb5600241d   11 days ago     589MB
 mysql        8.0       f07dfa83b528   11 days ago     596MB
 ```
 
-该指令还能够携带`-q`参数：`docker images -q` ， `-q`表示仅显示镜像的 id：
+Lệnh này còn có thể kèm tham số `-q`: `docker images -q`, trong đó `-q` nghĩa là chỉ hiển thị id của image:
 
 ```shell
 [root@izrcf5u3j3q8xaz ~]# docker images -q
@@ -232,15 +232,15 @@ feba8d001e3f
 d404d78aa797
 ```
 
-若是要下载镜像，则使用：
+Nếu muốn tải image thì dùng:
 
 ```shell
 docker pull mysql:8.4
 ```
 
-`docker pull` 是固定命令，后面写上需要下载的镜像名及版本标签；若是不写版本标签，而是直接执行 `docker pull mysql`，Docker 会拉取默认标签对应的版本。
+`docker pull` là lệnh cố định, phía sau ghi tên image và tag phiên bản cần tải; nếu không ghi tag phiên bản mà chỉ chạy `docker pull mysql`, Docker sẽ kéo phiên bản tương ứng với tag mặc định.
 
-一般在下载镜像前我们需要搜索一下镜像有哪些版本才能对指定版本进行下载，使用指令：
+Thông thường, trước khi tải image, chúng ta cần tìm xem image có những phiên bản nào để chỉ định tải phiên bản cụ thể, dùng lệnh:
 
 ```shell
 docker search mysql
@@ -248,120 +248,120 @@ docker search mysql
 
 ![](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-search-mysql-terminal.png)
 
-不过，`docker search` 只能搜索镜像仓库，不能列出某个镜像的全部标签。想查看 MySQL 支持哪些版本，建议直接去 Docker Hub 的 Tags 页面查看。
+Tuy nhiên, `docker search` chỉ có thể tìm kiếm trong image repository chứ không liệt kê được toàn bộ tag của một image. Muốn xem MySQL hỗ trợ những phiên bản nào, nên truy cập trực tiếp trang Tags trên Docker Hub.
 
 ```shell
 docker pull mysql:8.4
 ```
 
-如果标签不存在，执行 `docker pull` 时会返回类似 `manifest unknown` 的错误：
+Nếu tag không tồn tại, khi chạy `docker pull` sẽ trả về lỗi dạng `manifest unknown`:
 
 ![](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-search-mysql-404-terminal.png)
 
-删除镜像使用指令：
+Xóa image dùng lệnh:
 
 ```shell
 docker image rm mysql:8.4
 ```
 
-若是不指定版本，则默认删除的也是最新版本。
+Nếu không chỉ định phiên bản thì mặc định sẽ xóa phiên bản mới nhất.
 
-还可以通过指定镜像 id 进行删除：
+Cũng có thể xóa bằng cách chỉ định id của image:
 
 ```shell
 docker image rm bf756fb1ae65
 ```
 
-然而此时报错了：
+Tuy nhiên lúc này lại báo lỗi:
 
 ```shell
 [root@izrcf5u3j3q8xaz ~]# docker image rm bf756fb1ae65
 Error response from daemon: conflict: unable to delete bf756fb1ae65 (must be forced) - image is being used by stopped container d5b6c177c151
 ```
 
-这是因为要删除的`hello-world`镜像正在运行中，所以无法删除镜像，此时需要强制执行删除：
+Nguyên nhân là image `hello-world` cần xóa đang được sử dụng, nên không thể xóa được. Lúc này cần buộc (force) thực hiện xóa:
 
 ```shell
 docker image rm -f bf756fb1ae65
 ```
 
-该指令会将镜像和通过该镜像执行的容器全部删除，谨慎使用。
+Lệnh này sẽ xóa image cùng tất cả container được tạo từ image đó, hãy thận trọng khi sử dụng.
 
-Docker 还提供了删除镜像的简化版本：`docker rmi 镜像名:版本标志` 。
+Docker còn cung cấp phiên bản rút gọn của lệnh xóa image: `docker rmi tên-image:tag-phiên-bản`.
 
-此时我们即可借助 `rmi` 和 `-q` 进行一些联合操作。比如现在想删除所有的 MySQL 镜像，需要查询出 MySQL 镜像的 ID，并根据这些 ID 一个一个地执行 `docker rmi` 删除。也可以这样：
+Lúc này chúng ta có thể kết hợp `rmi` và `-q` để thực hiện một số thao tác liên hoàn. Ví dụ, muốn xóa tất cả image MySQL, cần tra cứu ID của các image MySQL rồi lần lượt chạy `docker rmi` để xóa từng cái. Cũng có thể làm như sau:
 
 ```shell
 docker rmi -f $(docker images mysql -q)
 ```
 
-首先通过 `docker images mysql -q` 查询出 MySQL 的所有镜像 ID，`-q` 表示仅查询 ID，并将这些 ID 作为参数传递给 `docker rmi -f` 指令，这样所有的 MySQL 镜像就都被删除了。
+Trước tiên dùng `docker images mysql -q` để tra cứu tất cả ID image của MySQL, `-q` nghĩa là chỉ tra cứu ID, rồi truyền các ID này làm tham số cho lệnh `docker rmi -f`. Như vậy tất cả image MySQL sẽ bị xóa.
 
-## Docker 容器指令
+## Các lệnh về container trong Docker
 
-掌握了镜像的相关指令之后，我们需要了解一下容器的指令，容器是基于镜像的。
+Sau khi nắm được các lệnh liên quan đến image, chúng ta cần tìm hiểu các lệnh về container. Container được xây dựng dựa trên image.
 
-若需要通过镜像运行一个容器，则使用：
+Nếu muốn chạy một container từ image thì dùng:
 
 ```shell
 docker run tomcat:8.0-jre8
 ```
 
-当然了，运行的前提是你拥有这个镜像，所以先下载镜像：
+Tất nhiên, điều kiện tiên quyết để chạy là bạn phải có image này, nên hãy tải image trước:
 
 ```shell
 docker pull tomcat:8.0-jre8
 ```
 
-下载完成后就可以运行了，运行后查看一下当前运行的容器：`docker ps` 。
+Sau khi tải xong là có thể chạy được. Chạy xong, hãy kiểm tra các container đang chạy hiện tại: `docker ps`.
 
 ![](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-ps-terminal.png)
 
-其中`CONTAINER_ID`为容器的 id，`IMAGE`为镜像名，`COMMAND`为容器内执行的命令，`CREATED`为容器的创建时间，`STATUS`为容器的状态，`PORTS`为容器内服务监听的端口，`NAMES`为容器的名称。
+Trong đó `CONTAINER ID` là id của container, `IMAGE` là tên image, `COMMAND` là lệnh được thực thi bên trong container, `CREATED` là thời gian tạo container, `STATUS` là trạng thái của container, `PORTS` là cổng mà dịch vụ trong container đang lắng nghe, `NAMES` là tên của container.
 
-通过该方式运行的 tomcat 是不能直接被外部访问的，因为容器具有隔离性，若是想直接通过 8080 端口访问容器内部的 tomcat，则需要对宿主机端口与容器内的端口进行映射：
+Tomcat chạy theo cách này không thể được truy cập trực tiếp từ bên ngoài, vì container có tính cô lập. Nếu muốn truy cập tomcat bên trong container trực tiếp qua cổng 8080, cần ánh xạ (map) cổng của máy chủ (host) với cổng bên trong container:
 
 ```shell
 docker run -p 8080:8080 tomcat:8.0-jre8
 ```
 
-解释一下这两个端口的作用(`8080:8080`)，第一个 8080 为宿主机端口，第二个 8080 为容器内的端口，外部访问 8080 端口就会通过映射访问容器内的 8080 端口。
+Giải thích ý nghĩa của hai cổng này (`8080:8080`): cổng 8080 thứ nhất là cổng của máy chủ, cổng 8080 thứ hai là cổng bên trong container. Khi truy cập cổng 8080 từ bên ngoài, thông qua ánh xạ sẽ truy cập cổng 8080 bên trong container.
 
-此时外部就可以访问 Tomcat 了：
+Lúc này bên ngoài đã có thể truy cập Tomcat:
 
 ![](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-run-tomact-8080.png)
 
-若是这样进行映射：
+Nếu ánh xạ như sau:
 
 ```shell
 docker run -p 8088:8080 tomcat:8.0-jre8
 ```
 
-则外部需访问 8088 端口才能访问 tomcat，需要注意的是，每次运行的容器都是相互独立的，所以同时运行多个 tomcat 容器并不会产生端口的冲突。
+Thì bên ngoài phải truy cập cổng 8088 mới vào được tomcat. Cần lưu ý là mỗi container chạy lên đều độc lập với nhau, nên chạy đồng thời nhiều container tomcat cũng không gây xung đột cổng.
 
-容器还能够以后台的方式运行，这样就不会占用终端：
+Container còn có thể chạy ở chế độ nền (background), như vậy sẽ không chiếm terminal:
 
 ```shell
 docker run -d -p 8080:8080 tomcat:8.0-jre8
 ```
 
-启动容器时默认会给容器一个名称，但这个名称其实是可以设置的，使用指令：
+Khi khởi động container, mặc định container sẽ được gán một tên, nhưng tên này thực ra có thể tự đặt, dùng lệnh:
 
 ```shell
 docker run -d -p 8080:8080 --name tomcat01 tomcat:8.0-jre8
 ```
 
-此时的容器名称即为 tomcat01，容器名称必须是唯一的。
+Lúc này tên container là tomcat01. Tên container phải là duy nhất.
 
-再来引申一下`docker ps`中的几个指令参数，比如`-a`：
+Mở rộng thêm một chút về các tham số của `docker ps`, ví dụ `-a`:
 
 ```shell
 docker ps -a
 ```
 
-该参数会将运行和非运行的容器全部列举出来。
+Tham số này sẽ liệt kê tất cả container, cả đang chạy lẫn không chạy.
 
-`-q`参数将只查询正在运行的容器 id：`docker ps -q` 。
+Tham số `-q` sẽ chỉ tra cứu id của các container đang chạy: `docker ps -q`.
 
 ```shell
 [root@izrcf5u3j3q8xaz ~]# docker ps -q
@@ -371,7 +371,7 @@ f3aac8ee94a3
 4421848ba294
 ```
 
-若是组合使用，则查询运行和非运行的所有容器 id：`docker ps -qa` 。
+Nếu kết hợp cả hai thì sẽ tra cứu id của tất cả container, cả đang chạy lẫn không chạy: `docker ps -qa`.
 
 ```shell
 [root@izrcf5u3j3q8xaz ~]# docker ps -aq
@@ -387,73 +387,73 @@ c2f5d78c5d1a
 d5b6c177c151
 ```
 
-接下来是容器的停止、重启指令，因为非常简单，就不过多介绍了。
+Tiếp theo là các lệnh dừng và khởi động lại container. Vì rất đơn giản nên không giới thiệu nhiều.
 
 ```shell
 docker start c2f5d78c5d1a
 ```
 
-通过该指令能够将已经停止运行的容器运行起来，可以通过容器的 id 启动，也可以通过容器的名称启动。
+Lệnh này sẽ chạy lại một container đã dừng. Có thể khởi động bằng id của container hoặc bằng tên của container.
 
 ```shell
 docker restart c2f5d78c5d1a
 ```
 
-该指令能够重启指定的容器。
+Lệnh này sẽ khởi động lại container chỉ định.
 
 ```shell
 docker stop c2f5d78c5d1a
 ```
 
-该指令能够停止指定的容器。
+Lệnh này sẽ dừng container chỉ định.
 
 ```shell
 docker kill c2f5d78c5d1a
 ```
 
-该指令能够直接杀死指定的容器。
+Lệnh này sẽ "giết" (kill) ngay container chỉ định.
 
-以上指令都能够通过容器的 id 和容器名称两种方式配合使用。
+Các lệnh trên đều có thể dùng kết hợp với id container hoặc tên container.
 
 ---
 
-当容器被停止之后，容器虽然不再运行了，但仍然是存在的，若是想删除它，则使用指令：
+Khi container đã dừng, tuy không còn chạy nữa nhưng nó vẫn tồn tại. Nếu muốn xóa nó thì dùng lệnh:
 
 ```shell
 docker rm d5b6c177c151
 ```
 
-需要注意的是容器的 id 无需全部写出来，只需唯一标识即可。
+Cần lưu ý là id của container không cần ghi đầy đủ, chỉ cần đủ để nhận diện duy nhất là được.
 
-若是想删除正在运行的容器，则需要添加`-f`参数强制删除：
+Nếu muốn xóa container đang chạy, cần thêm tham số `-f` để buộc xóa:
 
 ```shell
 docker rm -f d5b6c177c151
 ```
 
-若是想删除所有容器，则可以使用组合指令：
+Nếu muốn xóa tất cả container, có thể dùng lệnh kết hợp:
 
 ```shell
 docker rm -f $(docker ps -qa)
 ```
 
-先通过`docker ps -qa`查询出所有容器的 id，然后通过`docker rm -f`进行删除。
+Trước tiên dùng `docker ps -qa` để tra cứu id của tất cả container, sau đó dùng `docker rm -f` để xóa.
 
 ---
 
-当容器以后台的方式运行时，我们无法知晓容器的运行状态，若此时需要查看容器的运行日志，则使用指令：
+Khi container chạy ở chế độ nền, chúng ta không thể biết được trạng thái chạy của nó. Nếu cần xem log của container thì dùng lệnh:
 
 ```shell
 docker logs 289cc00dc5ed
 ```
 
-这样的方式显示的日志并不是实时的，若是想实时显示，需要使用`-f`参数：
+Cách hiển thị log như vậy không phải thời gian thực (real-time). Nếu muốn hiển thị real-time, cần dùng tham số `-f`:
 
 ```shell
 docker logs -f 289cc00dc5ed
 ```
 
-通过`-t`参数还能够显示日志的时间戳，通常与`-f`参数联合使用：
+Tham số `-t` còn có thể hiển thị timestamp của log, thường dùng kết hợp với tham số `-f`:
 
 ```shell
 docker logs -ft 289cc00dc5ed
@@ -461,27 +461,27 @@ docker logs -ft 289cc00dc5ed
 
 ---
 
-查看容器内运行了哪些进程，可以使用指令：
+Xem những tiến trình nào đang chạy bên trong container, dùng lệnh:
 
 ```shell
 docker top 289cc00dc5ed
 ```
 
-若是想与容器进行交互，则使用指令：
+Nếu muốn tương tác với container thì dùng lệnh:
 
 ```shell
 docker exec -it 289cc00dc5ed bash
 ```
 
-此时终端将会进入容器内部，执行的指令都将在容器中生效，在容器内只能执行一些比较简单的指令，如：ls、cd 等，若是想退出容器终端，重新回到 CentOS 中，则执行`exit`即可。
+Lúc này terminal sẽ đi vào bên trong container, các lệnh thực thi đều có hiệu lực trong container. Bên trong container chỉ chạy được một số lệnh đơn giản như ls, cd... Nếu muốn thoát khỏi terminal của container và quay lại CentOS, chỉ cần chạy `exit`.
 
-现在我们已经能够进入容器终端执行相关操作了，那么该如何向 tomcat 容器中部署一个项目呢？
+Bây giờ chúng ta đã có thể vào terminal của container để thực hiện các thao tác liên quan. Vậy làm thế nào để triển khai (deploy) một dự án vào container tomcat?
 
 ```shell
 docker cp ./test.html 289cc00dc5ed:/usr/local/tomcat/webapps
 ```
 
-通过`docker cp`指令能够将文件从 CentOS 复制到容器中，`./test.html`为 CentOS 中的资源路径，`289cc00dc5ed`为容器 id，`/usr/local/tomcat/webapps`为容器的资源路径，此时`test.html`文件将会被复制到该路径下。
+Lệnh `docker cp` có thể sao chép file từ CentOS vào container. `./test.html` là đường dẫn tài nguyên trên CentOS, `289cc00dc5ed` là id của container, `/usr/local/tomcat/webapps` là đường dẫn tài nguyên trong container. Lúc này file `test.html` sẽ được sao chép vào đường dẫn đó.
 
 ```shell
 [root@izrcf5u3j3q8xaz ~]# docker exec -it 289cc00dc5ed bash
@@ -491,17 +491,17 @@ test.html
 root@289cc00dc5ed:/usr/local/tomcat/webapps#
 ```
 
-若是想将容器内的文件复制到 CentOS 中，则反过来写即可：
+Nếu muốn sao chép file từ container ra CentOS thì chỉ cần viết ngược lại:
 
 ```shell
 docker cp 289cc00dc5ed:/usr/local/tomcat/webapps/test.html ./
 ```
 
-所以现在若是想要部署项目，则先将项目上传到 CentOS，然后将项目从 CentOS 复制到容器内，此时启动容器即可。
+Vì vậy, nếu muốn triển khai dự án thì trước tiên tải dự án lên CentOS, sau đó sao chép dự án từ CentOS vào container, rồi khởi động container là xong.
 
 ---
 
-虽然使用 Docker 启动软件环境非常简单，但同时也面临着一个问题，我们无法知晓容器内部具体的细节，比如监听的端口、绑定的 ip 地址等等，好在这些 Docker 都帮我们想到了，只需使用指令：
+Mặc dù khởi động môi trường phần mềm bằng Docker rất đơn giản, nhưng cũng có một vấn đề: chúng ta không thể biết được chi tiết cụ thể bên trong container, chẳng hạn cổng đang lắng nghe, địa chỉ ip được gắn... May mắn là Docker đã tính đến điều này, chỉ cần dùng lệnh:
 
 ```shell
 docker inspect 923c969b0d91
@@ -509,23 +509,23 @@ docker inspect 923c969b0d91
 
 ![](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-inspect-terminal.png)
 
-## Docker 数据卷
+## Volume dữ liệu trong Docker
 
-学习了容器的相关指令之后，我们来了解一下 Docker 中的数据卷，它能够实现宿主机与容器之间的文件共享，它的好处在于我们对宿主机的文件进行修改将直接影响容器，而无需再将宿主机的文件再复制到容器中。
+Sau khi học các lệnh liên quan đến container, chúng ta hãy tìm hiểu về volume dữ liệu (data volume) trong Docker. Nó cho phép chia sẻ file giữa máy chủ và container. Ưu điểm là khi sửa đổi file trên máy chủ sẽ ảnh hưởng trực tiếp đến container, không cần sao chép file từ máy chủ vào container nữa.
 
-现在若是想将宿主机中`/opt/apps`目录与容器中`webapps`目录做一个数据卷，则应该这样编写指令：
+Nếu muốn tạo một data volume giữa thư mục `/opt/apps` trên máy chủ và thư mục `webapps` trong container thì viết lệnh như sau:
 
 ```shell
 docker run -d -p 8080:8080 --name tomcat01 -v /opt/apps:/usr/local/tomcat/webapps tomcat:8.0-jre8
 ```
 
-然而此时访问 tomcat 会发现无法访问：
+Tuy nhiên lúc này truy cập tomcat sẽ thấy không truy cập được:
 
 ![](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-data-volume-webapp-8080.png)
 
-这就说明我们的数据卷设置成功了，Docker 会将容器内的`webapps`目录与`/opt/apps`目录进行同步，而此时`/opt/apps`目录是空的，导致`webapps`目录也会变成空目录，所以就访问不到了。
+Điều này cho thấy data volume đã được thiết lập thành công. Docker sẽ đồng bộ thư mục `webapps` trong container với thư mục `/opt/apps`. Lúc này thư mục `/opt/apps` đang trống, khiến thư mục `webapps` cũng trở thành thư mục trống, nên không truy cập được.
 
-此时我们只需向`/opt/apps`目录下添加文件，就会使得`webapps`目录也会拥有相同的文件，达到文件共享，测试一下：
+Lúc này chỉ cần thêm file vào thư mục `/opt/apps` thì thư mục `webapps` cũng sẽ có các file tương ứng, đạt được chia sẻ file. Kiểm thử một chút:
 
 ```shell
 [root@centos-7 opt]# cd apps/
@@ -536,7 +536,7 @@ test.html
 <h1>This is a test html!</h1>
 ```
 
-在`/opt/apps`目录下创建了一个 `test.html` 文件，那么容器内的`webapps`目录是否会有该文件呢？进入容器的终端：
+Đã tạo một file `test.html` trong thư mục `/opt/apps`. Vậy thư mục `webapps` trong container có file này không? Vào terminal của container:
 
 ```shell
 [root@centos-7 apps]# docker exec -it tomcat01 bash
@@ -545,7 +545,7 @@ root@115155c08687:/usr/local/tomcat/webapps# ls
 test.html
 ```
 
-容器内确实已经有了该文件，那接下来我们编写一个简单的 Web 应用：
+Trong container quả thực đã có file đó. Tiếp theo chúng ta viết một ứng dụng Web đơn giản:
 
 ```java
 public class HelloServlet extends HttpServlet {
@@ -562,17 +562,17 @@ public class HelloServlet extends HttpServlet {
 }
 ```
 
-这是一个非常简单的 Servlet，我们将其打包上传到`/opt/apps`中，那么容器内肯定就会同步到该文件，此时进行访问：
+Đây là một Servlet rất đơn giản. Đóng gói và tải nó lên `/opt/apps`, container chắc chắn sẽ đồng bộ được file này. Lúc này truy cập:
 
 ![](https://oss.javaguide.cn/github/javaguide/tools/docker/docker-data-volume-webapp-8080-hello-world.png)
 
-这种方式通常称为绑定挂载（bind mount），因为宿主机目录由我们自己指定。Docker 还提供了另一种更常见的数据卷方式：命名卷（named volume）。
+Cách này thường được gọi là bind mount (gắn kết thư mục), vì thư mục trên máy chủ do chính chúng ta chỉ định. Docker còn cung cấp một cách data volume khác phổ biến hơn: named volume (volume đặt tên).
 
 ```shell
 docker run -d -p 8080:8080 --name tomcat01 -v aa:/usr/local/tomcat/webapps tomcat:8.0-jre8
 ```
 
-此时的 `aa` 并不是宿主机目录，而是数据卷名称。Docker 会自动创建一个名为 `aa` 的数据卷，并且会将容器内 `webapps` 目录下的已有内容复制到数据卷中。默认情况下，Docker 管理的数据卷位于 `/var/lib/docker/volumes` 目录下：
+Lúc này `aa` không phải là thư mục trên máy chủ mà là tên của data volume. Docker sẽ tự động tạo một data volume tên là `aa` và sao chép nội dung hiện có trong thư mục `webapps` của container vào volume đó. Mặc định, data volume do Docker quản lý nằm trong thư mục `/var/lib/docker/volumes`:
 
 ```shell
 [root@centos-7 volumes]# pwd
@@ -585,17 +585,17 @@ _data
 docs  examples  host-manager  manager  ROOT
 ```
 
-此时我们只需修改该目录的内容，就能影响到容器。不过，实际项目中不建议直接修改 `/var/lib/docker/volumes` 下的文件，优先通过容器、应用程序或者明确的绑定挂载目录来管理数据。
+Lúc này chỉ cần sửa nội dung của thư mục đó là sẽ ảnh hưởng đến container. Tuy nhiên, trong dự án thực tế không nên sửa trực tiếp các file trong `/var/lib/docker/volumes`; hãy ưu tiên quản lý dữ liệu thông qua container, ứng dụng hoặc thư mục bind mount được chỉ định rõ ràng.
 
 ---
 
-最后再介绍几个容器和镜像相关的指令：
+Cuối cùng giới thiệu thêm một vài lệnh liên quan đến container và image:
 
 ```shell
 docker commit -m "描述信息" -a "镜像作者" tomcat01 my_tomcat:1.0
 ```
 
-该指令能够将容器打包成一个镜像，此时查询镜像：
+Lệnh này có thể đóng gói một container thành một image. Sau đó tra cứu image:
 
 ```shell
 [root@centos-7 _data]# docker images
@@ -605,7 +605,7 @@ tomcat              8                   a041be4a5ba5        2 weeks ago         
 mysql               8.4                 db2b37ec6181        2 months ago        589MB
 ```
 
-若是想将镜像备份出来，则可以使用指令：
+Nếu muốn sao lưu (backup) image thì dùng lệnh:
 
 ```shell
 docker save my_tomcat:1.0 -o my-tomcat-1.0.tar
@@ -618,7 +618,7 @@ anaconda-ks.cfg  initial-setup-ks.cfg  公共  视频  文档  音乐
 get-docker.sh    my-tomcat-1.0.tar     模板  图片  下载  桌面
 ```
 
-若是拥有`.tar`格式的镜像，该如何将其加载到 Docker 中呢？执行指令：
+Nếu có một image định dạng `.tar` thì làm thế nào để nạp vào Docker? Chạy lệnh:
 
 ```shell
 docker load -i my-tomcat-1.0.tar
@@ -635,27 +635,27 @@ REPOSITORY          TAG                 IMAGE ID            CREATED             
 my_tomcat           1.0                 79ab047fade5        7 minutes ago       463MB
 ```
 
-## 常见排查命令
+## Các lệnh kiểm tra, xử lý sự cố thường dùng
 
-Docker 上手之后，真正经常用到的是排查命令。下面这些命令建议熟悉：
+Sau khi bắt tay vào dùng Docker, thứ thực sự hay dùng là các lệnh kiểm tra, xử lý sự cố (troubleshooting). Nên làm quen với các lệnh sau:
 
 ```shell
-# 查看容器启动参数、网络、挂载目录和环境变量
+# Xem tham số khởi động, mạng, thư mục mount và biến môi trường của container
 docker inspect tomcat01
 
-# 查看最近的容器日志
+# Xem log gần nhất của container
 docker logs --tail=100 tomcat01
 
-# 持续查看容器日志
+# Xem log của container liên tục
 docker logs -f tomcat01
 
-# 查看容器资源占用
+# Xem mức sử dụng tài nguyên của container
 docker stats
 
-# 查看 Docker 占用的磁盘空间
+# Xem dung lượng đĩa mà Docker đang chiếm
 docker system df
 ```
 
-清理资源时要小心，尤其是带 `-f` 的命令。`docker system prune` 会删除未使用的容器、网络、镜像和构建缓存，如果加上 `--volumes`，还会清理未使用的数据卷，数据库、本地测试数据都可能被删掉。
+Khi dọn dẹp tài nguyên cần cẩn thận, đặc biệt với các lệnh có `-f`. `docker system prune` sẽ xóa các container, mạng, image và build cache không sử dụng; nếu thêm `--volumes`, nó còn dọn cả các data volume không sử dụng — dữ liệu database, dữ liệu kiểm thử cục bộ đều có thể bị xóa mất.
 
 <!-- @include: @article-footer.snippet.md -->

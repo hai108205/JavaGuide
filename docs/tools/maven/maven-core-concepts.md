@@ -8,39 +8,39 @@ head:
       content: Maven坐标,Maven仓库,Maven生命周期,Maven多模块管理
 ---
 
-> 这部分内容主要根据 Maven 官方文档整理，做了对应的删减，主要保留比较重要的部分，不涉及实战，主要是一些重要概念的介绍。
+> Phần nội dung này được tổng hợp chủ yếu từ tài liệu chính thức của Maven, có lược bớt, chỉ giữ lại những phần quan trọng; không đi vào thực chiến mà chủ yếu giới thiệu các khái niệm quan trọng.
 
-## Maven 介绍
+## Giới thiệu về Maven
 
-[Maven](https://github.com/apache/maven) 官方文档是这样介绍的 Maven 的：
+Tài liệu chính thức của [Maven](https://github.com/apache/maven) giới thiệu về Maven như sau:
 
 > Apache Maven is a software project management and comprehension tool. Based on the concept of a project object model (POM), Maven can manage a project's build, reporting and documentation from a central piece of information.
 >
-> Apache Maven 的本质是一个软件项目管理和理解工具。基于项目对象模型 (Project Object Model，POM) 的概念，Maven 可以从一条中心信息管理项目的构建、报告和文档。
+> Bản chất của Apache Maven là một công cụ quản lý và thấu hiểu dự án phần mềm. Dựa trên khái niệm Project Object Model (POM - Mô hình đối tượng dự án), Maven có thể quản lý quá trình build, báo cáo và tài liệu của dự án từ một nguồn thông tin tập trung.
 
-**什么是 POM？** 每一个 Maven 工程都有一个 `pom.xml` 文件，位于根目录中，包含项目构建生命周期的详细信息。通过 `pom.xml` 文件，我们可以定义项目的坐标、项目依赖、项目信息、插件信息等等配置。
+**POM là gì?** Mỗi dự án Maven đều có một file `pom.xml` nằm ở thư mục gốc, chứa thông tin chi tiết về vòng đời build của dự án. Thông qua file `pom.xml`, chúng ta có thể định nghĩa tọa độ dự án, dependency của dự án, thông tin dự án, cấu hình plugin, v.v.
 
-对于开发者来说，Maven 的主要作用主要有 3 个：
+Đối với developer, Maven có 3 tác dụng chính:
 
-1. **项目构建**：提供标准的、跨平台的自动化项目构建方式。
-2. **依赖管理**：方便快捷的管理项目依赖的资源（jar 包），避免资源间的版本冲突问题。
-3. **统一开发结构**：提供标准的、统一的项目结构。
+1. **Build dự án**: cung cấp cách build dự án tự động, chuẩn hóa và đa nền tảng.
+2. **Quản lý dependency**: quản lý thuận tiện các tài nguyên (file jar) mà dự án phụ thuộc vào, tránh xung đột phiên bản giữa các tài nguyên.
+3. **Cấu trúc phát triển thống nhất**: cung cấp cấu trúc dự án chuẩn hóa, thống nhất.
 
-关于 Maven 的基本使用这里就不介绍了，建议看看官网的 5 分钟上手 Maven 的教程：[Maven in 5 Minutes](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html) 。
+Về cách sử dụng cơ bản của Maven thì ở đây không giới thiệu thêm, bạn nên xem tutorial 5 phút làm quen Maven trên trang chủ: [Maven in 5 Minutes](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html).
 
-## Maven 坐标
+## Tọa độ Maven (Maven Coordinate)
 
-项目中依赖的第三方库以及插件可统称为构件。每一个构件都可以使用 Maven 坐标唯一标识，坐标元素包括：
+Các thư viện bên thứ ba và plugin mà dự án phụ thuộc vào có thể gọi chung là artifact. Mỗi artifact đều có thể được định danh duy nhất bằng tọa độ Maven, các thành phần của tọa độ bao gồm:
 
-- **groupId**(必须): 定义了当前 Maven 项目隶属的组织或公司。groupId 一般分为多段，通常情况下，第一段为域，第二段为公司名称。域又分为 org、com、cn 等，其中 org 为非营利组织，com 为商业组织，cn 表示中国。以 apache 开源社区的 tomcat 项目为例，这个项目的 groupId 是 org.apache，它的域是 org（因为 tomcat 是非营利项目），公司名称是 apache，artifactId 是 tomcat。
-- **artifactId**(必须)：定义了当前 Maven 项目的名称，项目的唯一的标识符，对应项目根目录的名称。
-- **version**(必须)：定义了 Maven 项目当前所处版本。
-- **packaging**（可选）：定义了 Maven 项目的打包方式（比如 jar，war...），默认使用 jar。
-- **classifier**(可选)：常用于区分从同一 POM 构建的具有不同内容的构件，可以是任意的字符串，附加在版本号之后。
+- **groupId** (bắt buộc): xác định tổ chức hoặc công ty mà dự án Maven hiện tại trực thuộc. groupId thường gồm nhiều phần, thông thường phần đầu là domain, phần thứ hai là tên công ty. Domain lại chia thành org, com, cn, v.v., trong đó org là tổ chức phi lợi nhuận, com là tổ chức thương mại, cn là Trung Quốc. Lấy dự án tomcat của cộng đồng mã nguồn mở apache làm ví dụ: groupId của dự án này là org.apache, domain là org (vì tomcat là dự án phi lợi nhuận), tên công ty là apache, artifactId là tomcat.
+- **artifactId** (bắt buộc): xác định tên của dự án Maven hiện tại, là định danh duy nhất của dự án, tương ứng với tên thư mục gốc của dự án.
+- **version** (bắt buộc): xác định phiên bản hiện tại của dự án Maven.
+- **packaging** (tùy chọn): xác định cách đóng gói của dự án Maven (ví dụ jar, war...), mặc định là jar.
+- **classifier** (tùy chọn): thường dùng để phân biệt các artifact có nội dung khác nhau được build từ cùng một POM, có thể là chuỗi bất kỳ, được gắn thêm sau số phiên bản.
 
-只要你提供正确的坐标，就能从 Maven 仓库中找到相应的构件供我们使用。
+Chỉ cần cung cấp đúng tọa độ, bạn có thể tìm thấy artifact tương ứng trong kho Maven để sử dụng.
 
-举个例子（引入阿里巴巴开源的 EasyExcel）：
+Ví dụ (thêm EasyExcel do Alibaba phát hành mã nguồn mở):
 
 ```xml
 <dependency>
@@ -50,17 +50,17 @@ head:
 </dependency>
 ```
 
-你可以在 <https://mvnrepository.com/> 这个网站上找到几乎所有可用的构件，如果你的项目使用的是 Maven 作为构建工具，那这个网站你一定会经常接触。
+Bạn có thể tìm thấy hầu như mọi artifact có sẵn trên trang web <https://mvnrepository.com/>. Nếu dự án của bạn dùng Maven làm công cụ build, chắc chắn bạn sẽ thường xuyên làm việc với trang web này.
 
-![Maven 仓库](https://oss.javaguide.cn/github/javaguide/tools/maven/mvnrepository.com.png)
+![Kho Maven](https://oss.javaguide.cn/github/javaguide/tools/maven/mvnrepository.com.png)
 
-## Maven 依赖
+## Dependency trong Maven
 
-如果使用 Maven 构建产生的构件（例如 Jar 文件）被其他的项目引用，那么该构件就是其他项目的依赖。
+Nếu artifact được tạo ra từ quá trình build Maven (ví dụ file Jar) được dự án khác tham chiếu, thì artifact đó chính là dependency của dự án kia.
 
-### 依赖配置
+### Cấu hình dependency
 
-**配置信息示例**：
+**Ví dụ về cấu hình**:
 
 ```xml
 <project>
@@ -83,39 +83,39 @@ head:
 </project>
 ```
 
-**配置说明**：
+**Giải thích cấu hình**:
 
-- dependencies：一个 pom.xml 文件中只能存在一个这样的标签，是用来管理依赖的总标签。
-- dependency：包含在 dependencies 标签中，可以有多个，每一个表示项目的一个依赖。
-- groupId,artifactId,version(必要)：依赖的基本坐标，对于任何一个依赖来说，基本坐标是最重要的，Maven 根据坐标才能找到需要的依赖。我们在上面解释过这些元素的具体意思，这里就不重复提了。
-- type(可选)：依赖的类型，对应于项目坐标定义的 packaging。大部分情况下，该元素不必声明，其默认值是 jar。
-- scope(可选)：依赖的范围，默认值是 compile。
-- optional(可选)：标记依赖是否可选
-- exclusions(可选)：用来排除传递性依赖,例如 jar 包冲突
+- dependencies: trong một file pom.xml chỉ được có duy nhất một thẻ này, đây là thẻ tổng thể dùng để quản lý các dependency.
+- dependency: nằm trong thẻ dependencies, có thể có nhiều thẻ, mỗi thẻ biểu thị một dependency của dự án.
+- groupId, artifactId, version (bắt buộc): tọa độ cơ bản của dependency. Đối với bất kỳ dependency nào, tọa độ cơ bản là phần quan trọng nhất, Maven phải dựa vào tọa độ mới tìm được dependency cần thiết. Ý nghĩa cụ thể của các thành phần này đã được giải thích ở trên nên không nhắc lại ở đây.
+- type (tùy chọn): kiểu của dependency, tương ứng với packaging được định nghĩa trong tọa độ dự án. Trong hầu hết trường hợp không cần khai báo thành phần này, giá trị mặc định là jar.
+- scope (tùy chọn): phạm vi của dependency, giá trị mặc định là compile.
+- optional (tùy chọn): đánh dấu dependency có phải là tùy chọn hay không.
+- exclusions (tùy chọn): dùng để loại trừ các dependency bắc cầu (transitive dependency), ví dụ như xung đột file jar.
 
-### 依赖范围
+### Phạm vi dependency (Dependency Scope)
 
-**classpath** 用于指定 `.class` 文件存放的位置，类加载器会从该路径中加载所需的 `.class` 文件到内存中。
+**classpath** dùng để chỉ định vị trí lưu trữ các file `.class`, class loader sẽ nạp các file `.class` cần thiết từ đường dẫn này vào bộ nhớ.
 
-Maven 在编译、执行测试、实际运行有着三套不同的 classpath：
+Maven có ba classpath khác nhau cho quá trình biên dịch, chạy test và chạy thực tế:
 
-- **编译 classpath**：编译主代码有效
-- **测试 classpath**：编译、运行测试代码有效
-- **运行 classpath**：项目运行时有效
+- **classpath biên dịch**: có hiệu lực khi biên dịch code chính
+- **classpath test**: có hiệu lực khi biên dịch và chạy test code
+- **classpath chạy**: có hiệu lực khi dự án chạy thực tế
 
-Maven 的依赖范围如下：
+Phạm vi dependency của Maven như sau:
 
-- **compile**：编译依赖范围（默认），使用此依赖范围对于编译、测试、运行三种都有效，即在编译、测试和运行的时候都要使用该依赖 Jar 包。
-- **test**：测试依赖范围，从字面意思就可以知道此依赖范围只能用于测试，而在编译和运行项目时无法使用此类依赖，典型的是 JUnit，它只用于编译测试代码和运行测试代码的时候才需要。
-- **provided**：此依赖范围，对于编译和测试有效，而对运行时无效。比如 `servlet-api.jar` 在 Tomcat 中已经提供了，我们只需要的是编译期提供而已。
-- **runtime**：运行时依赖范围，对于测试和运行有效，但是在编译主代码时无效，典型的就是 JDBC 驱动实现。
-- **system**：系统依赖范围，使用 system 范围的依赖时必须通过 systemPath 元素显示地指定依赖文件的路径，不依赖 Maven 仓库解析，所以可能会造成建构的不可移植。
+- **compile**: phạm vi dependency biên dịch (mặc định). Với phạm vi này, dependency có hiệu lực ở cả ba giai đoạn biên dịch, test và chạy, tức là file Jar của dependency được dùng ở cả lúc biên dịch, test và chạy.
+- **test**: phạm vi dependency test. Đúng như tên gọi, phạm vi này chỉ dùng cho test, không thể dùng khi biên dịch và chạy dự án. Điển hình là JUnit, nó chỉ cần thiết khi biên dịch test code và chạy test code.
+- **provided**: phạm vi này có hiệu lực khi biên dịch và test, nhưng không có hiệu lực khi chạy. Ví dụ `servlet-api.jar` đã được Tomcat cung cấp sẵn, chúng ta chỉ cần nó có mặt ở giai đoạn biên dịch.
+- **runtime**: phạm vi dependency khi chạy. Có hiệu lực khi test và chạy, nhưng không có hiệu lực khi biên dịch code chính. Điển hình là các driver JDBC.
+- **system**: phạm vi dependency hệ thống. Khi dùng dependency phạm vi system, bắt buộc phải chỉ định đường dẫn file dependency một cách tường minh thông qua thành phần systemPath, không phụ thuộc vào việc phân giải từ kho Maven nên có thể khiến quá trình build không portable.
 
-### 传递依赖性
+### Dependency bắc cầu (Transitive Dependency)
 
-### 依赖冲突
+### Xung đột dependency
 
-**1、对于 Maven 而言，同一个 groupId 同一个 artifactId 下，只能使用一个 version。**
+**1. Đối với Maven, với cùng một groupId và cùng một artifactId thì chỉ có thể dùng một version.**
 
 ```xml
 <dependency>
@@ -123,7 +123,7 @@ Maven 的依赖范围如下：
     <artifactId>mybatis-plus-spring-boot-starter</artifactId>
     <version>1.0.48</version>
 </dependency>
-<!-- 只会使用 1.0.49 这个版本的依赖 -->
+<!-- Chỉ sử dụng dependency phiên bản 1.0.49 -->
 <dependency>
     <groupId>in.hocg.boot</groupId>
     <artifactId>mybatis-plus-spring-boot-starter</artifactId>
@@ -131,46 +131,46 @@ Maven 的依赖范围如下：
 </dependency>
 ```
 
-若相同类型但版本不同的依赖存在于同一个 pom 文件，只会引入后一个声明的依赖。
+Nếu hai dependency cùng loại nhưng khác version cùng tồn tại trong một file pom, chỉ có dependency được khai báo sau mới được đưa vào.
 
-**2、项目的两个依赖同时引入了某个依赖。**
+**2. Hai dependency của dự án cùng đưa vào một dependency nào đó.**
 
-举个例子，项目存在下面这样的依赖关系：
-
-```plain
-依赖链路一：A -> B -> C -> X(1.0)
-依赖链路二：A -> D -> X(2.0)
-```
-
-这两条依赖路径上有两个版本的 X，为了避免依赖重复，Maven 只会选择其中的一个进行解析。
-
-**哪个版本的 X 会被 Maven 解析使用呢?**
-
-Maven 在遇到这种问题的时候，会遵循 **路径最短优先** 和 **声明顺序优先** 两大原则。解决这个问题的过程也被称为 **Maven 依赖调解** 。
-
-**路径最短优先**
+Ví dụ, dự án có quan hệ phụ thuộc như sau:
 
 ```plain
-依赖链路一：A -> B -> C -> X(1.0) // dist = 3
-依赖链路二：A -> D -> X(2.0) // dist = 2
+Chuỗi dependency 1: A -> B -> C -> X(1.0)
+Chuỗi dependency 2: A -> D -> X(2.0)
 ```
 
-依赖链路二的路径最短，因此，X(2.0)会被解析使用。
+Trên hai đường dẫn dependency này có hai phiên bản của X. Để tránh trùng lặp dependency, Maven sẽ chỉ chọn một trong hai để phân giải.
 
-不过，你也可以发现。路径最短优先原则并不是通用的，像下面这种路径长度相等的情况就不能单单通过其解决了：
+**Phiên bản nào của X sẽ được Maven phân giải và sử dụng?**
+
+Khi gặp vấn đề này, Maven tuân theo hai nguyên tắc lớn: **ưu tiên đường dẫn ngắn nhất** và **ưu tiên thứ tự khai báo**. Quá trình giải quyết vấn đề này còn được gọi là **điều phối dependency Maven (Maven dependency mediation)**.
+
+**Ưu tiên đường dẫn ngắn nhất**
 
 ```plain
-依赖链路一：A -> B -> X(1.0) // dist = 2
-依赖链路二：A -> D -> X(2.0) // dist = 2
+Chuỗi dependency 1: A -> B -> C -> X(1.0) // dist = 3
+Chuỗi dependency 2: A -> D -> X(2.0) // dist = 2
 ```
 
-因此，Maven 又定义了声明顺序优先原则。
+Chuỗi dependency 2 có đường dẫn ngắn nhất, vì vậy X(2.0) sẽ được phân giải và sử dụng.
 
-依赖调解第一原则不能解决所有问题，比如这样的依赖关系：A->B->Y(1.0)、A-> C->Y(2.0)，Y(1.0)和 Y(2.0)的依赖路径长度是一样的，都为 2。Maven 定义了依赖调解的第二原则：
+Tuy nhiên, bạn cũng có thể nhận ra nguyên tắc ưu tiên đường dẫn ngắn nhất không phải là vạn năng; với trường hợp độ dài đường dẫn bằng nhau dưới đây thì không thể chỉ dựa vào nguyên tắc này để giải quyết:
 
-**声明顺序优先**
+```plain
+Chuỗi dependency 1: A -> B -> X(1.0) // dist = 2
+Chuỗi dependency 2: A -> D -> X(2.0) // dist = 2
+```
 
-在依赖路径长度相等的前提下，在 `pom.xml` 中依赖声明的顺序决定了谁会被解析使用，顺序最前的那个依赖优胜。该例中，如果 B 的依赖声明在 D 之前，那么 X (1.0)就会被解析使用。
+Vì vậy, Maven định nghĩa thêm nguyên tắc ưu tiên thứ tự khai báo.
+
+Nguyên tắc điều phối thứ nhất không thể giải quyết mọi vấn đề, ví dụ với quan hệ dependency: A->B->Y(1.0), A-> C->Y(2.0), độ dài đường dẫn dependency của Y(1.0) và Y(2.0) bằng nhau, đều là 2. Maven định nghĩa nguyên tắc điều phối thứ hai:
+
+**Ưu tiên thứ tự khai báo**
+
+Khi độ dài đường dẫn dependency bằng nhau, thứ tự khai báo dependency trong `pom.xml` sẽ quyết định dependency nào được phân giải và sử dụng, dependency khai báo trước nhất sẽ thắng. Trong ví dụ này, nếu dependency B được khai báo trước D thì X (1.0) sẽ được phân giải và sử dụng.
 
 ```xml
 <!-- A pom.xml -->
@@ -182,24 +182,24 @@ Maven 在遇到这种问题的时候，会遵循 **路径最短优先** 和 **�
 </dependencies>
 ```
 
-### 排除依赖
+### Loại trừ dependency
 
-单纯依赖 Maven 来进行依赖调解，在很多情况下是不适用的，需要我们手动排除依赖。
+Chỉ dựa vào Maven để điều phối dependency thì trong nhiều trường hợp là không đủ, chúng ta cần thủ công loại trừ dependency.
 
-举个例子，当前项目存在下面这样的依赖关系：
+Ví dụ, dự án hiện tại có quan hệ phụ thuộc như sau:
 
 ```plain
-依赖链路一：A -> B -> C -> X(1.5) // dist = 3
-依赖链路二：A -> D -> X(1.0) // dist = 2
+Chuỗi dependency 1: A -> B -> C -> X(1.5) // dist = 3
+Chuỗi dependency 2: A -> D -> X(1.0) // dist = 2
 ```
 
-根据路径最短优先原则，X(1.0) 会被解析使用，也就是说实际用的是 1.0 版本的 X。
+Theo nguyên tắc ưu tiên đường dẫn ngắn nhất, X(1.0) sẽ được phân giải và sử dụng, nghĩa là thực tế chúng ta dùng X phiên bản 1.0.
 
-但是！！！这会一些问题：如果 C 依赖用到了 1.5 版本的 X 中才有的一个类，运行项目就会报`NoClassDefFoundError`错误。如果 C 依赖用到了 1.5 版本的 X 中才有的一个方法，运行项目就会报`NoSuchMethodError`错误。
+Nhưng!!! Điều này gây ra một số vấn đề: nếu dependency C sử dụng một class chỉ có ở phiên bản 1.5 của X, khi chạy dự án sẽ báo lỗi `NoClassDefFoundError`. Nếu dependency C sử dụng một method chỉ có ở phiên bản 1.5 của X, khi chạy dự án sẽ báo lỗi `NoSuchMethodError`.
 
-现在知道为什么你的 Maven 项目总是会报`NoClassDefFoundError`和`NoSuchMethodError`错误了吧？
+Giờ thì bạn đã hiểu vì sao dự án Maven của mình cứ hay báo lỗi `NoClassDefFoundError` và `NoSuchMethodError` rồi chứ?
 
-**如何解决呢？** 我们可以通过`exclusion`标签手动将 X(1.0) 给排除。
+**Giải quyết thế nào?** Chúng ta có thể dùng thẻ `exclusion` để thủ công loại trừ X(1.0).
 
 ```xml
 <dependency>
@@ -213,120 +213,120 @@ Maven 在遇到这种问题的时候，会遵循 **路径最短优先** 和 **�
 </dependency>
 ```
 
-一般我们在解决依赖冲突的时候，都会优先保留版本较高的。这是因为大部分 jar 在升级的时候都会做到向下兼容。
+Thông thường khi giải quyết xung đột dependency, chúng ta ưu tiên giữ lại phiên bản cao hơn. Đó là vì hầu hết các jar khi nâng cấp đều giữ tương thích ngược.
 
-如果高版本修改了低版本的一些类或者方法的话，这个时候就不能直接保留高版本了，而是应该考虑优化上层依赖，比如升级上层依赖的版本。
+Nếu phiên bản cao đã thay đổi một số class hoặc method của phiên bản thấp, thì lúc này không thể chỉ đơn giản giữ phiên bản cao, mà nên cân nhắc tối ưu dependency phía trên, ví dụ nâng cấp phiên bản của dependency phía trên.
 
-还是上面的例子：
+Vẫn là ví dụ trên:
 
 ```plain
-依赖链路一：A -> B -> C -> X(1.5) // dist = 3
-依赖链路二：A -> D -> X(1.0) // dist = 2
+Chuỗi dependency 1: A -> B -> C -> X(1.5) // dist = 3
+Chuỗi dependency 2: A -> D -> X(1.0) // dist = 2
 ```
 
-我们保留了 1.5 版本的 X，但是这个版本的 X 删除了 1.0 版本中的某些类。这个时候，我们可以考虑升级 D 的版本到一个 X 兼容的版本。
+Chúng ta giữ lại X phiên bản 1.5, nhưng phiên bản này đã xóa một số class có ở phiên bản 1.0. Lúc này, chúng ta có thể cân nhắc nâng cấp D lên một phiên bản tương thích với X.
 
-## Maven 仓库
+## Kho Maven (Maven Repository)
 
-在 Maven 世界中，任何一个依赖、插件或者项目构建的输出，都可以称为 **构件** 。
+Trong thế giới Maven, bất kỳ dependency, plugin hay đầu ra nào của quá trình build dự án đều có thể được gọi là **artifact**.
 
-坐标和依赖是构件在 Maven 世界中的逻辑表示方式，构件的物理表示方式是文件，Maven 通过仓库来统一管理这些文件。 任何一个构件都有一组坐标唯一标识。有了仓库之后，无需手动引入构件，我们直接给定构件的坐标即可在 Maven 仓库中找到该构件。
+Tọa độ và dependency là cách biểu diễn logic của artifact trong thế giới Maven; cách biểu diễn vật lý của artifact là file, và Maven quản lý thống nhất các file này thông qua kho (repository). Mỗi artifact được định danh duy nhất bằng một bộ tọa độ. Nhờ có kho, chúng ta không cần đưa artifact vào thủ công mà chỉ cần cung cấp tọa độ là có thể tìm thấy artifact trong kho Maven.
 
-Maven 仓库分为：
+Kho Maven được chia thành:
 
-- **本地仓库**：运行 Maven 的计算机上的一个目录，它缓存远程下载的构件并包含尚未发布的临时构件。`settings.xml` 文件中可以看到 Maven 的本地仓库路径配置，默认本地仓库路径是在 `${user.home}/.m2/repository`。
-- **远程仓库**：官方或者其他组织维护的 Maven 仓库。
+- **Kho cục bộ (local repository)**: một thư mục trên máy tính chạy Maven, dùng để cache các artifact tải về từ xa và chứa các artifact tạm thời chưa được phát hành. Có thể xem cấu hình đường dẫn kho cục bộ của Maven trong file `settings.xml`, đường dẫn kho cục bộ mặc định là `${user.home}/.m2/repository`.
+- **Kho từ xa (remote repository)**: các kho Maven do chính thức hoặc các tổ chức khác duy trì.
 
-Maven 远程仓库可以分为：
+Kho từ xa của Maven có thể chia thành:
 
-- **中央仓库**：这个仓库是由 Maven 社区来维护的，里面存放了绝大多数开源软件的包，并且是作为 Maven 的默认配置，不需要开发者额外配置。另外为了方便查询，还提供了一个[查询地址](https://search.maven.org/)，开发者可以通过这个地址更快的搜索需要构件的坐标。
-- **私服**：私服是一种特殊的远程 Maven 仓库，它是架设在局域网内的仓库服务，私服一般被配置为互联网远程仓库的镜像，供局域网内的 Maven 用户使用。
-- **其他的公共仓库**：有一些公共仓库是为了加速访问（比如阿里云 Maven 镜像仓库）或者部分构件不存在于中央仓库中。
+- **Kho trung tâm (central repository)**: kho này do cộng đồng Maven duy trì, lưu trữ gói của hầu hết các phần mềm mã nguồn mở, đồng thời là cấu hình mặc định của Maven nên developer không cần cấu hình thêm. Ngoài ra, để thuận tiện tra cứu, còn có một [địa chỉ tìm kiếm](https://search.maven.org/), developer có thể thông qua địa chỉ này để tìm tọa độ của artifact cần thiết nhanh hơn.
+- **Kho riêng (private repository)**: đây là một loại kho Maven từ xa đặc biệt, một dịch vụ kho được triển khai trong mạng nội bộ. Kho riêng thường được cấu hình làm mirror của kho từ xa trên Internet, phục vụ người dùng Maven trong mạng nội bộ.
+- **Các kho công cộng khác**: một số kho công cộng tồn tại nhằm tăng tốc truy cập (ví dụ kho mirror Maven của Alibaba Cloud) hoặc vì một số artifact không có trong kho trung tâm.
 
-Maven 依赖包寻找顺序：
+Thứ tự tìm gói dependency của Maven:
 
-1. 先去本地仓库找寻，有的话，直接使用。
-2. 本地仓库没有找到的话，会去远程仓库找寻，下载包到本地仓库。
-3. 远程仓库没有找到的话，会报错。
+1. Trước tiên tìm trong kho cục bộ, nếu có thì dùng luôn.
+2. Nếu không tìm thấy trong kho cục bộ, sẽ tìm trong kho từ xa và tải gói về kho cục bộ.
+3. Nếu kho từ xa cũng không tìm thấy, sẽ báo lỗi.
 
-## Maven 生命周期
+## Vòng đời Maven (Maven Lifecycle)
 
-Maven 的生命周期就是为了对所有的构建过程进行抽象和统一，包含了项目的清理、初始化、编译、测试、打包、集成测试、验证、部署和站点生成等几乎所有构建步骤。
+Vòng đời Maven được tạo ra nhằm trừu tượng hóa và thống nhất mọi quá trình build, bao gồm gần như tất cả các bước build: dọn dẹp dự án, khởi tạo, biên dịch, test, đóng gói, integration test, xác minh, triển khai và tạo site.
 
-Maven 定义了 3 个生命周期`META-INF/plexus/components.xml`：
+Maven định nghĩa 3 vòng đời trong `META-INF/plexus/components.xml`:
 
-- `default` 生命周期
-- `clean`生命周期
-- `site`生命周期
+- Vòng đời `default`
+- Vòng đời `clean`
+- Vòng đời `site`
 
-这些生命周期是相互独立的，每个生命周期包含多个阶段(phase)。并且，这些阶段是有序的，也就是说，后面的阶段依赖于前面的阶段。当执行某个阶段的时候，会先执行它前面的阶段。
+Các vòng đời này độc lập với nhau, mỗi vòng đời gồm nhiều giai đoạn (phase). Các phase này có thứ tự, nghĩa là phase sau phụ thuộc vào phase trước. Khi thực thi một phase nào đó, các phase đứng trước nó sẽ được thực thi trước.
 
-执行 Maven 生命周期的命令格式如下：
+Cú pháp lệnh để thực thi vòng đời Maven như sau:
 
 ```bash
-mvn 阶段 [阶段2] ...[阶段n]
+mvn phase [phase2] ...[phasen]
 ```
 
-### default 生命周期
+### Vòng đời default
 
-`default`生命周期是在没有任何关联插件的情况下定义的，是 Maven 的主要生命周期，用于构建应用程序，共包含 23 个阶段。
+Vòng đời `default` được định nghĩa trong trường hợp chưa có plugin nào được gắn vào; đây là vòng đời chính của Maven, dùng để build ứng dụng, gồm 23 phase.
 
 ```xml
 <phases>
-  <!-- 验证项目是否正确，并且所有必要的信息可用于完成构建过程 -->
+  <!-- Xác minh dự án đã đúng chưa và mọi thông tin cần thiết đã sẵn sàng để hoàn tất quá trình build -->
   <phase>validate</phase>
-  <!-- 建立初始化状态，例如设置属性 -->
+  <!-- Thiết lập trạng thái khởi tạo, ví dụ như cài đặt các thuộc tính -->
   <phase>initialize</phase>
-  <!-- 生成要包含在编译阶段的源代码 -->
+  <!-- Tạo mã nguồn cần đưa vào giai đoạn biên dịch -->
   <phase>generate-sources</phase>
-  <!-- 处理源代码 -->
+  <!-- Xử lý mã nguồn -->
   <phase>process-sources</phase>
-  <!-- 生成要包含在包中的资源 -->
+  <!-- Tạo tài nguyên cần đưa vào gói -->
   <phase>generate-resources</phase>
-  <!-- 将资源复制并处理到目标目录中，为打包阶段做好准备。 -->
+  <!-- Sao chép và xử lý tài nguyên vào thư mục đích, chuẩn bị cho giai đoạn đóng gói. -->
   <phase>process-resources</phase>
-  <!-- 编译项目的源代码  -->
+  <!-- Biên dịch mã nguồn của dự án -->
   <phase>compile</phase>
-  <!-- 对编译生成的文件进行后处理，例如对 Java 类进行字节码增强/优化 -->
+  <!-- Hậu xử lý các file được tạo ra sau biên dịch, ví dụ tăng cường/tối ưu bytecode cho các class Java -->
   <phase>process-classes</phase>
-  <!-- 生成要包含在编译阶段的任何测试源代码 -->
+  <!-- Tạo mã nguồn test cần đưa vào giai đoạn biên dịch -->
   <phase>generate-test-sources</phase>
-  <!-- 处理测试源代码 -->
+  <!-- Xử lý mã nguồn test -->
   <phase>process-test-sources</phase>
-  <!-- 生成要包含在编译阶段的测试源代码 -->
+  <!-- Tạo tài nguyên test cần đưa vào giai đoạn biên dịch -->
   <phase>generate-test-resources</phase>
-  <!-- 处理从测试代码文件编译生成的文件 -->
+  <!-- Xử lý các file được tạo ra từ việc biên dịch file mã nguồn test -->
   <phase>process-test-resources</phase>
-  <!-- 编译测试源代码 -->
+  <!-- Biên dịch mã nguồn test -->
   <phase>test-compile</phase>
-  <!-- 处理从测试代码文件编译生成的文件 -->
+  <!-- Xử lý các file được tạo ra từ việc biên dịch file mã nguồn test -->
   <phase>process-test-classes</phase>
-  <!-- 使用合适的单元测试框架（JUnit 就是其中之一）运行测试 -->
+  <!-- Chạy test bằng framework unit test phù hợp (JUnit là một trong số đó) -->
   <phase>test</phase>
-  <!-- 在实际打包之前，执行任何的必要的操作为打包做准备 -->
+  <!-- Trước khi đóng gói chính thức, thực hiện mọi thao tác cần thiết để chuẩn bị đóng gói -->
   <phase>prepare-package</phase>
-  <!-- 获取已编译的代码并将其打包成可分发的格式，例如 JAR、WAR 或 EAR 文件 -->
+  <!-- Lấy mã đã biên dịch và đóng gói thành định dạng có thể phân phối, ví dụ file JAR, WAR hoặc EAR -->
   <phase>package</phase>
-  <!-- 在执行集成测试之前执行所需的操作。 例如，设置所需的环境 -->
+  <!-- Thực hiện các thao tác cần thiết trước khi chạy integration test, ví dụ thiết lập môi trường cần thiết -->
   <phase>pre-integration-test</phase>
-  <!-- 处理并在必要时部署软件包到集成测试可以运行的环境 -->
+  <!-- Xử lý và triển khai gói phần mềm (nếu cần) đến môi trường có thể chạy integration test -->
   <phase>integration-test</phase>
-  <!-- 执行集成测试后执行所需的操作。 例如，清理环境  -->
+  <!-- Thực hiện các thao tác cần thiết sau khi chạy integration test, ví dụ dọn dẹp môi trường -->
   <phase>post-integration-test</phase>
-  <!-- 运行任何检查以验证打的包是否有效并符合质量标准。 -->
+  <!-- Chạy các bước kiểm tra để xác minh gói đã đóng có hợp lệ và đạt chuẩn chất lượng hay không. -->
   <phase>verify</phase>
-  <!-- 	将包安装到本地仓库中，可以作为本地其他项目的依赖 -->
+  <!-- Cài đặt gói vào kho cục bộ, có thể dùng làm dependency cho các dự án khác trên máy -->
   <phase>install</phase>
-  <!-- 将最终的项目包复制到远程仓库中与其他开发者和项目共享 -->
+  <!-- Sao chép gói dự án cuối cùng lên kho từ xa để chia sẻ với các developer và dự án khác -->
   <phase>deploy</phase>
 </phases>
 ```
 
-根据前面提到的阶段间依赖关系理论，当我们执行 `mvn test`命令的时候，会执行从 validate 到 test 的所有阶段，这也就解释了为什么执行测试的时候，项目的代码能够自动编译。
+Theo lý thuyết về quan hệ phụ thuộc giữa các phase đã đề cập ở trên, khi chạy lệnh `mvn test`, tất cả các phase từ validate đến test sẽ được thực thi; điều này cũng giải thích vì sao code của dự án được tự động biên dịch khi chạy test.
 
-### clean 生命周期
+### Vòng đời clean
 
-clean 生命周期的目的是清理项目，共包含 3 个阶段：
+Mục đích của vòng đời clean là dọn dẹp dự án, gồm 3 phase:
 
 1. pre-clean
 2. clean
@@ -334,11 +334,11 @@ clean 生命周期的目的是清理项目，共包含 3 个阶段：
 
 ```xml
 <phases>
-  <!--  执行一些需要在clean之前完成的工作 -->
+  <!--  Thực hiện một số công việc cần hoàn tất trước khi clean -->
   <phase>pre-clean</phase>
-  <!--  移除所有上一次构建生成的文件 -->
+  <!--  Xóa tất cả các file được tạo ra từ lần build trước -->
   <phase>clean</phase>
-  <!--  执行一些需要在clean之后立刻完成的工作 -->
+  <!--  Thực hiện một số công việc cần hoàn tất ngay sau khi clean -->
   <phase>post-clean</phase>
 </phases>
 <default-phases>
@@ -348,11 +348,11 @@ clean 生命周期的目的是清理项目，共包含 3 个阶段：
 </default-phases>
 ```
 
-根据前面提到的阶段间依赖关系理论，当我们执行 `mvn clean` 的时候，会执行 clean 生命周期中的 pre-clean 和 clean 阶段。
+Theo lý thuyết về quan hệ phụ thuộc giữa các phase đã đề cập ở trên, khi chạy `mvn clean`, các phase pre-clean và clean của vòng đời clean sẽ được thực thi.
 
-### site 生命周期
+### Vòng đời site
 
-site 生命周期的目的是建立和发布项目站点，共包含 4 个阶段：
+Mục đích của vòng đời site là xây dựng và phát hành site của dự án, gồm 4 phase:
 
 1. pre-site
 2. site
@@ -361,13 +361,13 @@ site 生命周期的目的是建立和发布项目站点，共包含 4 个阶段
 
 ```xml
 <phases>
-  <!--  执行一些需要在生成站点文档之前完成的工作 -->
+  <!--  Thực hiện một số công việc cần hoàn tất trước khi tạo tài liệu site -->
   <phase>pre-site</phase>
-  <!--  生成项目的站点文档作 -->
+  <!--  Tạo tài liệu site của dự án -->
   <phase>site</phase>
-  <!--  执行一些需要在生成站点文档之后完成的工作，并且为部署做准备 -->
+  <!--  Thực hiện một số công việc cần hoàn tất sau khi tạo tài liệu site và chuẩn bị cho việc triển khai -->
   <phase>post-site</phase>
-  <!--  将生成的站点文档部署到特定的服务器上 -->
+  <!--  Triển khai tài liệu site đã tạo lên một server cụ thể -->
   <phase>site-deploy</phase>
 </phases>
 <default-phases>
@@ -380,19 +380,19 @@ site 生命周期的目的是建立和发布项目站点，共包含 4 个阶段
 </default-phases>
 ```
 
-Maven 能够基于 `pom.xml` 所包含的信息，自动生成一个友好的站点，方便团队交流和发布项目信息。
+Maven có thể dựa trên thông tin trong `pom.xml` để tự động tạo ra một site thân thiện, thuận tiện cho việc trao đổi trong team và công bố thông tin dự án.
 
-## Maven 插件
+## Plugin Maven
 
-Maven 本质上是一个插件执行框架，所有的执行过程，都是由一个一个插件独立完成的。像咱们日常使用到的 install、clean、deploy 等命令，其实底层都是一个一个的 Maven 插件。关于 Maven 的核心插件可以参考官方的这篇文档：<https://maven.apache.org/plugins/index.html> 。
+Về bản chất, Maven là một framework thực thi plugin; mọi quá trình thực thi đều được hoàn thành bởi từng plugin riêng lẻ. Những lệnh chúng ta dùng hằng ngày như install, clean, deploy thực chất đều là các plugin Maven ở tầng dưới. Về các plugin cốt lõi của Maven, có thể tham khảo tài liệu chính thức: <https://maven.apache.org/plugins/index.html>.
 
-本地默认插件路径: `${user.home}/.m2/repository/org/apache/maven/plugins`
+Đường dẫn plugin mặc định trên máy: `${user.home}/.m2/repository/org/apache/maven/plugins`
 
 ![](https://oss.javaguide.cn/github/javaguide/tools/maven/maven-plugins.png)
 
-除了 Maven 自带的插件之外，还有一些三方提供的插件比如单测覆盖率插件 jacoco-maven-plugin、帮助开发检测代码中不合规范的地方的插件 maven-checkstyle-plugin、分析代码质量的 sonar-maven-plugin。并且，我们还可以自定义插件来满足自己的需求。
+Ngoài các plugin do chính Maven cung cấp, còn có một số plugin của bên thứ ba, ví dụ plugin đo độ phủ unit test jacoco-maven-plugin, plugin giúp developer phát hiện các điểm không đúng chuẩn trong code maven-checkstyle-plugin, hay plugin phân tích chất lượng code sonar-maven-plugin. Hơn nữa, chúng ta còn có thể tự định nghĩa plugin để đáp ứng nhu cầu riêng.
 
-jacoco-maven-plugin 使用示例：
+Ví dụ sử dụng jacoco-maven-plugin:
 
 ```xml
 <build>
@@ -420,43 +420,43 @@ jacoco-maven-plugin 使用示例：
 </build>
 ```
 
-你可以将 Maven 插件理解为一组任务的集合，用户可以通过命令行直接运行指定插件的任务，也可以将插件任务挂载到构建生命周期，随着生命周期运行。
+Bạn có thể hiểu plugin Maven như một tập hợp các task: người dùng có thể chạy trực tiếp task của một plugin cụ thể qua dòng lệnh, hoặc gắn task của plugin vào vòng đời build để chạy cùng vòng đời.
 
-Maven 插件被分为下面两种类型：
+Plugin Maven được chia thành hai loại sau:
 
-- **Build plugins**：在构建时执行。
-- **Reporting plugins**：在网站生成过程中执行。
+- **Build plugins**: thực thi trong quá trình build.
+- **Reporting plugins**: thực thi trong quá trình tạo site.
 
-## Maven 多模块管理
+## Quản lý đa module trong Maven
 
-多模块管理简单地来说就是将一个项目分为多个模块，每个模块只负责单一的功能实现。直观的表现就是一个 Maven 项目中不止有一个 `pom.xml` 文件，会在不同的目录中有多个 `pom.xml` 文件，进而实现多模块管理。
+Quản lý đa module hiểu đơn giản là chia một dự án thành nhiều module, mỗi module chỉ đảm nhận một chức năng duy nhất. Biểu hiện trực quan là một dự án Maven không chỉ có một file `pom.xml` mà có nhiều file `pom.xml` ở các thư mục khác nhau, từ đó thực hiện quản lý đa module.
 
-多模块管理除了可以更加便于项目开发和管理，还有如下好处：
+Ngoài việc giúp phát triển và quản lý dự án thuận tiện hơn, quản lý đa module còn có những lợi ích sau:
 
-1. 降低代码之间的耦合性（从类级别的耦合提升到 jar 包级别的耦合）；
-2. 减少重复，提升复用性；
-3. 每个模块都可以是自解释的（通过模块名或者模块文档）；
-4. 模块还规范了代码边界的划分，开发者很容易通过模块确定自己所负责的内容。
+1. Giảm coupling giữa các phần code (nâng từ coupling cấp class lên coupling cấp file jar);
+2. Giảm trùng lặp, tăng khả năng tái sử dụng;
+3. Mỗi module đều có thể tự giải thích (thông qua tên module hoặc tài liệu module);
+4. Module còn chuẩn hóa việc phân chia ranh giới code, developer dễ dàng xác định phần mình phụ trách thông qua module.
 
-多模块管理下，会有一个父模块，其他的都是子模块。父模块通常只有一个 `pom.xml`，没有其他内容。父模块的 `pom.xml` 一般只定义了各个依赖的版本号、包含哪些子模块以及插件有哪些。不过，要注意的是，如果依赖只在某个子项目中使用，则可以在子项目的 pom.xml 中直接引入，防止父 pom 的过于臃肿。
+Trong mô hình đa module, có một module cha và còn lại là các module con. Module cha thường chỉ có một file `pom.xml`, không có nội dung khác. File `pom.xml` của module cha thường chỉ định nghĩa version của các dependency, danh sách các module con và các plugin. Tuy nhiên cần lưu ý: nếu dependency chỉ được dùng trong một dự án con nào đó, thì có thể khai báo trực tiếp trong pom.xml của dự án con, tránh để pom cha trở nên quá cồng kềnh.
 
-如下图所示，Dubbo 项目就被分成了多个子模块比如 dubbo-common（公共逻辑模块）、dubbo-remoting（远程通讯模块）、dubbo-rpc（远程调用模块）。
+Như hình dưới đây, dự án Dubbo được chia thành nhiều module con, ví dụ dubbo-common (module logic dùng chung), dubbo-remoting (module truyền thông từ xa), dubbo-rpc (module gọi từ xa).
 
 ![](https://oss.javaguide.cn/github/javaguide/tools/maven/dubbo-maven-multi-module.png)
 
-## 文章推荐
+## Bài viết nên đọc
 
-- [安全同学讲 Maven 间接依赖场景的仲裁机制 - 阿里开发者 - 2022](https://mp.weixin.qq.com/s/flniMiP-eu3JSBnswfd_Ew)
-- [高效使用 Java 构建工具｜ Maven 篇 - 阿里开发者 - 2022](https://mp.weixin.qq.com/s/Wvq7t2FC58jaCh4UFJ6GGQ)
-- [安全同学讲 Maven 重打包的故事 - 阿里开发者 - 2022](https://mp.weixin.qq.com/s/xsJkB0onUkakrVH0wejcIg)
+- [Cơ chế phân xử trong các tình huống dependency gián tiếp của Maven (góc nhìn từ team bảo mật) - Alibaba Developer - 2022](https://mp.weixin.qq.com/s/flniMiP-eu3JSBnswfd_Ew)
+- [Sử dụng hiệu quả công cụ build Java | Phần Maven - Alibaba Developer - 2022](https://mp.weixin.qq.com/s/Wvq7t2FC58jaCh4UFJ6GGQ)
+- [Câu chuyện về repackaging trong Maven (góc nhìn từ team bảo mật) - Alibaba Developer - 2022](https://mp.weixin.qq.com/s/xsJkB0onUkakrVH0wejcIg)
 
-## 参考
+## Tham khảo
 
-- 《Maven 实战》
-- Introduction to Repositories - Maven 官方文档：<https://maven.apache.org/guides/introduction/introduction-to-repositories.html>
-- Introduction to the Build Lifecycle - Maven 官方文档：<https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#Lifecycle_Reference>
-- Maven 依赖范围：<https://www.mvnbook.com/maven-dependency.html>
-- 解决 maven 依赖冲突，这篇就够了！：<https://www.cnblogs.com/qdhxhz/p/16363532.html>
-- Multi-Module Project with Maven：<https://www.baeldung.com/maven-multi-module>
+- 《Maven thực chiến》
+- Introduction to Repositories - Tài liệu chính thức của Maven: <https://maven.apache.org/guides/introduction/introduction-to-repositories.html>
+- Introduction to the Build Lifecycle - Tài liệu chính thức của Maven: <https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#Lifecycle_Reference>
+- Phạm vi dependency trong Maven: <https://www.mvnbook.com/maven-dependency.html>
+- Giải quyết xung đột dependency trong Maven, bài này là đủ!: <https://www.cnblogs.com/qdhxhz/p/16363532.html>
+- Multi-Module Project with Maven: <https://www.baeldung.com/maven-multi-module>
 
 <!-- @include: @article-footer.snippet.md -->

@@ -1,155 +1,155 @@
 ---
-title: GitHub 实用小技巧总结
-description: 汇总 GitHub 的高效使用技巧，包括个人主页、项目徽章、代码阅读、GitHub Actions、Explore/Trending 和开源协作提效方法。
-category: 开发工具
+title: Tổng hợp các mẹo sử dụng GitHub hữu ích
+description: Tổng hợp các mẹo sử dụng GitHub hiệu quả, bao gồm trang cá nhân, badge dự án, đọc code, GitHub Actions, Explore/Trending và các cách tăng hiệu quả khi cộng tác mã nguồn mở.
+category: Công cụ phát triển
 tag:
   - Git
 head:
   - - meta
     - name: keywords
-      content: GitHub 技巧,个人主页,README,统计信息,开源贡献,GitHub Actions,代码阅读
+      content: Mẹo GitHub, trang cá nhân, README, thống kê, đóng góp mã nguồn mở, GitHub Actions, đọc code
 ---
 
-GitHub 不只是代码托管平台。对开发者来说，它同时承担了项目展示、代码阅读、开源协作、自动化构建和个人主页的作用。这篇文章整理一些比较实用的 GitHub 使用技巧。
+GitHub không chỉ là nền tảng lưu trữ code. Đối với developer, nó đồng thời đóng vai trò trưng bày dự án, đọc code, cộng tác mã nguồn mở, tự động hóa build và trang cá nhân. Bài viết này tổng hợp một số mẹo sử dụng GitHub khá hữu ích.
 
-## 一键生成 GitHub 简历与 GitHub 年报
+## Tạo GitHub resume và GitHub báo cáo năm chỉ với một cú click
 
-通过 [https://resume.github.io/](https://resume.github.io/) 这个网站你可以一键生成一个在线的 GitHub 简历。
+Thông qua trang web [https://resume.github.io/](https://resume.github.io/), bạn có thể tạo một bản GitHub resume trực tuyến chỉ với một cú click.
 
-不过，简历里是否放 GitHub 链接要看账号内容质量。如果账号里有完整项目、持续维护记录、清晰 README 和比较规范的提交历史，GitHub 链接会加分；如果只有空仓库或者临时练习代码，就没必要强行放。生成后的效果如下图所示。
+Tuy nhiên, việc có nên đưa link GitHub vào resume hay không còn tùy thuộc vào chất lượng nội dung của tài khoản. Nếu tài khoản có dự án hoàn chỉnh, lịch sử bảo trì liên tục, README rõ ràng và lịch sử commit tương đối chuẩn mực thì link GitHub sẽ là điểm cộng; còn nếu chỉ có repository rỗng hoặc code luyện tập tạm thời thì không cần cố đưa vào. Kết quả sau khi tạo được thể hiện như hình dưới đây.
 
-![GitHub简历](https://oss.javaguide.cn/2020-11/image-20201108192205620.png)
+![GitHub resume](https://oss.javaguide.cn/2020-11/image-20201108192205620.png)
 
-通过 <https://www.githubtrends.io/wrapped> 这个网站，你可以生成一份 GitHub 个人年报，这个年报会列举出你在这一年的项目贡献情况、最常使用的编程语言、详细的贡献信息。
+Thông qua trang web <https://www.githubtrends.io/wrapped>, bạn có thể tạo một bản báo cáo năm (wrapped) cá nhân trên GitHub. Báo cáo này sẽ liệt kê tình hình đóng góp dự án của bạn trong năm, ngôn ngữ lập trình được sử dụng nhiều nhất và thông tin đóng góp chi tiết.
 
 ![](https://oss.javaguide.cn/github/dootask/image-20211226144607457.png)
 
-## 个性化 GitHub 首页
+## Cá nhân hóa trang chủ GitHub
 
-GitHub 目前支持在个人主页自定义展示一些内容。展示效果如下图所示。
+Hiện tại GitHub hỗ trợ tùy chỉnh hiển thị một số nội dung trên trang cá nhân. Hiệu ứng hiển thị được thể hiện như hình dưới đây.
 
-![个性化首页展示效果](https://oss.javaguide.cn/java-guide-blog/image-20210616221212259.png)
+![Hiệu ứng hiển thị trang chủ cá nhân hóa](https://oss.javaguide.cn/java-guide-blog/image-20210616221212259.png)
 
-想要做到这样非常简单，你只需要创建一个和你的 GitHub 账户同名的仓库，然后自定义`README.md`的内容即可。
+Để làm được điều này rất đơn giản, bạn chỉ cần tạo một repository trùng tên với tài khoản GitHub của mình, sau đó tùy chỉnh nội dung của `README.md` là được.
 
-展示在你主页的自定义内容就是`README.md`的内容（_不会 Markdown 语法的小伙伴自行面壁 5 分钟_）。
+Nội dung tùy chỉnh hiển thị trên trang chủ của bạn chính là nội dung của `README.md` (_bạn nào chưa biết cú pháp Markdown thì tự úp mặt vào tường 5 phút nhé_).
 
-![创建一个和你的GitHub账户同名的仓库](https://oss.javaguide.cn/java-guide-blog/image-20201107110309341.png)
+![Tạo một repository trùng tên với tài khoản GitHub của bạn](https://oss.javaguide.cn/java-guide-blog/image-20201107110309341.png)
 
-这个也是可以玩出花来的！比如说：通过 [github-readme-stats](https://hellogithub.com/periodical/statistics/click/?target=https://github.com/anuraghazra/github-readme-stats) 这个开源项目，你可以在 README 中展示动态生成的 GitHub 统计信息。展示效果如下图所示。
+Phần này còn có thể biến tấu ra rất nhiều kiểu! Ví dụ: thông qua dự án mã nguồn mở [github-readme-stats](https://hellogithub.com/periodical/statistics/click/?target=https://github.com/anuraghazra/github-readme-stats), bạn có thể hiển thị thông tin thống kê GitHub được tạo động ngay trong README. Hiệu ứng hiển thị được thể hiện như hình dưới đây.
 
-![通过github-readme-stats动态生成GitHub统计信息 ](https://oss.javaguide.cn/java-guide-blog/image-20210616221312426.png)
+![Tạo động thông tin thống kê GitHub bằng github-readme-stats](https://oss.javaguide.cn/java-guide-blog/image-20210616221312426.png)
 
-关于个性化首页这个就不多提了，感兴趣的小伙伴自行研究一下。
+Về phần cá nhân hóa trang chủ thì không đề cập thêm nhiều, bạn nào hứng thú hãy tự tìm hiểu thêm.
 
-## 自定义项目徽章
+## Tùy chỉnh badge dự án
 
-你在 GitHub 上看到的项目徽章都是通过 [https://shields.io/](https://shields.io/) 这个网站生成的。我的 JavaGuide 这个项目的徽章如下图所示。
+Các badge dự án mà bạn nhìn thấy trên GitHub đều được tạo thông qua trang web [https://shields.io/](https://shields.io/). Badge của dự án JavaGuide của mình được thể hiện như hình dưới đây.
 
-![项目徽章](https://oss.javaguide.cn/2020-11/image-20201107143136559.png)
+![Badge dự án](https://oss.javaguide.cn/2020-11/image-20201107143136559.png)
 
-并且，你不光可以生成静态徽章，shield.io 还可以动态读取你项目的状态并生成对应的徽章。
+Hơn nữa, bạn không chỉ tạo được badge tĩnh, shields.io còn có thể đọc động trạng thái dự án của bạn và tạo ra badge tương ứng.
 
-![自定义项目徽章](https://oss.javaguide.cn/2020-11/image-20201107143502356.png)
+![Tùy chỉnh badge dự án](https://oss.javaguide.cn/2020-11/image-20201107143502356.png)
 
-生成的描述项目状态的徽章效果如下图所示。
+Hiệu ứng của badge mô tả trạng thái dự án được tạo ra được thể hiện như hình dưới đây.
 
-![描述项目状态的徽章](https://oss.javaguide.cn/2020-11/image-20201107143752642.png)
+![Badge mô tả trạng thái dự án](https://oss.javaguide.cn/2020-11/image-20201107143752642.png)
 
-## 自动为项目添加贡献情况图标
+## Tự động thêm biểu đồ tình hình đóng góp cho dự án
 
-通过 repobeats 这个工具可以为 GitHub 项目添加如下图所示的项目贡献基本情况图表。
+Thông qua công cụ repobeats, bạn có thể thêm vào dự án GitHub biểu đồ thể hiện tình hình đóng góp cơ bản của dự án như hình dưới đây.
 
 ![](https://oss.javaguide.cn/github/dootask/repobeats.png)
 
-地址：<https://repobeats.axiom.co/> 。
+Địa chỉ: <https://repobeats.axiom.co/> .
 
-## GitHub 表情
+## Emoji trên GitHub
 
-![GitHub表情](https://oss.javaguide.cn/2020-11/image-20201107162254582.png)
+![Emoji GitHub](https://oss.javaguide.cn/2020-11/image-20201107162254582.png)
 
-如果你想要在 GitHub 使用表情的话，可以在这里找找：[www.webfx.com/tools/emoji-cheat-sheet/](https://www.webfx.com/tools/emoji-cheat-sheet/)。
+Nếu bạn muốn sử dụng emoji trên GitHub thì có thể tìm ở đây: [www.webfx.com/tools/emoji-cheat-sheet/](https://www.webfx.com/tools/emoji-cheat-sheet/).
 
-![在线GitHub表情](https://oss.javaguide.cn/2020-11/image-20201107162432941.png)
+![Emoji GitHub trực tuyến](https://oss.javaguide.cn/2020-11/image-20201107162432941.png)
 
-## 高效阅读 GitHub 项目的源代码
+## Đọc source code của dự án GitHub hiệu quả
 
-GitHub Codespaces 可以提供类似 VS Code 的在线开发环境，适合临时阅读、调试或快速参与开源项目。对于大型项目或需要本地服务依赖的项目，还是建议 clone 到本地，用自己熟悉的 IDE 阅读和调试。
+GitHub Codespaces có thể cung cấp môi trường phát triển trực tuyến tương tự VS Code, phù hợp để đọc, debug hoặc nhanh chóng tham gia dự án mã nguồn mở trong thời gian ngắn. Đối với dự án lớn hoặc dự án cần phụ thuộc vào dịch vụ cục bộ, vẫn nên clone về local và dùng IDE quen thuộc của mình để đọc và debug.
 
-简单介绍几种常用的 GitHub 项目源码阅读方式。
+Dưới đây giới thiệu ngắn gọn một vài cách đọc source code dự án GitHub thường dùng.
 
-### Chrome 插件 Octotree
+### Extension Chrome Octotree
 
-这个已经老生常谈了，是我最喜欢的一种方式。使用了 Octotree 之后网页侧边栏会按照树形结构展示项目，为我们带来 IDE 般的阅读源代码的感受。
+Đây là cách đã được nhắc đến rất nhiều và cũng là cách mình thích nhất. Sau khi sử dụng Octotree, sidebar của trang web sẽ hiển thị dự án theo cấu trúc cây, mang lại cảm giác đọc source code như trong IDE.
 
-![Chrome插件Octotree](https://oss.javaguide.cn/2020-11/image-20201107144944798.png)
+![Extension Chrome Octotree](https://oss.javaguide.cn/2020-11/image-20201107144944798.png)
 
 ### Sourcegraph
 
-不想将项目 clone 到本地时，也可以使用 Sourcegraph 这类代码搜索和阅读工具。Sourcegraph 支持跨仓库代码搜索、引用跳转等功能，阅读大型项目时比较有帮助。
+Khi không muốn clone dự án về local, bạn cũng có thể dùng các công cụ tìm kiếm và đọc code như Sourcegraph. Sourcegraph hỗ trợ tìm kiếm code liên repository, nhảy đến tham chiếu (reference) và nhiều tính năng khác, khá hữu ích khi đọc các dự án lớn.
 
-当你下载了这个插件之后，你的项目主页会多出一个小图标如下图所示。点击这个小图标即可在线阅读项目源代码。
+Sau khi cài đặt extension này, trang chủ dự án của bạn sẽ xuất hiện thêm một biểu tượng nhỏ như hình dưới đây. Click vào biểu tượng đó là có thể đọc source code dự án trực tuyến.
 
 ![](https://oss.javaguide.cn/2020-11/image-20201107145749659.png)
 
-使用 Sourcegraph 阅读代码的效果类似下面这样，同样是树形结构展示代码，还支持类之间的跳转。
+Hiệu ứng đọc code bằng Sourcegraph tương tự như bên dưới, cũng hiển thị code theo cấu trúc cây và còn hỗ trợ nhảy giữa các class.
 
 ![](https://oss.javaguide.cn/2020-11/image-20201107150307314.png)
 
-### 克隆项目到本地
+### Clone dự án về local
 
-先把项目克隆到本地，然后使用自己喜欢的 IDE 来阅读。想深入理解一个项目，首选这种方式。
+Trước tiên clone dự án về local, sau đó dùng IDE mà bạn thích để đọc. Muốn hiểu sâu một dự án thì đây là cách được ưu tiên hàng đầu.
 
 ```bash
 git clone https://github.com/Snailclimb/JavaGuide.git
 ```
 
-## 扩展 GitHub 的功能
+## Mở rộng tính năng cho GitHub
 
-**Enhanced GitHub** 可以让你的 GitHub 更好用。这个浏览器插件可以展示仓库大小、文件大小，并支持快速下载单个文件。
+**Enhanced GitHub** có thể giúp GitHub của bạn trở nên hữu dụng hơn. Extension trình duyệt này có thể hiển thị kích thước repository, kích thước file và hỗ trợ tải nhanh từng file riêng lẻ.
 
 ![](https://oss.javaguide.cn/2020-11/image-20201107160817672.png)
 
-## 自动为 Markdown 文件生成目录
+## Tự động tạo mục lục cho file Markdown
 
-如果你想为 Markdown 文件生成目录，通过 VS Code 的 **Markdown Preview Enhanced** 这类插件就可以了。
+Nếu bạn muốn tạo mục lục cho file Markdown thì chỉ cần dùng các extension như **Markdown Preview Enhanced** của VS Code là được.
 
-生成的目录效果如下图所示。你直接点击目录中的链接即可跳转到文章对应的位置，可以优化阅读体验。
+Hiệu ứng mục lục được tạo ra được thể hiện như hình dưới đây. Bạn chỉ cần click vào link trong mục lục là có thể nhảy đến vị trí tương ứng trong bài viết, giúp cải thiện trải nghiệm đọc.
 
 ![](<https://oss.javaguide.cn/2020-11/iShot2020-11-07%2016.14.14%20(1).png>)
 
-不过，目前 GitHub 已经会为 Markdown 文件自动生成目录，只是需要通过页面上的目录按钮展开。
+Tuy nhiên, hiện tại GitHub đã tự động tạo mục lục cho file Markdown, chỉ cần mở rộng thông qua nút mục lục trên trang là được.
 
 ![](https://oss.javaguide.cn/github/cosy/image-20211227093215005.png)
 
-## 善用 GitHub Explore
+## Tận dụng GitHub Explore
 
-GitHub 自带的 Explore 是一个非常强大且好用的功能，适合用来发现项目、主题和技术趋势。
+Explore có sẵn của GitHub là một tính năng rất mạnh mẽ và hữu ích, phù hợp để khám phá dự án, chủ đề và xu hướng công nghệ.
 
-简单来说，GitHub Explore 可以提供下面这些服务：
+Nói đơn giản, GitHub Explore có thể cung cấp những dịch vụ sau:
 
-1. 可以根据你的个人兴趣为你推荐项目；
-2. GitHub Topics 按照类别/话题将一些项目进行了分类汇总。比如 [Data visualization](https://github.com/topics/data-visualization) 汇总了数据可视化相关的一些开源项目，[Awesome Lists](https://github.com/topics/awesome) 汇总了 Awesome 系列的仓库；
-3. 通过 GitHub Trending 我们可以看到最近比较热门的一些开源项目，我们可以按照语言类型以及时间维度对项目进行筛选；
-4. GitHub Collections 类似一个收藏夹集合。比如 [Teaching materials for computational social science](https://github.com/collections/teaching-computational-social-science) 这个收藏夹就汇总了计算机课程相关的开源资源，[Learn to Code](https://github.com/collections/learn-to-code) 这个收藏夹就汇总了对你学习编程有帮助的一些仓库；
+1. Có thể gợi ý dự án dựa trên sở thích cá nhân của bạn;
+2. GitHub Topics phân loại và tổng hợp các dự án theo danh mục/chủ đề. Ví dụ [Data visualization](https://github.com/topics/data-visualization) tổng hợp một số dự án mã nguồn mở liên quan đến trực quan hóa dữ liệu, [Awesome Lists](https://github.com/topics/awesome) tổng hợp các repository thuộc series Awesome;
+3. Thông qua GitHub Trending, chúng ta có thể thấy các dự án mã nguồn mở đang hot gần đây, và có thể lọc dự án theo loại ngôn ngữ cũng như theo khoảng thời gian;
+4. GitHub Collections giống như một bộ sưu tập yêu thích. Ví dụ collection [Teaching materials for computational social science](https://github.com/collections/teaching-computational-social-science) tổng hợp các tài nguyên mã nguồn mở liên quan đến khóa học khoa học máy tính, còn collection [Learn to Code](https://github.com/collections/learn-to-code) tổng hợp một số repository hữu ích cho việc học lập trình của bạn;
 5. ……
 
 ![](https://oss.javaguide.cn/github/javaguide/github-explore.png)
 
-## GitHub Actions 很强大
+## GitHub Actions rất mạnh mẽ
 
-你可以简单地将 GitHub Actions 理解为 GitHub 自带的自动化平台。通过 GitHub Actions，你可以直接在 GitHub 上完成构建、测试、部署、依赖扫描、定时任务等工作。
+Bạn có thể hiểu đơn giản GitHub Actions là nền tảng tự động hóa tích hợp sẵn của GitHub. Với GitHub Actions, bạn có thể hoàn thành các công việc như build, test, deploy, quét dependency, tác vụ định kỳ ngay trực tiếp trên GitHub.
 
-关于 GitHub Actions 的详细介绍，推荐看一下阮一峰老师写的 [GitHub Actions 入门教程](https://www.ruanyifeng.com/blog/2019/09/getting-started-with-github-actions.html) 。
+Về phần giới thiệu chi tiết GitHub Actions, khuyến nghị các bạn đọc bài [GitHub Actions 入门教程](https://www.ruanyifeng.com/blog/2019/09/getting-started-with-github-actions.html) do thầy Nguyễn Nhất Phong (Ruan Yifeng) viết.
 
-GitHub Actions 有一个官方市场，上面有很多别人提交的 Actions，可以直接复用。
+GitHub Actions có một marketplace chính thức, trên đó có rất nhiều Actions do người khác đóng góp và có thể tái sử dụng trực tiếp.
 
 ![](https://oss.javaguide.cn/github/javaguide/image-20211227100147433.png)
 
-## 后记
+## Lời kết
 
-GitHub 技巧不需要一次性全部记住。个人主页、项目徽章、代码阅读、Explore/Trending、GitHub Actions 这几块先用起来，就已经能覆盖大部分日常场景。
+Không cần phải nhớ hết các mẹo GitHub trong một lần. Trang cá nhân, badge dự án, đọc code, Explore/Trending, GitHub Actions — chỉ cần dùng trước vài phần này là đã đủ đáp ứng phần lớn tình huống hằng ngày.
 
-另外，这篇文章没有展开讲 GitHub 搜索语法。实际使用中，关键词搜索、语言筛选、Star 数排序、更新时间筛选，往往比死记复杂语法更常用。
+Ngoài ra, bài viết này không đi sâu vào cú pháp tìm kiếm trên GitHub. Trong thực tế sử dụng, tìm kiếm theo từ khóa, lọc theo ngôn ngữ, sắp xếp theo số Star, lọc theo thời gian cập nhật thường được dùng nhiều hơn so với việc học thuộc lòng các cú pháp phức tạp.
 
 <!-- @include: @article-footer.snippet.md -->
