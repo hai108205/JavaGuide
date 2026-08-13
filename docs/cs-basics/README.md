@@ -1,6 +1,6 @@
 ---
-title: 计算机基础知识体系：计算机网络、操作系统、数据结构与算法
-description: 计算机基础面试与学习路线，涵盖计算机网络、操作系统、数据结构、算法、Linux、TCP/IP、HTTP、DNS 等内容，适合校招和社招复习。
+title: Hệ thống kiến thức nền tảng Khoa học Máy tính - Mạng máy tính, Hệ điều hành, Cấu trúc dữ liệu và Thuật toán
+description: Lộ trình học và ôn tập kiến thức nền tảng Khoa học Máy tính, bao gồm Mạng máy tính, Hệ điều hành, Cấu trúc dữ liệu, Thuật toán, Linux, TCP/IP, HTTP, DNS... Phù hợp cho sinh viên mới ra trường và lập trình viên chuẩn bị phỏng vấn.
 icon: "mdi:desktop-classic"
 sitemap:
   changefreq: weekly
@@ -8,124 +8,124 @@ sitemap:
 head:
   - - meta
     - name: keywords
-      content: 计算机基础,计算机基础知识总结,计算机基础面试题,计算机网络,计算机网络面试题,操作系统,操作系统面试题,数据结构,数据结构面试题,算法,算法面试题,Linux,TCP/IP,HTTP,DNS,后端面试,Java面试,八股文
+      content: Kiến thức nền tảng máy tính,Tổng hợp kiến thức máy tính,Câu hỏi phỏng vấn Khoa học Máy tính,Mạng máy tính,Câu hỏi phỏng vấn mạng máy tính,Hệ điều hành,Câu hỏi phỏng vấn hệ điều hành,Cấu trúc dữ liệu,Câu hỏi phỏng vấn cấu trúc dữ liệu,Thuật toán,Câu hỏi phỏng vấn thuật toán,Linux,TCP/IP,HTTP,DNS,Phỏng vấn Backend,Phỏng vấn Java
   - - meta
     - property: og:title
-      content: 计算机基础知识体系：计算机网络、操作系统、数据结构与算法
+      content: Hệ thống kiến thức nền tảng Khoa học Máy tính -  Mạng máy tính, Hệ điều hành, Cấu trúc dữ liệu và Thuật toán
   - - meta
     - property: og:description
-      content: 梳理计算机网络、操作系统、数据结构与算法等计算机基础知识，适合后端开发者校招、社招复习。
+      content: Tổng hợp kiến thức về Mạng máy tính, Hệ điều hành, Cấu trúc dữ liệu và Thuật toán, phù hợp cho lập trình viên Backend ôn tập trước các kỳ phỏng vấn.
 ---
 
 <!-- @include: @small-advertisement.snippet.md -->
 
-这份 **计算机基础知识体系** 面向后端学习和面试复习，按“计算机网络 -> 操作系统 -> 数据结构 -> 算法”的顺序整理本站计算机基础相关文章。
+Tài liệu **Hệ thống kiến thức nền tảng Khoa học Máy tính** này được xây dựng dành cho việc học Backend và ôn tập phỏng vấn, sắp xếp theo lộ trình: **Mạng máy tính → Hệ điều hành → Cấu trúc dữ liệu → Thuật toán**, đồng thời tổng hợp các bài viết liên quan trên website.
 
-如果你时间有限，建议先看 [计算机网络常见面试题总结](./network/other-network-questions.md) 和 [操作系统常见面试题总结](./operating-system/operating-system-basic-questions-01.md)，快速建立高频问题清单；如果你想系统补基础，可以按下面的专题顺序推进。
+Nếu bạn không có nhiều thời gian, hãy ưu tiên đọc **Tổng hợp câu hỏi phỏng vấn Mạng máy tính** và **Tổng hợp câu hỏi phỏng vấn Hệ điều hành** để nhanh chóng nắm được những chủ đề quan trọng nhất. Nếu muốn xây dựng nền tảng vững chắc, bạn nên học theo thứ tự các chuyên đề bên dưới.
 
-整站配有 **300+ 张技术配图**，用图解的方式把抽象概念讲清楚，不是干巴巴的文字堆砌。
+Toàn bộ tài liệu có **hơn 300 hình minh họa kỹ thuật**, giúp giải thích các khái niệm trừu tượng một cách trực quan thay vì chỉ là những đoạn văn khô khan.
 
-![计算机基础知识总结内容概览](https://oss.javaguide.cn/github/javaguide/cs-basics/network/cs-basics-overview.png)
+![Tổng quan nội dung kiến thức nền tảng Khoa học Máy tính](https://oss.javaguide.cn/github/javaguide/cs-basics/network/cs-basics-overview.png)
 
-## 适合谁看
+## Phù hợp với ai?
 
-- 正在系统补齐计算机基础的后端开发者。
-- 准备校招、社招、中大厂后端面试的同学。
-- 想把网络、操作系统、数据结构和算法串成完整知识体系的读者。
-- 已经写过业务代码，但对 TCP/IP、HTTP、进程线程、内存管理、树图、排序等基础不够扎实的工程师。
+- Lập trình viên Backend muốn bổ sung kiến thức nền tảng Khoa học Máy tính một cách bài bản.
+- Sinh viên chuẩn bị phỏng vấn tuyển dụng hoặc lập trình viên chuyển việc.
+- Người muốn kết nối Mạng máy tính, Hệ điều hành, Cấu trúc dữ liệu và Thuật toán thành một hệ thống kiến thức hoàn chỉnh.
+- Lập trình viên đã từng phát triển ứng dụng nhưng vẫn chưa thực sự vững về TCP/IP, HTTP, tiến trình, luồng, quản lý bộ nhớ, cây, đồ thị hay thuật toán sắp xếp.
 
-## 学习重点
+## Nội dung trọng tâm
 
-- 计算机网络重点理解分层模型、TCP/UDP、HTTP/HTTPS、DNS、ARP、NAT 和常见网络安全问题。
-- 操作系统重点理解进程线程、锁与同步、内存管理、虚拟内存、零拷贝、I/O 多路复用、文件系统、Linux 基础和 Shell 使用。
-- 数据结构重点理解数组、链表、栈、队列、哈希表、树、图、堆、Trie、并查集、跳表、红黑树、布隆过滤器和 LRU 的特点与适用场景。
-- 算法重点理解复杂度分析、二分、双指针、滑动窗口、DFS/BFS、回溯、动态规划、贪心、Top K、排序、字符串、链表和 LeetCode 高频题。
-- 面试中要能把“概念 -> 原理 -> 对比 -> 场景 -> 常见问题”串成完整回答。
+- Mạng máy tính: mô hình phân lớp, TCP/UDP, HTTP/HTTPS, DNS, ARP, NAT và các vấn đề bảo mật mạng thường gặp.
+- Hệ điều hành: tiến trình, luồng, khóa và đồng bộ hóa, quản lý bộ nhớ, bộ nhớ ảo, Zero Copy, I/O Multiplexing, hệ thống tệp, Linux và Shell.
+- Cấu trúc dữ liệu: mảng, danh sách liên kết, ngăn xếp, hàng đợi, bảng băm, cây, đồ thị, heap, Trie, Union-Find, Skip List, Red-Black Tree, Bloom Filter và LRU cùng đặc điểm và tình huống sử dụng.
+- Thuật toán: phân tích độ phức tạp, Binary Search, Two Pointers, Sliding Window, DFS/BFS, Backtracking, Dynamic Programming, Greedy, Top K, sắp xếp, xử lý chuỗi, danh sách liên kết và các bài LeetCode phổ biến.
+- Trong phỏng vấn, cần có khả năng trình bày đầy đủ theo mạch: **Khái niệm → Nguyên lý → So sánh → Ứng dụng → Câu hỏi thường gặp**.
 
-## 建议阅读顺序
+## Thứ tự học được khuyến nghị
 
-1. [计算机网络专题](./network/)：先从分层模型、HTTP、TCP、DNS 和常见网络面试题入手，建立网络通信的整体认知。
-2. [操作系统专题](./operating-system/)：理解进程线程、内存、文件系统、Linux 和 Shell，为并发编程、JVM、数据库打基础。
-3. [数据结构专题](./data-structure/)：掌握线性表、哈希表、树、图、堆、Trie、并查集、跳表、红黑树、布隆过滤器、LRU 等常见结构。
-4. [算法专题](./algorithms/)：结合复杂度分析、核心算法模板和 LeetCode 高频题进行练习。
-5. 回到面试题做查缺补漏：重点复盘网络和操作系统高频问题，再把数据结构与算法题按类型刷一遍。
+1. [Chuyên đề Mạng máy tính](./network/): Bắt đầu với mô hình phân lớp, HTTP, TCP, DNS và các câu hỏi phỏng vấn phổ biến để xây dựng cái nhìn tổng thể về truyền thông mạng.
+2. [Chuyên đề Hệ điều hành](./operating-system/): Tìm hiểu tiến trình, luồng, bộ nhớ, hệ thống tệp, Linux và Shell để tạo nền tảng cho lập trình đồng thời, JVM và cơ sở dữ liệu.
+3. [Chuyên đề Cấu trúc dữ liệu](./data-structure/): Nắm vững danh sách tuyến tính, bảng băm, cây, đồ thị, heap, Trie, Union-Find, Skip List, Red-Black Tree, Bloom Filter và LRU.
+4. [Chuyên đề Thuật toán](./algorithms/): Luyện tập cùng phân tích độ phức tạp, các mẫu thuật toán và các bài LeetCode phổ biến.
+5. Quay lại ôn tập các câu hỏi phỏng vấn: tập trung vào Mạng máy tính và Hệ điều hành trước, sau đó luyện lại các dạng bài Cấu trúc dữ liệu và Thuật toán theo từng nhóm.
 
-如果你的目标公司比较重算法，建议把第 3 步和第 4 步合在一起复习：先看一个数据结构，再刷对应题型。例如，看完 [哈希表](./data-structure/hash-table.md) 就刷两数之和、前缀和；看完 [堆](./data-structure/heap.md) 就刷 [Top K](./algorithms/top-k.md)；看完 [树](./data-structure/tree.md) 和 [图](./data-structure/graph.md) 后，再集中练 [DFS 与 BFS](./algorithms/dfs-bfs.md)、[回溯](./algorithms/backtracking.md) 和 [动态规划](./algorithms/dynamic-programming.md)。
+Nếu công ty bạn hướng tới đánh giá thuật toán khá nặng, nên kết hợp bước 3 và bước 4. Sau khi học xong một cấu trúc dữ liệu, hãy luyện ngay các bài toán liên quan. Ví dụ: sau khi học **Hash Table** hãy giải Two Sum và Prefix Sum; sau **Heap** hãy luyện các bài **Top K**; sau **Tree** và **Graph** hãy tập trung vào **DFS**, **BFS**, **Backtracking** và **Dynamic Programming**.
 
-## 核心文章
+## Các bài viết cốt lõi
 
-### 计算机网络
+### Mạng máy tính
 
-- [计算机网络专题](./network/)：按协议层梳理计算机网络核心知识和面试高频题。
-- [计算机网络常见面试题总结（上）](./network/other-network-questions.md)：覆盖 OSI/TCP-IP 模型、HTTP、HTTPS、DNS 等基础问题。
-- [计算机网络常见面试题总结（下）](./network/other-network-questions2.md)：继续补充 TCP、UDP、网络安全、Socket 等常见问题。
-- [OSI 七层模型与 TCP/IP 四层模型详解](./network/osi-and-tcp-ip-model.md)：建立网络分层和协议职责认知。
-- [从输入 URL 到页面展示到底发生了什么？](./network/the-whole-process-of-accessing-web-pages.md)：用一次完整请求串联 DNS、TCP、HTTP、浏览器渲染等知识点。
-- [HTTP vs HTTPS](./network/http-vs-https.md)、[HTTP 1.0 vs HTTP 1.1](./network/http1.0-vs-http1.1.md)、[HTTP 常见状态码总结](./network/http-status-codes.md)：集中理解 HTTP 相关高频考点。
-- [TCP 三次握手和四次挥手](./network/tcp-connection-and-disconnection.md)、[TCP 传输可靠性保障](./network/tcp-reliability-guarantee.md)：掌握 TCP 最核心的连接管理和可靠传输机制。
+- [Chuyên đề Mạng máy tính](./network/): Hệ thống kiến thức cốt lõi và các câu hỏi phỏng vấn theo từng tầng giao thức.
+- [Tổng hợp câu hỏi phỏng vấn Mạng máy tính (Phần 1)](./network/other-network-questions.md): Bao gồm mô hình OSI/TCP-IP, HTTP, HTTPS, DNS và các kiến thức nền tảng.
+- [Tổng hợp câu hỏi phỏng vấn Mạng máy tính (Phần 2)](./network/other-network-questions2.md): Tiếp tục với TCP, UDP, Socket và các vấn đề bảo mật mạng.
+- [Mô hình OSI 7 tầng và TCP/IP 4 tầng](./network/osi-and-tcp-ip-model.md): Hiểu vai trò và trách nhiệm của từng tầng giao thức.
+- [Điều gì xảy ra từ khi nhập URL đến khi trang web hiển thị?](./network/the-whole-process-of-accessing-web-pages.md): Kết nối DNS, TCP, HTTP và quá trình render của trình duyệt thành một chuỗi hoàn chỉnh.
+- [HTTP và HTTPS](./network/http-vs-https.md), [HTTP 1.0 và HTTP 1.1](./network/http1.0-vs-http1.1.md), [Tổng hợp mã trạng thái HTTP](./network/http-status-codes.md): Các chủ đề thường gặp trong phỏng vấn.
+- [Bắt tay ba bước và đóng kết nối bốn bước của TCP](./network/tcp-connection-and-disconnection.md), [Cơ chế đảm bảo truyền dữ liệu tin cậy của TCP](./network/tcp-reliability-guarantee.md): Hai chủ đề quan trọng nhất về TCP.
 
-### 操作系统
+### Hệ điều hành
 
-- [操作系统专题](./operating-system/)：从操作系统基础讲到 Linux 常见问题。
-- [操作系统常见面试题总结（上）](./operating-system/operating-system-basic-questions-01.md)：覆盖操作系统基础、进程线程、死锁、内存管理等问题。
-- [操作系统常见面试题总结（下）](./operating-system/operating-system-basic-questions-02.md)：继续整理文件系统、I/O、Linux 等面试考点。
-- [进程与线程详解：区别、状态、通信、上下文切换与虚拟线程](./operating-system/process-and-thread.md)：讲清进程和线程的资源边界、状态转换、上下文切换和 Java 虚拟线程。
-- [进程间通信（IPC）详解：管道、消息队列、共享内存、Socket 与 Binder](./operating-system/ipc.md)：对比管道、消息队列、共享内存、Socket、Binder 等 IPC 机制。
-- [操作系统锁与同步机制详解：mutex、semaphore、condition variable、spinlock 与 futex](./operating-system/os-lock-and-sync.md)：讲清临界区、互斥锁、信号量、条件变量、自旋锁和 futex。
-- [操作系统内存管理详解：分页、分段、页面置换、Swap 与 OOM](./operating-system/memory-management.md)：讲清内存分配、内存碎片、页表、TLB、页面置换、Swap 和 OOM。
-- [虚拟内存详解：地址转换、TLB、缺页异常与页面置换](./operating-system/virtual-memory.md)：讲清分页、页表、TLB、缺页异常和页面置换。
-- [操作系统文件系统详解：inode、VFS、Page Cache 与日志机制](./operating-system/file-system.md)：讲清 inode、dentry、文件描述符、VFS、Page Cache 和日志机制。
-- [I/O 多路复用详解：select、poll、epoll 原理与区别](./operating-system/io-multiplexing.md)：讲清 select、poll、epoll 的实现原理、性能差异和适用场景。
-- [零拷贝详解：mmap、sendfile 与 splice](./operating-system/zero-copy.md)：讲清传统 I/O、mmap、sendfile、splice 的拷贝路径和工程应用。
-- [Linux 基础知识总结](./operating-system/linux-intro.md)：掌握 Linux 目录、文件权限、常用命令和系统基础。
-- [Shell 编程基础知识总结](./operating-system/shell-intro.md)：补齐脚本编写、变量、流程控制和常用命令能力。
+- [Chuyên đề Hệ điều hành](./operating-system/): Từ kiến thức cơ bản đến Linux.
+- [Tổng hợp câu hỏi phỏng vấn Hệ điều hành (Phần 1)](./operating-system/operating-system-basic-questions-01.md): Bao gồm hệ điều hành, tiến trình, luồng, deadlock và quản lý bộ nhớ.
+- [Tổng hợp câu hỏi phỏng vấn Hệ điều hành (Phần 2)](./operating-system/operating-system-basic-questions-02.md): Tiếp tục với hệ thống tệp, I/O và Linux.
+- [Tiến trình và Luồng: khác biệt, trạng thái, giao tiếp, chuyển đổi ngữ cảnh và Virtual Thread](./operating-system/process-and-thread.md)
+- [Giao tiếp giữa các tiến trình (IPC): Pipe, Message Queue, Shared Memory, Socket và Binder](./operating-system/ipc.md)
+- [Khóa và cơ chế đồng bộ trong Hệ điều hành: Mutex, Semaphore, Condition Variable, Spinlock và Futex](./operating-system/os-lock-and-sync.md)
+- [Quản lý bộ nhớ: Phân trang, Phân đoạn, Thay thế trang, Swap và OOM](./operating-system/memory-management.md)
+- [Bộ nhớ ảo: Chuyển đổi địa chỉ, TLB, Page Fault và thay thế trang](./operating-system/virtual-memory.md)
+- [Hệ thống tệp: inode, VFS, Page Cache và cơ chế Journal](./operating-system/file-system.md)
+- [I/O Multiplexing: select, poll và epoll](./operating-system/io-multiplexing.md)
+- [Zero Copy: mmap, sendfile và splice](./operating-system/zero-copy.md)
+- [Kiến thức cơ bản về Linux](./operating-system/linux-intro.md)
+- [Kiến thức cơ bản về Shell Script](./operating-system/shell-intro.md)
 
-### 数据结构
+### Cấu trúc dữ liệu
 
-- [数据结构专题](./data-structure/)：按结构类型整理常见数据结构及图解。
-- [线性数据结构详解](./data-structure/linear-data-structure.md)：理解数组、链表、栈、队列的存储特点和操作复杂度。
-- [哈希表面试题总结](./data-structure/hash-table.md)：理解哈希函数、哈希冲突、扩容和 Java `HashMap` 关联。
-- [树结构详解](./data-structure/tree.md)：掌握二叉树、二叉搜索树、AVL、B 树、B+ 树等常见树结构。
-- [图详解](./data-structure/graph.md)：理解图的表示、DFS、BFS 和最短路径等基础算法。
-- [堆详解](./data-structure/heap.md)、[红黑树详解](./data-structure/red-black-tree.md)、[布隆过滤器详解](./data-structure/bloom-filter.md)：补齐高频工程结构和面试考点。
-- [Trie 前缀树面试题总结](./data-structure/trie.md)、[并查集面试题总结](./data-structure/union-find.md)、[跳表面试题总结](./data-structure/skip-list.md)、[LRU 缓存面试题总结](./data-structure/lru-cache.md)：补齐字符串集合、连通性、Redis ZSet 和缓存淘汰等高频场景。
+- [Chuyên đề Cấu trúc dữ liệu](./data-structure/): Tổng hợp các cấu trúc dữ liệu phổ biến cùng hình minh họa.
+- [Cấu trúc dữ liệu tuyến tính](./data-structure/linear-data-structure.md): Hiểu mảng, danh sách liên kết, ngăn xếp và hàng đợi.
+- [Tổng hợp câu hỏi về Hash Table](./data-structure/hash-table.md): Hàm băm, xung đột băm, mở rộng dung lượng và liên hệ với `HashMap`.
+- [Cấu trúc cây](./data-structure/tree.md): Cây nhị phân, BST, AVL, B-Tree và B+ Tree.
+- [Đồ thị](./data-structure/graph.md): Biểu diễn đồ thị, DFS, BFS và đường đi ngắn nhất.
+- [Heap](./data-structure/heap.md), [Red-Black Tree](./data-structure/red-black-tree.md), [Bloom Filter](./data-structure/bloom-filter.md)
+- [Trie](./data-structure/trie.md), [Union-Find](./data-structure/union-find.md), [Skip List](./data-structure/skip-list.md), [LRU Cache](./data-structure/lru-cache.md)
 
-复习数据结构时，可以同步回看 Java 和数据库专题：数组/链表/哈希表对应 [Java 集合](../java/collection/)，B+ 树对应 [MySQL 索引](../database/mysql/mysql-index.md)，跳表对应 [Redis 跳表](../database/redis/redis-skiplist.md)，LRU 和布隆过滤器对应缓存场景。
+Khi ôn tập Cấu trúc dữ liệu, bạn cũng nên kết hợp với các chuyên đề Java và Cơ sở dữ liệu: Mảng, Danh sách liên kết và Hash Table tương ứng với [Java Collection](../java/collection/); B+ Tree liên quan đến [MySQL Index](../database/mysql/mysql-index.md); Skip List liên quan đến [Redis Skip List](../database/redis/redis-skiplist.md); còn LRU và Bloom Filter thường được sử dụng trong các hệ thống cache.
 
-### 算法
+### Thuật toán
 
-- [算法专题](./algorithms/)：整理常见算法思想、LeetCode 高频题和经典排序。
-- [时间复杂度和空间复杂度面试指南](./algorithms/complexity-analysis.md)：掌握 Big O、递归复杂度和常见复杂度误判。
-- [二分查找面试题总结](./algorithms/binary-search.md)、[双指针与滑动窗口面试题总结](./algorithms/two-pointers-and-sliding-window.md)：掌握数组、字符串、链表题里最常见的手写模板。
-- [DFS 与 BFS 面试题总结](./algorithms/dfs-bfs.md)、[回溯算法面试题总结](./algorithms/backtracking.md)：掌握树、图、矩阵搜索、排列组合和路径枚举。
-- [动态规划面试题总结](./algorithms/dynamic-programming.md)、[贪心算法面试题总结](./algorithms/greedy.md)、[Top K 问题面试题总结](./algorithms/top-k.md)：补齐最优值、区间贪心、堆和数据流相关题型。
-- [经典算法思想总结](./algorithms/classical-algorithm-problems-recommendations.md)：覆盖二分、双指针、滑动窗口、回溯、动态规划等常见思想。
-- [常见数据结构经典 LeetCode 题目推荐](./algorithms/common-data-structures-leetcode-recommendations.md)：按数据结构类型整理刷题路线。
-- [几道常见的字符串算法题](./algorithms/string-algorithm-problems.md)、[几道常见的链表算法题](./algorithms/linkedlist-algorithm-problems.md)：集中练习高频题型。
-- [剑指 Offer 部分编程题](./algorithms/the-sword-refers-to-offer.md)、[十大经典排序算法总结](./algorithms/10-classical-sorting-algorithms.md)：适合面试前复盘。
+- [Chuyên đề Thuật toán](./algorithms/): Tổng hợp các tư duy thuật toán, bài LeetCode phổ biến và các thuật toán sắp xếp kinh điển.
+- [Hướng dẫn phân tích độ phức tạp thời gian và không gian](./algorithms/complexity-analysis.md)
+- [Binary Search](./algorithms/binary-search.md), [Two Pointers và Sliding Window](./algorithms/two-pointers-and-sliding-window.md)
+- [DFS và BFS](./algorithms/dfs-bfs.md), [Backtracking](./algorithms/backtracking.md)
+- [Dynamic Programming](./algorithms/dynamic-programming.md), [Greedy](./algorithms/greedy.md), [Top K](./algorithms/top-k.md)
+- [Các tư duy thuật toán kinh điển](./algorithms/classical-algorithm-problems-recommendations.md)
+- [Danh sách bài LeetCode theo từng cấu trúc dữ liệu](./algorithms/common-data-structures-leetcode-recommendations.md)
+- [Các bài toán xử lý chuỗi phổ biến](./algorithms/string-algorithm-problems.md), [Các bài toán danh sách liên kết phổ biến](./algorithms/linkedlist-algorithm-problems.md)
+- [Một số bài lập trình trong Sword Offer](./algorithms/the-sword-refers-to-offer.md), [10 thuật toán sắp xếp kinh điển](./algorithms/10-classical-sorting-algorithms.md)
 
-算法刷题建议先把每类模板写稳，再做题单：[经典算法思想总结](./algorithms/classical-algorithm-problems-recommendations.md) 适合按题型刷，[常见数据结构经典 LeetCode 题目推荐](./algorithms/common-data-structures-leetcode-recommendations.md) 适合按结构刷。
+Khi luyện thuật toán, hãy ưu tiên nắm vững từng mẫu lời giải trước, sau đó mới luyện theo danh sách bài tập. **Các tư duy thuật toán kinh điển** phù hợp để học theo dạng bài, còn **Danh sách bài LeetCode theo từng cấu trúc dữ liệu** phù hợp để học theo từng cấu trúc.
 
-## 高频问题
+## Những câu hỏi xuất hiện nhiều
 
-- OSI 七层模型和 TCP/IP 四层模型分别是什么？每层解决什么问题？
-- 从输入 URL 到页面展示，中间经历了哪些步骤？
-- HTTP 和 HTTPS 有什么区别？HTTPS 为什么更安全？
-- TCP 三次握手、四次挥手分别解决什么问题？TIME_WAIT 为什么存在？
-- TCP 如何保证可靠传输？TCP 和 UDP 如何选型？
-- 进程和线程有什么区别？什么是死锁，如何避免？
-- 操作系统内存管理、虚拟内存、分页和分段分别是什么？
-- 数组、链表、栈、队列、树、图、堆分别适合什么场景？
-- 哈希表、红黑树、B+ 树、跳表、布隆过滤器、LRU 在工程中常用在哪里？
-- 刷算法题时如何按题型建立解题模板？
+- Mô hình OSI 7 tầng và TCP/IP 4 tầng là gì? Mỗi tầng giải quyết vấn đề nào?
+- Điều gì xảy ra từ khi nhập URL đến khi trang web được hiển thị?
+- HTTP và HTTPS khác nhau như thế nào? Vì sao HTTPS an toàn hơn?
+- TCP bắt tay ba bước và đóng kết nối bốn bước giải quyết vấn đề gì? Vì sao tồn tại trạng thái `TIME_WAIT`?
+- TCP đảm bảo truyền dữ liệu tin cậy bằng cách nào? Khi nào nên chọn TCP hoặc UDP?
+- Tiến trình và Luồng khác nhau ở điểm nào? Deadlock là gì và làm sao để tránh?
+- Quản lý bộ nhớ, bộ nhớ ảo, phân trang và phân đoạn trong hệ điều hành hoạt động như thế nào?
+- Khi nào nên sử dụng Mảng, Danh sách liên kết, Ngăn xếp, Hàng đợi, Cây, Đồ thị hoặc Heap?
+- Hash Table, Red-Black Tree, B+ Tree, Skip List, Bloom Filter và LRU được ứng dụng ở đâu trong thực tế?
+- Làm thế nào để xây dựng bộ mẫu lời giải khi luyện các dạng bài thuật toán?
 
-## 相关专题
+## Chuyên đề liên quan
 
-- [Java 知识体系](../java/)
-- [数据库知识体系](../database/)
-- [分布式系统知识体系](../distributed-system/)
-- [高性能系统知识体系](../high-performance/)
-- [系统设计](../system-design/)
-- [计算机基础书籍推荐](../books/cs-basics.md)
+- [Hệ thống kiến thức Java](../java/)
+- [Hệ thống kiến thức Cơ sở dữ liệu](../database/)
+- [Hệ thống kiến thức Hệ thống phân tán](../distributed-system/)
+- [Hệ thống kiến thức Hệ thống hiệu năng cao](../high-performance/)
+- [Thiết kế hệ thống](../system-design/)
+- [Sách Khoa học Máy tính được đề xuất](../books/cs-basics.md)
 
 <!-- @include: @article-footer.snippet.md -->
