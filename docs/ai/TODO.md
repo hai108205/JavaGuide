@@ -6,73 +6,73 @@ head:
       content: noindex, nofollow
 ---
 
-# AI 内容规划 TODO
+# TODO kế hoạch nội dung AI
 
-最近整理：2026-06-21
+Cập nhật gần nhất: 2026-06-21
 
-配套素材索引：[AI 写作素材索引](./MATERIALS.md)。写新文章前先查素材索引和现有正文，避免重复检索、重复造概念框架。
+Chỉ mục tài liệu nguyên liệu đi kèm: [Chỉ mục tài liệu viết AI](./MATERIALS.md). Trước khi viết bài mới hãy tra cứu chỉ mục tài liệu và các bài hiện có, tránh tra cứu lặp lại và tạo khung khái niệm trùng lặp.
 
-## 已完成或已补齐
+## Đã hoàn thành hoặc đã bổ sung
 
-| 内容                                           | 状态                                          |
-| ---------------------------------------------- | --------------------------------------------- |
-| `llm-basis/llm-evaluation.md`                  | 已完成，已进入大模型基础 README 和顶层 README |
-| `system-design/llm-gateway.md`                 | 已完成，已进入系统设计 README 和顶层 README   |
-| `agent/workflow-graph-loop.md`                 | 已进入 Agent README、顶层 README 和面试题     |
-| `system-design/ai-application-architecture.md` | 已进入系统设计 README、顶层 README 和面试题   |
-| `system-design/ai-voice.md`                    | 已进入系统设计 README、顶层 README 和面试题   |
-| `MATERIALS.md`                                 | 已新增为内部写作素材索引，不进站点索引        |
+| Nội dung                                       | Trạng thái                                                                |
+| ---------------------------------------------- | ------------------------------------------------------------------------- |
+| `llm-basis/llm-evaluation.md`                  | Đã hoàn thành, đã vào README nền tảng LLM và README cấp cao nhất          |
+| `system-design/llm-gateway.md`                 | Đã hoàn thành, đã vào README System Design và README cấp cao nhất         |
+| `agent/workflow-graph-loop.md`                 | Đã vào README Agent, README cấp cao nhất và câu hỏi phỏng vấn             |
+| `system-design/ai-application-architecture.md` | Đã vào README System Design, README cấp cao nhất và câu hỏi phỏng vấn     |
+| `system-design/ai-voice.md`                    | Đã vào README System Design, README cấp cao nhất và câu hỏi phỏng vấn     |
+| `MATERIALS.md`                                 | Đã bổ sung mới thành chỉ mục tài liệu viết nội bộ, không vào chỉ mục site |
 
-## P0 · 系统设计和安全补全
+## P0 · Bổ sung System Design và bảo mật
 
-| 文件名                              | 标题                                                      | 核心切入                                                                                                                                                  |
-| ----------------------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `system-design/llm-security.md`     | LLM 应用安全实战：Prompt 注入、工具越权与数据泄露防护     | 从传统“输入不可信”切入 AI 新攻击面，覆盖 Prompt Injection、Indirect Injection、工具权限边界、MCP Server 风险、最小权限、审计和 OWASP LLM Top 10           |
-| `system-design/ai-observability.md` | AI 可观测性与 Trace：为什么 Agent 失败不能只看最终答案    | 一次请求里的模型调用、检索、工具调用、上下文拼装、重试、fallback 全链路 span，覆盖 Langfuse、OpenTelemetry、自建审计表和 Java 后端落地结构                |
-| `agent/tool-calling.md`             | Agent 工具调用详解：Function Calling、MCP Tool 与权限控制 | 串起 `structured-output-function-calling.md`、`mcp.md` 和 `ai-application-architecture.md`，重点讲工具 Schema、参数校验、权限审批、执行结果回传和失败恢复 |
+| Tên file                            | Tiêu đề                                                                                         | Góc khai thác cốt lõi                                                                                                                                                                                                             |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `system-design/llm-security.md`     | Thực chiến bảo mật ứng dụng LLM: Prompt Injection, vượt quyền tool và phòng chống rò rỉ dữ liệu | Từ góc nhìn truyền thống "input không đáng tin" bước vào bề mặt tấn công mới của AI, bao phủ Prompt Injection, Indirect Injection, ranh giới quyền tool, rủi ro MCP Server, nguyên tắc tối thiểu quyền, audit và OWASP LLM Top 10 |
+| `system-design/ai-observability.md` | AI Observability và Trace: vì sao Agent thất bại không thể chỉ nhìn kết quả cuối                | Trong một request: gọi model, retrieval, gọi tool, lắp ráp context, retry, fallback của toàn bộ chuỗi span, bao phủ Langfuse, OpenTelemetry, bảng audit tự xây dựng và kết cấu triển khai Backend Java                            |
+| `agent/tool-calling.md`             | Giải thích chi tiết gọi tool của Agent: Function Calling, MCP Tool và kiểm soát quyền           | Nối liền `structured-output-function-calling.md`, `mcp.md` và `ai-application-architecture.md`, tập trung vào tool Schema, kiểm tra tham số, phê duyệt quyền, truyền lại kết quả thực thi và phục hồi khi thất bại                |
 
-## P1 · Agent 工程短板补全
+## P1 · Bổ sung điểm yếu kỹ thuật Agent
 
-| 文件名                             | 标题                                               | 核心切入                                                                                   |
-| ---------------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `agent/agent-evaluation.md`        | Agent 评测与调试：如何判断 Agent 真的完成了任务    | 任务完成率、工具调用成功率、幻觉率、格式遵循率、延迟成本、Trace 回放和回归集               |
-| `agent/multi-agent.md`             | 多 Agent 协作：Sub-Agent、任务拆分与上下文隔离     | 面试高频：Agent 为什么不稳定、何时拆 Sub-Agent、上下文怎么隔离、评审/执行/验证角色如何分工 |
-| `llm-basis/llm-model-selection.md` | 大模型选型指南：通用、推理、代码、多模态模型怎么选 | 不同能力维度对比、Router/fallback/多模型编排、客服/RAG/代码/语音 Agent 的选型表            |
+| Tên file                           | Tiêu đề                                                                             | Góc khai thác cốt lõi                                                                                                                                    |
+| ---------------------------------- | ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `agent/agent-evaluation.md`        | Đánh giá và gỡ lỗi Agent: làm thế nào để xác định Agent thực sự hoàn thành nhiệm vụ | Tỷ lệ hoàn thành nhiệm vụ, tỷ lệ gọi tool thành công, tỷ lệ hallucination, tỷ lệ tuân thủ format, độ trễ chi phí, Trace replay và tập hồi quy            |
+| `agent/multi-agent.md`             | Cộng tác đa Agent: Sub-Agent, phân rã nhiệm vụ và cô lập context                    | Tần suất phỏng vấn cao: vì sao Agent không ổn định, khi nào tách Sub-Agent, context cô lập thế nào, các vai trò review/execute/validate phân công ra sao |
+| `llm-basis/llm-model-selection.md` | Hướng dẫn chọn LLM: chọn model tổng hợp, suy luận, code, đa phương thức như thế nào | So sánh các chiều năng lực khác nhau, Router/fallback/sắp xếp đa model, bảng chọn nguồn cho Agent CSKH/RAG/code/voice                                    |
 
-## P1 · RAG 深水区扩展
+## P1 · Mở rộng vùng sâu RAG
 
-| 文件名                  | 标题                                                         | 核心切入                                                         |
-| ----------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------- |
-| `embedding-reranker.md` | Embedding 与 Reranker 模型选型：RAG 效果差未必是向量库的问题 | 不同 Embedding 模型能力对比、Reranker 原理、选型场景             |
-| `rag-multimodal.md`     | 多模态 RAG：PDF 表格、图片、截图与视频的知识库处理           | 企业知识库最难处理的是 PDF 表格和截图、OCR、图表理解、多模态检索 |
-| `finetune-vs-rag.md`    | 微调、蒸馏与 RAG 怎么选：什么时候该做数据训练？              | SFT / LoRA / DPO / RFT 原理对比，什么时候调 Prompt 已经不够了    |
+| Tên file                | Tiêu đề                                                                                | Góc khai thác cốt lõi                                                                                             |
+| ----------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `embedding-reranker.md` | Chọn Embedding và Reranker model: RAG kém không hẳn là do vector store                 | So sánh năng lực các model Embedding khác nhau, nguyên lý Reranker, kịch bản chọn lựa                             |
+| `rag-multimodal.md`     | RAG đa phương thức: xử lý knowledge base cho bảng PDF, ảnh, ảnh chụp màn hình và video | Cái khó nhất của knowledge base doanh nghiệp là bảng PDF và ảnh chụp, OCR, hiểu biểu đồ, retrieval đa phương thức |
+| `finetune-vs-rag.md`    | Chọn giữa fine-tune, distillation và RAG: khi nào nên làm data training?               | So sánh nguyên lý SFT / LoRA / DPO / RFT, khi nào thì điều chỉnh Prompt đã không còn đủ                           |
 
-## P2 · Java AI 框架专题
+## P2 · Chuyên đề framework AI Java
 
-| 文件名                     | 标题                                                                   | 写作顺序                                   |
-| -------------------------- | ---------------------------------------------------------------------- | ------------------------------------------ |
-| `framework/README.md`      | AI 框架专题：Spring AI、LangChain4j 与 AI Workflow 工程落地            | 先补目录入口，避免 `framework/` 长期空置   |
-| `spring-ai.md`             | Spring AI 入门与实战：Java 后端如何接入大模型                          | 先写，贴合 JavaGuide 读者群体              |
-| `langchain4j.md`           | LangChain4j 实战：Java 应用如何构建 RAG 和 Agent                       | 第二篇                                     |
-| `ai-workflow-framework.md` | LangGraph / Spring AI Alibaba Graph：AI Workflow、Graph、Loop 如何落地 | 第三篇，与 workflow-graph-loop.md 互相引用 |
+| Tên file                   | Tiêu đề                                                                              | Thứ tự viết                                                  |
+| -------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------ |
+| `framework/README.md`      | Chuyên đề framework AI: triển khai kỹ thuật Spring AI, LangChain4j và AI Workflow    | Bổ sung entry mục lục trước, tránh `framework/` để trống lâu |
+| `spring-ai.md`             | Spring AI nhập môn và thực chiến: Backend Java kết nối LLM như thế nào               | Viết trước, phù hợp nhóm độc giả JavaGuide                   |
+| `langchain4j.md`           | Thực chiến LangChain4j: Java app xây dựng RAG và Agent như thế nào                   | Bài thứ hai                                                  |
+| `ai-workflow-framework.md` | LangGraph / Spring AI Alibaba Graph: triển khai AI Workflow, Graph, Loop như thế nào | Bài thứ ba, tham chiếu lẫn nhau với workflow-graph-loop.md   |
 
-## P2 · MCP 进阶与合规
+## P2 · MCP nâng cao và tuân thủ
 
-| 文件名             | 标题                                                            | 核心切入                            |
-| ------------------ | --------------------------------------------------------------- | ----------------------------------- |
-| `mcp-advanced.md`  | MCP 生产安全与高级能力：Roots、Sampling、Elicitation 与权限边界 | MCP Server 不是工具集合而是新攻击面 |
-| `ai-compliance.md` | AI 合规与隐私治理：AI 应用上线前安全、审计、隐私要查什么        | 企业落地越来越常见，面试频率会上升  |
+| Tên file           | Tiêu đề                                                                                                                     | Góc khai thác cốt lõi                                                           |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `mcp-advanced.md`  | Bảo mật production và năng lực nâng cao của MCP: Roots, Sampling, Elicitation và ranh giới quyền                            | MCP Server không phải là tập hợp tool mà là bề mặt tấn công mới                 |
+| `ai-compliance.md` | Tuân thủ và quản trị quyền riêng tư AI: trước khi ứng dụng AI lên production nên kiểm tra bảo mật, audit, quyền riêng tư gì | Việc triển khai tại doanh nghiệp ngày càng phổ biến, tần suất phỏng vấn sẽ tăng |
 
-## 建议下一步实际动手顺序
+## Thứ tự triển khai thực tế đề xuất tiếp theo
 
-1. `system-design/llm-security.md`：JavaGuide 读者对安全话题接受度高，可以从传统 Web 安全自然过渡到 AI 新攻击面。
-2. `system-design/ai-observability.md`：能和 `harness-engineering.md`、`rag-optimization.md`、`llm-evaluation.md` 接上，形成“调试 -> 评测 -> 观测”闭环。
-3. `agent/tool-calling.md`：把 Function Calling、MCP Tool、权限审批和工具执行链路单独讲透，后续安全和系统设计都能复用。
-4. `framework/README.md` + `framework/spring-ai.md`：`framework/` 目前为空，先补 Java 读者最容易用上的 Spring AI。
+1. `system-design/llm-security.md`: độc giả JavaGuide đón nhận tốt với chủ đề bảo mật, có thể chuyển tự nhiên từ Web Security truyền thống sang bề mặt tấn công mới của AI.
+2. `system-design/ai-observability.md`: có thể kết nối với `harness-engineering.md`, `rag-optimization.md`, `llm-evaluation.md`, tạo thành vòng khép kín "debug -> đánh giá -> quan sát".
+3. `agent/tool-calling.md`: trình bày riêng thấu đáo Function Calling, MCP Tool, phê duyệt quyền và chuỗi thực thi tool, sau này bảo mật và System Design đều có thể tái sử dụng.
+4. `framework/README.md` + `framework/spring-ai.md`: `framework/` hiện đang trống, trước tiên bổ sung Spring AI mà độc giả Java dễ dùng nhất.
 
-## 维护规则
+## Quy tắc bảo trì
 
-1. 新增文章后，同步检查顶层 README、子专题 README、面试题入口、`MATERIALS.md` 和本文。
-2. 写面向读者的文章时不要链接内部维护文档，内部维护文档保持 `sitemap: false` 和 `noindex, nofollow`。
-3. 具体模型、平台能力、价格、上下文窗口、API 参数这类容易变化的信息，写入正文前要重新核对官方文档。
-4. 完成一项后及时从待办移动到“已完成或已补齐”，避免下次维护时重复判断。
+1. Sau khi thêm bài mới, kiểm tra đồng bộ README cấp cao nhất, README chuyên đề con, cổng vào câu hỏi phỏng vấn, `MATERIALS.md` và bài viết này.
+2. Khi viết bài hướng tới độc giả không được liên kết đến tài liệu bảo trì nội bộ; tài liệu bảo trì nội bộ giữ nguyên `sitemap: false` và `noindex, nofollow`.
+3. Các thông tin dễ thay đổi như model cụ thể, năng lực nền tảng, giá cả, context window, tham số API, trước khi viết vào chính văn cần đối chiếu lại tài liệu chính thức.
+4. Sau khi hoàn thành một mục cần sớm chuyển từ TODO sang "Đã hoàn thành hoặc đã bổ sung", tránh lần bảo trì sau phải xét lại lặp.

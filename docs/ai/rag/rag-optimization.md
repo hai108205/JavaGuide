@@ -1,80 +1,80 @@
 ---
-title: 万字详解 RAG 优化：从召回、重排到上下文工程的系统调优
-description: 深入拆解 RAG 优化的系统工程方法，覆盖 Chunk 策略、Metadata、Hybrid Search、Query Rewrite、Rerank、上下文压缩、答案评估与生产排查路径。
-category: AI 应用开发
+title: "Giải thích chi tiết tối ưu hóa RAG: từ recall, rerank đến tinh chỉnh hệ thống của context engineering"
+description: Phân tích sâu phương pháp engineering hệ thống của tối ưu hóa RAG, bao phủ chiến lược Chunk, Metadata, Hybrid Search, Query Rewrite, Rerank, nén context, đánh giá câu trả lời và đường truy vấn-production.
+category: Phát triển ứng dụng AI
 head:
   - - meta
     - name: keywords
-      content: RAG优化,RAG调优,Hybrid Search,Rerank,Query Rewrite,Context Compression,RAG评估,上下文工程,检索增强生成
+      content: RAG Optimization,RAG Tuning,Hybrid Search,Rerank,Query Rewrite,Context Compression,RAG Evaluation,Context Engineering,Retrieval-Augmented Generation
 ---
 
-第一次做 RAG 时，很多人的体验都差不多：文档切了，向量库建了，Top-K 也调大了，模型还是一本正经地胡说八道。
+Lần đầu làm RAG, trải nghiệm của nhiều người đều tương tự: tài liệu chia rồi, vector store xây rồi, Top-K cũng chỉnh lớn rồi, model vẫn cứ nghiêm túc nói bậy.
 
-更难受的是，问题可能出在文档解析、Chunk 切分、上下文质量等多个环节，而不是单纯的 embedding 或 Top-K 参数。
+Khó chịu hơn, vấn đề có thể nằm ở nhiều khâu như phân giải tài liệu, chia Chunk, chất lượng context, chứ không đơn thuần là tham số embedding hoặc Top-K.
 
-调一个企业知识库问答时，很容易陷入一个误区：一开始疯狂换 embedding 模型，结果线上错误率没明显下降。把失败样本拆开看才发现，60% 的问题根本不是向量相似度不够，而是 PDF 表格被解析坏了、Chunk 把条件和结论切开了、重排前的候选池里没有正确片段。
+Khi chỉnh một hệ thống hỏi đáp knowledge base doanh nghiệp, rất dễ rơi vào một ngộ nhận: ban đầu điên cuồng đổi model embedding, kết quả tỷ lệ lỗi online không giảm rõ. Tách mẫu thất bại ra xem mới phát hiện, 60% vấn đề căn bản không phải độ tương đồng vector không đủ, mà là bảng PDF bị phân giải hỏng, Chunk cắt điều kiện và kết luận ra, trong pool ứng viên trước rerank không có đoạn đúng.
 
-RAG 优化的第一条经验是：**它本质上是数据、切分、索引、召回、重排、上下文、生成、评估共同组成的系统工程，不是单点调参。**
+Kinh nghiệm đầu tiên của tối ưu hóa RAG: **về bản chất nó là một công trình hệ thống do dữ liệu, chia, chỉ mục, recall, rerank, context, sinh, đánh giá cùng tạo thành, không phải chỉnh tham số đơn điểm.**
 
-这篇文章就把这条链路上每个环节的优化方法拆开来讲。接近 1.5w 字，建议收藏。主要内容：
+Bài viết này tách phương pháp tối ưu từng khâu trên chuỗi này ra nói. Gần 1.5w chữ, khuyên nên lưu lại. Nội dung chính:
 
-1. 为什么 RAG 优化不能只盯着 embedding、Top-K 和大模型参数
-2. Chunk、Metadata、Hybrid Search、Query Rewrite、Rerank、上下文压缩、答案评估各环节的作用
-3. 生产环境里遇到 RAG 效果差时，应该按什么路径排查和收敛
+1. Vì sao tối ưu hóa RAG không thể chỉ nhìn embedding, Top-K và tham số LLM
+2. Vai trò từng khâu của Chunk, Metadata, Hybrid Search, Query Rewrite, Rerank, nén context, đánh giá câu trả lời
+3. Khi gặp hiệu quả RAG kém trong production, nên theo đường nào truy vấn và thu hẹp
 
-## RAG 优化到底在优化什么？
+## Tối ưu hóa RAG rốt cuộc đang tối ưu gì?
 
-先把心智模型摆正。
+Trước tiên đặt đúng mental model.
 
-RAG 更像一条证据加工流水线：原始资料先被解析、清洗、切块、打标签、建索引；用户问题进来后，再经过查询理解、召回、重排、上下文构建，最后才交给 LLM 生成答案。
+RAG giống một chuỗi gia công bằng chứng hơn: tài liệu gốc trước tiên được phân giải, làm sạch, chia khối, gắn nhãn, lập chỉ mục; câu hỏi người dùng vào rồi, lại qua hiểu truy vấn, recall, rerank, xây dựng context, cuối cùng mới giao LLM sinh câu trả lời.
 
-这条链路里任何一环出问题，都会传染到下游。
+Bất kỳ khâu nào trong chuỗi này có vấn đề, đều lây sang hạ nguồn.
 
-| 环节       | 典型问题                             | 最终表现                           |
-| ---------- | ------------------------------------ | ---------------------------------- |
-| 文档解析   | 表格错位、标题丢失、页码缺失         | 答案引用不准，关键条件丢失         |
-| Chunk 切分 | 块太大、太小、语义边界被切断         | 召回噪声大，或者召回片段缺上下文   |
-| Metadata   | 没有保存来源、时间、权限、章节       | 无法过滤，无法引用，容易越权       |
-| 召回       | 只用向量检索，忽略关键词和结构化条件 | 错过错误码、SKU、版本号、专有名词  |
-| 重排       | 直接把 Top-K 塞给模型                | 正确片段排在后面，模型看不到重点   |
-| 上下文     | 不去重、不压缩、不排序               | Token 浪费，模型被噪声干扰         |
-| 生成       | Prompt 没有限定证据边界              | 答案看起来流畅，但引用和事实对不上 |
-| 评估       | 只看主观体验，不建测试集             | 改动靠感觉，线上反复回退           |
+| Khâu               | Vấn đề điển hình                                                   | Biểu hiện cuối cùng                                                |
+| ------------------ | ------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| Phân giải tài liệu | Bảng lệch, mất tiêu đề, thiếu số trang                             | Trích dẫn câu trả lời không chính xác, mất điều kiện then chốt     |
+| Chia Chunk         | Khối quá to, quá nhỏ, cắt đứt ranh giới ngữ nghĩa                  | Recall nhiều nhiễu, hoặc đoạn recall thiếu context                 |
+| Metadata           | Không lưu nguồn, thời gian, quyền, chương                          | Không lọc được, không trích dẫn được, dễ vượt quyền                |
+| Recall             | Chỉ dùng vector retrieval, bỏ qua từ khóa và điều kiện có cấu trúc | Bỏ lỡ mã lỗi, SKU, số phiên bản, danh từ riêng                     |
+| Rerank             | Trực tiếp nhét Top-K cho model                                     | Đoạn đúng xếp sau, model không thấy trọng điểm                     |
+| Context            | Không khử trùng lặp, không nén, không sắp xếp                      | Lãng phí Token, model bị nhiễu ảnh hưởng                           |
+| Sinh               | Prompt không giới hạn ranh giới bằng chứng                         | Câu trả lời trông trôi chảy, nhưng trích dẫn và sự thật không khớp |
+| Đánh giá           | Chỉ nhìn trải nghiệm chủ quan, không xây tập test                  | Đổi theo cảm giác, online lui tới lặp                              |
 
-**RAG 优化的目标是提高最终答案的可用性、可追溯性和稳定性，而不是让每个环节看起来高级。**
+**Mục tiêu của tối ưu hóa RAG là tăng tính khả dụng, khả năng truy vết và độ ổn định của câu trả lời cuối, chứ không phải khiến mỗi khâu trông cấp cao.**
 
-一个粗暴但好用的判断标准：
+Một tiêu chuẩn phán đoán thô nhưng dễ dùng:
 
-- 用户问的问题，正确证据有没有被召回？
-- 正确证据有没有排在足够靠前的位置？
-- 放进上下文的内容是否足够少、足够准？
-- 模型有没有严格基于证据回答？
-- 每次改动有没有通过固定样本集验证？
+- Câu hỏi người dùng hỏi, bằng chứng đúng có được recall không?
+- Bằng chứng đúng có xếp đủ gần đầu không?
+- Nội dung cho vào context có đủ ít, đủ chính xác không?
+- Model có nghiêm ngặt dựa trên bằng chứng trả lời không?
+- Mỗi lần đổi có qua tập mẫu cố định xác minh không?
 
-这 5 个问题，比“用哪个向量库更好”重要得多。
+5 câu hỏi này, quan trọng hơn nhiều "dùng vector store nào tốt hơn".
 
 ```mermaid
 flowchart LR
-    %% ========== classDef 配色声明 ==========
+    %% ========== Khai báo màu classDef ==========
     classDef client fill:#00838F,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef business fill:#E99151,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef infra fill:#9B59B6,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef success fill:#4CA497,color:#FFFFFF,stroke:none,rx:10,ry:10
 
-    %% ========== 节点声明 ==========
-    Doc[/原始文档/]:::client
-    Parse[文档解析]:::business
-    Chunk[Chunk 切分]:::business
-    Meta[Metadata 标注]:::infra
-    Index[建索引]:::infra
-    Query[用户 Query]:::client
-    Recall[混合召回]:::business
-    Rerank[Rerank 重排]:::business
-    Compress[上下文压缩]:::business
-    LLM[LLM 生成]:::business
-    Answer[最终答案]:::success
+    %% ========== Khai báo node ==========
+    Doc[/Tài liệu gốc/]:::client
+    Parse[Phân giải tài liệu]:::business
+    Chunk[Chia Chunk]:::business
+    Meta[Gắn nhãn Metadata]:::infra
+    Index[Lập chỉ mục]:::infra
+    Query[Query người dùng]:::client
+    Recall[Hybrid recall]:::business
+    Rerank[Rerank sắp xếp lại]:::business
+    Compress[Nén context]:::business
+    LLM[LLM sinh]:::business
+    Answer[Câu trả lời cuối]:::success
 
-    %% ========== 连线 ==========
+    %% ========== Nối ==========
     Doc --> Parse --> Chunk --> Meta --> Index
     Query --> Recall
     Index --> Recall
@@ -83,17 +83,17 @@ flowchart LR
     linkStyle default stroke-width:2px,stroke:#333333,opacity:0.8
 ```
 
-## RAG 优化闭环
+## Vòng khép kín tối ưu hóa RAG
 
-生产级 RAG 一定要有闭环。没有评估和回放，再多技巧都是玄学。
+RAG production-level nhất định phải có vòng khép kín. Không có đánh giá và replay, nhiều kỹ thuật nữa cũng là huyền học.
 
 ```mermaid
 flowchart LR
-    Q["线上问题<br/>失败样本"]:::client --> E["离线评估<br/>指标拆分"]:::infra
-    E --> L["定位瓶颈<br/>召回/重排/生成"]:::business
-    L --> T["策略调整<br/>Chunk/Query/Rerank"]:::warning
-    T --> G["灰度发布<br/>版本对比"]:::gateway
-    G --> M["监控反馈<br/>人工复核"]:::success
+    Q["Vấn đề online<br/>mẫu thất bại"]:::client --> E["Đánh giá offline<br/>tách chỉ số"]:::infra
+    E --> L["Định vị nút thắt<br/>recall/rerank/sinh"]:::business
+    L --> T["Điều chỉnh chiến lược<br/>Chunk/Query/Rerank"]:::warning
+    T --> G["Gray release<br/>so sánh phiên bản"]:::gateway
+    G --> M["Giám sát phản hồi<br/>duyệt lại thủ công"]:::success
     M --> Q
 
     classDef gateway fill:#7B68EE,color:#FFFFFF,stroke:none,rx:10,ry:10
@@ -105,159 +105,159 @@ flowchart LR
     linkStyle default stroke-width:2px,stroke:#333333,opacity:0.8
 ```
 
-这张图的关键不是流程本身，而是两个字：**回放**。
+Then chốt của hình này không phải bản thân quy trình, mà hai chữ: **replay**.
 
-每次调整 Chunk 大小、重写策略、Rerank 模型、Top-K 参数，都应该拿同一批问题跑一遍，比较 Context Recall、Context Precision、Faithfulness、Answer Relevancy、延迟和成本。
+Mỗi lần điều chỉnh kích thước Chunk, chiến lược rewrite, model Rerank, tham số Top-K, đều nên đưa cùng một loạt câu hỏi chạy một lần, so sánh Context Recall, Context Precision, Faithfulness, Answer Relevancy, độ trễ và chi phí.
 
-没有回放，就不知道变好了还是只是换了一种错法。
+Không có replay, không biết là đã tốt lên hay chỉ đổi một cách sai khác.
 
-## 先做数据治理，再谈检索优化
+## Trước tiên làm quản trị dữ liệu, rồi mới nói tối ưu retrieval
 
-很多 RAG 系统失败的原因是“被检索的数据一开始就不对”，而不是“检索不准”。
+Nhiều hệ thống RAG thất bại vì "dữ liệu bị retrieval từ đầu đã sai", chứ không phải "retrieval không chính xác".
 
-### 文档解析决定上限
+### Phân giải tài liệu quyết định trần
 
-PDF、Word、HTML、Markdown、数据库记录、工单日志，看起来都是文本，实际结构差异很大。尤其是 PDF 表格、图片、页眉页脚、脚注、跨页表格，如果只用普通文本抽取，常见结果是：
+PDF, Word, HTML, Markdown, bản ghi database, log ticket, trông đều là văn bản, thực ra cấu trúc khác rất nhiều. Đặc biệt là bảng PDF, ảnh, đầu cuối trang, chú thích chân trang, bảng xuyên trang, nếu chỉ dùng trích văn bản thường, kết quả phổ biến là:
 
-- 表格列关系丢失，价格、版本、条件混在一起。
-- 页眉页脚被重复写入每个 Chunk，污染向量空间。
-- 图片和流程图完全丢失，答案缺关键步骤。
-- 标题层级消失，模型不知道一段话属于哪个章节。
+- Quan hệ cột bảng mất, giá cả, phiên bản, điều kiện trộn vào nhau.
+- Đầu cuối trang bị ghi lặp vào mỗi Chunk, làm bẩn không gian vector.
+- Ảnh và sơ đồ luồng mất hoàn toàn, câu trả lời thiếu bước then chốt.
+- Cấp tiêu đề biến mất, model không biết một đoạn thuộc chương nào.
 
-对研发文档、政策文档、产品手册来说，**解析质量往往比换 embedding 模型更重要**。
+Với tài liệu phát triển, tài liệu chính sách, sổ tay sản phẩm, **chất lượng phân giải thường quan trọng hơn đổi model embedding**.
 
-一个实用建议：
+Một gợi ý thực dụng:
 
-| 文档类型        | 推荐处理方式                     | 核心目标       |
-| --------------- | -------------------------------- | -------------- |
-| Markdown / HTML | 保留标题层级、列表、代码块       | 不破坏天然结构 |
-| PDF 文档        | 解析正文、表格、页码、图片说明   | 保住证据边界   |
-| 表格型文档      | 转成结构化行记录或 Markdown 表格 | 保住字段关系   |
-| 代码文档        | 按包、类、方法、注释分层         | 保住调用语义   |
-| 工单/聊天记录   | 按会话、时间、角色切分           | 保住上下文顺序 |
+| Loại tài liệu      | Cách xử lý khuyến nghị                                   | Mục tiêu cốt lõi               |
+| ------------------ | -------------------------------------------------------- | ------------------------------ |
+| Markdown / HTML    | Giữ cấp tiêu đề, danh sách, khối code                    | Không phá vỡ cấu trúc tự nhiên |
+| Tài liệu PDF       | Phân giải nội dung chính, bảng, số trang, chú thích ảnh  | Giữ ranh giới bằng chứng       |
+| Tài liệu dạng bảng | Chuyển thành bản ghi hàng có cấu trúc hoặc bảng Markdown | Giữ quan hệ trường             |
+| Tài liệu code      | Phân theo package, class, method, comment                | Giữ ngữ nghĩa gọi              |
+| Ticket / chat log  | Chia theo phiên, thời gian, vai trò                      | Giữ thứ tự context             |
 
-如果数据源里有大量表格和图片，必要时可以引入 OCR 或多模态模型做结构化描述，但要注意成本和延迟。这里不要迷信“全都丢给视觉模型”，优先处理高价值文档和高频失败样本。
+Nếu nguồn dữ liệu có nhiều bảng và ảnh, cần thiết có thể đưa OCR hoặc model đa phương thức làm mô tả có cấu trúc, nhưng phải chú ý chi phí và độ trễ. Đây đừng mê tín "tất cả đưa cho vision model", ưu tiên xử lý tài liệu giá trị cao và mẫu thất bại tần suất cao.
 
-### Metadata 的作用
+### Vai trò của Metadata
 
-Metadata 不是给后台页面展示用的，它是检索的硬约束和答案的证据链。
+Metadata không phải để hiển thị cho trang backend, nó là ràng buộc cứng của retrieval và chuỗi bằng chứng của câu trả lời.
 
-至少建议为每个 Chunk 保存这些字段：
+Ít nhất khuyên mỗi Chunk lưu các trường này:
 
-- `source_id`：原始文档 ID，便于回溯和去重。
-- `source_type`：PDF、网页、工单、代码、数据库记录等。
-- `title`：文档标题。
-- `section_path`：章节路径，例如“退换货政策 / 售后范围 / 特殊商品”。
-- `page`：页码或段落位置。
-- `created_at` / `updated_at`：时间过滤和新旧版本判断。
-- `tenant_id` / `acl`：多租户和权限控制。
-- `business_tags`：产品线、语言、地区、版本、模块。
+- `source_id`: ID tài liệu gốc, tiện truy vết và khử trùng lặp.
+- `source_type`: PDF, trang web, ticket, code, bản ghi database...
+- `title`: tiêu đề tài liệu.
+- `section_path`: đường dẫn chương, ví dụ "Chính sách đổi trả / Phạm vi sau bán hàng / Hàng đặc biệt".
+- `page`: số trang hoặc vị trí đoạn.
+- `created_at` / `updated_at`: lọc thời gian và phán đoán cũ mới.
+- `tenant_id` / `acl`: multi-tenant và kiểm soát quyền.
+- `business_tags`: dòng sản phẩm, ngôn ngữ, khu vực, phiên bản, module.
 
-一个高频盲区是：**先向量检索，再做权限过滤**。
+Một điểm mù tần suất cao là: **trước tiên vector retrieval, rồi mới lọc quyền**.
 
-这很危险。假设向量库返回 Top-10，其中 8 条用户无权限，过滤后只剩 2 条，系统就会以为“只召回了 2 条相关内容”。更糟的是，如果过滤逻辑写错，还可能把越权内容塞进上下文。
+Điều này rất nguy hiểm. Giả sử vector store trả về Top-10, trong đó 8 bản người dùng không có quyền, lọc xong chỉ còn 2 bản, hệ thống sẽ tưởng "chỉ recall được 2 bản nội dung liên quan". Tệ hơn, nếu logic lọc viết sai, còn có thể nhét nội dung vượt quyền vào context.
 
-更稳的做法是：**能预过滤就预过滤**。先用 Metadata 缩小检索范围，再做向量或混合检索。比如先限制 `tenant_id`、文档类型、版本范围、更新时间，再进入相似度计算。
+Cách vững hơn là: **có thể lọc trước thì lọc trước**. Trước tiên dùng Metadata thu nhỏ phạm vi retrieval, rồi làm vector hoặc hybrid retrieval. Ví dụ trước tiên giới hạn `tenant_id`, loại tài liệu, phạm vi phiên bản, thời gian cập nhật, rồi mới vào tính độ tương tự.
 
-## Chunk 策略：别把知识切碎了
+## Chiến lược Chunk: đừng cắt vụn tri thức
 
-Chunking 是 RAG 的地基。地基歪了，后面再重排也很难救。
+Chunking là nền móng của RAG. Nền móng lệch, đằng sau rerank mạnh đến đâu cũng khó cứu.
 
-### Chunk 大小没有万能值
+### Kích thước Chunk không có giá trị vạn năng
 
-很多教程喜欢给一个默认值：512、800、1000 Token。这个值只能当起点，不能当结论。
+Nhiều tutorial thích đưa một giá trị mặc định: 512, 800, 1000 Token. Giá trị này chỉ làm được điểm khởi đầu, không làm được kết luận.
 
-Chunk 太小，容易丢上下文。比如一句“以上情况不适用七天无理由退货”被切到下一块，前一块就会变成误导性证据。
+Chunk quá nhỏ, dễ mất context. Ví dụ một câu "trường hợp trên không áp dụng đổi trả 7 ngày không cần lý do" bị cắt sang khối tiếp theo, khối trước sẽ thành bằng chứng gây hiểu lầm.
 
-Chunk 太大，又会把很多无关内容一起带进来。检索分数可能因为某一句话很相关而很高，但模型读到的是一整段混杂内容，信噪比反而下降。
+Chunk quá to, lại kéo theo nhiều nội dung không liên quan. Điểm retrieval có thể vì một câu rất liên quan mà cao, nhưng model đọc được là cả một đoạn lẫn lộn, tỷ lệ tín trên nhiễu ngược lại giảm.
 
-小 G 的经验是：
+Kinh nghiệm của Tiểu G là:
 
-- FAQ、短政策、接口说明：可以从 200 到 500 Token 起步。
-- 技术文档、教程、方案文档：可以从 400 到 800 Token 起步。
-- 法规、合同、金融政策：更关注条款完整性，优先按标题、条、款、项切。
-- 代码类知识库：不要只按 Token 切，优先按文件、类、函数、注释块切。
+- FAQ, chính sách ngắn, mô tả interface: có thể bắt đầu từ 200 đến 500 Token.
+- Tài liệu kỹ thuật, hướng dẫn, tài liệu giải pháp: có thể bắt đầu từ 400 đến 800 Token.
+- Quy chế, hợp đồng, chính sách tài chính: quan tâm tính toàn vẹn điều khoản hơn, ưu tiên chia theo tiêu đề, điều, khoản, mục.
+- Knowledge base code: đừng chỉ chia theo Token, ưu tiên chia theo file, class, hàm, khối comment.
 
-真正的答案还是评估集给的。把 3 到 5 组 Chunk 参数建成不同索引，用同一批问题比较 Context Recall、Context Precision、答案正确率和平均上下文 Token。
+Câu trả lời thật sự vẫn do tập đánh giá cho. Xây 3 đến 5 nhóm tham số Chunk thành các chỉ mục khác nhau, dùng cùng một loạt câu hỏi so sánh Context Recall, Context Precision, độ chính xác câu trả lời và Token context trung bình.
 
-### 语义切分适合稳定文档
+### Chia ngữ nghĩa phù hợp tài liệu ổn định
 
-语义切分的思路是：不机械按字符数截断，而是根据标题、段落、句子相似度或语义边界来切。
+Tư duy của chia ngữ nghĩa là: không cơ giới cắt theo số ký tự, mà theo tiêu đề, đoạn, độ tương đồng câu hoặc ranh giới ngữ nghĩa để chia.
 
-它适合这些场景：
+Nó phù hợp các kịch bản này:
 
-- 文档主题混杂，一页里连续讲多个概念。
-- 用户问题更偏概念型，而不是查某个字段。
-- 知识库更新频率不高，可以接受较复杂的离线预处理。
+- Chủ đề tài liệu lẫn lộn, một trang liên tục nói nhiều khái niệm.
+- Câu hỏi người dùng thiên về khái niệm, thay vì tra một trường.
+- Knowledge base tần suất cập nhật không cao, có thể chấp nhận tiền xử lý offline phức tạp hơn.
 
-它不适合这些场景：
+Nó không phù hợp các kịch bản này:
 
-- 文档频繁增量更新，每次重新聚类成本高。
-- 文档结构本身已经很清晰，例如 Markdown 标题层级。
-- 查询主要是精确查编号、字段、状态、配置项。
+- Tài liệu cập nhật gia tăng thường xuyên, mỗi lần re-cluster chi phí cao.
+- Bản thân cấu trúc tài liệu đã rất rõ, ví dụ cấp tiêu đề Markdown.
+- Truy vấn chủ yếu là tra chính xác số hiệu, trường, trạng thái, mục cấu hình.
 
-语义切分不一定越智能越好。如果你的知识库是接口文档，按 OpenAPI path、method、参数表切，通常比句子 embedding 聚类更可靠。
+Chia ngữ nghĩa không nhất thiết càng thông minh càng tốt. Nếu knowledge base của bạn là tài liệu interface, chia theo OpenAPI path, method, bảng tham số, thường đáng tin hơn embedding clustering câu.
 
-### Parent-Child Chunk 是很实用的折中
+### Parent-Child Chunk là thỏa hiệp rất thực dụng
 
-一个常用模式是：**小块负责召回，大块负责生成**。
+Một mô hình phổ biến là: **khối nhỏ đảm nhận recall, khối lớn đảm nhận sinh**.
 
-比如把文档切成 300 Token 的子 Chunk 用于向量检索，但每个子 Chunk 都挂到一个 1200 Token 的父段落上。检索时先命中小块，再把对应父段落放入上下文。
+Ví dụ cắt tài liệu thành Chunk con 300 Token dùng cho vector retrieval, nhưng mỗi Chunk con đều treo vào một đoạn cha 1200 Token. Khi truy vấn trước tiên trúng khối nhỏ, rồi đưa đoạn cha tương ứng vào context.
 
-好处很明显：
+Ưu điểm rất rõ:
 
-- 小块更容易精确命中问题。
-- 父块保留必要上下文，减少断章取义。
-- 比盲目扩大 Top-K 更可控。
+- Khối nhỏ dễ trúng chính xác câu hỏi hơn.
+- Khối cha giữ context cần thiết, giảm đứt câu rời ý.
+- So với mù quáng mở rộng Top-K, kiểm soát được hơn.
 
-适合长文档、教程、政策解读、故障手册等场景。
+Phù hợp tài liệu dài, hướng dẫn, giải thích chính sách, sổ tay xử lý sự cố.
 
-### 给 Chunk 增加语义入口
+### Cho Chunk thêm cửa ngõ ngữ nghĩa
 
-有些用户问题和文档原文的表达差异很大。用户问“钱怎么退”，文档写的是“退款申请路径”。这时可以在索引阶段增加额外表示：
+Một số câu hỏi người dùng và cách diễn đạt văn bản gốc khác nhau rất lớn. Người dùng hỏi "tiền rút thế nào", tài liệu viết "đường dẫn yêu cầu hoàn tiền". Lúc này có thể trong giai đoạn chỉ mục thêm biểu diễn phụ:
 
-- 给每个 Chunk 生成摘要，摘要和正文都入索引。
-- 给每个 Chunk 生成可能回答的问题，用问题向量辅助召回。
-- 给章节生成标题向量，让概念型问题先命中主题。
-- 对代码或表格生成结构化描述，避免原文难以嵌入。
+- Cho mỗi Chunk sinh tóm tắt, tóm tắt và nội dung chính đều vào chỉ mục.
+- Cho mỗi Chunk sinh câu hỏi có thể trả lời, dùng vector câu hỏi hỗ trợ recall.
+- Cho chương sinh vector tiêu đề, để câu hỏi khái niệm trước tiên trúng chủ đề.
+- Với code hoặc bảng sinh mô tả có cấu trúc, tránh văn bản gốc khó embedding.
 
-这类方法本质上是在给 Chunk 多开几个入口。代价是建库成本增加，所以建议优先用在高价值知识库，而不是全量无脑开启。
+Loại phương pháp này về bản chất là mở cho Chunk thêm vài cửa vào. Cái giá là chi phí xây kho tăng, nên khuyên ưu tiên dùng cho knowledge base giá trị cao, chứ không phải mở không não toàn bộ.
 
-## 召回优化：不要只靠向量相似度
+## Tối ưu recall: đừng chỉ dựa vào độ tương đồng vector
 
-朴素 RAG 的召回通常是：把用户问题转 embedding，然后向量库 Top-K。这个方案能跑 demo，但生产里很快会遇到边界。
+Recall của RAG naive thường là: chuyển câu hỏi người dùng thành embedding, rồi vector store Top-K. Giải pháp này chạy được demo, nhưng trong production rất nhanh gặp ranh giới.
 
-### Hybrid Search 是生产默认项
+### Hybrid Search là mặc định production
 
-向量检索擅长语义相似，BM25 擅长精确词匹配。两者是互补关系，不是替代关系。
+Vector retrieval giỏi tương đồng ngữ nghĩa, BM25 giỏi khớp từ chính xác. Hai cái là quan hệ bổ trợ, không phải thay thế.
 
-| 查询类型                  | 向量检索表现         | BM25 表现      | 建议               |
-| ------------------------- | -------------------- | -------------- | ------------------ |
-| “如何取消订阅”            | 能匹配“关闭自动续费” | 可能匹配不到   | 保留向量召回       |
-| “错误码 E1027”            | 可能召回泛化故障     | 精确命中错误码 | 必须保留关键词召回 |
-| “ABX-4421 型号参数”       | 容易找相似型号       | 精确命中 SKU   | 必须保留关键词召回 |
-| “Java 线程池拒绝策略区别” | 语义理解较好         | 能匹配关键词   | 混合更稳           |
-| “最新 v3.2 价格政策”      | 需要语义和时间条件   | 可匹配版本号   | Metadata + Hybrid  |
+| Loại truy vấn                                   | Thể hiện vector retrieval            | Thể hiện BM25          | Gợi ý                       |
+| ----------------------------------------------- | ------------------------------------ | ---------------------- | --------------------------- |
+| "Làm thế nào hủy đăng ký"                       | Khớp được "tắt tự động gia hạn"      | Có thể khớp không thấy | Giữ lại vector recall       |
+| "Mã lỗi E1027"                                  | Có thể recall lỗi tổng quát          | Trúng chính xác mã lỗi | Phải giữ lại recall từ khóa |
+| "Tham số model ABX-4421"                        | Dễ tìm thấy model tương tự           | Trúng chính xác SKU    | Phải giữ lại recall từ khóa |
+| "Khác biệt chính sách từ chối Java thread pool" | Hiểu ngữ nghĩa tốt hơn               | Khớp được từ khóa      | Hybrid ổn định hơn          |
+| "Chính sách giá mới nhất v3.2"                  | Cần ngữ nghĩa và điều kiện thời gian | Khớp được số phiên bản | Metadata + Hybrid           |
 
 ```mermaid
 flowchart LR
-    %% ========== classDef 配色声明 ==========
+    %% ========== Khai báo màu classDef ==========
     classDef client fill:#00838F,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef business fill:#E99151,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef cache fill:#3498DB,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef success fill:#4CA497,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef warning fill:#F39C12,color:#FFFFFF,stroke:none,rx:10,ry:10
 
-    %% ========== 节点声明 ==========
-    Query[用户 Query]:::client
-    Vec[向量检索<br/>语义相似]:::cache
-    BM25[BM25 召回<br/>精确匹配]:::cache
-    RRF[RRF 融合]:::warning
-    Dedupe[去重合并]:::business
+    %% ========== Khai báo node ==========
+    Query[Query người dùng]:::client
+    Vec[Vector retrieval<br/>tương đồng ngữ nghĩa]:::cache
+    BM25[BM25 recall<br/>khớp chính xác]:::cache
+    RRF[RRF hợp nhất]:::warning
+    Dedupe[Khử trùng lặp gộp]:::business
     Rerank[Rerank]:::business
-    Final[Top-N 候选]:::success
+    Final[Top-N ứng viên]:::success
 
-    %% ========== 连线 ==========
+    %% ========== Nối ==========
     Query --> Vec
     Query --> BM25
     Vec --> RRF
@@ -267,424 +267,424 @@ flowchart LR
     linkStyle default stroke-width:2px,stroke:#333333,opacity:0.8
 ```
 
-Hybrid Search 常见做法是两路召回后融合：
+Cách làm phổ biến của Hybrid Search là recall hai đường rồi hợp nhất:
 
-- 向量检索返回语义相似候选。
-- BM25 或稀疏向量返回关键词候选。
-- 用 RRF 或归一化加权分数合并。
-- 对合并后的候选去重，再进入 Rerank。
+- Vector retrieval trả về ứng viên tương đồng ngữ nghĩa.
+- BM25 hoặc sparse vector trả về ứng viên từ khóa.
+- Dùng RRF hoặc điểm số trọng số chuẩn hóa gộp.
+- Khử trùng lặp ứng viên đã gộp, rồi vào Rerank.
 
-Microsoft Azure AI Search、Google Vertex AI Vector Search、Weaviate 等官方文档都把 Hybrid Search 和 RRF 作为常见融合方式。RRF 的好处是不用强行比较 BM25 分数和向量余弦分数，按排名位置做融合，调参负担更低。
+Tài liệu chính thức của Microsoft Azure AI Search, Google Vertex AI Vector Search, Weaviate... đều coi Hybrid Search và RRF là cách hợp nhất phổ biến. Ưu điểm của RRF là không cần cưỡng ép so sánh điểm BM25 với điểm cosine vector, hợp nhất theo vị trí xếp hạng, gánh nặng chỉnh tham số thấp hơn.
 
-但别把 Hybrid Search 神化。
+Nhưng đừng thần thánh hóa Hybrid Search.
 
-如果你的文档高度结构化、关键词很少，Hybrid 带来的增益可能有限；如果你的查询大量包含错误码、产品型号、配置项、专有名词，纯向量检索很容易翻车。
+Nếu tài liệu của bạn có cấu trúc cao, từ khóa ít, lợi ích Hybrid mang lại có thể có hạn; nếu truy vấn của bạn chứa nhiều mã lỗi, model sản phẩm, mục cấu hình, danh từ riêng, vector retrieval thuần rất dễ lật xe.
 
-### Query Rewrite：先把问题变得可检索
+### Query Rewrite: trước tiên khiến câu hỏi truy vấn được
 
-用户的问题通常不是为检索系统写的。
+Câu hỏi của người dùng thường không viết cho hệ thống truy vấn.
 
-他们会说：
+Họ sẽ nói:
 
-- “这个报错咋整？”
-- “钱能退吗？”
-- “线上那个限流问题是不是又来了？”
+- "Cái báo lỗi này làm sao đây?"
+- "Có trả lại tiền không?"
+- "Vấn đề rate-limit online hình như lại đến rồi?"
 
-这些问题对人来说有上下文，对检索系统来说却很模糊。Query Rewrite 的目标是：**不改变用户意图，把问题改写成更适合召回的表达**。
+Những câu hỏi này với con người thì có context, với hệ thống truy vấn thì rất mơ hồ. Mục tiêu của Query Rewrite là: **không thay đổi ý định người dùng, đổi câu hỏi thành cách diễn đạt thích hợp để recall hơn.**
 
-常见策略如下：
+Các chiến lược phổ biến như sau:
 
-| 策略                | 适用场景                   | 例子                                                        |
-| ------------------- | -------------------------- | ----------------------------------------------------------- |
-| 规范化改写          | 口语化、缩写、上下文缺失   | “钱能退吗”改成“退款政策、退款条件、退款流程”                |
-| Multi-Query         | 表达可能有多种说法         | 同时检索“取消订阅”“关闭自动续费”“停止会员计划”              |
-| Query Decomposition | 问题包含多个子问题         | 把“对比 Stripe 和 Square 的手续费和争议处理”拆成 4 个子问题 |
-| Step-back Query     | 问题太细，缺背景           | 先检索“订阅计费规则”，再回答具体取消问题                    |
-| HyDE                | 查询太短，和文档形态差异大 | 先生成假设答案，再用假设答案向量检索真实文档                |
-| Self-Query          | 问题里包含过滤条件         | 从“查 2025 年 Java 相关政策”提取年份和类别过滤              |
+| Chiến lược          | Kịch bản phù hợp                                        | Ví dụ                                                                                              |
+| ------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Viết lại chuẩn hóa  | Khẩu ngữ, viết tắt, thiếu context                       | "Có trả lại tiền không" đổi thành "chính sách hoàn tiền, điều kiện hoàn tiền, quy trình hoàn tiền" |
+| Multi-Query         | Diễn đạt có thể nhiều cách                              | Đồng thời truy vấn "hủy đăng ký" "tắt tự động gia hạn" "dừng gói thành viên"                       |
+| Query Decomposition | Câu hỏi chứa nhiều câu hỏi con                          | Tách "so sánh phí và xử lý tranh chấp của Stripe và Square" thành 4 câu hỏi con                    |
+| Step-back Query     | Câu hỏi quá nhỏ, thiếu bối cảnh                         | Trước tiên truy vấn "quy tắc tính phí đăng ký", rồi trả lời câu hỏi hủy cụ thể                     |
+| HyDE                | Truy vấn quá ngắn, khác biệt lớn với hình thái tài liệu | Trước tiên sinh câu trả lời giả định, rồi dùng vector câu trả lời giả định recall tài liệu thật    |
+| Self-Query          | Câu hỏi chứa điều kiện lọc                              | Từ "tra chính sách Java năm 2025" trích xuất lọc năm và loại                                       |
 
-LangChain 的 MultiQueryRetriever、SelfQueryRetriever 等组件就是这类思路的工程化实现。
+Các component như MultiQueryRetriever, SelfQueryRetriever của LangChain chính là triển khai engineering hóa của loại tư duy này.
 
-这里有个坑：**Query Rewrite 必须保留原始问题**。不要只用改写后的查询。工程上可以让原始 query 和改写 query 一起召回，然后融合结果。否则改写模型一旦理解错意图，后面召回全偏。
+Đây có một cái bẫy: **Query Rewrite phải giữ lại câu hỏi gốc.** Đừng chỉ dùng truy vấn đã viết lại. Về mặt kỹ thuật có thể để truy vấn gốc và truy vấn viết lại cùng recall, rồi hợp nhất kết quả. Nếu không, một khi model viết lại hiểu sai ý định, phía sau recall đều lệch hết.
 
-### Top-K 不是越大越好
+### Top-K không phải càng lớn càng tốt
 
-盲目扩大 Top-K 是 RAG 调优里最常见的动作，也是最容易制造噪声的动作。
+Mù quáng mở rộng Top-K là thao tác phổ biến nhất trong điều chỉnh RAG, cũng là thao tác dễ tạo nhiễu nhất.
 
-Top-K 变大，确实可能提高召回率。但它也会带来 3 个副作用：
+Top-K lớn hơn, quả thực có thể tăng recall rate. Nhưng nó cũng mang 3 tác dụng phụ:
 
-- 候选变多，Rerank 延迟上升。
-- 上下文变长，Token 成本上升。
-- 无关内容变多，模型更容易被干扰。
+- Ứng viên nhiều lên, độ trễ Rerank tăng.
+- Context dài lên, chi phí Token tăng.
+- Nội dung không liên quan nhiều lên, model dễ bị nhiễu.
 
-更合理的做法是分层设置：
+Cách hợp lý hơn là đặt theo tầng:
 
-- `recall_top_k`：粗召回候选池，例如 30 到 100。
-- `rerank_top_n`：重排后保留，例如 5 到 10。
-- `context_top_n`：最终进入上下文，例如 3 到 6。
+- `recall_top_k`: pool ứng viên recall thô, ví dụ 30 đến 100.
+- `rerank_top_n`: giữ lại sau rerank, ví dụ 5 đến 10.
+- `context_top_n`: cuối cùng vào context, ví dụ 3 đến 6.
 
 ```mermaid
 flowchart TB
-    %% ========== classDef 配色声明 ==========
+    %% ========== Khai báo màu classDef ==========
     classDef client fill:#00838F,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef business fill:#E99151,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef warning fill:#F39C12,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef success fill:#4CA497,color:#FFFFFF,stroke:none,rx:10,ry:10
 
-    %% ========== 节点声明 ==========
-    Start[用户 Query]:::client
-    Recall{粗召回<br/>recall_top_k}:::warning
-    Rerank{重排<br/>rerank_top_n}:::business
-    Context{上下文<br/>context_top_n}:::success
-    Candidates["30~100 条"]:::warning
-    TopN["5~10 条"]:::business
-    Final["3~6 条"]:::success
+    %% ========== Khai báo node ==========
+    Start[Query người dùng]:::client
+    Recall{Recall thô<br/>recall_top_k}:::warning
+    Rerank{Rerank<br/>rerank_top_n}:::business
+    Context{Context<br/>context_top_n}:::success
+    Candidates["30~100 bản"]:::warning
+    TopN["5~10 bản"]:::business
+    Final["3~6 bản"]:::success
 
-    %% ========== 连线 ==========
+    %% ========== Nối ==========
     Start --> Recall
-    Recall -->|候选池| Candidates
+    Recall -->|pool ứng viên| Candidates
     Candidates --> Rerank
-    Rerank -->|精选| TopN
+    Rerank -->|chọn kỹ| TopN
     TopN --> Context
-    Context -->|进入 Prompt| Final
+    Context -->|vào Prompt| Final
 
     linkStyle default stroke-width:2px,stroke:#333333,opacity:0.8
 ```
 
-也就是说，Top-K 应该分阶段管理，而不是一个参数管到底。
+Nói cách khác, Top-K nên quản lý theo tầng, chứ không một tham số quản đến cùng.
 
-## Rerank：把“相关”重新排成“可回答”
+## Rerank: sắp xếp lại "liên quan" thành "có thể trả lời"
 
-向量检索用的是双塔模型思路：query 和 document 分别编码，再算向量距离。它快，但不够细。
+Vector retrieval dùng tư duy model hai tháp: query và document lần lượt mã hóa, rồi tính khoảng cách vector. Nó nhanh, nhưng chưa đủ tinh.
 
-Rerank 通常使用 Cross-Encoder 或专用重排模型，把 query 和候选文档放在一起打分。它慢一些，但能更细粒度判断“这段文本是否真的能回答这个问题”。
+Rerank thường dùng Cross-Encoder hoặc model xếp hạng lại chuyên dụng, đặt query và tài liệu ứng viên cùng nhau chấm điểm. Nó chậm hơn, nhưng phán đoán được chi tiết hơn "đoạn văn bản này có thực sự trả lời được câu hỏi này không".
 
-### 为什么 Rerank 有用？
+### Vì sao Rerank có ích?
 
-向量相似度更像“这两段话语义接近吗”，Rerank 更像“这段话能不能回答这个问题”。
+Độ tương đồng vector giống như "hai đoạn này ngữ nghĩa có gần nhau không", Rerank giống như "đoạn này có thể trả lời câu hỏi này không".
 
-举个例子：
+Lấy ví dụ:
 
-用户问：“线程池为什么会触发拒绝策略？”
+Người dùng hỏi: "Vì sao thread pool sẽ kích hoạt chính sách từ chối?"
 
-向量召回可能找出这些片段：
+Vector recall có thể tìm ra các đoạn này:
 
-1. 线程池核心参数说明。
-2. 拒绝策略枚举列表。
-3. 队列满、线程数达到 maximumPoolSize 后触发拒绝策略的条件。
-4. 线程池使用示例代码。
+1. Giải thích tham số cốt lõi thread pool.
+2. Danh sách enum chính sách từ chối.
+3. Điều kiện kích hoạt chính sách từ chối sau khi hàng đợi đầy, số thread đạt maximumPoolSize.
+4. Ví dụ code sử dụng thread pool.
 
-第 1、2 条语义很接近，但第 3 条才是答案核心。Rerank 的价值就是把第 3 条顶上来。
+Điều 1, 2 ngữ nghĩa rất gần, nhưng điều 3 mới là cốt lõi câu trả lời. Giá trị của Rerank chính là đưa điều 3 lên đầu.
 
-### Rerank 放在哪里？
+### Rerank đặt ở đâu?
 
-推荐链路是：
+Chuỗi khuyến nghị là:
 
-1. Metadata 预过滤。
-2. Hybrid Search 粗召回 30 到 100 条。
-3. 去重和相邻片段合并。
-4. Rerank 选出 5 到 10 条。
-5. 上下文压缩后放入 Prompt。
+1. Lọc trước bằng Metadata.
+2. Hybrid Search recall thô 30 đến 100 bản.
+3. Khử trùng lặp và gộp đoạn liền kề.
+4. Rerank chọn 5 đến 10 bản.
+5. Nén context rồi đưa vào Prompt.
 
-如果候选池里没有正确答案，Rerank 也救不了。所以 Rerank 之前要先看 Context Recall。很多人直接上 reranker，发现没效果，根因是粗召回阶段就没把正确文档找出来。
+Nếu trong pool ứng viên không có câu trả lời đúng, Rerank cũng cứu không nổi. Vậy nên trước Rerank phải xem Context Recall. Nhiều người trực tiếp lên reranker, phát hiện không hiệu quả, nguyên nhân gốc là giai đoạn recall thô đã không tìm ra tài liệu đúng.
 
-### LLM Rerank 和专用 Reranker 怎么选？
+### LLM Rerank và Reranker chuyên dụng chọn thế nào?
 
-| 方案                   | 优点                   | 缺点                             | 适用场景                     |
-| ---------------------- | ---------------------- | -------------------------------- | ---------------------------- |
-| Cross-Encoder Reranker | 相关性判断细，成本可控 | 需要选模型，可能有语言和领域偏差 | 通用生产链路                 |
-| LLM 打分               | 可解释性强，规则灵活   | 慢、贵、稳定性受 Prompt 影响     | 小流量、高价值、复杂判断     |
-| 规则重排               | 便宜、可控             | 只能处理明确规则                 | 时间、权限、版本、来源优先级 |
-| 混合重排               | 灵活，适合复杂业务     | 工程复杂度高                     | 企业知识库、客服、合规场景   |
+| Giải pháp              | Ưu điểm                                          | Nhược điểm                                          | Kịch bản phù hợp                                     |
+| ---------------------- | ------------------------------------------------ | --------------------------------------------------- | ---------------------------------------------------- |
+| Cross-Encoder Reranker | Phán đoán liên quan tinh, chi phí kiểm soát được | Cần chọn model, có thể có lệch ngôn ngữ và lĩnh vực | Chuỗi production phổ thông                           |
+| LLM chấm điểm          | Khả năng giải thích mạnh, quy tắc linh hoạt      | Chậm, đắt, độ ổn định chịu ảnh hưởng của Prompt     | Traffic nhỏ, giá trị cao, phán đoán phức tạp         |
+| Rerank quy tắc         | Rẻ, kiểm soát được                               | Chỉ xử lý quy tắc rõ                                | Ưu tiên thời gian, quyền, phiên bản, nguồn           |
+| Rerank hỗn hợp         | Linh hoạt, phù hợp nghiệp vụ phức tạp            | Độ phức tạp engineering cao                         | Knowledge base doanh nghiệp, CSKH, kịch bản tuân thủ |
 
-小 G 的建议：**默认用专用 reranker 做主链路，用规则补业务约束，用 LLM 打分做离线评估或高价值兜底。**
+Gợi ý của Tiểu G: **mặc định dùng reranker chuyên dụng làm chuỗi chính, quy tắc bù ràng buộc nghiệp vụ, LLM chấm điểm làm đánh giá offline hoặc chốt lại giá trị cao.**
 
-## 上下文工程：别把模型当垃圾桶
+## Context engineering: đừng coi model như thùng rác
 
-RAG 的最后一公里是上下文构建，而不是检索本身。
+Chặng cuối của RAG là xây dựng context, chứ không phải bản thân retrieval.
 
-检索结果不是越多越好。LLM 的上下文窗口虽然越来越长，但注意力、延迟、成本和信噪比仍然是硬约束。无关上下文塞得越多，模型越容易出现以下问题：
+Kết quả retrieval không phải càng nhiều càng tốt. Context window của LLM tuy ngày càng dài, nhưng sự chú ý, độ trễ, chi phí và tỷ lệ tín trên nhiễu vẫn là ràng buộc cứng. Context không liên quan nhét càng nhiều, model càng dễ xuất hiện các vấn đề sau:
 
-- 抓错证据，把相似但不相关的段落当依据。
-- 忽略中间位置的重要信息。
-- 回答变长但不聚焦。
-- 引用错来源。
-- 成本和首字延迟明显上升。
+- Chụp nhầm bằng chứng, lấy đoạn tương tự nhưng không liên quan làm căn cứ.
+- Bỏ qua thông tin quan trọng ở vị trí giữa.
+- Câu trả lời dài ra nhưng không tập trung.
+- Trích dẫn sai nguồn.
+- Chi phí và độ trễ chữ đầu tăng rõ.
 
-**上下文工程的目标，是把有限 Token 留给最能回答问题的证据。**
+**Mục tiêu của context engineering, là để Token có hạn cho bằng chứng trả lời được câu hỏi nhất.**
 
-### 上下文压缩
+### Nén context
 
-上下文压缩不是简单摘要，而是围绕当前 query 过滤证据。
+Nén context không phải tóm tắt đơn giản, mà xoay quanh query hiện tại lọc bằng chứng.
 
-常见方式有 3 种：
+Có 3 cách phổ biến:
 
-| 压缩方式     | 做法                       | 风险                 |
-| ------------ | -------------------------- | -------------------- |
-| 选择性抽取   | 只保留和问题相关的原句     | 可能漏掉隐含条件     |
-| 查询相关摘要 | 把长片段压成围绕问题的摘要 | 可能引入改写偏差     |
-| 结构化抽取   | 抽取字段、条件、结论、例外 | 依赖抽取 Schema 设计 |
+| Cách nén           | Cách làm                                     | Rủi ro                               |
+| ------------------ | -------------------------------------------- | ------------------------------------ |
+| Trích có chọn lọc  | Chỉ giữ câu gốc liên quan câu hỏi            | Có thể bỏ sót điều kiện ẩn           |
+| Tóm tắt theo query | Ép đoạn dài thành tóm tắt xoay quanh câu hỏi | Có thể đưa lệch viết lại             |
+| Trích có cấu trúc  | Trích trường, điều kiện, kết luận, ngoại lệ  | Phụ thuộc thiết kế extraction Schema |
 
-LangChain 的 ContextualCompressionRetriever 就是“基础检索器 + 压缩器”的组合思路。实际落地时，可以先做便宜的规则过滤和去重，再对长片段做 LLM 压缩，避免每个 Chunk 都调用模型。
+ContextualCompressionRetriever của LangChain là tư duy tổ hợp "retriever cơ bản + compressor". Khi triển khai thực tế, có thể trước tiên làm lọc quy tắc rẻ và khử trùng lặp, rồi với đoạn dài làm nén LLM, tránh mỗi Chunk đều gọi model.
 
-### 上下文排序也会影响答案
+### Sắp xếp context cũng ảnh hưởng câu trả lời
 
-不要随便把检索结果按返回顺序拼接。
+Đừng tùy tiện nối kết quả retrieval theo thứ tự trả về.
 
-更合理的排序策略：
+Chiến lược sắp xếp hợp lý hơn:
 
-- 最相关证据放前面。
-- 同一文档的相邻片段尽量保持原始顺序。
-- 互相矛盾的片段标注更新时间和版本。
-- 被引用的片段保留来源信息。
-- 低置信度证据不要和高置信度证据混在一起。
+- Bằng chứng liên quan nhất để đầu.
+- Đoạn liền kề cùng một tài liệu cố giữ thứ tự gốc.
+- Đoạn mâu thuẫn nhau đánh dấu thời gian cập nhật và phiên bản.
+- Đoạn bị trích dẫn giữ thông tin nguồn.
+- Bằng chứng độ tin cậy thấp đừng trộn với độ tin cậy cao.
 
-如果问题需要跨文档对比，可以按“主题分组”组织上下文；如果问题需要按时间分析，可以按时间线组织上下文；如果问题是故障排查，可以按“现象、原因、处理步骤、注意事项”组织上下文。
+Nếu câu hỏi cần so sánh xuyên tài liệu, có thể theo "nhóm chủ đề" tổ chức context; nếu câu hỏi cần phân tích theo thời gian, có thể theo dòng thời gian tổ chức context; nếu câu hỏi là xử lý sự cố, có thể theo "hiện tượng, nguyên nhân, bước xử lý, lưu ý" tổ chức context.
 
-这就是 Context Engineering 在 RAG 里的具体落点：**不仅决定检索什么，还决定检索结果以什么结构进入模型。**
+Đây chính là điểm rơi cụ thể của Context Engineering trong RAG: **không chỉ quyết định retrieval gì, mà còn quyết định kết quả retrieval vào model với cấu trúc gì.**
 
-### Prompt 要限制证据边界
+### Prompt phải giới hạn ranh giới bằng chứng
 
-RAG 生成 Prompt 至少要明确 4 条规则：
+Prompt sinh RAG ít nhất phải nêu rõ 4 quy tắc:
 
-- 只基于给定上下文回答。
-- 上下文不足时明确说无法判断。
-- 每个关键结论尽量附来源。
-- 不要把相似文档当成当前版本事实。
+- Chỉ dựa trên context đã cho trả lời.
+- Context không đủ thì nói rõ không phán đoán được.
+- Mỗi kết luận then chốt cố gắng đính kèm nguồn.
+- Đừng coi tài liệu tương tự là sự thật phiên bản hiện tại.
 
-这几条看起来朴素，但很关键。很多幻觉不是模型不知道，而是 Prompt 没有告诉它“证据不足时可以拒答”。
+Mấy quy tắc này trông đơn giản, nhưng rất quan trọng. Nhiều hallucination không phải model không biết, mà là Prompt không bảo nó "khi bằng chứng không đủ có thể từ chối trả lời".
 
-## 评估：不做评估，优化就是玄学
+## Đánh giá: không đánh giá, tối ưu là huyền học
 
-RAG 评估要拆开看。只看最终答案分数，很难知道到底是哪一环坏了。
+Đánh giá RAG phải tách ra xem. Chỉ nhìn điểm câu trả lời cuối, rất khó biết rốt cuộc khâu nào hỏng.
 
-### 建一套最小评估集
+### Xây một tập đánh giá tối thiểu
 
-不用一开始就搞几千条样本。先从 50 到 100 条高价值问题开始：
+Không cần ngay từ đầu làm mấy nghìn mẫu. Bắt đầu từ 50 đến 100 câu hỏi giá trị cao:
 
-- 高频用户问题。
-- 线上失败问题。
-- 业务关键问题。
-- 多跳推理问题。
-- 精确匹配问题，例如错误码、版本号、SKU。
-- 容易越权或过期的问题。
-- 应该拒答的问题。
+- Câu hỏi người dùng tần suất cao.
+- Câu hỏi thất bại online.
+- Câu hỏi then chốt nghiệp vụ.
+- Câu hỏi suy luận nhiều chặng.
+- Câu hỏi khớp chính xác, ví dụ mã lỗi, số phiên bản, SKU.
+- Câu hỏi dễ vượt quyền hoặc quá hạn.
+- Câu hỏi nên từ chối trả lời.
 
-每条样本最好包含：
+Mỗi mẫu tốt nhất nên gồm:
 
-- `question`：用户原始问题。
-- `golden_answer`：理想答案。
-- `golden_context`：应该命中的证据片段或文档。
-- `metadata_filter`：必要过滤条件。
-- `answer_type`：事实问答、流程说明、对比、拒答、摘要等。
+- `question`: câu hỏi gốc người dùng.
+- `golden_answer`: câu trả lời lý tưởng.
+- `golden_context`: đoạn bằng chứng hoặc tài liệu nên trúng.
+- `metadata_filter`: điều kiện lọc cần thiết.
+- `answer_type`: hỏi đáp sự kiện, diễn giải quy trình, so sánh, từ chối, tóm tắt...
 
-### 检索指标和生成指标分开
+### Chỉ số retrieval và chỉ số sinh tách riêng
 
-| 指标              | 衡量对象   | 说明                                  |
-| ----------------- | ---------- | ------------------------------------- |
-| Hit Rate@K        | 召回       | 正确证据是否出现在前 K 个结果里       |
-| MRR               | 排序       | 第一个正确证据排得有多靠前            |
-| Context Recall    | 召回完整性 | 回答所需证据是否被找全                |
-| Context Precision | 上下文纯度 | 放入上下文的内容有多少是真的相关      |
-| Faithfulness      | 生成忠实度 | 答案是否能被上下文支撑                |
-| Answer Relevancy  | 回答相关性 | 答案是否真正回应用户问题              |
-| Citation Accuracy | 引用准确性 | 引用位置是否支撑对应结论              |
-| Latency / Cost    | 工程指标   | P95 延迟、Token、重排耗时、缓存命中率 |
+| Chỉ số            | Đối tượng đo             | Giải thích                                             |
+| ----------------- | ------------------------ | ------------------------------------------------------ |
+| Hit Rate@K        | recall                   | Bằng chứng đúng có xuất hiện trong K kết quả đầu không |
+| MRR               | sắp xếp                  | Bằng chứng đúng đầu tiên xếp gần đầu đến đâu           |
+| Context Recall    | độ đầy recall            | Bằng chứng cần cho câu trả lời có tìm đủ không         |
+| Context Precision | độ tinh context          | Nội dung vào context có bao nhiêu thật sự liên quan    |
+| Faithfulness      | độ trung thành sinh      | Câu trả lời có được context chống đỡ không             |
+| Answer Relevancy  | độ liên quan câu trả lời | Câu trả lời có thật sự đáp câu hỏi người dùng không    |
+| Citation Accuracy | độ chính xác trích dẫn   | Vị trí trích dẫn có chống đỡ kết luận tương ứng không  |
+| Latency / Cost    | chỉ số engineering       | Độ trễ P95, Token, thời gian rerank, tỷ lệ trúng cache |
 
-RAGAS、DeepEval、LangSmith 等工具都支持围绕上下文相关性、忠实度、答案相关性做评估。RAGAS 文档里把 Context Precision、Context Recall、Faithfulness、Response Relevancy 等指标拆得比较清楚；DeepEval 也支持把检索和生成指标组合成端到端测试。
+RAGAS, DeepEval, LangSmith và các công cụ khác đều hỗ trợ đánh giá quanh độ liên quan context, độ trung thành, độ liên quan câu trả lời. Tài liệu RAGAS tách khá rõ Context Precision, Context Recall, Faithfulness, Response Relevancy; DeepEval cũng hỗ trợ tổ hợp chỉ số retrieval và sinh thành test end-to-end.
 
-但要记住：**LLM-as-a-Judge 不是裁判真理，它只是辅助信号。**
+Nhưng phải nhớ: **LLM-as-a-Judge không phải chân lý trọng tài, nó chỉ là tín hiệu hỗ trợ.**
 
-上线前至少抽样人工复核一批结果，校准自动评估器是否偏向长答案、是否漏判引用错误、是否对中文领域术语不敏感。
+Trước khi lên production phải ít nhất lấy mẫu duyệt lại thủ công một loạt kết quả, hiệu chuẩn xem bộ đánh giá tự động có thiên về câu trả lời dài không, có bỏ sót lỗi trích dẫn không, có không nhạy với thuật ngữ lĩnh vực tiếng Trung không.
 
-### 每次改动都要版本化
+### Mỗi lần đổi đều phải version hóa
 
-建议记录这些版本：
+Khuyên ghi các phiên bản này:
 
-- 文档解析器版本。
-- Chunk 策略版本。
-- Embedding 模型版本。
-- 索引参数版本。
-- Query Rewrite Prompt 版本。
-- Rerank 模型版本。
-- 生成 Prompt 版本。
-- 评估集版本。
+- Phiên bản document parser.
+- Phiên bản chiến lược Chunk.
+- Phiên bản Embedding model.
+- Phiên bản tham số chỉ mục.
+- Phiên bản Query Rewrite Prompt.
+- Phiên bản Rerank model.
+- Phiên bản Prompt sinh.
+- Phiên bản tập đánh giá.
 
-否则今天效果变好，明天一更新知识库又变差，你很难知道是哪一步引入了回归。
+Nếu không, hôm nay hiệu quả tốt hơn, ngày mai cập nhật knowledge base lại tệ đi, bạn rất khó biết là bước nào đưa về hồi quy.
 
-## 常见错误
+## Lỗi thường gặp
 
-### 错误一：只调 embedding
+### Lỗi một: chỉ chỉnh embedding
 
-Embedding 很重要，但它不是全部。
+Embedding rất quan trọng, nhưng nó không phải tất cả.
 
-如果 PDF 表格解析错了、Chunk 把条件切丢了、Metadata 没有过滤权限、召回候选里没有正确文档，换再贵的 embedding 模型也只是让错误更稳定。
+Nếu bảng PDF phân giải sai, Chunk cắt mất điều kiện, Metadata không lọc quyền, pool ứng viên recall không có tài liệu đúng, đổi model embedding đắt hơn nữa cũng chỉ khiến lỗi ổn định hơn.
 
-正确做法：先用评估集判断是召回问题、排序问题、上下文问题还是生成问题，再决定要不要换 embedding。
+Cách đúng: trước tiên dùng tập đánh giá phán đoán là vấn đề recall, vấn đề sắp xếp, vấn đề context hay vấn đề sinh, rồi mới quyết định có đổi embedding không.
 
-### 错误二：不做评估
+### Lỗi hai: không đánh giá
 
-“我感觉好多了”不是指标。
+"Tôi cảm thấy tốt hơn rồi" không phải chỉ số.
 
-RAG 的改动经常是局部变好、整体变差。比如 Top-K 变大后某些问题能答了，但另一些问题开始被噪声干扰。如果没有固定样本集，你只会记住变好的案例。
+Thay đổi RAG thường là cục bộ tốt hơn, tổng thể tệ hơn. Ví dụ Top-K lớn lên một số câu trả lời được, nhưng một số câu khác bắt đầu bị nhiễu ảnh hưởng. Nếu không có tập mẫu cố định, bạn chỉ nhớ được trường hợp tốt lên.
 
-正确做法：建立最小评估集，至少覆盖高频问题、失败问题、精确匹配问题、拒答问题。
+Cách đúng: xây tập đánh giá tối thiểu, ít nhất bao phủ câu hỏi tần suất cao, câu hỏi thất bại, câu hỏi khớp chính xác, câu hỏi từ chối.
 
-### 错误三：盲目扩大 Top-K
+### Lỗi ba: mù quáng mở rộng Top-K
 
-Top-K 变大不是免费的。
+Top-K lớn lên không miễn phí.
 
-它会增加重排成本、Prompt Token、模型延迟，还会降低上下文信噪比。很多时候应该提高粗召回候选池，再用 Rerank 和压缩筛掉噪声，而不是把更多内容直接塞给模型。
+Nó tăng chi phí rerank, Prompt Token, độ trễ model, còn giảm tỷ lệ tín trên nhiễu context. Nhiều khi nên tăng pool ứng viên recall thô, rồi dùng Rerank và nén lọc nhiễu, chứ không phải đưa thêm nội dung trực tiếp cho model.
 
-正确做法：区分粗召回 Top-K、重排 Top-N、上下文 Top-N。
+Cách đúng: phân biệt Top-K recall thô, Top-N rerank, Top-N context.
 
-### 错误四：把无关上下文塞给模型
+### Lỗi bốn: nhét context không liên quan cho model
 
-上下文窗口不是仓库，更不是垃圾桶。
+Context window không phải kho, càng không phải thùng rác.
 
-无关上下文会稀释注意力，也会给模型制造错误依据。尤其是多个版本的政策、相似产品文档、相邻但无关段落混在一起时，模型很容易合成一个看似合理但事实错误的答案。
+Context không liên quan sẽ pha loãng sự chú ý, cũng tạo căn cứ sai cho model. Đặc biệt khi chính sách nhiều phiên bản, tài liệu sản phẩm tương tự, đoạn liền kề nhưng không liên quan trộn vào nhau, model rất dễ tổng hợp ra một câu trả lời trông hợp lý nhưng sự thật sai.
 
-正确做法：去重、压缩、按证据强度排序，并明确版本和来源。
+Cách đúng: khử trùng lặp, nén, sắp xếp theo độ mạnh bằng chứng, và nêu rõ phiên bản và nguồn.
 
-### 错误五：忽略拒答能力
+### Lỗi năm: bỏ qua khả năng từ chối trả lời
 
-RAG 不应该永远给答案。
+RAG không nên lúc nào cũng đưa câu trả lời.
 
-当检索结果置信度低、证据互相矛盾、用户无权限访问关键文档时，系统应该拒答、追问或升级人工，而不是编一个流畅答案。
+Khi độ tin cậy kết quả retrieval thấp, bằng chứng mâu thuẫn nhau, người dùng không có quyền truy cập tài liệu then chốt, hệ thống nên từ chối, hỏi lại hoặc nâng lên người, chứ không phải bịa một câu trả lời trôi chảy.
 
-正确做法：在检索后增加证据质量判断，低置信度时触发重写查询、扩大范围、外部搜索或拒答。
+Cách đúng: sau retrieval thêm phán đoán chất lượng bằng chứng, độ tin cậy thấp thì kích hoạt viết lại truy vấn, mở rộng phạm vi, tìm kiếm ngoài hoặc từ chối.
 
-## 一套可落地的排查路径
+## Một đường truy vấn triển khai được
 
-最后给一套小 G 比较推荐的排查路径。线上 RAG 效果差时，不要一上来改 Prompt 或换模型，按下面顺序走。
+Cuối cùng cho một đường truy vấn mà Tiểu G khá khuyến nghị. Khi hiệu quả RAG online tệ, đừng vừa lên đã sửa Prompt hoặc đổi model, đi theo thứ tự dưới.
 
 ```mermaid
 flowchart TB
-    %% ========== classDef 配色声明 ==========
+    %% ========== Khai báo màu classDef ==========
     classDef client fill:#00838F,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef business fill:#E99151,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef danger fill:#C44545,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef success fill:#4CA497,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef warning fill:#F39C12,color:#FFFFFF,stroke:none,rx:10,ry:10
 
-    %% ========== 节点声明 ==========
-    Start[失败样本]:::danger
-    Step1{正确证据<br/>进入候选池?}:::client
-    Step2{正确证据<br/>排名靠前?}:::business
-    Step3{上下文<br/>正确?}:::business
-    Step4{模型<br/>正确回答?}:::business
-    Step5[回归测试]:::success
-    RecallFix[查召回]:::warning
-    RerankFix[查排序]:::warning
-    ContextFix[查上下文]:::warning
-    PromptFix[查 Prompt]:::warning
+    %% ========== Khai báo node ==========
+    Start[Mẫu thất bại]:::danger
+    Step1{Bằng chứng đúng<br/>vào pool ứng viên?}:::client
+    Step2{Bằng chứng đúng<br/>xếp gần đầu?}:::business
+    Step3{Context<br/>đúng?}:::business
+    Step4{Model<br/>trả lời đúng?}:::business
+    Step5[Test hồi quy]:::success
+    RecallFix[Tra recall]:::warning
+    RerankFix[Tra sắp xếp]:::warning
+    ContextFix[Tra context]:::warning
+    PromptFix[Tra Prompt]:::warning
 
-    %% ========== 连线 ==========
+    %% ========== Nối ==========
     Start --> Step1
-    Step1 -->|否| RecallFix
-    Step1 -->|是| Step2
-    Step2 -->|否| RerankFix
-    Step2 -->|是| Step3
-    Step3 -->|否| ContextFix
-    Step3 -->|是| Step4
-    Step4 -->|是| Step5
-    Step4 -.->|否| PromptFix
+    Step1 -->|không| RecallFix
+    Step1 -->|có| Step2
+    Step2 -->|không| RerankFix
+    Step2 -->|có| Step3
+    Step3 -->|không| ContextFix
+    Step3 -->|có| Step4
+    Step4 -->|có| Step5
+    Step4 -.->|không| PromptFix
 
     linkStyle default stroke-width:2px,stroke:#333333,opacity:0.8
 ```
 
-### 第一步：把失败样本分类
+### Bước một: phân loại mẫu thất bại
 
-先看 20 到 50 条失败问题，把它们分成几类：
+Trước tiên xem 20 đến 50 câu hỏi thất bại, chia chúng thành vài loại:
 
-- 完全没召回正确文档。
-- 召回了正确文档，但排名靠后。
-- 正确文档进入上下文，但答案没用上。
-- 答案用了上下文，但理解错了。
-- 引用了不存在或不相关来源。
-- 应该拒答却强行回答。
-- 权限、时间、版本过滤错误。
+- Hoàn toàn không recall được tài liệu đúng.
+- Recall được tài liệu đúng, nhưng xếp gần sau.
+- Tài liệu đúng vào context, nhưng câu trả lời không dùng.
+- Câu trả lời dùng context, nhưng hiểu sai.
+- Trích dẫn nguồn không tồn tại hoặc không liên quan.
+- Nên từ chối lại cưỡng ép trả lời.
+- Quyền, thời gian, lọc phiên bản sai.
 
-这一步的价值很高，因为每类问题对应的修复方向完全不同。
+Giá trị của bước này rất cao, vì mỗi loại vấn đề hướng sửa hoàn toàn khác.
 
-### 第二步：先看正确证据有没有进入候选池
+### Bước hai: trước tiên xem bằng chứng đúng có vào pool ứng viên không
 
-如果粗召回 Top-50 里都没有正确证据，优先查：
+Nếu recall thô Top-50 không có bằng chứng đúng, ưu tiên tra:
 
-- 文档是否入库。
-- 文档解析是否正确。
-- Chunk 是否切断关键事实。
-- Metadata 过滤是否过严。
-- Query 是否需要改写、分解或 HyDE。
-- 是否需要 BM25 或 Hybrid Search。
+- Tài liệu có vào kho không.
+- Phân giải tài liệu có đúng không.
+- Chunk có cắt đứt sự kiện then chốt không.
+- Lọc Metadata có quá nghiêm không.
+- Query có cần rewrite, decompose hoặc HyDE không.
+- Có cần BM25 hoặc Hybrid Search không.
 
-这时不要先上 Rerank。候选池里没有答案，重排只是重新排列错误。
+Lúc này đừng lên Rerank trước. Pool ứng viên không có câu trả lời, sắp xếp lại chỉ là sắp lại lỗi.
 
-### 第三步：正确证据在候选池里但没进上下文
+### Bước ba: bằng chứng đúng trong pool ứng viên nhưng không vào context
 
-如果正确证据在 Top-50，但不在最终上下文，重点查：
+Nếu bằng chứng đúng trong Top-50, nhưng không trong context cuối, trọng điểm tra:
 
-- Rerank 模型是否适配语言和领域。
-- Rerank 输入是否过长被截断。
-- 分数融合是否让关键词结果被压下去。
-- 相邻 Chunk 合并是否把噪声一起带入。
-- `rerank_top_n` 是否过小。
+- Model Rerank có thích ứng ngôn ngữ và lĩnh vực không.
+- Input Rerank có quá dài bị cắt cụt không.
+- Hợp nhất điểm có khiến kết quả từ khóa bị ép xuống không.
+- Gộp Chunk liền kề có kéo theo nhiễu không.
+- `rerank_top_n` có quá nhỏ không.
 
-这类问题通常通过重排、融合权重、候选池大小和去重策略解决。
+Loại vấn đề này thường qua rerank, trọng số hợp nhất, kích thước pool ứng viên và chiến lược khử trùng lặp giải quyết.
 
-### 第四步：上下文正确但答案错误
+### Bước bốn: context đúng nhưng câu trả lời sai
 
-如果正确证据已经放进 Prompt，模型还是答错，重点查：
+Nếu bằng chứng đúng đã đưa vào Prompt, model vẫn trả lời sai, trọng điểm tra:
 
-- Prompt 是否要求基于上下文回答。
-- 上下文是否有互相冲突的版本。
-- 证据是否在上下文中间位置被淹没。
-- 问题是否需要多跳推理或对比表。
-- 是否需要结构化输出和引用约束。
-- 是否需要先压缩再生成。
+- Prompt có yêu cầu dựa trên context trả lời không.
+- Context có phiên bản mâu thuẫn nhau không.
+- Bằng chứng có bị nhấn chìm ở vị trí giữa context không.
+- Câu hỏi có cần suy luận nhiều chặng hoặc bảng so sánh không.
+- Có cần output có cấu trúc và ràng buộc trích dẫn không.
+- Có cần nén trước rồi mới sinh không.
 
-这时才应该重点调 Prompt、上下文排序、压缩和生成模型。
+Lúc này mới nên trọng điểm điều chỉnh Prompt, sắp xếp context, nén và model sinh.
 
-### 第五步：建立回归测试
+### Bước năm: xây test hồi quy
 
-每修一个失败样本，就把它加入评估集。
+Mỗi lần sửa một mẫu thất bại, đều đưa nó vào tập đánh giá.
 
-RAG 系统最怕“修 A 坏 B”。只有失败样本持续沉淀，系统才会越调越稳。
+Hệ thống RAG sợ nhất "sửa A hỏng B". Chỉ khi mẫu thất bại lắng đọng liên tục, hệ thống mới càng chỉnh càng ổn.
 
-## 生产调优建议
+## Gợi ý điều chỉnh production
 
-如果你要从零搭一套企业 RAG，小 G 建议按这个优先级落地：
+Nếu bạn muốn dựng từ con số 0 một RAG doanh nghiệp, Tiểu G khuyên theo ưu tiên này triển khai:
 
-1. 先做数据治理：保证文档解析、去噪、标题层级、页码、表格、Metadata 正确。
-2. 建立最小评估集：先用 50 条真实问题跑通回放流程。
-3. 调 Chunk 策略：对比固定长度、结构化切分、Parent-Child、语义切分。
-4. 引入 Hybrid Search：向量召回负责语义，BM25 或稀疏向量负责精确词。
-5. 加入 Query Rewrite：优先处理口语化、缩写、多意图和多跳问题。
-6. 加 Rerank：粗召回扩大候选池，重排后只保留高质量证据。
-7. 做上下文压缩：去重、裁剪、摘要、结构化抽取，控制 Token 和噪声。
-8. 完善生成约束：证据不足就拒答，关键结论带引用。
-9. 灰度和监控：按版本记录指标，持续收集失败样本。
+1. Trước tiên làm quản trị dữ liệu: đảm bảo phân giải tài liệu, khử nhiễu, cấp tiêu đề, số trang, bảng, Metadata đúng.
+2. Xây tập đánh giá tối thiểu: trước tiên dùng 50 câu hỏi thật chạy thông quy trình replay.
+3. Chỉnh chiến lược Chunk: so sánh độ dài cố định, chia có cấu trúc, Parent-Child, chia ngữ nghĩa.
+4. Đưa Hybrid Search: vector recall đảm nhận ngữ nghĩa, BM25 hoặc sparse vector đảm nhận từ chính xác.
+5. Thêm Query Rewrite: ưu tiên xử lý khẩu ngữ, viết tắt, đa ý định và câu hỏi nhiều chặng.
+6. Thêm Rerank: recall thô mở rộng pool ứng viên, rerank xong chỉ giữ bằng chứng chất lượng cao.
+7. Làm nén context: khử trùng lặp, cắt bớt, tóm tắt, trích có cấu trúc, kiểm soát Token và nhiễu.
+8. Hoàn thiện ràng buộc sinh: bằng chứng không đủ thì từ chối, kết luận then chốt kèm trích dẫn.
+9. Gray và giám sát: ghi chỉ số theo phiên bản, liên tục thu gom mẫu thất bại.
 
-这套路径不花哨，但能收敛。
+Đường này không màu mè, nhưng có thể thu hẹp.
 
-## 要点回顾
+## Ôn lại điểm chính
 
-RAG 优化不是“换一个更强 embedding 模型”这么简单。真正有效的调优，必须沿着完整链路拆：
+Tối ưu hóa RAG không phải "đổi một model embedding mạnh hơn" đơn giản như vậy. Điều chỉnh thật sự hiệu quả, phải tách theo chuỗi hoàn chỉnh:
 
-- **数据决定上限**：解析、清洗、结构保留、Metadata 是地基。
-- Chunk 决定召回粒度：不要迷信默认大小，要用评估集选参数。
-- Hybrid Search 提升稳健性：向量负责语义，BM25 负责精确匹配。
-- Query Rewrite 解决表达差异：改写、分解、HyDE、Self-Query 都是让问题更可检索。
-- Rerank 决定证据顺序：粗召回要全，重排要准。
-- 上下文工程决定信噪比：压缩、去重、排序、引用比盲目塞内容更重要。
-- 评估决定能否持续优化：没有测试集、没有回放、没有指标，就只能靠感觉调参。
+- **Dữ liệu quyết định trần**: phân giải, làm sạch, giữ cấu trúc, Metadata là nền móng.
+- Chunk quyết định độ hạt recall: đừng mê tín kích thước mặc định, phải dùng tập đánh giá chọn tham số.
+- Hybrid Search tăng độ vững: vector đảm nhận ngữ nghĩa, BM25 đảm nhận khớp chính xác.
+- Query Rewrite giải quyết khác biệt diễn đạt: rewrite, decompose, HyDE, Self-Query đều để câu hỏi truy vấn được hơn.
+- Rerank quyết định thứ tự bằng chứng: recall thô phải đầy, rerank phải chính xác.
+- Context engineering quyết định tỷ lệ tín trên nhiễu: nén, khử trùng lặp, sắp xếp, trích dẫn quan trọng hơn nhét nội dung mù quáng.
+- Đánh giá quyết định có thể tối ưu bền vững không: không có tập test, không có replay, không có chỉ số, chỉ có thể dựa vào cảm giác chỉnh tham số.
 
-最后记住一句话：**RAG 的瓶颈通常不在某一个参数，而在证据从原始文档走到最终答案的整条路径上。**
+Cuối cùng nhớ một câu: **nút thắt của RAG thường không nằm ở một tham số nào, mà nằm trên toàn bộ đường đi bằng chứng từ tài liệu gốc đến câu trả lời cuối.**
 
-## 参考资料
+## Tài liệu tham khảo
 
 - [Production RAG: The Five Decisions Behind Every System That Works](https://www.bestblogs.dev/article/899eff0a)
-- [RAG 优化字典：20 种 RAG 优化方法全解析](https://cloud.tencent.com/developer/article/2634637)
+- [Từ điển tối ưu RAG: phân tích đầy đủ 20 phương pháp tối ưu RAG](https://cloud.tencent.com/developer/article/2634637)
 - [Weaviate Hybrid Search Documentation](https://docs.weaviate.io/weaviate/concepts/search/hybrid-search)
 - [Microsoft Azure AI Search: Hybrid Search RRF](https://learn.microsoft.com/en-us/azure/search/hybrid-search-ranking)
 - [Google Vertex AI Vector Search: Hybrid Search](https://docs.cloud.google.com/vertex-ai/docs/vector-search/about-hybrid-search)

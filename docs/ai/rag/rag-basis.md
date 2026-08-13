@@ -1,272 +1,272 @@
 ---
-title: 万字详解 RAG 基础概念
-description: 深入解析 RAG（检索增强生成）核心概念，涵盖 RAG 工作原理、Embedding、相似度度量、RAG vs 微调、RAG vs 长上下文、核心优势与局限性等高频面试考点。
-category: AI 应用开发
+title: Giải thích chi tiết các khái niệm cơ bản của RAG
+description: Phân tích sâu các khái niệm cốt lõi của RAG (Retrieval-Augmented Generation), bao phủ nguyên lý hoạt động của RAG, Embedding, độ đo độ tương tự, RAG vs fine-tuning, RAG vs long context, ưu điểm cốt lõi và hạn chế cùng các điểm thi phỏng vấn tần suất cao.
+category: Phát triển ứng dụng AI
 head:
   - - meta
     - name: keywords
-      content: RAG,检索增强生成,LLM,知识库,Embedding,语义检索,向量检索,微调,Fine-tuning,长上下文,企业知识库
+      content: RAG,Retrieval-Augmented Generation,LLM,Knowledge Base,Embedding,Semantic Search,Vector Search,Fine-tuning,Long Context,Enterprise Knowledge Base
 ---
 
-做企业知识库问答时，很多团队的第一反应都是：把文档全塞给大模型，让它自己读。
+Khi làm hỏi đáp trên knowledge base doanh nghiệp, phản ứng đầu tiên của nhiều team đều là: nhét hết tài liệu cho LLM, để nó tự đọc.
 
-文档少的时候，这招确实能跑。一旦知识库涨到几十万字，问题很快就出来了：每次请求都可能撞 Token 上限，刚更新的内容模型也不一定知道。更现实一点，企业文档还要考虑权限、溯源、成本和延迟，不能靠“全塞进去”硬扛。
+Khi tài liệu ít, cách này quả thực chạy được. Một khi knowledge base phình lên đến vài trăm nghìn chữ, vấn đề nhanh chóng xuất hiện: mỗi request đều có thể chạm giới hạn Token, nội dung vừa cập nhật model cũng chưa chắc biết. Thực tế hơn, tài liệu doanh nghiệp còn phải xét quyền, truy nguồn, chi phí và độ trễ, không thể dựa vào "nhét hết vào" để cố chịu.
 
-RAG 要做的事其实很直接：在让大模型回答之前，先从知识库里找出相关内容，再把这些内容交给模型，让它基于证据生成答案。
+Việc RAG phải làm thật ra rất trực tiếp: trước khi để LLM trả lời, trước tiên từ knowledge base tìm ra nội dung liên quan, rồi đưa nội dung này cho model, để nó dựa trên bằng chứng sinh câu trả lời.
 
-这篇文章接近 6200 字，主要讲清楚几件事：
+Bài viết này gần 6200 chữ, chủ yếu làm rõ vài việc:
 
-1. RAG 是什么、为什么需要它；
-2. 检索、增强、生成三个环节怎么配合；
-3. Embedding 和相似度度量到底在做什么；
-4. RAG 和传统搜索、微调、长上下文分别适合什么场景；
-5. RAG 的优势和坑分别在哪里。
+1. RAG là gì, vì sao cần nó;
+2. Ba khâu truy vấn, tăng cường, sinh phối hợp với nhau thế nào;
+3. Embedding và độ đo độ tương tự thực sự đang làm gì;
+4. RAG và tìm kiếm truyền thống, fine-tuning, long context lần lượt phù hợp với kịch bản nào;
+5. Ưu điểm và hố của RAG nằm ở đâu.
 
-## 什么是 RAG？
+## RAG là gì?
 
-**RAG（Retrieval-Augmented Generation，检索增强生成）** 就是把信息检索和大语言模型绑在一起用。系统先从知识库里检索出和当前问题相关的片段，知识库可以是数据库、文档集合，也可以是企业内部系统。然后把这些片段和原始问题一起喂给 LLM，让模型基于检索内容回答，而不是只靠训练时记住的知识。
+**RAG (Retrieval-Augmented Generation, sinh tăng cường truy vấn)** chính là buộc truy vấn thông tin và LLM dùng chung với nhau. Hệ thống trước tiên truy vấn từ knowledge base các đoạn liên quan đến câu hỏi hiện tại, knowledge base có thể là cơ sở dữ liệu, tập tài liệu, cũng có thể là hệ thống nội bộ doanh nghiệp. Rồi đưa các đoạn này cùng câu hỏi gốc cho LLM, khiến model trả lời dựa trên nội dung truy vấn, thay vì chỉ dựa vào kiến thức ghi nhớ lúc huấn luyện.
 
-![RAG 示意图](https://oss.javaguide.cn/github/javaguide/ai/rag/rag-simplified-architecture-diagram.jpeg)
+![Sơ đồ RAG](https://oss.javaguide.cn/github/javaguide/ai/rag/rag-simplified-architecture-diagram.jpeg)
 
-## 为什么需要 RAG？
+## Vì sao cần RAG?
 
-![RAG（检索增强生成）如何解决 LLM 的核心挑战](https://oss.javaguide.cn/github/javaguide/ai/rag/rag-llm-challenges.png)
+![RAG (Retrieval-Augmented Generation) giải quyết thách thức cốt lõi của LLM như thế nào](https://oss.javaguide.cn/github/javaguide/ai/rag/rag-llm-challenges.png)
 
-LLM 训练数据再大，也绕不开几个问题。RAG 正好可以在这些地方进行弥补。
+Dữ liệu huấn luyện của LLM có lớn đến đâu, cũng không né được vài vấn đề. RAG vừa vặn có thể bù đắp ở những chỗ này.
 
-**第一是知识时效性。**
+**Thứ nhất là tính kịp thời của tri thức.**
 
-预训练模型的知识会停在训练数据截止时间点。训练后发生的新事件、新政策、新产品文档，模型默认是不知道的，除非通过联网、工具调用或外部知识注入来补。RAG 的做法是动态检索外部知识源，把最新的相关内容直接送给 LLM，让它不用只依赖参数里的旧知识。
+Kiến thức của model tiền huấn luyện sẽ dừng ở thời điểm cắt dữ liệu huấn luyện. Các sự kiện mới, chính sách mới, tài liệu sản phẩm mới sau khi huấn luyện, model theo mặc định là không biết, trừ khi bổ sung qua lưới, gọi tool hoặc tiêm tri thức bên ngoài. Cách làm của RAG là truy vấn động nguồn tri thức bên ngoài, đưa trực tiếp nội dung mới nhất liên quan cho LLM, khiến nó không cần chỉ dựa vào kiến thức cũ trong tham số.
 
-**第二是私有数据访问。**
+**Thứ hai là truy cập dữ liệu riêng tư.**
 
-企业内部的产品文档、知识库、客户数据，不可能让公开 LLM 随便访问。RAG 在用户提问时只提取和问题相关的片段给 LLM，不需要暴露全部数据，模型也能基于企业自己的知识回答。
+Tài liệu sản phẩm, knowledge base, dữ liệu khách hàng nội bộ doanh nghiệp, không thể để LLM công khai truy cập tùy tiện. RAG khi người dùng hỏi chỉ trích xuất đoạn liên quan đến câu hỏi cho LLM, không cần phơi bày toàn bộ dữ liệu, model cũng có thể dựa trên kiến thức của chính doanh nghiệp để trả lời.
 
-**第三是幻觉问题。**
+**Thứ ba là vấn đề hallucination.**
 
-LLM 编造事实这件事大家都遇到过。RAG 通过提供明确参考文本，让模型尽量基于证据回答，确实能降低幻觉概率。但别指望它彻底消除幻觉。检索错误、上下文噪声、引用错配、模型不遵循指令，都可能导致错误答案。生产级 RAG 通常还要配引用校验、答案评估、拒答机制和人工反馈闭环。
+Việc LLM bịa đặt sự thật thì ai cũng từng gặp. RAG bằng cách cung cấp văn bản tham chiếu rõ ràng, khiến model cố gắng trả lời dựa trên bằng chứng, quả thực có thể giảm xác suất hallucination. Nhưng đừng trông chờ nó triệt tiêu hallucination hoàn toàn. Lỗi truy vấn, nhiễu context, trích dẫn gắn nhầm, model không tuân theo chỉ thị, đều có thể dẫn đến câu trả lời sai. RAG production-level thường còn phải kèm kiểm tra trích dẫn, đánh giá câu trả lời, cơ chế từ chối trả lời và vòng phản hồi thủ công.
 
-## RAG 的常见用途有哪些？
+## Các công dụng phổ biến của RAG là gì?
 
-RAG 最适合“答案依赖外部资料，并且资料会变化或很长”的场景。它先从知识库里检索相关内容，再让大模型基于检索结果生成回答，减少胡编，同时提高可追溯性。
+RAG phù hợp nhất với kịch bản "câu trả lời phụ thuộc tài liệu bên ngoài, và tài liệu có thể thay đổi hoặc rất dài". Nó trước tiên truy vấn nội dung liên quan từ knowledge base, rồi để LLM dựa trên kết quả truy vấn sinh câu trả lời, giảm bịa đặt, đồng thời tăng khả năng truy vết.
 
-常见场景包括这些：
+Kịch bản phổ biến gồm:
 
-- 客服机器人：基于产品知识库做问答、排障、流程引导，比如“如何退换货”“某型号设备报错码怎么处理”。
-- 研发 / 运维 Copilot：检索代码库、接口文档、告警手册，辅助定位问题和生成修复建议。
-- 医疗助手：检索指南、药品说明、院内规范后生成辅助建议，但不做最终诊断，比如“某药禁忌是什么”“依据指南解释检查指标含义”。
-- 法律咨询：基于法规条文、案例、合同模板检索，生成条款解释和风险提示。
-- 教育辅导：从教材、讲义、题库中检索知识点，生成讲解和例题步骤。
-- 企业内部助手：连接制度、SOP、会议纪要、技术文档，做检索、总结、对比。
-- 投研、合规、审计、销售方案支持：处理报告、披露、内控、产品手册、标书模板等资料。
+- Chatbot CSKH: dựa trên knowledge base sản phẩm làm hỏi đáp, xử lý sự cố, hướng dẫn quy trình, ví dụ "làm thế nào đổi trả hàng" "mã báo lỗi của một model thiết bị xử lý thế nào".
+- Copilot phát triển / vận hành: truy vấn codebase, tài liệu interface, sổ tay cảnh báo, hỗ trợ định vị vấn đề và sinh gợi ý sửa chữa.
+- Trợ lý y tế: truy vấn hướng dẫn, tờ dược phẩm, quy chuẩn nội viện rồi sinh gợi ý hỗ trợ, nhưng không chẩn đoán cuối cùng, ví dụ "chống chỉ định của thuốc X là gì" "theo hướng dẫn giải thích ý nghĩa chỉ số xét nghiệm".
+- Tư vấn pháp lý: dựa trên điều luật, vụ án, mẫu hợp đồng truy vấn, sinh giải thích điều khoản và cảnh báo rủi ro.
+- Kèm học giáo dục: từ giáo trình, bài giảng, kho đề truy vấn điểm kiến thức, sinh bài giảng và các bước ví dụ.
+- Trợ lý nội bộ doanh nghiệp: kết nối quy chế, SOP, biên bản họp, tài liệu kỹ thuật, làm truy vấn, tóm tắt, so sánh.
+- Hỗ trợ đầu tư nghiên cứu, tuân thủ, audit, đề xuất bán hàng: xử lý báo cáo, công bố thông tin, kiểm soát nội bộ, sổ tay sản phẩm, mẫu hồ sơ thầu...
 
-## 为什么有些企业还是宁愿用传统搜索而不是 RAG？
+## Vì sao một số doanh nghiệp vẫn thà dùng tìm kiếm truyền thống thay vì RAG?
 
-不是所有问题都值得上 RAG。很多企业保留传统搜索，不是因为不知道 RAG 好用，而是用户需求本来就没到“生成答案”这一步。
+Không phải vấn đề nào cũng đáng dùng RAG. Nhiều doanh nghiệp giữ tìm kiếm truyền thống, không phải vì không biết RAG hữu dụng, mà vì nhu cầu người dùng vốn chưa đến bước "sinh câu trả lời".
 
-如果用户只是想找一份制度原文、某个接口文档、一个合同模板，搜索框反而更直接。输入关键词，返回文档列表，用户自己点开确认，链路短、成本低、结果也更可控。RAG 则要先检索，再组织上下文，最后交给 LLM 生成答案。只要经过生成，就会多出延迟、Token 成本和总结偏差的风险。
+Nếu người dùng chỉ muốn tìm nguyên văn một quy chế, một tài liệu interface, một mẫu hợp đồng, ô tìm kiếm ngược lại trực tiếp hơn. Nhập từ khóa, trả về danh sách tài liệu, người dùng tự bấm xác nhận, chuỗi ngắn, chi phí thấp, kết quả cũng kiểm soát được hơn. RAG thì phải trước tiên truy vấn, rồi tổ chức context, cuối cùng giao LLM sinh câu trả lời. Chỉ cần qua sinh, sẽ phát sinh thêm độ trễ, chi phí Token và rủi ro lệch tóm tắt.
 
-所以选传统搜索还是 RAG，先看用户到底想要什么：是“帮我找到材料”，还是“帮我读完材料并给出结论”。
+Vậy nên chọn tìm kiếm truyền thống hay RAG, trước tiên xem người dùng thật sự muốn gì: là "giúp tôi tìm tài liệu", hay "giúp tôi đọc xong tài liệu và đưa kết luận".
 
-| 维度            | 传统搜索（搜索框）                         | RAG（检索 + 生成）                               |
-| --------------- | ------------------------------------------ | ------------------------------------------------ |
-| 用户目标        | 找到文档、页面、附件                       | 直接得到可读答案、总结或对比结论                 |
-| 延迟与成本      | 极低，容易扩展                             | 更高，需要检索和 LLM 推理                        |
-| 可控性 / 可审计 | 强，直接给原文链接                         | 弱一些，可能误解或总结偏差，需要引用与评测       |
-| 风险            | 低，主要是召回排序问题                     | 更高，包括幻觉、引用错误、越权泄露               |
-| 数据治理        | 相对成熟，ACL、字段过滤都好做              | 更复杂，需要检索过滤、上下文脱敏、日志治理       |
-| 适用场景        | 编号、标题、关键词检索，找模板、找制度原文 | 客服解答、技术排障、制度解读、跨文档总结对比     |
-| 最佳实践        | ES / BM25 + 权限过滤                       | 混合检索 + 重排 + 引用溯源 + 权限过滤 + 评测闭环 |
+| Chiều                      | Tìm kiếm truyền thống (ô tìm kiếm)                             | RAG (truy vấn + sinh)                                                                 |
+| -------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| Mục tiêu người dùng        | Tìm tài liệu, trang, tệp đính kèm                              | Trực tiếp có được câu trả lời đọc được, tóm tắt hoặc kết luận so sánh                 |
+| Độ trễ và chi phí          | Cực thấp, dễ mở rộng                                           | Cao hơn, cần truy vấn và suy luận LLM                                                 |
+| Khả năng kiểm soát / audit | Mạnh, đưa trực tiếp link văn bản gốc                           | Yếu hơn, có thể hiểu nhầm hoặc lệch tóm tắt, cần trích dẫn và đánh giá                |
+| Rủi ro                     | Thấp, chủ yếu là vấn đề recall sắp xếp                         | Cao hơn, gồm hallucination, lỗi trích dẫn, rò rỉ vượt quyền                           |
+| Quản trị dữ liệu           | Tương đối trưởng thành, ACL, lọc trường đều dễ làm             | Phức tạp hơn, cần lọc truy vấn, làm sạch nhạy cảm context, quản trị log               |
+| Kịch bản phù hợp           | Tra số hiệu, tiêu đề, từ khóa, tìm mẫu, tìm nguyên văn quy chế | Giải đáp CSKH, xử lý sự cố kỹ thuật, giải đọc quy chế, tóm tắt so sánh xuyên tài liệu |
+| Best practice              | ES / BM25 + lọc quyền                                          | Hybrid retrieval + rerank + truy nguồn trích dẫn + lọc quyền + vòng đánh giá          |
 
-实际落地时，很多企业会同时保留两套入口：**简单查找走搜索，复杂问答走 RAG**。这个组合通常比“所有问题都交给 RAG”更稳，也更省钱。
+Khi triển khai thực tế, nhiều doanh nghiệp sẽ đồng thời giữ hai cổng vào: **tìm kiếm đơn giản đi qua tìm kiếm, hỏi đáp phức tạp đi qua RAG**. Tổ hợp này thường ổn định hơn và tiết kiệm hơn so với "mọi câu hỏi đều giao cho RAG".
 
-## RAG 工作原理了解吗？
+## Bạn có hiểu nguyên lý hoạt động của RAG không?
 
-RAG 的工程链路通常分两个阶段：离线索引和在线检索生成。索引阶段把原始文档处理成可检索的数据结构；在线阶段在用户提问时完成查询理解、检索召回、上下文构建和答案生成。
+Chuỗi kỹ thuật của RAG thường chia hai giai đoạn: chỉ mục ngoại tuyến và truy vấn-sinh trực tuyến. Giai đoạn chỉ mục xử lý tài liệu gốc thành cấu trúc dữ liệu có thể truy vấn; giai đoạn trực tuyến khi người dùng hỏi hoàn thành hiểu truy vấn, truy vấn recall, xây dựng context và sinh câu trả lời.
 
-索引和检索阶段的简化流程图如下：
+Sơ đồ luồng đơn giản hóa của giai đoạn chỉ mục và truy vấn như sau:
 
-![索引和检索阶段的简化流程图](https://oss.javaguide.cn/github/javaguide/ai/rag/rag-rag-engineering-link.png)
+![Sơ đồ luồng đơn giản hóa của giai đoạn chỉ mục và truy vấn](https://oss.javaguide.cn/github/javaguide/ai/rag/rag-rag-engineering-link.png)
 
-索引阶段主要做这些事：
+Giai đoạn chỉ mục chủ yếu làm những việc này:
 
-1. 输入文档：文本文件、PDF、网页、数据库记录都可以，只要有内容。
-2. 清理文档：去掉 HTML 标签、特殊字符等噪声。
-3. 增强文档：补充元数据，比如时间戳、分类标签，为后续检索提供过滤维度。
-4. 文档拆分（Chunking）：用文本分割器把文档切成较小片段。这一步要兼顾语义完整性、Embedding 模型输入长度、生成模型上下文窗口和召回粒度。Chunk 太大容易引入噪声，太小又可能丢上下文。拆分策略会直接影响召回质量，详细可以看 [RAG 文档处理篇](./rag-document-processing.md)。
-5. 向量化表示（Embedding Generation）：通过嵌入模型将文本片段映射为语义向量，也就是高维稠密向量。常见嵌入模型包括 OpenAI 的 `text-embedding-3-small` / `text-embedding-3-large`，以及 Hugging Face 上的开源模型。
-6. 存储到向量存储或索引系统：把嵌入向量、原始内容和对应元数据存入向量存储或向量索引系统，比如 Milvus、pgvector、Elasticsearch / OpenSearch 向量检索，或基于 Faiss 构建本地向量索引。向量数据库选型、索引算法和 pgvector 实践可以看 [RAG 向量库篇](./rag-vector-store.md)。
+1. Input tài liệu: file văn bản, PDF, trang web, bản ghi database đều được, miễn là có nội dung.
+2. Làm sạch tài liệu: loại bỏ thẻ HTML, ký tự đặc biệt và các nhiễu khác.
+3. Tăng cường tài liệu: bổ sung metadata, như timestamp, thẻ phân loại, cung cấp chiều lọc cho truy vấn sau này.
+4. Chia tách tài liệu (Chunking): dùng bộ tách văn bản cắt tài liệu thành các đoạn nhỏ hơn. Bước này phải cân bằng tính toàn vẹn ngữ nghĩa, độ dài input của model Embedding, context window của model sinh và độ hạt recall. Chunk quá to dễ đưa nhiễu vào, quá nhỏ lại có thể mất context. Chiến lược chia tách ảnh hưởng trực tiếp đến chất lượng recall, chi tiết có thể xem [Bài xử lý tài liệu RAG](./rag-document-processing.md).
+5. Biểu diễn vector (Embedding Generation): thông qua embedding model ánh xạ đoạn văn bản thành vector ngữ nghĩa, tức vector dày đặc chiều cao. Model embedding thường gặp gồm `text-embedding-3-small` / `text-embedding-3-large` của OpenAI, và các model mã nguồn mở trên Hugging Face.
+6. Lưu vào vector store hoặc hệ thống chỉ mục: đưa embedding vector, nội dung gốc và metadata tương ứng vào vector store hoặc hệ thống chỉ mục vector, như Milvus, pgvector, truy vấn vector Elasticsearch / OpenSearch, hoặc xây dựng chỉ mục vector cục bộ dựa trên Faiss. Cách chọn cơ sở dữ liệu vector, thuật toán chỉ mục và thực hành pgvector có thể xem [Bài vector store RAG](./rag-vector-store.md).
 
-索引过程通常离线完成。比如团队每周跑一次定时任务，把新增和变更的文档重新索引一遍。如果是用户上传文档这类动态场景，索引也可以在线完成，直接集成到主应用里。
+Quá trình chỉ mục thường hoàn thành ngoại tuyến. Ví dụ team mỗi tuần chạy một tác vụ định giờ, re-index lại các tài liệu mới và thay đổi. Nếu là kịch bản động như người dùng upload tài liệu, chỉ mục cũng có thể hoàn thành trực tuyến, tích hợp thẳng vào ứng dụng chính.
 
-检索是在线进行的。用户提问之后，系统通常会走下面这些步骤：
+Truy vấn là trực tuyến. Sau khi người dùng hỏi, hệ thống thường đi theo các bước:
 
-1. 接收请求：拿到用户的自然语言查询。有些系统会先做查询改写或扩充，让后续检索更容易命中。
-2. 查询向量化：用嵌入模型把查询也转成向量，这样才能和文档向量在同一个空间里比较。
-3. 信息检索（R）：在向量库里做相似性搜索，把和查询向量最相关的文档片段捞出来。
-4. 上下文增强（A）：把检索片段、原始问题、系统指令和引用要求组织成 Prompt，交给 LLM。
-5. 输出生成（G）：LLM 输出自然语言回复，同时附上参考资料链接。
-6. 结果反馈（可选）：用户不满意时可以反馈，系统再调整 Prompt 或检索策略。有些实现也支持多轮对话来逐步完善回答。
+1. Nhận request: lấy truy vấn ngôn ngữ tự nhiên của người dùng. Một số hệ thống sẽ trước tiên làm query rewrite hoặc mở rộng, để truy vấn tiếp theo dễ trúng hơn.
+2. Vector hóa truy vấn: dùng embedding model chuyển truy vấn thành vector, như vậy mới so sánh được với vector tài liệu trong cùng một không gian.
+3. Truy vấn thông tin (R): trong vector store làm tìm kiếm độ tương tự, vớt ra đoạn tài liệu liên quan nhất với query vector.
+4. Tăng cường context (A): tổ chức đoạn truy vấn, câu hỏi gốc, system instruction và yêu cầu trích dẫn thành Prompt, giao LLM.
+5. Sinh output (G): LLM xuất ra phản hồi ngôn ngữ tự nhiên, đồng thời đính kèm link tài liệu tham khảo.
+6. Phản hồi kết quả (tùy chọn): người dùng không hài lòng có thể phản hồi, hệ thống điều chỉnh Prompt hoặc chiến lược truy vấn. Một số triển khai cũng hỗ trợ hội thoại đa vòng để dần hoàn thiện câu trả lời.
 
-检索效果不稳定时，问题往往出在查询改写、召回策略、排序或上下文质量上。优化方向可以看 [RAG 优化篇](./rag-optimization.md)。
+Khi hiệu quả truy vấn không ổn định, vấn đề thường nằm ở query rewrite, chiến lược recall, sắp xếp hoặc chất lượng context. Hướng tối ưu có thể xem [Bài tối ưu hóa RAG](./rag-optimization.md).
 
-## Embedding 是什么？
+## Embedding là gì?
 
-Embedding 就是把文本变成一串数字。更准确地说，它会把文本映射到一个高维稠密向量空间里，让语义接近的文本在向量空间中距离更近。
+Embedding chính là biến văn bản thành một chuỗi số. Nói chính xác hơn, nó ánh xạ văn bản vào một không gian vector dày đặc chiều cao, khiến các văn bản có ngữ nghĩa gần nhau ở gần nhau hơn trong không gian vector.
 
-比如这三句话：
+Ví dụ ba câu này:
 
-- “如何申请退款？”
-- “退款流程是什么？”
-- “订单怎么取消并退钱？”
+- "Làm thế nào yêu cầu hoàn tiền?"
+- "Quy trình hoàn tiền là gì?"
+- "Đơn hàng hủy và trả tiền thế nào?"
 
-它们字面不一样，但语义接近。好的 Embedding 模型会把它们映射到相近位置，向量检索才能把相关 Chunk 找出来。
+Chúng chữ viết khác nhau, nhưng ngữ nghĩa gần nhau. Một model Embedding tốt sẽ ánh xạ chúng đến vị trí gần nhau, vector retrieval mới có thể tìm ra Chunk liên quan.
 
-![Embedding：把文本映射到语义空间](https://oss.javaguide.cn/github/javaguide/ai/rag/rag-2-embedding-map-text-to-semantic-space.png)
+![Embedding: ánh xạ văn bản vào không gian ngữ nghĩa](https://oss.javaguide.cn/github/javaguide/ai/rag/rag-2-embedding-map-text-to-semantic-space.png)
 
-Embedding 维度通常是 768、1024、1536、3072 等。维度越高，能表达的信息越丰富，但存储、索引和相似度计算成本也越高。以 OpenAI Embedding 为例，`text-embedding-3-small` 默认输出 1536 维，`text-embedding-3-large` 默认输出 3072 维，并支持通过 `dimensions` 参数降低输出维度。
+Chiều Embedding thường là 768, 1024, 1536, 3072... Chiều càng cao, thông tin biểu đạt càng phong phú, nhưng chi phí lưu trữ, chỉ mục và tính độ tương tự cũng càng cao. Lấy Embedding của OpenAI làm ví dụ, `text-embedding-3-small` mặc định xuất ra 1536 chiều, `text-embedding-3-large` mặc định xuất ra 3072 chiều, và hỗ trợ giảm chiều output qua tham số `dimensions`.
 
-常见 Embedding 模型可以分成两类：
+Model Embedding phổ biến có thể chia thành hai loại:
 
-| 类型     | 代表模型                                                                                      | 适合场景                                     |
-| -------- | --------------------------------------------------------------------------------------------- | -------------------------------------------- |
-| 闭源 API | OpenAI `text-embedding-3-small` / `text-embedding-3-large`、Cohere Embed、Jina Embeddings API | 追求开箱即用、多语言效果、少运维             |
-| 开源模型 | BGE 系列、GTE 系列、E5 系列、Jina Embeddings 开源模型                                         | 数据不能出内网、需要私有化部署、希望控制成本 |
+| Loại     | Model đại diện                                                                                | Kịch bản phù hợp                                                                         |
+| -------- | --------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| API đóng | OpenAI `text-embedding-3-small` / `text-embedding-3-large`, Cohere Embed, Jina Embeddings API | Theo đuổi dùng ngay, hiệu quả đa ngôn ngữ, ít vận hành                                   |
+| Model mở | Series BGE, series GTE, series E5, model mở Jina Embeddings                                   | Dữ liệu không được ra ngoài mạng nội bộ, cần triển khai riêng tư, muốn kiểm soát chi phí |
 
-选 Embedding 模型时，别只看榜单排名。MTEB（Massive Text Embedding Benchmark）可以作为参考，但最后还是要用自己的业务问题评测召回率、相关性和延迟。
+Khi chọn Embedding model, đừng chỉ nhìn thứ hạng bảng xếp hạng. MTEB (Massive Text Embedding Benchmark) có thể làm tham khảo, nhưng cuối cùng vẫn dùng bài toán nghiệp vụ của mình đánh giá recall rate, mức độ liên quan và độ trễ.
 
-Embedding 模型也不是“实时理解世界”的东西。它主要负责把文本映射到向量空间，能力重点是语义匹配。如果遇到非常新的术语、梗、产品名或领域缩写，仍然要通过业务语料评测确认召回效果。
+Embedding model cũng không phải thứ "hiểu thế giới theo thời gian thực". Nó chủ yếu chịu trách nhiệm ánh xạ văn bản vào không gian vector, trọng tâm năng lực là khớp ngữ nghĩa. Nếu gặp thuật ngữ quá mới, meme, tên sản phẩm hoặc viết tắt lĩnh vực, vẫn phải qua đánh giá trên corpus nghiệp vụ để xác nhận hiệu quả recall.
 
-## 向量相似度怎么计算？
+## Độ tương tự vector tính như thế nào?
 
-文本变成向量之后，检索系统还要判断哪个向量和查询最接近。常见相似度或距离度量有三种。
+Sau khi văn bản thành vector, hệ thống truy vấn còn phải phán đoán vector nào gần query nhất. Có ba độ đo tương tự hoặc khoảng cách phổ biến.
 
-| 度量方式                            | 含义                       | 特点                                                         |
-| ----------------------------------- | -------------------------- | ------------------------------------------------------------ |
-| 余弦相似度（Cosine Similarity）     | 看两个向量方向是否一致     | 对向量长度不敏感，RAG 场景最常用                             |
-| 内积（Inner Product / Dot Product） | 看两个向量对应维度乘积之和 | 如果向量已经 L2 归一化，内积和余弦相似度在排序结果上通常等价 |
-| 欧氏距离（L2 Distance）             | 看两个点在空间中的绝对距离 | 对向量幅度更敏感，适合模型或索引明确按 L2 训练 / 优化的场景  |
+| Cách đo                                     | Ý nghĩa                                             | Đặc điểm                                                                                              |
+| ------------------------------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Cosine Similarity (tương tự cosine)         | Xem hai vector có cùng hướng không                  | Không nhạy với độ dài vector, dùng nhiều nhất trong kịch bản RAG                                      |
+| Inner Product / Dot Product (tích vô hướng) | Xem tổng tích các chiều tương ứng hai vector        | Nếu vector đã L2 normalized, tích vô hướng và cosine similarity thường tương đương về kết quả sắp xếp |
+| L2 Distance (khoảng cách Euclid)            | Xem khoảng cách tuyệt đối hai điểm trong không gian | Nhạy với độ lớn vector hơn, phù hợp kịch bản model hoặc chỉ mục tối ưu theo L2                        |
 
-面试里如果被问“为什么用余弦相似度”，可以这样答：RAG 关注的是语义方向是否接近，而不是向量长度本身；余弦相似度对长度不敏感，更适合文本语义检索。实际项目里还要和 Embedding 模型推荐的距离度量、向量库索引类型保持一致，否则可能导致索引无法命中或召回效果下降。
+Nếu trong phỏng vấn bị hỏi "vì sao dùng cosine similarity", có thể trả lời như vậy: RAG quan tâm hướng ngữ nghĩa có gần không, thay vì bản thân độ dài vector; cosine similarity không nhạy với độ dài, phù hợp tìm kiếm ngữ nghĩa văn bản hơn. Trong dự án thực tế còn phải nhất quán với độ đo khoảng cách model Embedding khuyến nghị, loại chỉ mục vector store, nếu không có thể khiến chỉ mục không trúng hoặc hiệu quả recall giảm.
 
-## RAG 与传统搜索引擎的区别是什么？
+## Khác biệt giữa RAG và công cụ tìm kiếm truyền thống là gì?
 
-![RAG 与传统搜索引擎的区别](https://oss.javaguide.cn/github/javaguide/ai/rag/rag-rag-vs-search-engine.png)
+![Khác biệt giữa RAG và công cụ tìm kiếm truyền thống](https://oss.javaguide.cn/github/javaguide/ai/rag/rag-rag-vs-search-engine.png)
 
-RAG 和传统搜索都在“找信息”，但拿到信息之后做的事不一样。
+RAG và tìm kiếm truyền thống đều "tìm thông tin", nhưng sau khi lấy được thông tin thì làm việc khác nhau.
 
-传统搜索拿到候选文档后，按相关性排好序，直接把结果列表给用户。每个结果彼此独立，用户自己点开、自己判断。它更像一个排序器。
+Tìm kiếm truyền thống lấy được tài liệu ứng viên rồi, theo độ liên quan sắp xếp, đưa trực tiếp danh sách kết quả cho người dùng. Mỗi kết quả độc lập với nhau, người dùng tự bấm mở, tự phán đoán. Nó giống một bộ sắp xếp hơn.
 
-RAG 会把检索到的多个知识片段一起放进 LLM 上下文，让模型做跨文档归纳和信息整合，最后生成一个直接能读的答案。它更像一个信息综合器。
+RAG sẽ đưa nhiều đoạn tri thức truy vấn được cùng vào context của LLM, để model làm quy nạp xuyên tài liệu và tích hợp thông tin, cuối cùng sinh một câu trả lời đọc trực tiếp được. Nó giống một bộ tổng hợp thông tin hơn.
 
-几个差异比较关键：
+Vài khác biệt then chốt:
 
-1. 检索机制：传统搜索主要靠倒排索引和关键词匹配，BM25 是经典算法；现代搜索系统也会加语义召回和重排。RAG 的检索方式更灵活，向量检索、BM25、混合检索、图检索、数据库查询都可以用，关键是检索结果要进入 LLM 上下文参与答案生成。
-2. 结果形态：搜索给文档列表，用户还要二次阅读；RAG 给答案，并尽量标出引用来源。
-3. 数据范围：传统搜索擅长全网爬虫和大规模索引；RAG 更常用于企业内部知识库和垂直领域，让 LLM 低成本获得特定领域知识补充。
-4. 成本和延迟：搜索响应快，成本可控；RAG 多了 LLM 推理，延迟和成本都会上去。
+1. Cơ chế truy vấn: tìm kiếm truyền thống chủ yếu dựa vào inverted index và khớp từ khóa, BM25 là thuật toán kinh điển; hệ thống tìm kiếm hiện đại cũng thêm semantic recall và rerank. Cách truy vấn của RAG linh hoạt hơn, vector retrieval, BM25, hybrid retrieval, graph retrieval, truy vấn database đều có thể dùng, mấu chốt là kết quả truy vấn phải vào context của LLM tham gia sinh câu trả lời.
+2. Hình thái kết quả: tìm kiếm đưa danh sách tài liệu, người dùng còn phải đọc lần hai; RAG đưa câu trả lời, và cố gắng đánh dấu nguồn trích dẫn.
+3. Phạm vi dữ liệu: tìm kiếm truyền thống giỏi crawler toàn mạng và chỉ mục quy mô lớn; RAG thường dùng cho knowledge base nội bộ doanh nghiệp và lĩnh vực dọc, để LLM chi phí thấp bổ sung tri thức lĩnh vực cụ thể.
+4. Chi phí và độ trễ: tìm kiếm phản hồi nhanh, chi phí kiểm soát được; RAG thêm suy luận LLM, độ trễ và chi phí đều tăng.
 
-## RAG 和微调怎么选？
+## RAG và fine-tuning chọn thế nào?
 
-“为什么不直接微调？”是 RAG 面试里很高频的问题。
+"Vì sao không trực tiếp fine-tune?" là câu hỏi tần suất rất cao trong phỏng vấn RAG.
 
-可以这样区分：RAG 解决的是模型不知道新知识或私有知识的问题，微调更适合解决模型不会按你的方式说话或做事的问题。
+Có thể phân biệt như vậy: RAG giải quyết vấn đề model không biết tri thức mới hoặc tri thức riêng tư, fine-tuning phù hợp giải quyết vấn đề model không biết cách nói chuyện hoặc làm việc theo cách của bạn.
 
-打个比方。你有一本很厚的员工手册，经常要查里面的规定。RAG 的思路是随查随用，把手册放在外面，每次回答前先翻一下。微调的思路是把手册背下来，让模型把这些知识内化进去。手册三天两头改版时，RAG 换个索引就行；微调要重新准备数据、训练和评测，成本完全不一样。
+Lấy ví dụ. Bạn có một cuốn sổ tay nhân viên rất dày, thường xuyên phải tra quy định trong đó. Tư duy của RAG là tra lúc nào dùng lúc đó, để sổ tay bên ngoài, mỗi lần trả lời trước tiên lật xem. Tư duy của fine-tuning là học thuộc sổ tay, để model nội hóa tri thức đó. Khi sổ tay hay đổi bản, RAG đổi chỉ mục là xong; fine-tuning phải chuẩn bị lại dữ liệu, huấn luyện và đánh giá, chi phí hoàn toàn khác.
 
-| 维度     | RAG                                                      | 微调（Fine-tuning）                                                                                    |
-| -------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| 知识更新 | 更新知识库或向量索引即可                                 | 通常需要重新准备数据并训练                                                                             |
-| 数据安全 | 知识保留在外部库，按需检索                               | 训练样本中的模式和部分知识会固化到微调模型参数中，敏感数据进入训练流程前需要额外评估合规和数据治理要求 |
-| 幻觉控制 | 可引用原文，便于溯源和校验                               | 模型仍可能编造，且引用来源不天然可见                                                                   |
-| 成本结构 | 检索成本 + 输入 Token 成本 + 向量库成本                  | 数据标注、训练 GPU、评测和版本管理成本                                                                 |
-| 适合场景 | 知识密集型问答、企业知识库、法规制度、产品文档、实时信息 | 风格适配、格式控制、领域术语对齐、固定任务行为优化                                                     |
-| 主要风险 | 检索不到、召回噪声、权限过滤复杂                         | 数据过拟合、知识过期、训练和回滚成本高                                                                 |
+| Chiều                   | RAG                                                                                                                   | Fine-tuning                                                                                                                                                                                          |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Cập nhật tri thức       | Chỉ cần cập nhật knowledge base hoặc vector index                                                                     | Thường cần chuẩn bị lại dữ liệu và huấn luyện                                                                                                                                                        |
+| Bảo mật dữ liệu         | Tri thức giữ trong thư viện ngoài, truy vấn theo nhu cầu                                                              | Mô hình và một phần tri thức trong mẫu huấn luyện sẽ cố định vào tham số model fine-tune; dữ liệu nhạy cảm trước khi vào quy trình huấn luyện cần đánh giá thêm tuân thủ và yêu cầu quản trị dữ liệu |
+| Kiểm soát hallucination | Có thể trích dẫn nguyên văn, dễ truy nguồn và kiểm tra                                                                | Model vẫn có thể bịa, và nguồn trích dẫn không tự nhiên hiển thị                                                                                                                                     |
+| Cấu trúc chi phí        | Chi phí truy vấn + chi phí input Token + chi phí vector store                                                         | Chi phí gán nhãn dữ liệu, GPU huấn luyện, đánh giá và quản lý phiên bản                                                                                                                              |
+| Kịch bản phù hợp        | Hỏi đáp tri thức dày đặc, knowledge base doanh nghiệp, quy chế pháp luật, tài liệu sản phẩm, thông tin thời gian thực | Thích ứng phong cách, kiểm soát format, căn chỉnh thuật ngữ lĩnh vực, tối ưu hành vi nhiệm vụ cố định                                                                                                |
+| Rủi ro chính            | Truy vấn không thấy, recall nhiễu, lọc quyền phức tạp                                                                 | Overfit dữ liệu, tri thức quá hạn, chi phí huấn luyện và rollback cao                                                                                                                                |
 
-二者也可以结合。先用微调让模型更懂领域术语、输出格式和任务边界，再用 RAG 提供实时知识和可追溯证据。这类组合在客服、法律、医疗、金融投研等场景里很常见。
+Hai cái cũng có thể kết hợp. Trước tiên dùng fine-tuning để model hiểu hơn thuật ngữ lĩnh vực, format output và ranh giới nhiệm vụ, rồi dùng RAG cung cấp tri thức thời gian thực và bằng chứng truy nguồn. Loại tổ hợp này rất phổ biến trong kịch bản CSKH, pháp lý, y tế, đầu tư nghiên cứu tài chính.
 
-面试时可以这样收尾：知识变动频繁、需要引用来源，优先 RAG；输出风格和任务行为不稳定，考虑微调；既要懂领域表达又要查实时知识，可以两者结合。
+Khi phỏng vấn có thể kết thúc như vậy: tri thức thay đổi thường xuyên, cần nguồn trích dẫn, ưu tiên RAG; output style và hành vi nhiệm vụ không ổn định, cân nhắc fine-tuning; vừa cần hiểu diễn đạt lĩnh vực vừa cần tra tri thức thời gian thực, có thể kết hợp cả hai.
 
-不过这里有个现实限制：两者结合意味着两套系统都要维护，成本不低。团队资源有限时，先把 RAG 做稳，再考虑是否引入微调，通常更务实。
+Nhưng có một giới hạn thực tế: kết hợp hai cái nghĩa là phải bảo trì hai hệ thống, chi phí không rẻ. Khi tài nguyên team có hạn, trước tiên làm ổn RAG, rồi cân nhắc có đưa fine-tuning không, thường thực dụng hơn.
 
-## 长上下文窗口会取代 RAG 吗？
+## Long context window có thay thế RAG không?
 
-不会。
+Không.
 
-长上下文窗口确实让很多任务变简单了。比如把一整份报告丢进去，让模型从头读到尾，这类单文档深度分析很适合用长上下文。但它不等于可以把全部知识库都塞给模型。上下文越长，输入 Token 成本、首字延迟和推理噪声都会上升，效果未必更好。
+Long context window quả thực khiến nhiều nhiệm vụ đơn giản hơn. Ví dụ ném cả một báo cáo vào, để model đọc từ đầu đến cuối, loại phân tích sâu tài liệu đơn lẻ này rất hợp dùng long context. Nhưng nó không bằng nghĩa có thể nhét toàn bộ knowledge base cho model. Context càng dài, chi phí input Token, độ trễ chữ đầu và nhiễu suy luận đều tăng, hiệu quả chưa chắc tốt hơn.
 
-长上下文适合的场景很明确：单篇长文档深度分析，一个代码仓库或一个项目目录的集中理解，长对话历史总结，或者一次性材料不多但需要完整阅读的任务。
+Kịch bản long context phù hợp rất rõ: phân tích sâu tài liệu dài đơn lẻ, hiểu tập trung một codebase hoặc một thư mục dự án, tóm tắt lịch sử hội thoại dài, hoặc nhiệm vụ tài liệu ít nhưng cần đọc đầy đủ.
 
-知识库规模一大，长上下文就不够用了。企业知识库、客服工单、日志、合同库动辄百万到亿级文档片段，不可能每次都全塞进去。就算塞得进去，成本和延迟也扛不住。更麻烦的是，上下文里塞太多无关片段，模型反而更容易被噪声干扰，生成看起来完整但事实不稳的答案。“Lost in the Middle”问题说的就是这个，关键信息放在长上下文中间位置时更容易被忽略。
+Knowledge base quy mô lớn lên, long context không đủ dùng. Knowledge base doanh nghiệp, ticket CSKH, log, kho hợp đồng thường từ triệu đến trăm triệu đoạn tài liệu, không thể mỗi lần nhét hết vào. Cho dù nhét được, chi phí và độ trễ cũng chịu không nổi. Phiền to hơn, context nhét quá nhiều đoạn không liên quan, model ngược lại dễ bị nhiễu ảnh hưởng, sinh ra câu trả lời trông đầy đủ nhưng sự thật không vững. Vấn đề "Lost in the Middle" nói về điều này, thông tin then chốt đặt ở vị trí giữa context dài dễ bị bỏ qua hơn.
 
-企业知识库还绕不开权限隔离。哪些内容用户能看，哪些不能看，不能靠“全塞进去”解决。RAG 可以在检索阶段做权限过滤，只把用户有权访问的内容放进上下文。长上下文做不了这件事。
+Knowledge base doanh nghiệp còn không tránh được cô lập quyền. Nội dung nào người dùng thấy được, nội dung nào không, không thể dựa vào "nhét hết vào" để giải quyết. RAG có thể trong giai đoạn truy vấn làm lọc quyền, chỉ đưa nội dung người dùng có quyền truy cập vào context. Long context làm không được việc này.
 
-还有一点经常被忽视：可追溯性。RAG 可以明确返回引用片段，审计时能溯源。长上下文把大量内容混在一起交给模型，用户很难判断回答到底基于哪段材料。
+Còn một điểm hay bị bỏ qua: khả năng truy vết. RAG có thể trả về rõ đoạn trích dẫn, khi audit có thể truy nguồn. Long context trộn nhiều nội dung lại giao model, người dùng rất khó phán đoán câu trả lời dựa trên đoạn tài liệu nào.
 
-## RAG 有哪些演进阶段？
+## RAG có những giai đoạn tiến hóa nào?
 
-RAG 这两年一直在迭代，大致可以分成三个阶段。
+RAG hai năm nay liên tục lặp lại, đại khái có thể chia thành ba giai đoạn.
 
-![RAG 演进阶段](https://oss.javaguide.cn/github/javaguide/ai/rag/rag-2-evolution-stages.png)
+![Giai đoạn tiến hóa RAG](https://oss.javaguide.cn/github/javaguide/ai/rag/rag-2-evolution-stages.png)
 
-| 阶段         | 典型链路                                                         | 特点                                         |
-| ------------ | ---------------------------------------------------------------- | -------------------------------------------- |
-| Naive RAG    | 文档切块 → Embedding → Top-K 检索 → LLM 生成                     | 最基础、最容易实现，适合 Demo 和简单知识库   |
-| Advanced RAG | Query Rewrite / HyDE → 混合检索 → Rerank → 上下文压缩 → LLM 生成 | 重点解决召回不准、上下文噪声和排序不稳       |
-| Modular RAG  | 检索器、重排器、压缩器、路由器、生成器等模块可插拔组合           | 按业务场景动态路由，适合生产系统和复杂 Agent |
+| Giai đoạn    | Chuỗi điển hình                                                                  | Đặc điểm                                                                               |
+| ------------ | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Naive RAG    | Chia khối tài liệu → Embedding → truy vấn Top-K → LLM sinh                       | Cơ bản nhất, dễ triển khai nhất, phù hợp Demo và knowledge base đơn giản               |
+| Advanced RAG | Query Rewrite / HyDE → hybrid retrieval → Rerank → nén context → LLM sinh        | Trọng điểm giải quyết recall không chính xác, nhiễu context và sắp xếp không ổn định   |
+| Modular RAG  | Retriever, reranker, compressor, router, generator... các module cắm thay tổ hợp | Định tuyến động theo kịch bản nghiệp vụ, phù hợp hệ thống production và Agent phức tạp |
 
-Naive RAG 是起点，能跑通 Demo，但离生产通常还有距离。Advanced RAG 开始处理召回质量、噪声过滤和排序问题。Modular RAG 把各环节拆成可替换模块，更适合复杂场景。具体优化策略可以继续看 [RAG 优化篇](./rag-optimization.md)。
+Naive RAG là điểm khởi đầu, chạy được Demo, nhưng cách production còn khoảng cách. Advanced RAG bắt đầu xử lý vấn đề chất lượng recall, lọc nhiễu và sắp xếp. Modular RAG tách các khâu thành module thay thế được, phù hợp kịch bản phức tạp hơn. Chiến lược tối ưu cụ thể có thể xem tiếp [Bài tối ưu hóa RAG](./rag-optimization.md).
 
-## RAG 的核心优势和局限性是？
+## Ưu điểm cốt lõi và hạn chế của RAG là gì?
 
-先说优势。
+Nói ưu điểm trước.
 
-**RAG 最大的好处是知识更新成本低。** 微调要重新准备数据、训练模型、评测效果，RAG 通常只需要更新知识库和索引。新闻、法规、产品文档这类经常变化的数据，用 RAG 维护起来会轻很多。
+**Lợi ích lớn nhất của RAG là chi phí cập nhật tri thức thấp.** Fine-tuning phải chuẩn bị lại dữ liệu, huấn luyện model, đánh giá hiệu quả, RAG thường chỉ cần cập nhật knowledge base và chỉ mục. Dữ liệu hay thay đổi như tin tức, quy chế, tài liệu sản phẩm, dùng RAG bảo trì sẽ nhẹ nhàng nhiều.
 
-**它也能减少幻觉，并且方便追溯来源。** RAG 让模型从“凭记忆回答”变成“基于检索证据回答”。每个回答都可以挂到具体文档片段上，这在金融合规、医疗辅助、法律检索这些对准确性要求高的场景里很重要。当然，这不代表 RAG 就不会出错，检索错了、引用错了，答案一样会翻车。
+**Nó cũng giảm được hallucination, và tiện truy nguồn.** RAG khiến model từ "trả lời theo trí nhớ" thành "trả lời dựa trên bằng chứng truy vấn". Mỗi câu trả lời đều có thể gắn vào đoạn tài liệu cụ thể, điều này quan trọng trong những kịch bản yêu cầu độ chính xác cao như tuân thủ tài chính, hỗ trợ y tế, truy vấn pháp lý. Tất nhiên, điều này không nghĩa là RAG không sai; truy vấn sai, trích dẫn sai, câu trả lời vẫn lật xe như thường.
 
-**数据隔离也更容易做。** 你可以在检索层实现多租户隔离和访问控制（ACL），确保用户只能看到自己权限范围内的数据。相比把敏感数据放进微调训练集，RAG 这套架构更适合做权限和合规治理。
+**Cô lập dữ liệu cũng dễ làm hơn.** Bạn có thể trong tầng truy vấn triển khai cô lập multi-tenant và kiểm soát truy cập (ACL), đảm bảo người dùng chỉ thấy dữ liệu trong phạm vi quyền của mình. So với việc đưa dữ liệu nhạy cảm vào tập fine-tuning, kiến trúc RAG này phù hợp làm quản trị quyền và tuân thủ hơn.
 
-**换领域的成本也低。** 不需要针对每个领域重新训练模型，把领域知识库建好、索引跑通，就能先用起来。
+**Chi phí đổi lĩnh vực cũng thấp.** Không cần vì mỗi lĩnh vực mà huấn luyện lại model, xây xong knowledge base lĩnh vực, chạy thông chỉ mục, là dùng được trước.
 
-再看局限。RAG 不是银弹，坑也不少。
+Rồi xem hạn chế. RAG không phải viên đạn bạc, hố cũng không ít.
 
-**检索质量决定上限。** GIGO 原则在这里特别明显：如果 Embedding 表达不准，或者分块策略把关键信息切丢了，召回内容和问题本身无关，下游 LLM 再强也救不回来。
+**Chất lượng truy vấn quyết định trần.** Nguyên tắc GIGO ở đây đặc biệt rõ: nếu Embedding biểu đạt không chính xác, hoặc chiến lược chia khối cắt mất thông tin then chốt, nội dung recall và câu hỏi vốn không liên quan, LLM hạ nguồn có mạnh đến đâu cũng cứu không về.
 
-**上下文也不是越长越好。** 虽然有些模型的 Context Window 已经扩展到百万级，但塞太多无关片段进去，模型注意力会被稀释，逻辑推理会被干扰，Token 开销也会跟着上升。
+**Context cũng không phải càng dài càng tốt.** Dù một số model Context Window đã mở rộng đến triệu cấp, nhưng nhét quá nhiều đoạn không liên quan vào, sự chú ý của model bị pha loãng, suy luận logic bị nhiễu, chi phí Token cũng tăng theo.
 
-**延迟是另一个硬问题。** 完整链路要经过查询改写、向量化、相似度检索、重排序、上下文构建、LLM 生成，每一步都会增加耗时。对响应时间敏感的场景，不能只看答案质量，也要认真算延迟账。
+**Độ trễ là một vấn đề cứng khác.** Chuỗi đầy đủ phải qua query rewrite, vector hóa, truy vấn độ tương tự, rerank, xây dựng context, LLM sinh, mỗi bước đều tăng thời gian. Với kịch bản nhạy cảm thời gian phản hồi, không thể chỉ nhìn chất lượng câu trả lời, cũng phải tính kỹ sổ độ trễ.
 
-**工程复杂度也不低。** 你要维护向量数据库，处理文档增量索引，持续优化检索策略，还要做权限过滤、引用溯源和评测闭环。相比直接调用 LLM API，RAG 的运维负担明显更重。
+**Độ phức tạp công trình cũng không thấp.** Bạn phải bảo trì vector database, xử lý chỉ mục gia tăng tài liệu, liên tục tối ưu chiến lược truy vấn, còn phải làm lọc quyền, truy nguồn trích dẫn và vòng đánh giá. So với gọi trực tiếp LLM API, gánh nặng vận hành của RAG nặng hơn rõ rệt.
 
-**Token 成本同样要算清楚。** RAG 省了训练成本，但每次请求都要带上下文，输入 Token 往往比普通对话高不少。文档片段塞得越多，账单和延迟都会一起涨。
+**Chi phí Token cũng phải tính rõ.** RAG tiết kiệm chi phí huấn luyện, nhưng mỗi request đều phải mang context, input Token thường cao hơn hội thoại thông thường khá nhiều. Đoạn tài liệu nhét càng nhiều, bill và độ trễ cùng tăng.
 
 <!-- @include: @rag-project.snippet.md -->
 
-## 总结
+## Tổng kết
 
-RAG 说白了，就是先从知识库里找相关内容，再让 LLM 基于找到的内容回答。它的价值不是让模型“更神”，而是把回答拉回到可检索、可引用、可审计的证据上。
+RAG nói cho cùng, là trước tiên từ knowledge base tìm nội dung liên quan, rồi để LLM dựa trên nội dung tìm được mà trả lời. Giá trị của nó không phải khiến model "thần thánh hơn", mà là kéo câu trả lời về trên bằng chứng có thể truy vấn, trích dẫn, audit.
 
-几个关键点可以重点留意下：
+Vài điểm then chốt đáng chú ý:
 
-1. RAG 主要解决的是 LLM 知识过时、碰不到私有数据、容易幻觉这几个问题。传统搜索给的是文档列表，RAG 给的是直接可读的答案；一个更像排序器，一个更像信息综合器。
-2. 知识变动频繁、需要引用来源时，优先考虑 RAG；如果要让模型按固定风格和格式输出，再考虑微调。
-3. 长上下文适合少量材料的深度分析，但企业级海量知识库、权限隔离和成本控制，还是要靠 RAG 这类检索链路来兜底。
+1. RAG chủ yếu giải quyết mấy vấn đề tri thức LLM quá hạn, không đụng được dữ liệu riêng tư, dễ hallucination. Tìm kiếm truyền thống đưa danh sách tài liệu, RAG đưa câu trả lời đọc trực tiếp được; một cái giống bộ sắp xếp hơn, một cái giống bộ tổng hợp thông tin hơn.
+2. Tri thức thay đổi thường xuyên, cần nguồn trích dẫn, ưu tiên RAG; nếu muốn model xuất theo style và format cố định, mới cân nhắc fine-tuning.
+3. Long context phù hợp phân tích sâu lượng tài liệu ít, nhưng knowledge base khổng lồ cấp doanh nghiệp, cô lập quyền và kiểm soát chi phí, vẫn phải dựa vào chuỗi truy vấn như RAG để chịu đáy.
 
-它的局限也要意识到。检索质量决定上限，上下文噪声会干扰生成，延迟、工程复杂度、Token 成本都是真实存在的。
+Hạn chế của nó cũng phải nhận thức được. Chất lượng truy vấn quyết định trần, nhiễu context sẽ nhiễu generation, độ trễ, độ phức tạp công trình, chi phí Token đều có thật.
 
-Demo 跑通不代表生产可用，RAG 最难的部分往往不是“接一个向量库”，而是持续评估和优化召回质量。
+Demo chạy thông không nghĩa là production dùng được, phần khó nhất của RAG thường không phải "kết nối một vector store", mà là liên tục đánh giá và tối ưu chất lượng recall.
 
-面试里常问这些：
+Trong phỏng vấn thường hỏi:
 
-- 什么是 RAG？为什么需要 RAG？
-- RAG 和传统搜索引擎有什么区别？
-- RAG 和微调怎么选？什么时候用 RAG，什么时候微调，什么时候两者结合？
-- RAG 系统中 Embedding 模型怎么选？为什么？
-- 余弦相似度、内积和欧氏距离有什么区别？
-- RAG 的幻觉问题怎么解决？RAG 一定不会产生幻觉吗？
-- 什么是 Lost in the Middle 问题？怎么应对？
-- 长上下文窗口是否会取代 RAG？
-- RAG 系统的评估指标有哪些？
-- RAG 的优势和局限性是什么？
-- 什么场景适合用 RAG？什么场景不适合？
+- RAG là gì? Vì sao cần RAG?
+- RAG và công cụ tìm kiếm truyền thống khác gì?
+- RAG và fine-tuning chọn thế nào? Khi nào dùng RAG, khi nào fine-tuning, khi nào kết hợp cả hai?
+- Trong hệ thống RAG model Embedding chọn thế nào? Vì sao?
+- Cosine similarity, tích vô hướng và khoảng cách Euclid khác gì?
+- Vấn đề hallucination của RAG giải quyết thế nào? RAG chắc chắn không sinh hallucination sao?
+- Vấn đề Lost in the Middle là gì? Ứng phó thế nào?
+- Long context window có thay thế RAG không?
+- Các chỉ số đánh giá của hệ thống RAG là gì?
+- Ưu điểm và hạn chế của RAG là gì?
+- Kịch bản nào phù hợp dùng RAG? Kịch bản nào không phù hợp?
