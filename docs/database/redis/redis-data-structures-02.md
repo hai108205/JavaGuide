@@ -1,46 +1,46 @@
 ---
-title: Redis 3 种特殊数据类型详解
-description: 详解Redis三种特殊数据类型Bitmap、HyperLogLog、GEO的使用方法和应用场景，包括签到统计、UV统计、附近的人等典型业务场景实现。
-category: 数据库
+title: Giải thích chi tiết 3 kiểu dữ liệu đặc biệt của Redis
+description: Giải thích chi tiết cách sử dụng và kịch bản ứng dụng của 3 kiểu dữ liệu đặc biệt trong Redis gồm Bitmap, HyperLogLog, GEO, bao gồm cài đặt các kịch bản nghiệp vụ điển hình như thống kê điểm danh, thống kê UV, người ở gần.
+category: Cơ sở dữ liệu
 tag:
   - Redis
 head:
   - - meta
     - name: keywords
-      content: Redis特殊数据类型,Bitmap,HyperLogLog,GEO,位图,基数统计,地理位置,签到统计,UV统计
+      content: Kiểu dữ liệu đặc biệt của Redis,Bitmap,HyperLogLog,GEO,Bitmap,Thống kê cardinality,Vị trí địa lý,Thống kê điểm danh,Thống kê UV
 ---
 
-除了 5 种基本的数据类型之外，Redis 还支持 3 种特殊的数据类型：Bitmap、HyperLogLog、GEO。
+Ngoài 5 kiểu dữ liệu cơ bản, Redis còn hỗ trợ 3 kiểu dữ liệu đặc biệt: Bitmap, HyperLogLog, GEO.
 
-## Bitmap （位图）
+## Bitmap (bitmap)
 
-### 介绍
+### Giới thiệu
 
-根据官网介绍：
+Theo giới thiệu trên trang chủ chính thức:
 
 > Bitmaps are not an actual data type, but a set of bit-oriented operations defined on the String type which is treated like a bit vector. Since strings are binary safe blobs and their maximum length is 512 MB, they are suitable to set up to 2^32 different bits.
 >
-> Bitmap 不是 Redis 中的实际数据类型，而是在 String 类型上定义的一组面向位的操作，将其视为位向量。由于字符串是二进制安全的块，且最大长度为 512 MB，它们适合用于设置最多 2^32 个不同的位。
+> Bitmap không phải là một kiểu dữ liệu thực sự trong Redis, mà là một tập hợp các phép toán hướng bit (bit-oriented operations) được định nghĩa trên kiểu String, trong đó String được xem như một vector bit. Vì chuỗi là các blob an toàn nhị phân (binary safe) và độ dài tối đa là 512 MB, chúng phù hợp để thiết lập tối đa 2^32 bit khác nhau.
 
-Bitmap 存储的是连续的二进制数字（0 和 1），通过 Bitmap, 只需要一个 bit 位来表示某个元素对应的值或者状态，key 就是对应元素本身 。我们知道 8 个 bit 可以组成一个 byte，所以 Bitmap 本身会极大的节省储存空间。
+Bitmap lưu trữ các số nhị phân liên tục (0 và 1). Thông qua Bitmap, chỉ cần một bit để biểu diễn giá trị hoặc trạng thái tương ứng của một phần tử nào đó, key chính là bản thân phần tử tương ứng. Chúng ta biết rằng 8 bit có thể tạo thành một byte, vì vậy bản thân Bitmap sẽ tiết kiệm rất lớn không gian lưu trữ.
 
-你可以将 Bitmap 看作是一个存储二进制数字（0 和 1）的数组，数组中每个元素的下标叫做 offset（偏移量）。
+Bạn có thể xem Bitmap như một mảng lưu trữ các số nhị phân (0 và 1), index của mỗi phần tử trong mảng được gọi là offset (độ lệch).
 
 ![](https://oss.javaguide.cn/github/javaguide/database/redis/image-20220720194154133.png)
 
-### 常用命令
+### Các lệnh thường dùng
 
-| 命令                                  | 介绍                                                             |
-| ------------------------------------- | ---------------------------------------------------------------- |
-| SETBIT key offset value               | 设置指定 offset 位置的值                                         |
-| GETBIT key offset                     | 获取指定 offset 位置的值                                         |
-| BITCOUNT key start end                | 获取 start 和 end 之间值为 1 的元素个数                          |
-| BITOP operation destkey key1 key2 ... | 对一个或多个 Bitmap 进行运算，可用运算符有 AND, OR, XOR 以及 NOT |
+| Lệnh                                  | Giới thiệu                                                                                    |
+| ------------------------------------- | --------------------------------------------------------------------------------------------- |
+| SETBIT key offset value               | Đặt giá trị tại vị trí offset chỉ định                                                        |
+| GETBIT key offset                     | Lấy giá trị tại vị trí offset chỉ định                                                        |
+| BITCOUNT key start end                | Lấy số lượng phần tử có giá trị bằng 1 giữa start và end                                      |
+| BITOP operation destkey key1 key2 ... | Thực hiện phép toán trên một hoặc nhiều Bitmap, các phép toán khả dụng là AND, OR, XOR và NOT |
 
-**Bitmap 基本操作演示**：
+**Minh họa thao tác cơ bản với Bitmap**:
 
 ```bash
-# SETBIT 会返回之前位的值（默认是 0）这里会生成 7 个位
+# SETBIT sẽ trả về giá trị bit trước đó (mặc định là 0), ở đây sẽ tạo ra 7 bit
 > SETBIT mykey 7 1
 (integer) 0
 > SETBIT mykey 7 0
@@ -51,54 +51,54 @@ Bitmap 存储的是连续的二进制数字（0 和 1），通过 Bitmap, 只需
 (integer) 0
 > SETBIT mykey 8 1
 (integer) 0
-# 通过 bitcount 统计被被设置为 1 的位的数量。
+# Thông qua bitcount để thống kê số lượng bit được đặt bằng 1.
 > BITCOUNT mykey
 (integer) 2
 ```
 
-### 应用场景
+### Kịch bản ứng dụng
 
-**需要保存状态信息（0/1 即可表示）的场景**
+**Kịch bản cần lưu thông tin trạng thái (chỉ cần 0/1 để biểu diễn)**
 
-- 举例：用户签到情况、活跃用户情况、用户行为统计（比如是否点赞过某个视频）。
-- 相关命令：`SETBIT`、`GETBIT`、`BITCOUNT`、`BITOP`。
+- Ví dụ: tình trạng điểm danh của người dùng, tình trạng người dùng hoạt động, thống kê hành vi người dùng (ví dụ đã thích một video nào đó hay chưa).
+- Lệnh liên quan: `SETBIT`, `GETBIT`, `BITCOUNT`, `BITOP`.
 
-## HyperLogLog（基数统计）
+## HyperLogLog (thống kê cardinality)
 
-### 介绍
+### Giới thiệu
 
-HyperLogLog 是一种有名的基数计数概率算法 ，基于 LogLog Counting(LLC)优化改进得来，并不是 Redis 特有的，Redis 只是实现了这个算法并提供了一些开箱即用的 API。
+HyperLogLog là một thuật toán xác suất đếm cardinality (cardinality counting) nổi tiếng, được tối ưu và cải tiến dựa trên LogLog Counting (LLC), không phải là thứ đặc trưng của Redis. Redis chỉ cài đặt thuật toán này và cung cấp một số API dùng được ngay.
 
-Redis 提供的 HyperLogLog 占用空间非常非常小，只需要 12k 的空间就能存储接近`2^64`个不同元素。这是真的厉害，这就是数学的魅力么！并且，Redis 对 HyperLogLog 的存储结构做了优化，采用两种方式计数：
+HyperLogLog mà Redis cung cấp chiếm không gian vô cùng nhỏ, chỉ cần 12k không gian là có thể lưu trữ gần `2^64` phần tử khác nhau. Điều này thật sự rất ấn tượng, đây chính là sức hấp dẫn của toán học! Hơn nữa, Redis đã tối ưu cấu trúc lưu trữ của HyperLogLog, áp dụng hai cách để đếm:
 
-- **稀疏矩阵**：计数较少的时候，占用空间很小。
-- **稠密矩阵**：计数达到某个阈值的时候，占用 12k 的空间。
+- **Ma trận thưa (sparse matrix)**: Khi số đếm còn ít, chiếm rất ít không gian.
+- **Ma trận dày (dense matrix)**: Khi số đếm đạt đến một ngưỡng nào đó, chiếm 12k không gian.
 
-Redis 官方文档中有对应的详细说明：
+Trong tài liệu chính thức của Redis có phần giải thích chi tiết tương ứng:
 
 ![](https://oss.javaguide.cn/github/javaguide/database/redis/image-20220721091424563.png)
 
-基数计数概率算法为了节省内存并不会直接存储元数据，而是通过一定的概率统计方法预估基数值（集合中包含元素的个数）。因此， HyperLogLog 的计数结果并不是一个精确值，存在一定的误差（标准误差为 `0.81%` ）。
+Thuật toán xác suất đếm cardinality để tiết kiệm bộ nhớ sẽ không lưu trữ trực tiếp dữ liệu gốc, mà thông qua một số phương pháp thống kê xác suất để ước tính giá trị cardinality (số phần tử chứa trong tập hợp). Vì vậy, kết quả đếm của HyperLogLog không phải là một giá trị chính xác, mà tồn tại một sai số nhất định (sai số chuẩn là `0.81%`).
 
 ![](https://oss.javaguide.cn/github/javaguide/database/redis/image-20220720194154133.png)
 
-HyperLogLog 的使用非常简单，但原理非常复杂。HyperLogLog 的原理以及在 Redis 中的实现可以看这篇文章：[HyperLogLog 算法的原理讲解以及 Redis 是如何应用它的](https://juejin.cn/post/6844903785744056333) 。
+Cách sử dụng HyperLogLog rất đơn giản, nhưng nguyên lý lại rất phức tạp. Về nguyên lý của HyperLogLog và cách cài đặt trong Redis, có thể xem bài viết này: [Giải thích nguyên lý thuật toán HyperLogLog và cách Redis ứng dụng nó](https://juejin.cn/post/6844903785744056333) .
 
-再推荐一个可以帮助理解 HyperLogLog 原理的工具：[Sketch of the Day: HyperLogLog — Cornerstone of a Big Data Infrastructure](http://content.research.neustar.biz/blog/hll.html) 。
+Ngoài ra, xin giới thiệu một công cụ có thể giúp hiểu nguyên lý của HyperLogLog: [Sketch of the Day: HyperLogLog — Cornerstone of a Big Data Infrastructure](http://content.research.neustar.biz/blog/hll.html) .
 
-除了 HyperLogLog 之外，Redis 还提供了其他的概率数据结构，对应的官方文档地址：<https://redis.io/docs/data-types/probabilistic/> 。
+Ngoài HyperLogLog, Redis còn cung cấp các cấu trúc dữ liệu xác suất (probabilistic data structure) khác, địa chỉ tài liệu chính thức tương ứng: <https://redis.io/docs/data-types/probabilistic/> .
 
-### 常用命令
+### Các lệnh thường dùng
 
-HyperLogLog 相关的命令非常少，最常用的也就 3 个。
+Các lệnh liên quan đến HyperLogLog rất ít, thường dùng nhất cũng chỉ có 3 lệnh.
 
-| 命令                                      | 介绍                                                                             |
-| ----------------------------------------- | -------------------------------------------------------------------------------- |
-| PFADD key element1 element2 ...           | 添加一个或多个元素到 HyperLogLog 中                                              |
-| PFCOUNT key1 key2                         | 获取一个或者多个 HyperLogLog 的唯一计数。                                        |
-| PFMERGE destkey sourcekey1 sourcekey2 ... | 将多个 HyperLogLog 合并到 destkey 中，destkey 会结合多个源，算出对应的唯一计数。 |
+| Lệnh                                      | Giới thiệu                                                                                                   |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| PFADD key element1 element2 ...           | Thêm một hoặc nhiều phần tử vào HyperLogLog                                                                  |
+| PFCOUNT key1 key2                         | Lấy số đếm duy nhất (unique count) của một hoặc nhiều HyperLogLog.                                           |
+| PFMERGE destkey sourcekey1 sourcekey2 ... | Hợp nhất nhiều HyperLogLog vào destkey, destkey sẽ kết hợp nhiều nguồn để tính ra số đếm duy nhất tương ứng. |
 
-**HyperLogLog 基本操作演示**：
+**Minh họa thao tác cơ bản với HyperLogLog**:
 
 ```bash
 > PFADD hll foo bar zap
@@ -119,34 +119,34 @@ HyperLogLog 相关的命令非常少，最常用的也就 3 个。
 (integer) 6
 ```
 
-### 应用场景
+### Kịch bản ứng dụng
 
-**数量巨大（百万、千万级别以上）的计数场景**
+**Kịch bản đếm với số lượng khổng lồ (từ mức hàng triệu, hàng chục triệu trở lên)**
 
-- 举例：热门网站每日/每周/每月访问 ip 数统计、热门帖子 uv 统计。
-- 相关命令：`PFADD`、`PFCOUNT` 。
+- Ví dụ: thống kê số ip truy cập hàng ngày/hàng tuần/hàng tháng của các website nổi tiếng, thống kê uv của các bài đăng nổi tiếng.
+- Lệnh liên quan: `PFADD`, `PFCOUNT` .
 
-## Geospatial (地理位置)
+## Geospatial (vị trí địa lý)
 
-### 介绍
+### Giới thiệu
 
-Geospatial index（地理空间索引，简称 GEO） 主要用于存储地理位置信息，基于 Sorted Set 实现。
+Geospatial index (chỉ mục không gian địa lý, viết tắt là GEO) chủ yếu dùng để lưu trữ thông tin vị trí địa lý, được cài đặt dựa trên Sorted Set.
 
-通过 GEO 我们可以轻松实现两个位置距离的计算、获取指定位置附近的元素等功能。
+Thông qua GEO, chúng ta có thể dễ dàng thực hiện tính khoảng cách giữa hai vị trí, lấy các phần tử ở gần một vị trí chỉ định, v.v.
 
 ![](https://oss.javaguide.cn/github/javaguide/database/redis/image-20220720194359494.png)
 
-### 常用命令
+### Các lệnh thường dùng
 
-| 命令                                             | 介绍                                                                                                 |
-| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
-| GEOADD key longitude1 latitude1 member1 ...      | 添加一个或多个元素对应的经纬度信息到 GEO 中                                                          |
-| GEOPOS key member1 member2 ...                   | 返回给定元素的经纬度信息                                                                             |
-| GEODIST key member1 member2 M/KM/FT/MI           | 返回两个给定元素之间的距离                                                                           |
-| GEORADIUS key longitude latitude radius distance | 获取指定位置附近 distance 范围内的其他元素，支持 ASC(由近到远)、DESC（由远到近）、Count(数量) 等参数 |
-| GEORADIUSBYMEMBER key member radius distance     | 类似于 GEORADIUS 命令，只是参照的中心点是 GEO 中的元素                                               |
+| Lệnh                                             | Giới thiệu                                                                                                                                      |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| GEOADD key longitude1 latitude1 member1 ...      | Thêm thông tin kinh độ, vĩ độ tương ứng của một hoặc nhiều phần tử vào GEO                                                                      |
+| GEOPOS key member1 member2 ...                   | Trả về thông tin kinh độ, vĩ độ của các phần tử được đưa vào                                                                                    |
+| GEODIST key member1 member2 M/KM/FT/MI           | Trả về khoảng cách giữa hai phần tử được đưa vào                                                                                                |
+| GEORADIUS key longitude latitude radius distance | Lấy các phần tử khác trong phạm vi distance gần vị trí chỉ định, hỗ trợ các tham số ASC (từ gần đến xa), DESC (từ xa đến gần), Count (số lượng) |
+| GEORADIUSBYMEMBER key member radius distance     | Tương tự lệnh GEORADIUS, chỉ khác là điểm trung tâm tham chiếu là một phần tử trong GEO                                                         |
 
-**基本操作**：
+**Thao tác cơ bản**:
 
 ```bash
 > GEOADD personLocation 116.33 39.89 user1 116.34 39.90 user2 116.35 39.88 user3
@@ -158,13 +158,13 @@ Geospatial index（地理空间索引，简称 GEO） 主要用于存储地理�
 1.4018
 ```
 
-通过 Redis 可视化工具查看 `personLocation` ，果不其然，底层就是 Sorted Set。
+Thông qua công cụ trực quan hóa Redis để xem `personLocation`, quả nhiên tầng dưới chính là Sorted Set.
 
-GEO 中存储的地理位置信息的经纬度数据通过 GeoHash 算法转换成了一个整数，这个整数作为 Sorted Set 的 score(权重参数)使用。
+Dữ liệu kinh độ, vĩ độ của thông tin vị trí địa lý được lưu trong GEO được chuyển đổi thành một số nguyên thông qua thuật toán GeoHash, số nguyên này được sử dụng làm score (tham số trọng số) của Sorted Set.
 
 ![](https://oss.javaguide.cn/github/javaguide/database/redis/image-20220721201545147.png)
 
-**获取指定位置范围内的其他元素**：
+**Lấy các phần tử khác trong phạm vi vị trí chỉ định**:
 
 ```bash
 > GEORADIUS personLocation 116.33 39.87 3 km
@@ -184,11 +184,11 @@ user1
 user2
 ```
 
-`GEORADIUS` 命令的底层原理解析可以看看阿里的这篇文章：[Redis 到底是怎么实现“附近的人”这个功能的呢？](https://juejin.cn/post/6844903966061363207) 。
+Về phân tích nguyên lý tầng dưới của lệnh `GEORADIUS`, có thể xem bài viết này của Alibaba: [Rốt cuộc Redis thực hiện chức năng "người ở gần" như thế nào?](https://juejin.cn/post/6844903966061363207) .
 
-**移除元素**：
+**Xóa phần tử**:
 
-GEO 底层是 Sorted Set ，你可以对 GEO 使用 Sorted Set 相关的命令。
+Tầng dưới của GEO là Sorted Set, bạn có thể sử dụng các lệnh liên quan đến Sorted Set đối với GEO.
 
 ```bash
 > ZREM personLocation user1
@@ -200,25 +200,25 @@ user2
 4069879562983946
 ```
 
-### 应用场景
+### Kịch bản ứng dụng
 
-**需要管理使用地理空间数据的场景**
+**Kịch bản cần quản lý và sử dụng dữ liệu không gian địa lý**
 
-- 举例：附近的人。
-- 相关命令: `GEOADD`、`GEORADIUS`、`GEORADIUSBYMEMBER` 。
+- Ví dụ: người ở gần.
+- Lệnh liên quan: `GEOADD`, `GEORADIUS`, `GEORADIUSBYMEMBER` .
 
-## 总结
+## Tổng kết
 
-| 数据类型         | 说明                                                                                                                                                                                                                                                                  |
-| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Bitmap           | 你可以将 Bitmap 看作是一个存储二进制数字（0 和 1）的数组，数组中每个元素的下标叫做 offset（偏移量）。通过 Bitmap, 只需要一个 bit 位来表示某个元素对应的值或者状态，key 就是对应元素本身 。我们知道 8 个 bit 可以组成一个 byte，所以 Bitmap 本身会极大的节省储存空间。 |
-| HyperLogLog      | Redis 提供的 HyperLogLog 占用空间非常非常小，只需要 12k 的空间就能存储接近`2^64`个不同元素。不过，HyperLogLog 的计数结果并不是一个精确值，存在一定的误差（标准误差为 `0.81%` ）。                                                                                     |
-| Geospatial index | Geospatial index（地理空间索引，简称 GEO） 主要用于存储地理位置信息，基于 Sorted Set 实现。                                                                                                                                                                           |
+| Kiểu dữ liệu     | Giải thích                                                                                                                                                                                                                                                                                                                                                                                                |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Bitmap           | Bạn có thể xem Bitmap như một mảng lưu trữ các số nhị phân (0 và 1), index của mỗi phần tử trong mảng được gọi là offset (độ lệch). Thông qua Bitmap, chỉ cần một bit để biểu diễn giá trị hoặc trạng thái tương ứng của một phần tử nào đó, key chính là bản thân phần tử tương ứng. Chúng ta biết rằng 8 bit có thể tạo thành một byte, vì vậy bản thân Bitmap sẽ tiết kiệm rất lớn không gian lưu trữ. |
+| HyperLogLog      | HyperLogLog mà Redis cung cấp chiếm không gian vô cùng nhỏ, chỉ cần 12k không gian là có thể lưu trữ gần `2^64` phần tử khác nhau. Tuy nhiên, kết quả đếm của HyperLogLog không phải là một giá trị chính xác, mà tồn tại một sai số nhất định (sai số chuẩn là `0.81%`).                                                                                                                                 |
+| Geospatial index | Geospatial index (chỉ mục không gian địa lý, viết tắt là GEO) chủ yếu dùng để lưu trữ thông tin vị trí địa lý, được cài đặt dựa trên Sorted Set.                                                                                                                                                                                                                                                          |
 
-## 参考
+## Tham khảo
 
-- Redis Data Structures：<https://redis.com/redis-enterprise/data-structures/> 。
-- 《Redis 深度历险：核心原理与应用实践》1.6 四两拨千斤——HyperLogLog
-- 布隆过滤器,位图,HyperLogLog：<https://hogwartsrico.github.io/2020/06/08/BloomFilter-HyperLogLog-BitMap/index.html>
+- Redis Data Structures: <https://redis.com/redis-enterprise/data-structures/> .
+- 《Redis 深度冒险：核心原理与应用实践》1.6 四两拨千斤——HyperLogLog
+- Bloom Filter, Bitmap, HyperLogLog: <https://hogwartsrico.github.io/2020/06/08/BloomFilter-HyperLogLog-BitMap/index.html>
 
 <!-- @include: @article-footer.snippet.md -->

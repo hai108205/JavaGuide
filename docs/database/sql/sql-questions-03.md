@@ -1,36 +1,36 @@
 ---
-title: SQL常见面试题总结（3）
-description: SQL常见面试题总结第三篇，深入讲解聚合函数COUNT、SUM、AVG、MAX、MIN的使用，以及GROUP BY分组、HAVING过滤、截断平均值计算等进阶技巧。
-category: 数据库
+title: Tổng hợp câu hỏi phỏng vấn SQL thường gặp (Phần 3)
+description: Phần 3 của loạt bài tổng hợp câu hỏi phỏng vấn SQL thường gặp, đi sâu vào cách sử dụng các Aggregate Function COUNT, SUM, AVG, MAX, MIN, cùng các kỹ thuật nâng cao như GROUP BY, lọc bằng HAVING và tính trung bình cắt cụt (truncated average).
+category: Cơ sở dữ liệu
 tag:
-  - 数据库基础
+  - Cơ sở dữ liệu cơ bản
   - SQL
 head:
   - - meta
     - name: keywords
-      content: SQL面试题,聚合函数,COUNT,SUM,AVG,MAX,MIN,GROUP BY,HAVING,截断平均值
+      content: Câu hỏi phỏng vấn SQL,Aggregate Function,COUNT,SUM,AVG,MAX,MIN,GROUP BY,HAVING,Trung bình cắt cụt
 ---
 
-> 题目来源于：[牛客题霸 - SQL 进阶挑战](https://www.nowcoder.com/exam/oj?page=1&tab=SQL%E7%AF%87&topicId=240)
+> Các câu hỏi được lấy từ: [牛客题霸 - Thử thách SQL nâng cao](https://www.nowcoder.com/exam/oj?page=1&tab=SQL%E7%AF%87&topicId=240)
 
-较难或者困难的题目可以根据自身实际情况和面试需要来决定是否要跳过。
+Với các câu hỏi khá khó hoặc khó, bạn có thể dựa vào tình hình thực tế của bản thân và yêu cầu phỏng vấn để quyết định có nên bỏ qua hay không.
 
-## 聚合函数
+## Aggregate Function (Hàm tổng hợp)
 
-### SQL 类别高难度试卷得分的截断平均值（较难）
+### Điểm trung bình cắt cụt của đề thi SQL độ khó cao (khá khó)
 
-**描述**： 牛客的运营同学想要查看大家在 SQL 类别中高难度试卷的得分情况。
+**Mô tả**: Đội ngũ vận hành của NowCoder muốn xem điểm số của mọi người trong các đề thi độ khó cao thuộc danh mục SQL.
 
-请你帮她从`exam_record`数据表中计算所有用户完成 SQL 类别高难度试卷得分的截断平均值（去掉一个最大值和一个最小值后的平均值）。
+Hãy giúp họ tính từ bảng dữ liệu `exam_record` giá trị trung bình cắt cụt (truncated average) (giá trị trung bình sau khi loại bỏ một điểm cao nhất và một điểm thấp nhất) của tất cả người dùng đã hoàn thành đề thi SQL độ khó cao.
 
-示例数据：`examination_info`（`exam_id` 试卷 ID, tag 试卷类别, `difficulty` 试卷难度, `duration` 考试时长, `release_time` 发布时间）
+Dữ liệu mẫu: `examination_info` (`exam_id` là ID đề thi, tag là danh mục đề thi, `difficulty` là độ khó của đề thi, `duration` là thời lượng làm bài, `release_time` là thời gian phát hành)
 
 | id  | exam_id | tag  | difficulty | duration | release_time        |
 | --- | ------- | ---- | ---------- | -------- | ------------------- |
 | 1   | 9001    | SQL  | hard       | 60       | 2020-01-01 10:00:00 |
 | 2   | 9002    | 算法 | medium     | 80       | 2020-08-02 10:00:00 |
 
-示例数据：`exam_record`（uid 用户 ID, exam_id 试卷 ID, start_time 开始作答时间, submit_time 交卷时间, score 得分）
+Dữ liệu mẫu: `exam_record` (uid là ID người dùng, exam_id là ID đề thi, start_time là thời gian bắt đầu làm bài, submit_time là thời gian nộp bài, score là điểm)
 
 | id  | uid  | exam_id | start_time          | submit_time         | score  |
 | --- | ---- | ------- | ------------------- | ------------------- | ------ |
@@ -45,35 +45,35 @@ head:
 | 9   | 1003 | 9001    | 2021-09-07 12:01:01 | 2021-09-07 10:31:01 | 50     |
 | 10  | 1004 | 9001    | 2021-09-06 10:01:01 | (NULL)              | (NULL) |
 
-根据输入你的查询结果如下：
+Dựa trên dữ liệu đầu vào, kết quả truy vấn của bạn như sau:
 
 | tag | difficulty | clip_avg_score |
 | --- | ---------- | -------------- |
 | SQL | hard       | 81.7           |
 
-从`examination_info`表可知，试卷 9001 为高难度 SQL 试卷，该试卷被作答的得分有[80,81,84,90,50]，去除最高分和最低分后为[80,81,84]，平均分为 81.6666667，保留一位小数后为 81.7
+Từ bảng `examination_info` có thể thấy, đề thi 9001 là đề thi SQL độ khó cao, các điểm số ghi nhận được khi làm đề thi này là [80,81,84,90,50], sau khi loại bỏ điểm cao nhất và điểm thấp nhất còn lại [80,81,84], điểm trung bình là 81.6666667, giữ lại một chữ số thập phân là 81.7
 
-**输入描述：**
+**Mô tả đầu vào:**
 
-输入数据中至少有 3 个有效分数
+Dữ liệu đầu vào có ít nhất 3 điểm hợp lệ
 
-**思路一：** 要找出高难度 sql 试卷，肯定需要联 examination_info 这张表，然后找出高难度的课程，由 examination_info 得知，高难度 sql 的 exam_id 为 9001，那么等下就以 exam_id = 9001 作为条件去查询；
+**Hướng tiếp cận 1:** Muốn tìm đề thi SQL độ khó cao, chắc chắn cần JOIN với bảng examination_info, sau đó lọc ra đề thi có độ khó cao. Từ examination_info ta biết exam_id của đề SQL độ khó cao là 9001, vậy lát nữa sẽ dùng điều kiện exam_id = 9001 để truy vấn;
 
-先找出 9001 号考试 `select * from exam_record where exam_id = 9001`
+Trước tiên tìm các bản ghi của đề thi 9001 `select * from exam_record where exam_id = 9001`
 
-然后，找出最高分 `select max(score) 最高分 from exam_record where exam_id = 9001`
+Sau đó tìm điểm cao nhất `select max(score) 最高分 from exam_record where exam_id = 9001`
 
-接着，找出最低分 `select min(score) 最低分 from exam_record where exam_id = 9001`
+Tiếp theo tìm điểm thấp nhất `select min(score) 最低分 from exam_record where exam_id = 9001`
 
-在查询出来的分数结果集当中，去掉最高分和最低分，最直观能想到的就是 NOT IN 或者 用 NOT EXISTS 也行，这里以 NOT IN 来做
+Trong tập kết quả điểm số truy vấn được, để loại bỏ điểm cao nhất và thấp nhất, cách trực quan nhất có thể nghĩ đến là dùng NOT IN hoặc NOT EXISTS đều được, ở đây dùng NOT IN.
 
-首先将主体写出来`select tag, difficulty, round(avg(score), 1) clip_avg_score from examination_info info INNER JOIN exam_record record`
+Trước tiên viết phần thân chính `select tag, difficulty, round(avg(score), 1) clip_avg_score from examination_info info INNER JOIN exam_record record`
 
-**小 tips** : MYSQL 的 `ROUND()` 函数 ,`ROUND(X)`返回参数 X 最近似的整数 `ROUND(X,D)`返回 X ,其值保留到小数点后 D 位,第 D 位的保留方式为四舍五入。
+**Mẹo nhỏ**: Hàm `ROUND()` trong MYSQL, `ROUND(X)` trả về số nguyên gần nhất với tham số X, `ROUND(X,D)` trả về X với giá trị được giữ đến D chữ số thập phân, chữ số thứ D được làm tròn theo quy tắc bốn bỏ năm lên.
 
-再将上面的 "碎片" 语句拼凑起来即可， 注意在 NOT IN 中两个子查询用 UNION ALL 来关联，用 union 把 max 和 min 的结果集中在一行当中，这样形成一列多行的效果。
+Sau đó ghép các "mảnh" câu lệnh ở trên lại với nhau. Lưu ý trong NOT IN, hai Subquery được liên kết bằng UNION ALL, dùng UNION để gộp kết quả của max và min vào cùng một cột, tạo thành hiệu ứng một cột nhiều dòng.
 
-**答案一：**
+**Đáp án 1:**
 
 ```sql
 SELECT tag, difficulty, ROUND(AVG(score), 1) clip_avg_score
@@ -91,7 +91,7 @@ SELECT tag, difficulty, ROUND(AVG(score), 1) clip_avg_score
 				)
 ```
 
-这是最直观，也是最容易想到的解法，但是还有待改进，这算是投机取巧过关，其实严格按照题目要求应该这么写：
+Đây là cách giải trực quan và dễ nghĩ đến nhất, nhưng vẫn còn chỗ cải tiến. Cách này xem như là "lách luật" để qua ải, thực ra nếu viết nghiêm ngặt đúng yêu cầu đề bài thì phải viết như sau:
 
 ```sql
 SELECT tag,
@@ -122,41 +122,41 @@ WHERE info.exam_id = record.exam_id
             AND difficulty = 'hard' ) )
 ```
 
-然而你会发现，重复的语句非常多，所以可以利用`WITH`来抽取公共部分
+Tuy nhiên bạn sẽ thấy câu lệnh bị lặp lại rất nhiều, vì vậy có thể dùng `WITH` để tách phần dùng chung ra.
 
-**`WITH` 子句介绍**：
+**Giới thiệu mệnh đề `WITH`**:
 
-`WITH` 子句，也称为公共表表达式（Common Table Expression，CTE），是在 SQL 查询中定义临时表的方式。它可以让我们在查询中创建一个临时命名的结果集，并且可以在同一查询中引用该结果集。
+Mệnh đề `WITH`, còn được gọi là Common Table Expression (Biểu thức bảng chung, CTE), là cách định nghĩa một bảng tạm thời trong truy vấn SQL. Nó cho phép chúng ta tạo một tập kết quả có tên tạm thời bên trong truy vấn và tham chiếu đến tập kết quả đó ngay trong cùng một truy vấn.
 
-基本用法：
+Cách dùng cơ bản:
 
 ```sql
 WITH cte_name (column1, column2, ..., columnN) AS (
-    -- 查询体
+    -- Thân truy vấn
     SELECT ...
     FROM ...
     WHERE ...
 )
--- 主查询
+-- Truy vấn chính
 SELECT ...
 FROM cte_name
 WHERE ...
 ```
 
-`WITH` 子句由以下几个部分组成：
+Mệnh đề `WITH` gồm các thành phần sau:
 
-- `cte_name`: 给临时表起一个名称，可以在主查询中引用。
-- `(column1, column2, ..., columnN)`: 可选，指定临时表的列名。
-- `AS`: 必需，表示开始定义临时表。
-- `CTE 查询体`: 实际的查询语句，用于定义临时表中的数据。
+- `cte_name`: Đặt tên cho bảng tạm thời, có thể tham chiếu trong truy vấn chính.
+- `(column1, column2, ..., columnN)`: Tùy chọn, chỉ định tên cột của bảng tạm thời.
+- `AS`: Bắt buộc, biểu thị bắt đầu định nghĩa bảng tạm thời.
+- `Thân truy vấn CTE`: Câu lệnh truy vấn thực tế, dùng để định nghĩa dữ liệu trong bảng tạm thời.
 
-`WITH` 子句的主要用途之一是增强查询的可读性和可维护性，尤其在涉及多个嵌套子查询或需要重复使用相同的查询逻辑时。通过将这些逻辑放在一个命名的临时表中，我们可以更清晰地组织查询，并消除重复代码。
+Một trong những công dụng chính của mệnh đề `WITH` là tăng tính dễ đọc và dễ bảo trì của truy vấn, đặc biệt khi liên quan đến nhiều Subquery lồng nhau hoặc cần dùng lại cùng một logic truy vấn. Bằng cách đưa các logic này vào một bảng tạm thời có tên, chúng ta có thể tổ chức truy vấn rõ ràng hơn và loại bỏ mã lặp.
 
-此外，`WITH` 子句还可以在复杂的查询中实现递归查询。递归查询允许我们在单个查询中执行对同一表的多次迭代，逐步构建结果集。这在处理层次结构数据、组织结构和树状结构等场景中非常有用。
+Ngoài ra, mệnh đề `WITH` còn có thể thực hiện truy vấn đệ quy trong các truy vấn phức tạp. Truy vấn đệ quy cho phép chúng ta thực hiện nhiều lần lặp trên cùng một bảng trong một truy vấn duy nhất, từng bước xây dựng tập kết quả. Điều này rất hữu ích trong các tình huống xử lý dữ liệu phân cấp, cơ cấu tổ chức và cấu trúc cây.
 
-**小细节**：MySQL 5.7 版本以及之前的版本不支持在 `WITH` 子句中直接使用别名。
+**Chi tiết nhỏ**: MySQL phiên bản 5.7 và các phiên bản trước đó không hỗ trợ sử dụng trực tiếp alias trong mệnh đề `WITH`.
 
-下面是改进后的答案：
+Dưới đây là đáp án sau khi cải tiến:
 
 ```sql
 WITH t1 AS
@@ -178,14 +178,14 @@ WHERE score NOT IN
      FROM t1)
 ```
 
-**思路二：**
+**Hướng tiếp cận 2:**
 
-- 筛选 SQL 高难度试卷：`where tag="SQL" and difficulty="hard"`
-- 计算截断平均值：`(和-最大值-最小值) / (总个数-2)`:
+- Lọc đề thi SQL độ khó cao: `where tag="SQL" and difficulty="hard"`
+- Tính trung bình cắt cụt: `(tổng - giá trị lớn nhất - giá trị nhỏ nhất) / (tổng số - 2)`:
   - `(sum(score) - max(score) - min(score)) / (count(score) - 2)`
-  - 有一个缺点就是，如果最大值和最小值有多个，这个方法就很难筛选出来, 但是题目中说了----->**`去掉一个最大值和一个最小值后的平均值`**, 所以这里可以用这个公式。
+  - Có một nhược điểm là nếu giá trị lớn nhất và nhỏ nhất xuất hiện nhiều lần thì phương pháp này khó lọc chính xác, nhưng đề bài đã nói rõ -----> **`giá trị trung bình sau khi loại bỏ một điểm cao nhất và một điểm thấp nhất`**, nên ở đây có thể dùng công thức này.
 
-**答案二：**
+**Đáp án 2:**
 
 ```sql
 SELECT info.tag,
@@ -198,11 +198,11 @@ WHERE info.exam_id = record.exam_id
   AND info.difficulty = "hard";
 ```
 
-### 统计作答次数
+### Thống kê số lần làm bài
 
-有一个试卷作答记录表 `exam_record`，请从中统计出总作答次数 `total_pv`、试卷已完成作答数 `complete_pv`、已完成的试卷数 `complete_exam_cnt`。
+Có bảng ghi nhận làm bài thi `exam_record`, hãy thống kê từ đó tổng số lần làm bài `total_pv`, số lần làm bài đã hoàn thành `complete_pv` và số đề thi đã hoàn thành `complete_exam_cnt`.
 
-示例数据 `exam_record` 表（`uid` 用户 ID, `exam_id` 试卷 ID, `start_time` 开始作答时间, `submit_time` 交卷时间, `score` 得分）：
+Dữ liệu mẫu của bảng `exam_record` (`uid` là ID người dùng, `exam_id` là ID đề thi, `start_time` là thời gian bắt đầu làm bài, `submit_time` là thời gian nộp bài, `score` là điểm):
 
 | id  | uid  | exam_id | start_time          | submit_time         | score  |
 | --- | ---- | ------- | ------------------- | ------------------- | ------ |
@@ -217,59 +217,59 @@ WHERE info.exam_id = record.exam_id
 | 9   | 1003 | 9001    | 2021-09-07 12:01:01 | 2021-09-07 10:31:01 | 50     |
 | 10  | 1004 | 9001    | 2021-09-06 10:01:01 | (NULL)              | (NULL) |
 
-示例输出：
+Kết quả đầu ra mẫu:
 
 | total_pv | complete_pv | complete_exam_cnt |
 | -------- | ----------- | ----------------- |
 | 10       | 7           | 2                 |
 
-解释：表示截止当前，有 10 次试卷作答记录，已完成的作答次数为 7 次（中途退出的为未完成状态，其交卷时间和份数为 NULL），已完成的试卷有 9001 和 9002 两份。
+Giải thích: Tính đến thời điểm hiện tại có 10 bản ghi làm bài thi, số lần làm bài đã hoàn thành là 7 (bỏ dở giữa chừng được xem là chưa hoàn thành, với thời gian nộp bài và điểm số là NULL), các đề thi đã hoàn thành gồm 2 đề là 9001 và 9002.
 
-**思路**： 这题一看到统计次数，肯定第一时间就要想到用`COUNT`这个函数来解决，问题是要统计不同的记录，该怎么来写？使用子查询就能解决这个题目(这题用 case when 也能写出来，解法类似，逻辑不同而已)；首先在做这个题之前，让我们先来了解一下`COUNT`的基本用法；
+**Hướng tiếp cận**: Nhìn thấy yêu cầu thống kê số lần, điều đầu tiên phải nghĩ đến là dùng hàm `COUNT`. Vấn đề là cần thống kê các loại bản ghi khác nhau thì phải viết thế nào? Dùng Subquery có thể giải quyết bài toán này (bài này dùng CASE WHEN cũng viết được, cách giải tương tự, chỉ khác về logic); trước tiên, hãy cùng tìm hiểu cách dùng cơ bản của `COUNT`;
 
-`COUNT()` 函数的基本语法如下所示：
+Cú pháp cơ bản của hàm `COUNT()` như sau:
 
 ```sql
 COUNT(expression)
 ```
 
-其中，`expression` 可以是列名、表达式、常量或通配符。下面是一些常见的用法示例：
+Trong đó, `expression` có thể là tên cột, biểu thức, hằng số hoặc ký tự đại diện (wildcard). Dưới đây là một số ví dụ cách dùng thường gặp:
 
-1. 计算表中所有行的数量：
+1. Đếm số lượng tất cả các dòng trong bảng:
 
 ```sql
 SELECT COUNT(*) FROM table_name;
 ```
 
-2. 计算特定列非空（不为 NULL）值的数量：
+2. Đếm số lượng giá trị khác NULL của một cột cụ thể:
 
 ```sql
 SELECT COUNT(column_name) FROM table_name;
 ```
 
-3. 计算满足条件的行数：
+3. Đếm số dòng thỏa mãn điều kiện:
 
 ```sql
 SELECT COUNT(*) FROM table_name WHERE condition;
 ```
 
-4. 结合 `GROUP BY` 使用，计算分组后每个组的行数：
+4. Kết hợp với `GROUP BY` để đếm số dòng của mỗi nhóm sau khi gom nhóm:
 
 ```sql
 SELECT column_name, COUNT(*) FROM table_name GROUP BY column_name;
 ```
 
-5. 计算不同列组合的唯一组合数：
+5. Đếm số tổ hợp duy nhất của các cột khác nhau:
 
 ```sql
 SELECT COUNT(DISTINCT column_name1, column_name2) FROM table_name;
 ```
 
-在使用 `COUNT()` 函数时，如果不指定任何参数或者使用 `COUNT(*)`，将会计算所有行的数量。而如果使用列名，则只会计算该列非空值的数量。
+Khi sử dụng hàm `COUNT()`, nếu không chỉ định tham số nào hoặc dùng `COUNT(*)`, nó sẽ đếm tất cả các dòng. Còn nếu dùng tên cột, nó chỉ đếm số giá trị khác NULL của cột đó.
 
-另外，`COUNT()` 函数的结果是一个整数值。即使结果是零，也不会返回 NULL，这点需要谨记。
+Ngoài ra, kết quả của hàm `COUNT()` là một số nguyên. Ngay cả khi kết quả là 0, nó cũng không trả về NULL, điểm này cần ghi nhớ.
 
-**答案**：
+**Đáp án**:
 
 ```sql
 SELECT
@@ -280,17 +280,17 @@ FROM
 	exam_record
 ```
 
-这里着重说一下`COUNT( DISTINCT exam_id, score IS NOT NULL OR NULL )`这一句，判断 score 是否为 null ，如果是即为真，如果不是返回 null；注意这里如果不加 `or null` 在不是 null 的情况下只会返回 false 也就是返回 0；
+Ở đây cần nói kỹ về câu `COUNT( DISTINCT exam_id, score IS NOT NULL OR NULL )`: nó kiểm tra score có phải là NULL hay không, nếu đúng thì trả về TRUE, nếu không thì trả về NULL; lưu ý nếu không thêm `or null` thì trong trường hợp khác NULL chỉ trả về FALSE, tức là trả về 0;
 
-`COUNT`本身是不可以对多列求行数的，`distinct`的加入是的多列成为一个整体，可以求出现的行数了;`count distinct`在计算时只返回非 null 的行, 这个也要注意；
+Bản thân `COUNT` không thể đếm số dòng trên nhiều cột, việc thêm `DISTINCT` khiến nhiều cột trở thành một thể thống nhất, từ đó có thể đếm được số dòng xuất hiện; `COUNT DISTINCT` khi tính toán chỉ trả về các dòng khác NULL, điểm này cũng cần chú ý;
 
-另外通过本题 get 到了------>count 加条件常用句式`count( 列判断 or null)`
+Ngoài ra qua bài này chúng ta học được một mẫu câu thường dùng khi COUNT kèm điều kiện ------> `count( biểu_thức_điều_kiện_của_cột or null)`
 
-### 得分不小于平均分的最低分
+### Điểm thấp nhất không nhỏ hơn điểm trung bình
 
-**描述**： 请从试卷作答记录表中找到 SQL 试卷得分不小于该类试卷平均得分的用户最低得分。
+**Mô tả**: Hãy tìm từ bảng ghi nhận làm bài thi điểm thấp nhất của người dùng có điểm thi SQL không nhỏ hơn điểm trung bình của các đề thi cùng loại đó.
 
-示例数据 exam_record 表（uid 用户 ID, exam_id 试卷 ID, start_time 开始作答时间, submit_time 交卷时间, score 得分）：
+Dữ liệu mẫu của bảng exam_record (uid là ID người dùng, exam_id là ID đề thi, start_time là thời gian bắt đầu làm bài, submit_time là thời gian nộp bài, score là điểm):
 
 | id  | uid  | exam_id | start_time          | submit_time         | score  |
 | --- | ---- | ------- | ------------------- | ------------------- | ------ |
@@ -304,7 +304,7 @@ FROM
 | 8   | 1003 | 9003    | 2021-09-07 10:01:01 | 2021-09-07 10:31:01 | 86     |
 | 9   | 1004 | 9003    | 2021-09-06 12:01:01 | (NULL)              | (NULL) |
 
-`examination_info` 表（`exam_id` 试卷 ID, `tag` 试卷类别, `difficulty` 试卷难度, `duration` 考试时长, `release_time` 发布时间）
+Bảng `examination_info` (`exam_id` là ID đề thi, `tag` là danh mục đề thi, `difficulty` là độ khó của đề thi, `duration` là thời lượng làm bài, `release_time` là thời gian phát hành)
 
 | id  | exam_id | tag  | difficulty | duration | release_time        |
 | --- | ------- | ---- | ---------- | -------- | ------------------- |
@@ -312,37 +312,37 @@ FROM
 | 2   | 9002    | SQL  | easy       | 60       | 2020-02-01 10:00:00 |
 | 3   | 9003    | 算法 | medium     | 80       | 2020-08-02 10:00:00 |
 
-示例输出数据：
+Dữ liệu đầu ra mẫu:
 
 | min_score_over_avg |
 | ------------------ |
 | 87                 |
 
-**解释**：试卷 9001 和 9002 为 SQL 类别，作答这两份试卷的得分有[80,89,87,90]，平均分为 86.5，不小于平均分的最小分数为 87
+**Giải thích**: Đề thi 9001 và 9002 thuộc danh mục SQL, điểm số khi làm hai đề thi này là [80,89,87,90], điểm trung bình là 86.5, điểm thấp nhất không nhỏ hơn điểm trung bình là 87
 
-**思路**：这类题目第一眼看确实很复杂， 因为不知道从哪入手，但是当我们仔细读题审题后，要学会抓住题干中的关键信息。以本题为例：`请从试卷作答记录表中找到SQL试卷得分不小于该类试卷平均得分的用户最低得分。`你能一眼从中提取哪些有效信息来作为解题思路？
+**Hướng tiếp cận**: Loại bài này thoạt nhìn quả thực rất phức tạp, vì không biết bắt đầu từ đâu, nhưng khi đọc kỹ đề bài, chúng ta phải học cách nắm bắt thông tin then chốt trong đề. Với bài này: `Hãy tìm từ bảng ghi nhận làm bài thi điểm thấp nhất của người dùng có điểm thi SQL không nhỏ hơn điểm trung bình của các đề thi cùng loại đó.` Bạn có thể trích xuất ngay những thông tin hữu hiệu nào từ đó để làm hướng giải?
 
-第一条：找到==SQL==试卷得分
+Điều thứ nhất: Tìm ==điểm thi SQL==
 
-第二条：该类试卷==平均得分==
+Điều thứ hai: ==Điểm trung bình== của các đề thi loại này
 
-第三条：该类试卷的==用户最低得分==
+Điều thứ ba: ==Điểm thấp nhất của người dùng== với các đề thi loại này
 
-然后中间的 “桥梁” 就是==不小于==
+Sau đó "cây cầu" nối ở giữa chính là ==không nhỏ hơn==
 
-将条件拆分后，先逐步完成
+Sau khi tách nhỏ các điều kiện, trước tiên hoàn thành từng bước
 
 ```sql
--- 找出tag为‘SQL’的得分   【80, 89,87,90】
--- 再算出这一组的平均得分
+-- Tìm điểm của các bản ghi có tag là 'SQL'   【80, 89,87,90】
+-- Sau đó tính điểm trung bình của nhóm này
 select  ROUND(AVG(score), 1) from  examination_info info INNER JOIN exam_record record
 	where info.exam_id = record.exam_id
 	and tag= 'SQL'
 ```
 
-然后再找出该类试卷的最低得分，接着将结果集`【80, 89,87,90】` 去和平均分数作比较，方可得出最终答案。
+Sau đó tìm điểm thấp nhất của các đề thi loại này, tiếp theo đem tập kết quả `【80, 89,87,90】` so sánh với điểm trung bình là có thể ra đáp án cuối cùng.
 
-**答案**：
+**Đáp án**:
 
 ```sql
 SELECT MIN(score) AS min_score_over_avg
@@ -358,15 +358,15 @@ WHERE info.exam_id = record.exam_id
        AND tag= 'SQL' )
 ```
 
-其实这类题目给出的要求看似很 “绕”，但其实仔细梳理一遍，将大条件拆分成小条件，逐个拆分完以后，最后将所有条件拼凑起来。反正只要记住：**抓主干，理分支**，问题便迎刃而解。
+Thực ra yêu cầu của loại bài này nhìn tưởng chừng rất "lắt léo", nhưng nếu bình tĩnh rà soát một lượt, tách điều kiện lớn thành các điều kiện nhỏ, sau khi tách xong thì ghép tất cả các điều kiện lại. Chỉ cần nhớ kỹ: **nắm thân chính, gỡ nhánh phụ**, vấn đề sẽ được giải quyết dễ dàng.
 
-## 分组查询
+## Truy vấn gom nhóm (GROUP BY)
 
-### 平均活跃天数和月活人数
+### Số ngày hoạt động trung bình và số người dùng hoạt động hàng tháng
 
-**描述**：用户在牛客试卷作答区作答记录存储在表 `exam_record` 中，内容如下：
+**Mô tả**: Bản ghi làm bài của người dùng trong khu vực làm đề thi trên NowCoder được lưu trong bảng `exam_record`, nội dung như sau:
 
-`exam_record` 表（`uid` 用户 ID, `exam_id` 试卷 ID, `start_time` 开始作答时间, `submit_time` 交卷时间, `score` 得分）
+Bảng `exam_record` (`uid` là ID người dùng, `exam_id` là ID đề thi, `start_time` là thời gian bắt đầu làm bài, `submit_time` là thời gian nộp bài, `score` là điểm)
 
 | id  | uid  | exam_id | start_time          | submit_time         | score  |
 | --- | ---- | ------- | ------------------- | ------------------- | ------ |
@@ -384,27 +384,27 @@ WHERE info.exam_id = record.exam_id
 | 12  | 1006 | 9002    | 2021-09-02 12:11:01 | 2021-09-02 12:31:01 | 89     |
 | 13  | 1007 | 9002    | 2020-09-02 12:11:01 | 2020-09-02 12:31:01 | 89     |
 
-请计算 2021 年每个月里试卷作答区用户平均月活跃天数 `avg_active_days` 和月度活跃人数 `mau`，上面数据的示例输出如下：
+Hãy tính số ngày hoạt động trung bình trong khu vực làm đề thi của mỗi tháng trong năm 2021 `avg_active_days` và số người dùng hoạt động hàng tháng (Monthly Active Users) `mau`, kết quả đầu ra mẫu của dữ liệu trên như sau:
 
 | month  | avg_active_days | mau |
 | ------ | --------------- | --- |
 | 202107 | 1.50            | 2   |
 | 202109 | 1.25            | 4   |
 
-**解释**：2021 年 7 月有 2 人活跃，共活跃了 3 天（1001 活跃 1 天，1002 活跃 2 天），平均活跃天数 1.5；2021 年 9 月有 4 人活跃，共活跃了 5 天，平均活跃天数 1.25，结果保留 2 位小数。
+**Giải thích**: Tháng 7 năm 2021 có 2 người hoạt động, tổng cộng hoạt động 3 ngày (1001 hoạt động 1 ngày, 1002 hoạt động 2 ngày), số ngày hoạt động trung bình là 1.5; tháng 9 năm 2021 có 4 người hoạt động, tổng cộng hoạt động 5 ngày, số ngày hoạt động trung bình là 1.25, kết quả giữ lại 2 chữ số thập phân.
 
-注：此处活跃指有==交卷==行为。
+Lưu ý: Ở đây "hoạt động" nghĩa là có hành vi ==nộp bài==.
 
-**思路**：读完题先注意高亮部分；一般求天数和月活跃人数马上就要想到相关的日期函数；这一题我们同样来进行拆分，把问题细化再解决；首先求活跃人数，肯定要用到`COUNT()`，那这里首先就有一个坑，不知道大家注意了没有？用户 1002 在 9 月份做了两种不同的试卷，所以这里要注意去重，不然在统计的时候，活跃人数是错的；第二个就是要知道日期的格式化，如上表，题目要求以`202107`这种日期格式展现，要用到`DATE_FORMAT`来进行格式化。
+**Hướng tiếp cận**: Đọc xong đề bài, trước tiên chú ý phần được đánh dấu; thông thường khi cần tính số ngày và số người hoạt động hàng tháng, phải nghĩ ngay đến các hàm ngày tháng liên quan; bài này chúng ta cũng tách nhỏ vấn đề rồi giải quyết; trước tiên tính số người hoạt động, chắc chắn phải dùng `COUNT()`, ở đây có một cái bẫy, không biết mọi người có để ý không? Người dùng 1002 đã làm hai đề thi khác nhau trong tháng 9, nên phải chú ý loại trùng, nếu không khi thống kê số người hoạt động sẽ bị sai; thứ hai là phải biết định dạng ngày tháng, như bảng trên, đề bài yêu cầu hiển thị theo định dạng ngày `202107`, phải dùng `DATE_FORMAT` để định dạng.
 
-基本用法：
+Cách dùng cơ bản:
 
 `DATE_FORMAT(date_value, format)`
 
-- `date_value` 参数是待格式化的日期或时间值。
-- `format` 参数是指定的日期或时间格式（这个和 Java 里面的日期格式一样）。
+- Tham số `date_value` là giá trị ngày hoặc giờ cần định dạng.
+- Tham số `format` là định dạng ngày hoặc giờ được chỉ định (giống với định dạng ngày trong Java).
 
-**答案**：
+**Đáp án**:
 
 ```sql
 SELECT DATE_FORMAT(submit_time, '%Y%m') MONTH,
@@ -415,11 +415,11 @@ WHERE YEAR (submit_time) = 2021
 GROUP BY MONTH
 ```
 
-这里多说一句, 使用`COUNT(DISTINCT uid, DATE_FORMAT(submit_time, '%Y%m%d'))` 可以统计在 `uid` 列和 `submit_time` 列按照年份、月份和日期进行格式化后的组合值的数量。
+Nói thêm một chút, dùng `COUNT(DISTINCT uid, DATE_FORMAT(submit_time, '%Y%m%d'))` có thể đếm số lượng giá trị tổ hợp của cột `uid` và cột `submit_time` sau khi được định dạng theo năm, tháng và ngày.
 
-### 月总刷题数和日均刷题数
+### Tổng số bài luyện mỗi tháng và số bài luyện trung bình mỗi ngày
 
-**描述**：现有一张题目练习记录表 `practice_record`，示例内容如下：
+**Mô tả**: Hiện có bảng ghi nhận luyện bài `practice_record`, nội dung mẫu như sau:
 
 | id  | uid  | question_id | submit_time         | score |
 | --- | ---- | ----------- | ------------------- | ----- |
@@ -429,7 +429,7 @@ GROUP BY MONTH
 | 4   | 1002 | 8002        | 2021-09-02 19:38:01 | 70    |
 | 5   | 1003 | 8002        | 2021-08-01 19:38:01 | 80    |
 
-请从中统计出 2021 年每个月里用户的月总刷题数 `month_q_cnt` 和日均刷题数 `avg_day_q_cnt`（按月份升序排序）以及该年的总体情况，示例数据输出如下：
+Hãy thống kê từ đó tổng số bài luyện trong tháng của người dùng `month_q_cnt` và số bài luyện trung bình mỗi ngày `avg_day_q_cnt` của từng tháng trong năm 2021 (sắp xếp theo tháng tăng dần), cùng với tình hình tổng thể của cả năm, kết quả đầu ra mẫu của dữ liệu như sau:
 
 | submit_month | month_q_cnt | avg_day_q_cnt |
 | ------------ | ----------- | ------------- |
@@ -437,15 +437,15 @@ GROUP BY MONTH
 | 202109       | 3           | 0.100         |
 | 2021 汇总    | 5           | 0.161         |
 
-**解释**：2021 年 8 月共有 2 次刷题记录，日均刷题数为 2/31=0.065（保留 3 位小数）；2021 年 9 月共有 3 次刷题记录，日均刷题数为 3/30=0.100；2021 年共有 5 次刷题记录（年度汇总平均无实际意义，这里我们按照 31 天来算 5/31=0.161）
+**Giải thích**: Tháng 8 năm 2021 có tổng cộng 2 bản ghi luyện bài, số bài luyện trung bình mỗi ngày là 2/31=0.065 (giữ lại 3 chữ số thập phân); tháng 9 năm 2021 có tổng cộng 3 bản ghi luyện bài, số bài luyện trung bình mỗi ngày là 3/30=0.100; cả năm 2021 có tổng cộng 5 bản ghi luyện bài (giá trị trung bình của tổng kết năm không có ý nghĩa thực tế, ở đây chúng ta tính theo 31 ngày là 5/31=0.161)
 
-> 牛客已经采用最新的 Mysql 版本，如果您运行结果出现错误：ONLY_FULL_GROUP_BY，意思是：对于 GROUP BY 聚合操作，如果在 SELECT 中的列，没有在 GROUP BY 中出现，那么这个 SQL 是不合法的，因为列不在 GROUP BY 从句中，也就是说查出来的列必须在 group by 后面出现否则就会报错，或者这个字段出现在聚合函数里面。
+> NowCoder đã áp dụng phiên bản MySQL mới nhất, nếu kết quả chạy của bạn báo lỗi: ONLY_FULL_GROUP_BY, ý nghĩa là: đối với thao tác gom nhóm GROUP BY, nếu một cột trong SELECT không xuất hiện trong GROUP BY thì câu SQL đó không hợp lệ, vì cột không nằm trong mệnh đề GROUP BY, nghĩa là các cột được truy vấn phải xuất hiện sau GROUP BY nếu không sẽ báo lỗi, hoặc cột đó phải nằm trong một Aggregate Function.
 
-**思路：**
+**Hướng tiếp cận:**
 
-看到实例数据就要马上联想到相关的函数，比如`submit_month`就要用到`DATE_FORMAT`来格式化日期。然后查出每月的刷题数量。
+Nhìn thấy dữ liệu mẫu phải liên tưởng ngay đến các hàm liên quan, ví dụ `submit_month` cần dùng `DATE_FORMAT` để định dạng ngày. Sau đó truy vấn số bài luyện của mỗi tháng.
 
-每月的刷题数量
+Số bài luyện của mỗi tháng
 
 ```sql
 SELECT MONTH ( submit_time ), COUNT( question_id )
@@ -455,28 +455,28 @@ GROUP BY
 	MONTH (submit_time)
 ```
 
-接着第三列这里要用到`DAY(LAST_DAY(date_value))`函数来查找给定日期的月份中的天数。
+Tiếp theo, cột thứ ba cần dùng hàm `DAY(LAST_DAY(date_value))` để tìm số ngày trong tháng của một ngày cho trước.
 
-示例代码如下：
+Mã mẫu như sau:
 
 ```sql
 SELECT DAY(LAST_DAY('2023-07-08')) AS days_in_month;
--- 输出：31
+-- Kết quả: 31
 
 SELECT DAY(LAST_DAY('2023-02-01')) AS days_in_month;
--- 输出：28 (闰年中的二月份)
+-- Kết quả: 28 (tháng Hai trong năm nhuận)
 
 SELECT DAY(LAST_DAY(NOW())) AS days_in_current_month;
--- 输出：31 （当前月份的天数）
+-- Kết quả: 31 (số ngày của tháng hiện tại)
 ```
 
-使用 `LAST_DAY()` 函数获取给定日期的当月最后一天，然后使用 `DAY()` 函数提取该日期的天数。这样就能获得指定月份的天数。
+Dùng hàm `LAST_DAY()` để lấy ngày cuối cùng của tháng chứa ngày cho trước, sau đó dùng hàm `DAY()` để trích xuất số ngày của ngày đó. Như vậy sẽ có được số ngày của tháng được chỉ định.
 
-需要注意的是，`LAST_DAY()` 函数返回的是日期值，而 `DAY()` 函数用于提取日期值中的天数部分。
+Cần lưu ý, hàm `LAST_DAY()` trả về một giá trị ngày, còn hàm `DAY()` dùng để trích xuất phần ngày (day) từ giá trị ngày đó.
 
-有了上述的分析之后，即可马上写出答案，这题复杂就复杂在处理日期上，其中的逻辑并不难。
+Sau khi phân tích như trên, có thể viết ngay đáp án. Bài này phức tạp ở chỗ xử lý ngày tháng, còn logic bên trong không hề khó.
 
-**答案**：
+**Đáp án**:
 
 ```sql
 SELECT DATE_FORMAT(submit_time, '%Y%m') submit_month,
@@ -494,11 +494,11 @@ WHERE DATE_FORMAT(submit_time, '%Y') = '2021'
 ORDER BY submit_month
 ```
 
-在实例数据输出中因为最后一行需要得出汇总数据，所以这里要 `UNION ALL`加到结果集中；别忘了最后要排序！
+Trong kết quả đầu ra mẫu, vì dòng cuối cùng cần ra dữ liệu tổng kết nên phải dùng `UNION ALL` để thêm vào tập kết quả; đừng quên cuối cùng phải sắp xếp!
 
-### 未完成试卷数大于 1 的有效用户（较难）
+### Người dùng hợp lệ có số đề thi chưa hoàn thành lớn hơn 1 (khá khó)
 
-**描述**：现有试卷作答记录表 `exam_record`（`uid` 用户 ID, `exam_id` 试卷 ID, `start_time` 开始作答时间, `submit_time` 交卷时间, `score` 得分），示例数据如下：
+**Mô tả**: Hiện có bảng ghi nhận làm bài thi `exam_record` (`uid` là ID người dùng, `exam_id` là ID đề thi, `start_time` là thời gian bắt đầu làm bài, `submit_time` là thời gian nộp bài, `score` là điểm), dữ liệu mẫu như sau:
 
 | id  | uid  | exam_id | start_time          | submit_time         | score  |
 | --- | ---- | ------- | ------------------- | ------------------- | ------ |
@@ -516,7 +516,7 @@ ORDER BY submit_month
 | 12  | 1006 | 9002    | 2021-09-02 12:11:01 | 2021-09-02 12:31:01 | 89     |
 | 13  | 1007 | 9002    | 2020-09-02 12:11:01 | 2020-09-02 12:31:01 | 89     |
 
-还有一张试卷信息表 `examination_info`（`exam_id` 试卷 ID, `tag` 试卷类别, `difficulty` 试卷难度, `duration` 考试时长, `release_time` 发布时间），示例数据如下：
+Còn có bảng thông tin đề thi `examination_info` (`exam_id` là ID đề thi, `tag` là danh mục đề thi, `difficulty` là độ khó của đề thi, `duration` là thời lượng làm bài, `release_time` là thời gian phát hành), dữ liệu mẫu như sau:
 
 | id  | exam_id | tag  | difficulty | duration | release_time        |
 | --- | ------- | ---- | ---------- | -------- | ------------------- |
@@ -524,19 +524,19 @@ ORDER BY submit_month
 | 2   | 9002    | SQL  | easy       | 60       | 2020-02-01 10:00:00 |
 | 3   | 9003    | 算法 | medium     | 80       | 2020-08-02 10:00:00 |
 
-请统计 2021 年每个未完成试卷作答数大于 1 的有效用户的数据（有效用户指完成试卷作答数至少为 1 且未完成数小于 5），输出用户 ID、未完成试卷作答数、完成试卷作答数、作答过的试卷 tag 集合，按未完成试卷数量由多到少排序。示例数据的输出结果如下：
+Hãy thống kê dữ liệu của từng người dùng hợp lệ trong năm 2021 có số lần làm đề thi chưa hoàn thành lớn hơn 1 (người dùng hợp lệ là người có số lần hoàn thành đề thi ít nhất là 1 và số lần chưa hoàn thành nhỏ hơn 5), đầu ra gồm ID người dùng, số lần làm đề thi chưa hoàn thành, số lần hoàn thành đề thi, tập hợp tag các đề thi đã làm, sắp xếp theo số đề thi chưa hoàn thành từ nhiều đến ít. Kết quả đầu ra của dữ liệu mẫu như sau:
 
 | uid  | incomplete_cnt | complete_cnt | detail                                                                      |
 | ---- | -------------- | ------------ | --------------------------------------------------------------------------- |
 | 1002 | 2              | 4            | 2021-09-01:算法;2021-07-02:SQL;2021-09-02:SQL;2021-09-05:SQL;2021-07-05:SQL |
 
-**解释**：2021 年的作答记录中，除了 1004，其他用户均满足有效用户定义，但只有 1002 未完成试卷数大于 1，因此只输出 1002，detail 中是 1002 作答过的试卷{日期:tag}集合，日期和 tag 间用 **:** 连接，多元素间用 **;** 连接。
+**Giải thích**: Trong các bản ghi làm bài năm 2021, ngoại trừ 1004, các người dùng khác đều thỏa mãn định nghĩa người dùng hợp lệ, nhưng chỉ có 1002 có số đề thi chưa hoàn thành lớn hơn 1, vì vậy chỉ xuất ra 1002, trong detail là tập hợp các đề thi {ngày:tag} mà 1002 đã làm, ngày và tag được nối bằng **:**, giữa các phần tử nối bằng **;**.
 
-**思路：**
+**Hướng tiếp cận:**
 
-仔细读题后，分析出：首先要联表，因为后面要输出`tag`；
+Đọc kỹ đề bài, phân tích thấy: trước tiên phải JOIN bảng, vì phần sau cần xuất ra `tag`;
 
-筛选出 2021 年的数据
+Lọc dữ liệu năm 2021
 
 ```sql
 SELECT *
@@ -545,26 +545,26 @@ LEFT JOIN examination_info ei ON er.exam_id = ei.exam_id
 WHERE YEAR (er.start_time)= 2021
 ```
 
-根据 uid 进行分组，然后对每个用户进行条件进行判断，题目中要求`完成试卷数至少为1,未完成试卷数要大于1，小于5`
+Gom nhóm theo uid, sau đó phán đoán điều kiện của từng người dùng, đề bài yêu cầu `số đề thi hoàn thành ít nhất là 1, số đề thi chưa hoàn thành phải lớn hơn 1 và nhỏ hơn 5`
 
-那么等会儿写 sql 的时候条件应该是：`未完成 > 1 and 已完成 >=1 and 未完成 < 5`
+Vậy lát nữa khi viết SQL, điều kiện sẽ là: `chưa_hoàn_thành > 1 and đã_hoàn_thành >=1 and chưa_hoàn_thành < 5`
 
-因为最后要用到字符串的拼接，而且还要组合拼接，这个可以用`GROUP_CONCAT`函数，下面简单介绍一下该函数的用法：
+Vì cuối cùng cần nối chuỗi, hơn nữa còn phải nối tổ hợp, có thể dùng hàm `GROUP_CONCAT`, dưới đây giới thiệu ngắn gọn cách dùng của hàm này:
 
-基本格式：
+Định dạng cơ bản:
 
 ```sql
 GROUP_CONCAT([DISTINCT] expr [ORDER BY {unsigned_integer | col_name | expr} [ASC | DESC] [, ...]]             [SEPARATOR sep])
 ```
 
-- `expr`：要连接的列或表达式。
-- `DISTINCT`：可选参数，用于去重。当指定了 `DISTINCT`，相同的值只会出现一次。
-- `ORDER BY`：可选参数，用于排序连接后的值。可以选择升序 (`ASC`) 或降序 (`DESC`) 排序。
-- `SEPARATOR sep`：可选参数，用于设置连接后的值的分隔符。（本题要用这个参数设置 ; 号 ）
+- `expr`: Cột hoặc biểu thức cần nối.
+- `DISTINCT`: Tham số tùy chọn, dùng để loại trùng. Khi chỉ định `DISTINCT`, các giá trị giống nhau chỉ xuất hiện một lần.
+- `ORDER BY`: Tham số tùy chọn, dùng để sắp xếp các giá trị sau khi nối. Có thể chọn sắp xếp tăng dần (`ASC`) hoặc giảm dần (`DESC`).
+- `SEPARATOR sep`: Tham số tùy chọn, dùng để đặt ký tự phân tách cho các giá trị sau khi nối. (Bài này cần dùng tham số này để đặt dấu ;)
 
-`GROUP_CONCAT()` 函数常用于 `GROUP BY` 子句中，将一组行的值连接为一个字符串，并在结果集中以聚合的形式返回。
+Hàm `GROUP_CONCAT()` thường được dùng trong mệnh đề `GROUP BY`, nối giá trị của một nhóm dòng thành một chuỗi, và trả về dưới dạng tổng hợp trong tập kết quả.
 
-**答案**：
+**Đáp án**:
 
 ```sql
 SELECT a.uid,
@@ -586,15 +586,15 @@ AND incomplete_cnt < 5
 ORDER BY incomplete_cnt DESC
 ```
 
-- `SUM(CASE WHEN a.submit_time IS NULL THEN 1 END)` 统计了每个用户未完成的记录数量。
-- `SUM(CASE WHEN a.submit_time IS NOT NULL THEN 1 END)` 统计了每个用户已完成的记录数量。
-- `GROUP_CONCAT(DISTINCT CONCAT(DATE_FORMAT(a.start_time, '%Y-%m-%d'), ':', b.tag) ORDER BY a.start_time SEPARATOR ';')` 将每个用户的考试日期和标签以逗号分隔的形式连接成一个字符串，并按考试开始时间进行排序。
+- `SUM(CASE WHEN a.submit_time IS NULL THEN 1 END)` thống kê số bản ghi chưa hoàn thành của mỗi người dùng.
+- `SUM(CASE WHEN a.submit_time IS NOT NULL THEN 1 END)` thống kê số bản ghi đã hoàn thành của mỗi người dùng.
+- `GROUP_CONCAT(DISTINCT CONCAT(DATE_FORMAT(a.start_time, '%Y-%m-%d'), ':', b.tag) ORDER BY a.start_time SEPARATOR ';')` nối ngày thi và tag của mỗi người dùng thành một chuỗi với các phần được phân tách bằng dấu phẩy, và sắp xếp theo thời gian bắt đầu thi.
 
-## 嵌套子查询
+## Nested Subquery (Truy vấn con lồng nhau)
 
-### 月均完成试卷数不小于 3 的用户爱作答的类别（较难）
+### Danh mục yêu thích của người dùng có số đề thi hoàn thành trung bình mỗi tháng không nhỏ hơn 3 (khá khó)
 
-**描述**：现有试卷作答记录表 `exam_record`（`uid`：用户 ID, `exam_id`：试卷 ID, `start_time`：开始作答时间, `submit_time`：交卷时间，没提交的话为 NULL, `score`：得分），示例数据如下：
+**Mô tả**: Hiện có bảng ghi nhận làm bài thi `exam_record` (`uid`: ID người dùng, `exam_id`: ID đề thi, `start_time`: thời gian bắt đầu làm bài, `submit_time`: thời gian nộp bài, nếu chưa nộp thì là NULL, `score`: điểm), dữ liệu mẫu như sau:
 
 | id  | uid  | exam_id | start_time          | submit_time         | score  |
 | --- | ---- | ------- | ------------------- | ------------------- | ------ |
@@ -612,7 +612,7 @@ ORDER BY incomplete_cnt DESC
 | 12  | 1005 | 9002    | 2021-09-01 12:01:01 | 2021-09-01 12:31:01 | 88     |
 | 13  | 1005 | 9002    | 2021-09-02 12:11:01 | 2021-09-02 12:31:01 | 89     |
 
-试卷信息表 `examination_info`（`exam_id`：试卷 ID, `tag`：试卷类别, `difficulty`：试卷难度, `duration`：考试时长, `release_time`：发布时间），示例数据如下：
+Bảng thông tin đề thi `examination_info` (`exam_id`: ID đề thi, `tag`: danh mục đề thi, `difficulty`: độ khó của đề thi, `duration`: thời lượng làm bài, `release_time`: thời gian phát hành), dữ liệu mẫu như sau:
 
 | id  | exam_id | tag  | difficulty | duration | release_time        |
 | --- | ------- | ---- | ---------- | -------- | ------------------- |
@@ -620,7 +620,7 @@ ORDER BY incomplete_cnt DESC
 | 2   | 9002    | C++  | easy       | 60       | 2020-02-01 10:00:00 |
 | 3   | 9003    | 算法 | medium     | 80       | 2020-08-02 10:00:00 |
 
-请从表中统计出 “当月均完成试卷数”不小于 3 的用户们爱作答的类别及作答次数，按次数降序输出，示例输出如下：
+Hãy thống kê từ bảng các danh mục mà những người dùng có "số đề thi hoàn thành trung bình mỗi tháng" không nhỏ hơn 3 yêu thích làm, cùng với số lần làm, xuất ra theo số lần giảm dần, kết quả đầu ra mẫu như sau:
 
 | tag  | tag_cnt |
 | ---- | ------- |
@@ -628,11 +628,11 @@ ORDER BY incomplete_cnt DESC
 | SQL  | 2       |
 | 算法 | 1       |
 
-**解释**：用户 1002 和 1005 在 2021 年 09 月的完成试卷数目均为 3，其他用户均小于 3；然后用户 1002 和 1005 作答过的试卷 tag 分布结果按作答次数降序排序依次为 C++、SQL、算法。
+**Giải thích**: Người dùng 1002 và 1005 đều có số đề thi hoàn thành trong tháng 09 năm 2021 là 3, các người dùng khác đều nhỏ hơn 3; sau đó kết quả phân bố tag các đề thi mà 1002 và 1005 đã làm, sắp xếp theo số lần làm giảm dần, lần lượt là C++, SQL, 算法.
 
-**思路**：这题考察联合子查询，重点在于`月均回答>=3`, 但是个人认为这里没有表述清楚，应该直接说查 9 月的就容易理解多了；这里不是每个月都要>=3 或者是所有答题次数/答题月份。不要理解错误了。
+**Hướng tiếp cận**: Bài này kiểm tra Subquery kết hợp, trọng tâm nằm ở `trung bình mỗi tháng >= 3`, nhưng cá nhân tôi cho rằng ở đây đề bài diễn đạt chưa rõ ràng, nên nói thẳng là tra tháng 9 thì sẽ dễ hiểu hơn nhiều; ở đây không phải mỗi tháng đều phải >= 3, cũng không phải tổng số lần làm bài / số tháng làm bài. Đừng hiểu sai.
 
-先查询出哪些用户月均答题大于三次
+Trước tiên truy vấn xem những người dùng nào có số lần làm bài trung bình mỗi tháng lớn hơn 3
 
 ```sql
 SELECT UID
@@ -642,7 +642,7 @@ GROUP BY UID,
 HAVING count(submit_time) >= 3
 ```
 
-有了这一步之后再进行深入，只要能理解上一步(我的意思是不被题目中的月均所困扰)，然后再套一个子查询，查哪些用户包含其中，然后查出题目中所需的列即可。记得排序！！
+Có bước này rồi tiếp tục đi sâu, chỉ cần hiểu được bước trước (ý tôi là đừng bị chữ "trung bình mỗi tháng" trong đề bài làm rối), sau đó lồng thêm một Subquery để tra xem những người dùng nào nằm trong đó, rồi truy vấn các cột cần thiết theo đề bài là được. Nhớ sắp xếp!!
 
 ```sql
 SELECT tag,
@@ -659,9 +659,9 @@ GROUP BY tag
 ORDER BY tag_cnt DESC
 ```
 
-### 试卷发布当天作答人数和平均分
+### Số người làm bài và điểm trung bình trong ngày phát hành đề thi
 
-**描述**：现有用户信息表 `user_info`（`uid` 用户 ID，`nick_name` 昵称, `achievement` 成就值, `level` 等级, `job` 职业方向, `register_time` 注册时间），示例数据如下：
+**Mô tả**: Hiện có bảng thông tin người dùng `user_info` (`uid` là ID người dùng, `nick_name` là biệt danh, `achievement` là điểm thành tích, `level` là cấp độ, `job` là hướng nghề nghiệp, `register_time` là thời gian đăng ký), dữ liệu mẫu như sau:
 
 | id  | uid  | nick_name | achievement | level | job  | register_time       |
 | --- | ---- | --------- | ----------- | ----- | ---- | ------------------- |
@@ -672,9 +672,9 @@ ORDER BY tag_cnt DESC
 | 5   | 1005 | 牛客 5 号 | 1600        | 6     | C++  | 2020-01-01 10:00:00 |
 | 6   | 1006 | 牛客 6 号 | 3000        | 6     | C++  | 2020-01-01 10:00:00 |
 
-**释义**：用户 1001 昵称为牛客 1 号，成就值为 3100，用户等级是 7 级，职业方向为算法，注册时间 2020-01-01 10:00:00
+**Giải thích**: Người dùng 1001 có biệt danh là 牛客 1 号, điểm thành tích là 3100, cấp độ người dùng là cấp 7, hướng nghề nghiệp là 算法, thời gian đăng ký là 2020-01-01 10:00:00
 
-试卷信息表 `examination_info`（`exam_id` 试卷 ID, `tag` 试卷类别, `difficulty` 试卷难度, `duration` 考试时长, `release_time` 发布时间） 示例数据如下：
+Bảng thông tin đề thi `examination_info` (`exam_id` là ID đề thi, `tag` là danh mục đề thi, `difficulty` là độ khó của đề thi, `duration` là thời lượng làm bài, `release_time` là thời gian phát hành), dữ liệu mẫu như sau:
 
 | id  | exam_id | tag  | difficulty | duration | release_time        |
 | --- | ------- | ---- | ---------- | -------- | ------------------- |
@@ -682,7 +682,7 @@ ORDER BY tag_cnt DESC
 | 2   | 9002    | C++  | easy       | 60       | 2020-02-01 10:00:00 |
 | 3   | 9003    | 算法 | medium     | 80       | 2020-08-02 10:00:00 |
 
-试卷作答记录表 `exam_record`（`uid` 用户 ID, `exam_id` 试卷 ID, `start_time` 开始作答时间, `submit_time` 交卷时间, `score` 得分） 示例数据如下：
+Bảng ghi nhận làm bài thi `exam_record` (`uid` là ID người dùng, `exam_id` là ID đề thi, `start_time` là thời gian bắt đầu làm bài, `submit_time` là thời gian nộp bài, `score` là điểm), dữ liệu mẫu như sau:
 
 | id  | uid  | exam_id | start_time          | submit_time         | score  |
 | --- | ---- | ------- | ------------------- | ------------------- | ------ |
@@ -703,17 +703,17 @@ ORDER BY tag_cnt DESC
 | 15  | 1005 | 9002    | 2021-09-01 12:01:01 | 2021-09-01 12:31:01 | 88     |
 | 16  | 1005 | 9002    | 2021-09-02 12:11:01 | 2021-09-02 12:31:01 | 89     |
 
-请计算每张 SQL 类别试卷发布后，当天 5 级以上的用户作答的人数 `uv` 和平均分 `avg_score`，按人数降序，相同人数的按平均分升序，示例数据结果输出如下：
+Hãy tính với mỗi đề thi danh mục SQL, sau khi phát hành, số người dùng cấp trên 5 làm bài trong ngày hôm đó `uv` và điểm trung bình `avg_score`, sắp xếp theo số người giảm dần, nếu số người bằng nhau thì sắp xếp theo điểm trung bình tăng dần, kết quả đầu ra của dữ liệu mẫu như sau:
 
 | exam_id | uv  | avg_score |
 | ------- | --- | --------- |
 | 9001    | 3   | 81.3      |
 
-解释：只有一张 SQL 类别的试卷，试卷 ID 为 9001，发布当天（2021-09-01）有 1001、1002、1003、1005 作答过，但是 1003 是 5 级用户，其他 3 位为 5 级以上，他们三的得分有[70,80,85,90]，平均分为 81.3（保留 1 位小数）。
+Giải thích: Chỉ có một đề thi danh mục SQL, ID đề thi là 9001, trong ngày phát hành (2021-09-01) có 1001, 1002, 1003, 1005 đã làm bài, nhưng 1003 là người dùng cấp 5, 3 người còn lại có cấp trên 5, điểm của ba người họ là [70,80,85,90], điểm trung bình là 81.3 (giữ lại 1 chữ số thập phân).
 
-**思路**：这题看似很复杂，但是先逐步将“外边”条件拆分，然后合拢到一起，答案就出来，多表查询反正记住：由外向里，抽丝剥茧。
+**Hướng tiếp cận**: Bài này nhìn có vẻ rất phức tạp, nhưng trước tiên cứ tách nhỏ từng điều kiện "bên ngoài", sau đó gộp lại với nhau là ra đáp án. Với truy vấn nhiều bảng, hãy nhớ kỹ: đi từ ngoài vào trong, bóc tách từng lớp.
 
-先把三种表连起来，同时给定一些条件，比如题目中要求`等级> 5`的用户，那么可以先查出来
+Trước tiên nối ba bảng lại với nhau, đồng thời đặt một số điều kiện, ví dụ đề bài yêu cầu người dùng `cấp > 5`, vậy có thể truy vấn ra trước
 
 ```sql
 SELECT DISTINCT u_info.uid
@@ -725,11 +725,11 @@ WHERE e_info.exam_id = record.exam_id
   AND u_info.LEVEL > 5
 ```
 
-接着注意题目中要求：`每张sql类别试卷发布后，当天作答用户`，注意其中的==当天==，那我们马上就要想到要用到时间的比较。
+Tiếp theo chú ý yêu cầu trong đề bài: `sau khi mỗi đề thi danh mục SQL được phát hành, người dùng làm bài trong ngày hôm đó`, chú ý chữ ==trong ngày hôm đó==, chúng ta phải nghĩ ngay đến việc so sánh thời gian.
 
-对试卷发布日期和开始考试日期进行比较：`DATE(e_info.release_time) = DATE(record.start_time)`；不用担心`submit_time` 为 null 的问题，后续在 where 中会给过滤掉。
+So sánh ngày phát hành đề thi và ngày bắt đầu thi: `DATE(e_info.release_time) = DATE(record.start_time)`; không cần lo vấn đề `submit_time` là NULL, phần sau sẽ được lọc bỏ trong WHERE.
 
-**答案**：
+**Đáp án**:
 
 ```sql
 SELECT record.exam_id AS exam_id,
@@ -749,13 +749,13 @@ ORDER BY uv DESC,
          avg_score ASC
 ```
 
-注意最后的分组排序！先按人数排，若一致，按平均分排。
+Chú ý bước gom nhóm và sắp xếp cuối cùng! Trước tiên sắp xếp theo số người, nếu bằng nhau thì sắp xếp theo điểm trung bình.
 
-### 作答试卷得分大于过 80 的人的用户等级分布
+### Phân bố cấp độ người dùng của những người có điểm làm bài thi lớn hơn 80
 
-**描述**：
+**Mô tả**:
 
-现有用户信息表 `user_info`（`uid` 用户 ID，`nick_name` 昵称, `achievement` 成就值, `level` 等级, `job` 职业方向, `register_time` 注册时间）：
+Hiện có bảng thông tin người dùng `user_info` (`uid` là ID người dùng, `nick_name` là biệt danh, `achievement` là điểm thành tích, `level` là cấp độ, `job` là hướng nghề nghiệp, `register_time` là thời gian đăng ký):
 
 | id  | uid  | nick_name | achievement | level | job  | register_time       |
 | --- | ---- | --------- | ----------- | ----- | ---- | ------------------- |
@@ -766,7 +766,7 @@ ORDER BY uv DESC,
 | 5   | 1005 | 牛客 5 号 | 1600        | 6     | C++  | 2020-01-01 10:00:00 |
 | 6   | 1006 | 牛客 6 号 | 3000        | 6     | C++  | 2020-01-01 10:00:00 |
 
-试卷信息表 `examination_info`（`exam_id` 试卷 ID, `tag` 试卷类别, `difficulty` 试卷难度, `duration` 考试时长, `release_time` 发布时间）：
+Bảng thông tin đề thi `examination_info` (`exam_id` là ID đề thi, `tag` là danh mục đề thi, `difficulty` là độ khó của đề thi, `duration` là thời lượng làm bài, `release_time` là thời gian phát hành):
 
 | id  | exam_id | tag  | difficulty | duration | release_time        |
 | --- | ------- | ---- | ---------- | -------- | ------------------- |
@@ -774,7 +774,7 @@ ORDER BY uv DESC,
 | 2   | 9002    | C++  | easy       | 60       | 2021-09-01 06:00:00 |
 | 3   | 9003    | 算法 | medium     | 80       | 2021-09-01 10:00:00 |
 
-试卷作答信息表 `exam_record`（`uid` 用户 ID, `exam_id` 试卷 ID, `start_time` 开始作答时间, `submit_time` 交卷时间, `score` 得分）：
+Bảng ghi nhận làm bài thi `exam_record` (`uid` là ID người dùng, `exam_id` là ID đề thi, `start_time` là thời gian bắt đầu làm bài, `submit_time` là thời gian nộp bài, `score` là điểm):
 
 | id  | uid  | exam_id | start_time          | submit_time         | score  |
 | --- | ---- | ------- | ------------------- | ------------------- | ------ |
@@ -795,18 +795,18 @@ ORDER BY uv DESC,
 | 15  | 1005 | 9002    | 2021-09-01 12:01:01 | 2021-09-01 12:31:01 | 88     |
 | 16  | 1005 | 9002    | 2021-09-02 12:11:01 | 2021-09-02 12:31:01 | 89     |
 
-统计作答 SQL 类别的试卷得分大于过 80 的人的用户等级分布，按数量降序排序（保证数量都不同）。示例数据结果输出如下：
+Thống kê phân bố cấp độ người dùng của những người có điểm làm đề thi danh mục SQL lớn hơn 80, sắp xếp theo số lượng giảm dần (đảm bảo số lượng đều khác nhau). Kết quả đầu ra của dữ liệu mẫu như sau:
 
 | level | level_cnt |
 | ----- | --------- |
 | 6     | 2         |
 | 5     | 1         |
 
-解释：9001 为 SQL 类试卷，作答该试卷大于 80 分的人有 1002、1003、1005 共 3 人，6 级两人，5 级一人。
+Giải thích: 9001 là đề thi danh mục SQL, những người làm đề thi này đạt trên 80 điểm gồm 1002, 1003, 1005 tổng cộng 3 người, trong đó cấp 6 có hai người, cấp 5 có một người.
 
-**思路：**这题和上一题都是一样的数据，只是查询条件改变了而已，上一题理解了，这题分分钟做出来。
+**Hướng tiếp cận:** Bài này dùng cùng dữ liệu với bài trước, chỉ thay đổi điều kiện truy vấn, nếu đã hiểu bài trước thì bài này giải trong vài phút.
 
-**答案**：
+**Đáp án**:
 
 ```sql
 SELECT u_info.LEVEL AS LEVEL,
@@ -823,13 +823,13 @@ GROUP BY LEVEL
 ORDER BY level_cnt DESC
 ```
 
-## 合并查询
+## Truy vấn hợp nhất (UNION)
 
-### 每个题目和每份试卷被作答的人数和次数
+### Số người và số lần làm của mỗi câu hỏi và mỗi đề thi
 
-**描述**：
+**Mô tả**:
 
-现有试卷作答记录表 exam_record（uid 用户 ID, exam_id 试卷 ID, start_time 开始作答时间, submit_time 交卷时间, score 得分）：
+Hiện có bảng ghi nhận làm bài thi exam_record (uid là ID người dùng, exam_id là ID đề thi, start_time là thời gian bắt đầu làm bài, submit_time là thời gian nộp bài, score là điểm):
 
 | id  | uid  | exam_id | start_time          | submit_time         | score  |
 | --- | ---- | ------- | ------------------- | ------------------- | ------ |
@@ -840,7 +840,7 @@ ORDER BY level_cnt DESC
 | 5   | 1004 | 9001    | 2021-09-01 19:01:01 | 2021-09-01 19:40:01 | 85     |
 | 6   | 1002 | 9002    | 2021-09-01 12:01:01 | (NULL)              | (NULL) |
 
-题目练习表 practice_record（uid 用户 ID, question_id 题目 ID, submit_time 提交时间, score 得分）：
+Bảng luyện bài practice_record (uid là ID người dùng, question_id là ID câu hỏi, submit_time là thời gian nộp, score là điểm):
 
 | id  | uid  | question_id | submit_time         | score |
 | --- | ---- | ----------- | ------------------- | ----- |
@@ -852,7 +852,7 @@ ORDER BY level_cnt DESC
 | 6   | 1003 | 8001        | 2021-08-02 19:48:01 | 90    |
 | 7   | 1003 | 8002        | 2021-08-01 19:38:01 | 80    |
 
-请统计每个题目和每份试卷被作答的人数和次数，分别按照"试卷"和"题目"的 uv & pv 降序显示，示例数据结果输出如下：
+Hãy thống kê số người và số lần làm của mỗi câu hỏi và mỗi đề thi, hiển thị lần lượt theo uv & pv của "đề thi" và "câu hỏi" giảm dần, kết quả đầu ra của dữ liệu mẫu như sau:
 
 | tid  | uv  | pv  |
 | ---- | --- | --- |
@@ -861,15 +861,15 @@ ORDER BY level_cnt DESC
 | 8001 | 3   | 5   |
 | 8002 | 2   | 2   |
 
-**解释**：“试卷”有 3 人共练习 3 次试卷 9001，1 人作答 3 次 9002；“刷题”有 3 人刷 5 次 8001，有 2 人刷 2 次 8002
+**Giải thích**: Về "đề thi", có 3 người luyện tổng cộng 3 lần đề 9001, 1 người làm 3 lần đề 9002; về "luyện bài", có 3 người luyện 5 lần câu 8001, có 2 người luyện 2 lần câu 8002
 
-**思路**：这题的难点和易错点在于`UNION`和`ORDER BY` 同时使用的问题
+**Hướng tiếp cận**: Điểm khó và điểm dễ sai của bài này nằm ở vấn đề sử dụng `UNION` và `ORDER BY` cùng lúc
 
-有以下几种情况：使用`union`和多个`order by`不加括号，报错！
+Có một số trường hợp như sau: dùng `UNION` với nhiều `ORDER BY` mà không có dấu ngoặc, sẽ báo lỗi!
 
-`order by`在`union`连接的子句中不起作用；
+`ORDER BY` không có tác dụng trong các mệnh đề con được nối bằng `UNION`;
 
-比如不加括号：
+Ví dụ khi không thêm dấu ngoặc:
 
 ```sql
 SELECT exam_id AS tid,
@@ -889,11 +889,11 @@ ORDER BY uv DESC,
          pv DESC
 ```
 
-直接报语法错误，如果没有括号，只能有一个`order by`
+Báo lỗi cú pháp ngay, nếu không có dấu ngoặc thì chỉ được phép có một `ORDER BY`
 
-还有一种`order by`不起作用的情况，但是能在子句的子句中起作用，这里的解决方案就是在外面再套一层查询。
+Còn một trường hợp `ORDER BY` không có tác dụng nữa, nhưng nó có thể phát huy tác dụng trong mệnh đề con của mệnh đề con, cách giải quyết ở đây là bọc thêm một lớp truy vấn bên ngoài.
 
-**答案**：
+**Đáp án**:
 
 ```sql
 SELECT *
@@ -915,13 +915,13 @@ FROM
    ORDER BY uv DESC, pv DESC) t2;
 ```
 
-### 分别满足两个活动的人
+### Những người thỏa mãn từng hoạt động trong hai hoạt động
 
-**描述**： 为了促进更多用户在牛客平台学习和刷题进步，我们会经常给一些既活跃又表现不错的用户发放福利。假使以前我们有两拨运营活动，分别给每次试卷得分都能到 85 分的人（activity1）、至少有一次用了一半时间就完成高难度试卷且分数大于 80 的人（activity2）发了福利券。
+**Mô tả**: Để thúc đẩy nhiều người dùng hơn học tập và tiến bộ trong việc luyện bài trên nền tảng NowCoder, chúng tôi thường xuyên phát quà cho những người dùng vừa hoạt động tích cực vừa có thành tích tốt. Giả sử trước đây chúng tôi có hai đợt hoạt động vận hành, lần lượt phát phiếu quà tặng cho những người mà lần nào điểm đề thi cũng đạt 85 điểm (activity1) và những người có ít nhất một lần hoàn thành đề thi độ khó cao trong một nửa thời gian với điểm số lớn hơn 80 (activity2).
 
-现在，需要你一次性将这两个活动满足的人筛选出来，交给运营同学。请写出一个 SQL 实现：输出 2021 年里，所有每次试卷得分都能到 85 分的人以及至少有一次用了一半时间就完成高难度试卷且分数大于 80 的人的 id 和活动号，按用户 ID 排序输出。
+Bây giờ, bạn cần lọc ra một lần tất cả những người thỏa mãn hai hoạt động này để bàn giao cho đội ngũ vận hành. Hãy viết một câu SQL thực hiện: xuất ra trong năm 2021, tất cả những người mà lần nào điểm đề thi cũng đạt 85 điểm cùng với những người có ít nhất một lần hoàn thành đề thi độ khó cao trong một nửa thời gian với điểm số lớn hơn 80, gồm id và số hiệu hoạt động, xuất ra theo thứ tự ID người dùng.
 
-现有试卷信息表 `examination_info`（`exam_id` 试卷 ID, `tag` 试卷类别, `difficulty` 试卷难度, `duration` 考试时长, `release_time` 发布时间）：
+Hiện có bảng thông tin đề thi `examination_info` (`exam_id` là ID đề thi, `tag` là danh mục đề thi, `difficulty` là độ khó của đề thi, `duration` là thời lượng làm bài, `release_time` là thời gian phát hành):
 
 | id  | exam_id | tag  | difficulty | duration | release_time        |
 | --- | ------- | ---- | ---------- | -------- | ------------------- |
@@ -929,7 +929,7 @@ FROM
 | 2   | 9002    | C++  | easy       | 60       | 2021-09-01 06:00:00 |
 | 3   | 9003    | 算法 | medium     | 80       | 2021-09-01 10:00:00 |
 
-试卷作答记录表 `exam_record`（`uid` 用户 ID, `exam_id` 试卷 ID, `start_time` 开始作答时间, `submit_time` 交卷时间, `score` 得分）：
+Bảng ghi nhận làm bài thi `exam_record` (`uid` là ID người dùng, `exam_id` là ID đề thi, `start_time` là thời gian bắt đầu làm bài, `submit_time` là thời gian nộp bài, `score` là điểm):
 
 | id  | uid  | exam_id | start_time          | submit_time         | score  |
 | --- | ---- | ------- | ------------------- | ------------------- | ------ |
@@ -939,7 +939,7 @@ FROM
 | 4   | 1003 | 9002    | 2021-09-01 12:01:01 | 2021-09-01 12:31:01 | 89     |
 | 5   | 1004 | 9001    | 2021-09-01 19:01:01 | 2021-09-01 19:30:01 | 85     |
 
-示例数据输出结果：
+Kết quả đầu ra của dữ liệu mẫu:
 
 | uid  | activity  |
 | ---- | --------- |
@@ -948,21 +948,21 @@ FROM
 | 1004 | activity1 |
 | 1004 | activity2 |
 
-**解释**：用户 1001 最小分数 81 不满足活动 1，但 29 分 59 秒完成了 60 分钟长的试卷得分 81，满足活动 2；1003 最小分数 86 满足活动 1，完成时长都大于试卷时长的一半，不满足活动 2；用户 1004 刚好用了一半时间（30 分钟整）完成了试卷得分 85，满足活动 1 和活动 2。
+**Giải thích**: Người dùng 1001 có điểm thấp nhất là 81 nên không thỏa mãn hoạt động 1, nhưng đã hoàn thành đề thi dài 60 phút trong 29 phút 59 giây với điểm 81, thỏa mãn hoạt động 2; 1003 có điểm thấp nhất là 86 nên thỏa mãn hoạt động 1, thời gian hoàn thành đều lớn hơn một nửa thời lượng đề thi nên không thỏa mãn hoạt động 2; người dùng 1004 hoàn thành đề thi đúng bằng một nửa thời gian (tròn 30 phút) với điểm 85, thỏa mãn cả hoạt động 1 và hoạt động 2.
 
-**思路**： 这一题需要涉及到时间的减法，需要用到 `TIMESTAMPDIFF()` 函数计算两个时间戳之间的分钟差值。
+**Hướng tiếp cận**: Bài này cần thực hiện phép trừ thời gian, phải dùng hàm `TIMESTAMPDIFF()` để tính chênh lệch phút giữa hai mốc thời gian.
 
-下面我们来看一下基本用法
+Dưới đây chúng ta xem cách dùng cơ bản
 
-示例：
+Ví dụ:
 
 ```sql
 TIMESTAMPDIFF(MINUTE, start_time, end_time)
 ```
 
-`TIMESTAMPDIFF()` 函数的第一个参数是时间单位，这里我们选择 `MINUTE` 表示返回分钟差值。第二个参数是较早的时间戳，第三个参数是较晚的时间戳。函数会返回它们之间的分钟差值
+Tham số đầu tiên của hàm `TIMESTAMPDIFF()` là đơn vị thời gian, ở đây chúng ta chọn `MINUTE` để trả về chênh lệch tính bằng phút. Tham số thứ hai là mốc thời gian sớm hơn, tham số thứ ba là mốc thời gian muộn hơn. Hàm sẽ trả về chênh lệch phút giữa chúng
 
-了解了这个函数的用法之后，我们再回过头来看`activity1`的要求，求分数大于 85 即可，那我们还是先把这个写出来，后续思路就会清晰很多
+Sau khi hiểu cách dùng hàm này, chúng ta quay lại xem yêu cầu của `activity1`, chỉ cần tìm điểm lớn hơn 85, vậy cứ viết phần này ra trước, hướng tiếp cận phần sau sẽ rõ ràng hơn nhiều
 
 ```sql
 SELECT DISTINCT UID
@@ -971,7 +971,7 @@ WHERE score >= 85
   AND YEAR (start_time) = '2021'
 ```
 
-根据条件 2，接着写出`在一半时间内完成高难度试卷且分数大于80的人`
+Theo điều kiện 2, tiếp tục viết `những người hoàn thành đề thi độ khó cao trong một nửa thời gian với điểm số lớn hơn 80`
 
 ```sql
 SELECT UID
@@ -983,9 +983,9 @@ WHERE info.exam_id = record.exam_id
   AND score >= 80
 ```
 
-然后再把两者`UNION` 起来即可。（这里特别要注意括号问题和`order by`位置，具体用法在上一篇中已提及）
+Sau đó `UNION` hai phần lại với nhau là được. (Ở đây đặc biệt chú ý vấn đề dấu ngoặc và vị trí của `ORDER BY`, cách dùng cụ thể đã được đề cập trong bài trước)
 
-**答案**：
+**Đáp án**:
 
 ```sql
 SELECT DISTINCT UID UID,
@@ -1008,13 +1008,13 @@ WHERE YEAR(submit_time) = 2021
 ORDER BY UID
 ```
 
-## 连接查询
+## Truy vấn kết hợp bảng (JOIN)
 
-### 满足条件的用户的试卷完成数和题目练习数（困难）
+### Số đề thi hoàn thành và số câu hỏi luyện tập của người dùng thỏa mãn điều kiện (khó)
 
-**描述**：
+**Mô tả**:
 
-现有用户信息表 user_info（uid 用户 ID，nick_name 昵称, achievement 成就值, level 等级, job 职业方向, register_time 注册时间）：
+Hiện có bảng thông tin người dùng user_info (uid là ID người dùng, nick_name là biệt danh, achievement là điểm thành tích, level là cấp độ, job là hướng nghề nghiệp, register_time là thời gian đăng ký):
 
 | id  | uid  | nick_name | achievement | level | job  | register_time       |
 | --- | ---- | --------- | ----------- | ----- | ---- | ------------------- |
@@ -1025,7 +1025,7 @@ ORDER BY UID
 | 5   | 1005 | 牛客 5 号 | 1600        | 6     | C++  | 2020-01-01 10:00:00 |
 | 6   | 1006 | 牛客 6 号 | 2000        | 6     | C++  | 2020-01-01 10:00:00 |
 
-试卷信息表 examination_info（exam_id 试卷 ID, tag 试卷类别, difficulty 试卷难度, duration 考试时长, release_time 发布时间）：
+Bảng thông tin đề thi examination_info (exam_id là ID đề thi, tag là danh mục đề thi, difficulty là độ khó của đề thi, duration là thời lượng làm bài, release_time là thời gian phát hành):
 
 | id  | exam_id | tag  | difficulty | duration | release_time        |
 | --- | ------- | ---- | ---------- | -------- | ------------------- |
@@ -1033,7 +1033,7 @@ ORDER BY UID
 | 2   | 9002    | C++  | hard       | 60       | 2021-09-01 06:00:00 |
 | 3   | 9003    | 算法 | medium     | 80       | 2021-09-01 10:00:00 |
 
-试卷作答记录表 exam_record（uid 用户 ID, exam_id 试卷 ID, start_time 开始作答时间, submit_time 交卷时间, score 得分）：
+Bảng ghi nhận làm bài thi exam_record (uid là ID người dùng, exam_id là ID đề thi, start_time là thời gian bắt đầu làm bài, submit_time là thời gian nộp bài, score là điểm):
 
 | id  | uid  | exam_id | start_time          | submit_time         | score |
 | --- | ---- | ------- | ------------------- | ------------------- | ----- |
@@ -1046,7 +1046,7 @@ ORDER BY UID
 | 7   | 1006 | 9003    | 2021-09-07 10:01:01 | 2021-09-07 10:21:01 | 84    |
 | 8   | 1006 | 9001    | 2021-09-07 10:01:01 | 2021-09-07 10:21:01 | 80    |
 
-题目练习记录表 practice_record（uid 用户 ID, question_id 题目 ID, submit_time 提交时间, score 得分）：
+Bảng ghi nhận luyện bài practice_record (uid là ID người dùng, question_id là ID câu hỏi, submit_time là thời gian nộp, score là điểm):
 
 | id  | uid  | question_id | submit_time         | score |
 | --- | ---- | ----------- | ------------------- | ----- |
@@ -1063,20 +1063,20 @@ ORDER BY UID
 | 11  | 1004 | 8003        | 2021-08-02 19:48:01 | 90    |
 | 12  | 1004 | 8003        | 2021-08-01 19:38:01 | 80    |
 
-请你找到高难度 SQL 试卷得分平均值大于 80 并且是 7 级的红名大佬，统计他们的 2021 年试卷总完成次数和题目总练习次数，只保留 2021 年有试卷完成记录的用户。结果按试卷完成数升序，按题目练习数降序。
+Hãy tìm những cao thủ tên đỏ có điểm trung bình đề thi SQL độ khó cao lớn hơn 80 và đạt cấp 7, thống kê tổng số lần hoàn thành đề thi và tổng số lần luyện câu hỏi trong năm 2021 của họ, chỉ giữ lại những người dùng có bản ghi hoàn thành đề thi trong năm 2021. Kết quả sắp xếp theo số đề thi hoàn thành tăng dần, theo số câu hỏi luyện tập giảm dần.
 
-示例数据输出如下：
+Kết quả đầu ra của dữ liệu mẫu như sau:
 
 | uid  | exam_cnt | question_cnt |
 | ---- | -------- | ------------ |
 | 1001 | 1        | 2            |
 | 1003 | 2        | 0            |
 
-解释：用户 1001、1003、1004、1006 满足高难度 SQL 试卷得分平均值大于 80，但只有 1001、1003 是 7 级红名大佬；1001 完成了 1 次试卷 1001，练习了 2 次题目；1003 完成了 2 次试卷 9001、9002，未练习题目（因此计数为 0）
+Giải thích: Người dùng 1001, 1003, 1004, 1006 thỏa mãn điểm trung bình đề thi SQL độ khó cao lớn hơn 80, nhưng chỉ có 1001, 1003 là cao thủ tên đỏ cấp 7; 1001 hoàn thành 1 lần đề thi 9001, luyện 2 lần câu hỏi; 1003 hoàn thành 2 lần đề thi 9001, 9002, không luyện câu hỏi nào (vì vậy số đếm là 0)
 
-**思路：**
+**Hướng tiếp cận:**
 
-先将条件进行初步筛选，比如先查出做过高难度 sql 试卷的用户
+Trước tiên lọc sơ bộ các điều kiện, ví dụ truy vấn ra trước những người dùng đã làm đề thi SQL độ khó cao
 
 ```sql
 SELECT
@@ -1090,15 +1090,15 @@ WHERE
 	AND e_info.difficulty = 'hard'
 ```
 
-然后根据题目要求，接着再往里叠条件即可；
+Sau đó theo yêu cầu của đề bài, tiếp tục chồng thêm các điều kiện vào là được;
 
-但是这里又要注意：
+Nhưng ở đây lại cần chú ý:
 
-第一：不能`YEAR(submit_time)= 2021`这个条件放到最后，要在`ON`条件里，因为左连接存在返回左表全部行，右表为 null 的情形，放在 `JOIN`条件的 `ON` 子句中的目的是为了确保在连接两个表时，只有满足年份条件的记录会进行连接。这样可以避免其他年份的记录被包含在结果中。即 1001 做过 2021 年的试卷，但没有练习过，如果把条件放到最后，就会排除掉这种情况。
+Thứ nhất: Không được đặt điều kiện `YEAR(submit_time)= 2021` ở cuối cùng, mà phải đặt trong điều kiện `ON`, vì LEFT JOIN có trường hợp trả về toàn bộ dòng của bảng bên trái còn bảng bên phải là NULL, mục đích của việc đặt trong mệnh đề `ON` của điều kiện `JOIN` là để đảm bảo khi kết hợp hai bảng, chỉ những bản ghi thỏa mãn điều kiện năm mới được kết hợp. Như vậy tránh được việc các bản ghi của năm khác bị đưa vào kết quả. Tức là 1001 đã làm đề thi năm 2021 nhưng chưa luyện câu hỏi nào, nếu đặt điều kiện ở cuối cùng thì sẽ loại mất trường hợp này.
 
-第二，必须是`COUNT(distinct er.exam_id) exam_cnt, COUNT(distinct pr.id) question_cnt，`要加 distinct，因为有左连接产生很多重复值。
+Thứ hai: Bắt buộc phải là `COUNT(distinct er.exam_id) exam_cnt, COUNT(distinct pr.id) question_cnt,` phải thêm DISTINCT, vì LEFT JOIN tạo ra rất nhiều giá trị trùng lặp.
 
-**答案**：
+**Đáp án**:
 
 ```sql
 SELECT er.uid AS UID,
@@ -1123,13 +1123,13 @@ ORDER BY exam_cnt,
          question_cnt DESC
 ```
 
-可能细心的小伙伴会发现，为什么明明将条件限制了`tag = 'SQL' AND difficulty = 'hard'`，但是用户 1003 仍然能查出两条考试记录，其中一条的考试`tag`为 `C++`; 这是由于`LEFT JOIN`的特性，即使没有与右表匹配的行，左表的所有记录仍然会被保留。
+Có thể những bạn tỉ mỉ sẽ phát hiện, tại sao rõ ràng đã giới hạn điều kiện `tag = 'SQL' AND difficulty = 'hard'`, nhưng người dùng 1003 vẫn truy vấn ra hai bản ghi thi, trong đó `tag` của một lần thi là `C++`; đây là do đặc tính của `LEFT JOIN`, ngay cả khi không có dòng nào khớp với bảng bên phải, tất cả bản ghi của bảng bên trái vẫn được giữ lại.
 
-### 每个 6/7 级用户活跃情况（困难）
+### Tình hình hoạt động của mỗi người dùng cấp 6/7 (khó)
 
-**描述**：
+**Mô tả**:
 
-现有用户信息表 `user_info`（`uid` 用户 ID，`nick_name` 昵称, `achievement` 成就值, `level` 等级, `job` 职业方向, `register_time` 注册时间）：
+Hiện có bảng thông tin người dùng `user_info` (`uid` là ID người dùng, `nick_name` là biệt danh, `achievement` là điểm thành tích, `level` là cấp độ, `job` là hướng nghề nghiệp, `register_time` là thời gian đăng ký):
 
 | id  | uid  | nick_name | achievement | level | job  | register_time       |
 | --- | ---- | --------- | ----------- | ----- | ---- | ------------------- |
@@ -1140,7 +1140,7 @@ ORDER BY exam_cnt,
 | 5   | 1005 | 牛客 5 号 | 1600        | 6     | C++  | 2020-01-01 10:00:00 |
 | 6   | 1006 | 牛客 6 号 | 2600        | 7     | C++  | 2020-01-01 10:00:00 |
 
-试卷信息表 `examination_info`（`exam_id` 试卷 ID, `tag` 试卷类别, `difficulty` 试卷难度, `duration` 考试时长, `release_time` 发布时间）：
+Bảng thông tin đề thi `examination_info` (`exam_id` là ID đề thi, `tag` là danh mục đề thi, `difficulty` là độ khó của đề thi, `duration` là thời lượng làm bài, `release_time` là thời gian phát hành):
 
 | id  | exam_id | tag  | difficulty | duration | release_time        |
 | --- | ------- | ---- | ---------- | -------- | ------------------- |
@@ -1148,7 +1148,7 @@ ORDER BY exam_cnt,
 | 2   | 9002    | C++  | easy       | 60       | 2021-09-01 06:00:00 |
 | 3   | 9003    | 算法 | medium     | 80       | 2021-09-01 10:00:00 |
 
-试卷作答记录表 `exam_record`（`uid` 用户 ID, `exam_id` 试卷 ID, `start_time` 开始作答时间, `submit_time` 交卷时间, `score` 得分）：
+Bảng ghi nhận làm bài thi `exam_record` (`uid` là ID người dùng, `exam_id` là ID đề thi, `start_time` là thời gian bắt đầu làm bài, `submit_time` là thời gian nộp bài, `score` là điểm):
 
 | uid  | exam_id | start_time          | submit_time         | score  |
 | ---- | ------- | ------------------- | ------------------- | ------ |
@@ -1161,7 +1161,7 @@ ORDER BY exam_cnt,
 | 1002 | 9001    | 2020-09-01 13:01:01 | 2020-09-01 13:41:01 | 81     |
 | 1005 | 9001    | 2021-09-01 14:01:01 | (NULL)              | (NULL) |
 
-题目练习记录表 `practice_record`（`uid` 用户 ID, `question_id` 题目 ID, `submit_time` 提交时间, `score` 得分）：
+Bảng ghi nhận luyện bài `practice_record` (`uid` là ID người dùng, `question_id` là ID câu hỏi, `submit_time` là thời gian nộp, `score` là điểm):
 
 | uid  | question_id | submit_time         | score |
 | ---- | ----------- | ------------------- | ----- |
@@ -1175,7 +1175,7 @@ ORDER BY exam_cnt,
 | 1006 | 8003        | 2021-08-02 19:48:01 | 90    |
 | 1006 | 8003        | 2020-08-01 19:38:01 | 80    |
 
-请统计每个 6/7 级用户总活跃月份数、2021 年活跃天数、2021 年试卷作答活跃天数、2021 年答题活跃天数，按照总活跃月份数、2021 年活跃天数降序排序。由示例数据结果输出如下：
+Hãy thống kê tổng số tháng hoạt động, số ngày hoạt động năm 2021, số ngày hoạt động làm đề thi năm 2021 và số ngày hoạt động luyện câu hỏi năm 2021 của mỗi người dùng cấp 6/7, sắp xếp theo tổng số tháng hoạt động và số ngày hoạt động năm 2021 giảm dần. Kết quả đầu ra của dữ liệu mẫu như sau:
 
 | uid  | act_month_total | act_days_2021 | act_days_2021_exam |
 | ---- | --------------- | ------------- | ------------------ |
@@ -1185,15 +1185,15 @@ ORDER BY exam_cnt,
 | 1002 | 1               | 0             | 0                  |
 | 1003 | 0               | 0             | 0                  |
 
-**解释**：6/7 级用户共有 5 个，其中 1006 在 202109、202108、202008 共 3 个月活跃过，2021 年活跃的日期有 20210907、20210804、20210803、20210802 共 4 天，2021 年在试卷作答区 20210907 活跃 1 天，在题目练习区活跃了 3 天。
+**Giải thích**: Người dùng cấp 6/7 có tổng cộng 5 người, trong đó 1006 đã hoạt động trong 3 tháng 202109, 202108, 202008, các ngày hoạt động trong năm 2021 gồm 20210907, 20210804, 20210803, 20210802 tổng cộng 4 ngày, trong năm 2021 tại khu vực làm đề thi hoạt động 1 ngày là 20210907, tại khu vực luyện câu hỏi hoạt động 3 ngày.
 
-**思路：**
+**Hướng tiếp cận:**
 
-这题的关键在于`CASE WHEN THEN`的使用，不然要写很多的`left join` 因为会产生很多的结果集。
+Điểm mấu chốt của bài này là sử dụng `CASE WHEN THEN`, nếu không sẽ phải viết rất nhiều `LEFT JOIN` vì sẽ tạo ra rất nhiều tập kết quả.
 
-`CASE WHEN THEN`语句是一种条件表达式，用于在 SQL 中根据条件执行不同的操作或返回不同的结果。
+Câu lệnh `CASE WHEN THEN` là một biểu thức điều kiện, dùng trong SQL để thực hiện các thao tác khác nhau hoặc trả về các kết quả khác nhau dựa trên điều kiện.
 
-语法结构如下：
+Cấu trúc cú pháp như sau:
 
 ```sql
 CASE
@@ -1204,11 +1204,11 @@ CASE
 END
 ```
 
-在这个结构中，可以根据需要添加多个`WHEN`子句，每个`WHEN`子句后面跟着一个条件（condition）和一个结果（result）。条件可以是任何逻辑表达式，如果满足条件，将返回对应的结果。
+Trong cấu trúc này, có thể thêm nhiều mệnh đề `WHEN` tùy theo nhu cầu, sau mỗi mệnh đề `WHEN` là một điều kiện (condition) và một kết quả (result). Điều kiện có thể là bất kỳ biểu thức logic nào, nếu thỏa mãn điều kiện sẽ trả về kết quả tương ứng.
 
-最后的`ELSE`子句是可选的，用于指定当所有前面的条件都不满足时的默认返回结果。如果没有提供`ELSE`子句，则默认返回`NULL`。
+Mệnh đề `ELSE` cuối cùng là tùy chọn, dùng để chỉ định kết quả trả về mặc định khi tất cả các điều kiện trước đó đều không thỏa mãn. Nếu không cung cấp mệnh đề `ELSE` thì mặc định trả về `NULL`.
 
-例如：
+Ví dụ:
 
 ```sql
 SELECT score,
@@ -1221,9 +1221,9 @@ SELECT score,
 FROM student_scores;
 ```
 
-在上述示例中，根据学生成绩（score）的不同范围，使用 CASE WHEN THEN 语句返回相应的等级（grade）。如果成绩大于等于 90，则返回"优秀"；如果成绩大于等于 80，则返回"良好"；如果成绩大于等于 60，则返回"及格"；否则返回"不及格"。
+Trong ví dụ trên, dựa vào các khoảng khác nhau của điểm số học sinh (score), dùng câu lệnh CASE WHEN THEN để trả về xếp loại (grade) tương ứng. Nếu điểm lớn hơn hoặc bằng 90 thì trả về "优秀" (xuất sắc); nếu điểm lớn hơn hoặc bằng 80 thì trả về "良好" (khá giỏi); nếu điểm lớn hơn hoặc bằng 60 thì trả về "及格" (đạt); nếu không thì trả về "不及格" (không đạt).
 
-那了解到了上述的用法之后，回过头看看该题，要求列出不同的活跃天数。
+Vậy sau khi hiểu cách dùng ở trên, quay lại nhìn bài này, yêu cầu liệt kê số ngày hoạt động khác nhau.
 
 ```sql
 count(distinct act_month) as act_month_total,
@@ -1232,9 +1232,9 @@ count(distinct case when year(act_time)='2021' and tag='exam' then act_day end) 
 count(distinct case when year(act_time)='2021' and tag='question'then act_day end) as act_days_2021_question
 ```
 
-这里的 tag 是先给标记，方便对查询进行区分，将考试和答题分开。
+Ở đây tag được đánh dấu trước để tiện phân biệt các truy vấn, tách riêng phần thi và phần luyện câu hỏi.
 
-找出试卷作答区的用户
+Tìm người dùng ở khu vực làm đề thi
 
 ```sql
 SELECT
@@ -1248,7 +1248,7 @@ SELECT
 		exam_record
 ```
 
-紧接着就是答题作答区的用户
+Ngay sau đó là người dùng ở khu vực luyện câu hỏi
 
 ```sql
 SELECT
@@ -1262,9 +1262,9 @@ SELECT
 		practice_record
 ```
 
-最后将两个结果进行`UNION` 最后别忘了将结果进行排序 （这题有点类似于分治法的思想）
+Cuối cùng `UNION` hai kết quả lại, đừng quên sắp xếp kết quả (bài này hơi giống tư tưởng của thuật toán chia để trị)
 
-**答案**：
+**Đáp án**:
 
 ```sql
 SELECT user_info.uid,

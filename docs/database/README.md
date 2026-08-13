@@ -1,9 +1,9 @@
 ---
-title: 数据库知识体系：SQL、MySQL、Redis、MongoDB 与 Elasticsearch
-description: 数据库面试与知识体系学习路线，涵盖 SQL、MySQL 索引、事务、日志、MVCC、执行计划、Redis 缓存、MongoDB 和 Elasticsearch。
-category: 数据库
+title: "Hệ thống kiến thức Cơ sở dữ liệu: SQL, MySQL, Redis, MongoDB và Elasticsearch"
+description: Lộ trình học và ôn tập Cơ sở dữ liệu dành cho phỏng vấn và phát triển Backend, bao gồm SQL, chỉ mục MySQL, giao dịch, nhật ký, MVCC, kế hoạch thực thi, Redis Cache, MongoDB và Elasticsearch.
+category: Cơ sở dữ liệu
 tag:
-  - 数据库
+  - Cơ sở dữ liệu
   - MySQL
   - Redis
 sitemap:
@@ -12,99 +12,99 @@ sitemap:
 head:
   - - meta
     - name: keywords
-      content: 数据库,数据库面试题,SQL,MySQL,Redis,MongoDB,Elasticsearch,MySQL索引,MySQL事务,MySQL日志,MVCC,Redis缓存,Redis持久化,Redis集群,后端面试
+      content: Cơ sở dữ liệu,Câu hỏi phỏng vấn Cơ sở dữ liệu,SQL,MySQL,Redis,MongoDB,Elasticsearch,MySQL Index,MySQL Transaction,MySQL Log,MVCC,Redis Cache,Redis Persistence,Redis Cluster,Phỏng vấn Backend
 ---
 
 <!-- @include: @small-advertisement.snippet.md -->
 
-这份 **数据库知识体系** 面向后端学习、工程实践和面试复习，按“数据库基础 -> SQL -> MySQL -> Redis -> NoSQL 与搜索”的顺序整理本站数据库相关文章。
+Tài liệu **Hệ thống kiến thức Cơ sở dữ liệu** này được xây dựng dành cho việc học Backend, thực hành kỹ thuật và ôn tập phỏng vấn, sắp xếp theo lộ trình: **Kiến thức nền tảng → SQL → MySQL → Redis → NoSQL và Công cụ tìm kiếm**, đồng thời tổng hợp các bài viết liên quan trên website.
 
-如果你时间有限，建议先看 [数据库基础常见面试题总结](./basis.md)、[SQL 语法基础知识总结](./sql/sql-syntax-summary.md)、[MySQL 常见面试题总结](./mysql/mysql-questions-01.md) 和 [Redis 常见面试题总结（上）](./redis/redis-questions-01.md)，快速建立高频问题清单。
+Nếu bạn không có nhiều thời gian, hãy ưu tiên đọc **Tổng hợp câu hỏi phỏng vấn Cơ sở dữ liệu**, **Tổng hợp cú pháp SQL**, **Tổng hợp câu hỏi phỏng vấn MySQL** và **Tổng hợp câu hỏi phỏng vấn Redis (Phần 1)** để nhanh chóng nắm được những chủ đề quan trọng nhất.
 
-## 适合谁看
+## Phù hợp với ai?
 
-- 正在系统学习数据库基础、SQL、MySQL 和 Redis 的后端开发者。
-- 准备校招、社招、中大厂后端面试的同学。
-- 想补齐索引、事务、日志、执行计划、缓存一致性、Redis 持久化和集群能力的工程师。
-- 已经写过业务 CRUD，但对数据库底层原理、性能优化和 NoSQL 选型不够熟的读者。
+- Lập trình viên Backend đang học một cách bài bản về Cơ sở dữ liệu, SQL, MySQL và Redis.
+- Sinh viên chuẩn bị phỏng vấn tuyển dụng hoặc lập trình viên chuyển việc.
+- Kỹ sư phần mềm muốn bổ sung kiến thức về Index, Transaction, Log, Execution Plan, Cache Consistency, Redis Persistence và Redis Cluster.
+- Lập trình viên đã từng phát triển các ứng dụng CRUD nhưng chưa hiểu sâu về nguyên lý hoạt động, tối ưu hiệu năng và cách lựa chọn các hệ quản trị NoSQL.
 
-## 学习重点
+## Nội dung trọng tâm
 
-- 关系型数据库和 NoSQL 分别适合解决什么问题，常见选型边界在哪里？
-- SQL 的查询、聚合、连接、子查询和事务语义应该如何掌握？
-- MySQL 索引、事务隔离、MVCC、三大日志和执行计划如何串成一条主线？
-- Redis 为什么快，常用数据结构、缓存策略、持久化、阻塞问题和集群机制如何理解？
-- MongoDB、Elasticsearch 这类 NoSQL/搜索系统在后端面试和工程选型中常考哪些点？
+- Cơ sở dữ liệu quan hệ và NoSQL phù hợp để giải quyết những bài toán nào? Ranh giới lựa chọn giữa chúng là gì?
+- Làm thế nào để thành thạo truy vấn SQL, Aggregate, Join, Subquery và Transaction?
+- Làm thế nào để kết nối các chủ đề MySQL Index, Transaction Isolation, MVCC, ba loại Log và Execution Plan thành một hệ thống kiến thức thống nhất?
+- Vì sao Redis có hiệu năng cao? Cần hiểu như thế nào về Data Structure, Cache Strategy, Persistence, Blocking và Cluster?
+- MongoDB và Elasticsearch thường được hỏi những nội dung nào trong phỏng vấn Backend và khi lựa chọn công nghệ cho hệ thống?
 
-## 建议阅读顺序
+## Thứ tự học được khuyến nghị
 
-1. [数据库基础常见面试题总结](./basis.md) 和 [NoSQL 基础常见面试题总结](./nosql.md)：先理解数据库分类、事务、范式、NoSQL 类型和典型应用场景。
-2. [SQL 语法基础知识总结](./sql/sql-syntax-summary.md)：补齐查询、过滤、排序、聚合、连接、子查询、插入、更新和删除等 SQL 基本功。
-3. [MySQL 专题](./mysql/)：重点学习索引、事务隔离、MVCC、三大日志、执行过程和执行计划。
-4. [Redis 专题](./redis/)：重点学习缓存基础、数据结构、缓存读写策略、持久化、阻塞问题、内存碎片和集群。
-5. [MongoDB 专题](./mongodb/) 和 [Elasticsearch 常见面试题总结](./elasticsearch/elasticsearch-questions-01.md)：根据岗位要求补充文档数据库和搜索引擎相关知识。
+1. [Tổng hợp câu hỏi phỏng vấn Cơ sở dữ liệu](./basis.md) và [Tổng hợp câu hỏi phỏng vấn NoSQL](./nosql.md): Làm quen với các loại cơ sở dữ liệu, Transaction, Chuẩn hóa (Normalization), các nhóm NoSQL và các tình huống sử dụng điển hình.
+2. [Tổng hợp cú pháp SQL](./sql/sql-syntax-summary.md): Bổ sung kiến thức về truy vấn, lọc, sắp xếp, tổng hợp, Join, Subquery, INSERT, UPDATE và DELETE.
+3. [Chuyên đề MySQL](./mysql/): Tập trung vào Index, Transaction Isolation, MVCC, ba loại Log, quy trình thực thi truy vấn và Execution Plan.
+4. [Chuyên đề Redis](./redis/): Học về Cache, Data Structure, chiến lược đọc/ghi Cache, Persistence, Blocking, Memory Fragmentation và Cluster.
+5. [Chuyên đề MongoDB](./mongodb/) và [Tổng hợp câu hỏi phỏng vấn Elasticsearch](./elasticsearch/elasticsearch-questions-01.md): Bổ sung kiến thức về cơ sở dữ liệu tài liệu và công cụ tìm kiếm tùy theo yêu cầu công việc.
 
-## 核心文章
+## Các bài viết cốt lõi
 
-### 数据库基础与 SQL
+### Kiến thức nền tảng và SQL
 
-这部分适合先建立数据库通用认知，重点理解数据库类型、事务语义、字符集、SQL 基础和常见查询题。
+Phần này giúp xây dựng nền tảng chung về cơ sở dữ liệu, tập trung vào các loại cơ sở dữ liệu, Transaction, Character Set, SQL và các dạng truy vấn phổ biến.
 
-- [数据库基础常见面试题总结](./basis.md)：梳理数据库基础概念、事务特性、并发控制、范式和常见面试问题。
-- [NoSQL 基础常见面试题总结](./nosql.md)：理解键值、文档、列族、图数据库等 NoSQL 类型及适用场景。
-- [字符集详解：字符集是什么？怎么用？](./character-set.md)：理解字符集、编码、乱码原因以及 MySQL 字符集设置。
-- [SQL 专题](./sql/)：从 SQL 语法基础讲到常见 SQL 面试题。
-- [SQL 语法基础知识总结](./sql/sql-syntax-summary.md)：覆盖查询、过滤、排序、聚合、分组、连接、子查询和数据修改。
+- [Tổng hợp câu hỏi phỏng vấn Cơ sở dữ liệu](./basis.md): Tổng hợp các khái niệm nền tảng, đặc tính ACID, kiểm soát đồng thời, chuẩn hóa dữ liệu và các câu hỏi thường gặp.
+- [Tổng hợp câu hỏi phỏng vấn NoSQL](./nosql.md): Tìm hiểu Key-Value Store, Document Database, Column Family Database, Graph Database và các tình huống sử dụng.
+- [Giải thích Character Set: Character Set là gì? Sử dụng như thế nào?](./character-set.md): Hiểu Character Set, Encoding, nguyên nhân lỗi hiển thị ký tự và cấu hình Character Set trong MySQL.
+- [Chuyên đề SQL](./sql/): Từ cú pháp SQL cơ bản đến các câu hỏi phỏng vấn phổ biến.
+- [Tổng hợp cú pháp SQL](./sql/sql-syntax-summary.md): Bao gồm SELECT, WHERE, ORDER BY, GROUP BY, Aggregate, JOIN, Subquery và thao tác chỉnh sửa dữ liệu.
 
 ### MySQL
 
-MySQL 是后端开发最核心的关系型数据库考点之一，学习时建议把“索引 -> 执行计划 -> 事务 -> MVCC -> 日志 -> 性能优化”连起来。
+MySQL là một trong những chủ đề quan trọng nhất trong phỏng vấn Backend. Khi học, nên kết nối các nội dung **Index → Execution Plan → Transaction → MVCC → Log → Tối ưu hiệu năng** thành một chuỗi kiến thức hoàn chỉnh.
 
-- [MySQL 专题](./mysql/)：串联 MySQL 索引、事务、MVCC、日志、执行计划和性能优化。
-- [MySQL 常见面试题总结](./mysql/mysql-questions-01.md)：快速建立 MySQL 高频问题清单。
-- [MySQL 索引详解](./mysql/mysql-index.md)：理解索引数据结构、最左前缀、覆盖索引、回表和索引设计原则。
-- [MySQL 事务隔离级别详解](./mysql/transaction-isolation-level.md)：理解脏读、不可重复读、幻读和不同隔离级别的权衡。
-- [InnoDB 存储引擎对 MVCC 的实现](./mysql/innodb-implementation-of-mvcc.md)：理解 Read View、隐藏字段、undo log 和快照读。
-- [MySQL 三大日志详解](./mysql/mysql-logs.md)：理解 binlog、redo log、undo log 的作用和关系。
-- [MySQL 执行计划分析](./mysql/mysql-query-execution-plan.md)：掌握 EXPLAIN 常见字段和慢 SQL 分析入口。
+- [Chuyên đề MySQL](./mysql/): Kết nối Index, Transaction, MVCC, Log, Execution Plan và tối ưu hiệu năng.
+- [Tổng hợp câu hỏi phỏng vấn MySQL](./mysql/mysql-questions-01.md): Nhanh chóng xây dựng danh sách các chủ đề trọng tâm.
+- [Giải thích MySQL Index](./mysql/mysql-index.md): Hiểu cấu trúc dữ liệu của Index, Leftmost Prefix, Covering Index, Back to Table và nguyên tắc thiết kế Index.
+- [Transaction Isolation Level trong MySQL](./mysql/transaction-isolation-level.md): Hiểu Dirty Read, Non-repeatable Read, Phantom Read và sự đánh đổi giữa các mức cô lập.
+- [Cơ chế MVCC của InnoDB](./mysql/innodb-implementation-of-mvcc.md): Tìm hiểu Read View, Hidden Column, Undo Log và Snapshot Read.
+- [Ba loại Log trong MySQL](./mysql/mysql-logs.md): Hiểu vai trò và mối quan hệ giữa Binlog, Redo Log và Undo Log.
+- [Phân tích Execution Plan trong MySQL](./mysql/mysql-query-execution-plan.md): Thành thạo EXPLAIN và cách phân tích các câu lệnh SQL chậm.
 
 ### Redis
 
-Redis 既是缓存，也是高频中间件考点。学习时不要只背命令，更要理解缓存策略、数据结构、持久化、阻塞原因和集群机制。
+Redis không chỉ là hệ thống Cache mà còn là middleware rất thường gặp trong phỏng vấn. Khi học, đừng chỉ ghi nhớ các lệnh mà hãy hiểu chiến lược Cache, Data Structure, Persistence, nguyên nhân Blocking và cơ chế Cluster.
 
-- [Redis 专题](./redis/)：围绕缓存、数据结构、持久化、集群、阻塞问题和工程实践展开。
-- [缓存基础常见面试题总结](./redis/cache-basics.md)：理解缓存使用场景、缓存穿透、击穿、雪崩和一致性问题。
-- [Redis 常见面试题总结（上）](./redis/redis-questions-01.md) 和 [Redis 常见面试题总结（下）](./redis/redis-questions-02.md)：快速建立 Redis 高频问题清单。
-- [Redis 5 种基本数据类型详解](./redis/redis-data-structures-01.md)：理解 String、List、Hash、Set、Sorted Set 的应用场景。
-- [Redis 持久化机制详解](./redis/redis-persistence.md)：理解 RDB、AOF、AOF 重写和混合持久化。
-- [Redis 集群详解](./redis/redis-cluster.md)：理解主从复制、哨兵、Cluster、槽位和故障转移。
+- [Chuyên đề Redis](./redis/): Bao gồm Cache, Data Structure, Persistence, Cluster, Blocking và các kinh nghiệm triển khai thực tế.
+- [Tổng hợp câu hỏi phỏng vấn về Cache](./redis/cache-basics.md): Hiểu các tình huống sử dụng Cache, Cache Penetration, Cache Breakdown, Cache Avalanche và Cache Consistency.
+- [Tổng hợp câu hỏi phỏng vấn Redis (Phần 1)](./redis/redis-questions-01.md) và [Phần 2](./redis/redis-questions-02.md): Các chủ đề Redis thường gặp trong phỏng vấn.
+- [Giải thích 5 kiểu dữ liệu cơ bản của Redis](./redis/redis-data-structures-01.md): Hiểu String, List, Hash, Set và Sorted Set cùng các tình huống sử dụng.
+- [Cơ chế Persistence của Redis](./redis/redis-persistence.md): Tìm hiểu RDB, AOF, AOF Rewrite và Hybrid Persistence.
+- [Redis Cluster](./redis/redis-cluster.md): Hiểu Replication, Sentinel, Cluster, Slot và Failover.
 
-### NoSQL 与搜索
+### NoSQL và Công cụ tìm kiếm
 
-这部分适合在掌握关系型数据库和缓存之后补充，用来理解文档数据库、搜索引擎和非关系型存储的选型边界。
+Sau khi đã nắm vững cơ sở dữ liệu quan hệ và Cache, bạn nên bổ sung kiến thức về Document Database, Search Engine và các hệ thống lưu trữ NoSQL để hiểu rõ giới hạn và tình huống lựa chọn từng công nghệ.
 
-- [MongoDB 专题](./mongodb/)：整理 MongoDB 文档模型、索引、副本集、分片、事务和常见面试问题。
-- [MongoDB 常见面试题总结（上）](./mongodb/mongodb-questions-01.md) 和 [MongoDB 常见面试题总结（下）](./mongodb/mongodb-questions-02.md)：理解 MongoDB 核心概念和工程实践。
-- [Elasticsearch 常见面试题总结](./elasticsearch/elasticsearch-questions-01.md)：理解倒排索引、分片、副本、写入查询流程和搜索场景。
+- [Chuyên đề MongoDB](./mongodb/): Bao gồm Document Model, Index, Replica Set, Sharding, Transaction và các câu hỏi phỏng vấn phổ biến.
+- [Tổng hợp câu hỏi phỏng vấn MongoDB (Phần 1)](./mongodb/mongodb-questions-01.md) và [Phần 2](./mongodb/mongodb-questions-02.md): Hiểu các khái niệm cốt lõi và kinh nghiệm triển khai MongoDB.
+- [Tổng hợp câu hỏi phỏng vấn Elasticsearch](./elasticsearch/elasticsearch-questions-01.md): Hiểu Inverted Index, Shard, Replica, quy trình ghi/truy vấn và các tình huống sử dụng công cụ tìm kiếm.
 
-## 高频问题
+## Những câu hỏi xuất hiện nhiều
 
-- 关系型数据库和 NoSQL 有什么区别？分别适合哪些场景？
-- 数据库事务 ACID 是什么？隔离级别分别解决什么问题？
-- SQL 中 WHERE、GROUP BY、HAVING、ORDER BY 的执行顺序如何理解？
-- MySQL 索引为什么能加速查询？什么情况下会索引失效？
-- InnoDB 如何通过 MVCC 实现非锁定一致性读？
-- binlog、redo log、undo log 分别解决什么问题？
-- 如何通过 EXPLAIN 分析 SQL 执行计划？
-- Redis 为什么快？缓存穿透、击穿、雪崩如何处理？
-- Redis 持久化、主从复制、哨兵和 Cluster 分别解决什么问题？
-- MongoDB 和 Elasticsearch 分别适合什么业务场景？
+- Cơ sở dữ liệu quan hệ và NoSQL khác nhau như thế nào? Mỗi loại phù hợp với những bài toán nào?
+- ACID là gì? Mỗi mức Transaction Isolation giải quyết vấn đề gì?
+- Thứ tự thực thi của `WHERE`, `GROUP BY`, `HAVING` và `ORDER BY` trong SQL được hiểu như thế nào?
+- Vì sao MySQL Index giúp tăng tốc truy vấn? Khi nào Index bị mất hiệu lực?
+- InnoDB sử dụng MVCC để thực hiện Snapshot Read không khóa như thế nào?
+- Binlog, Redo Log và Undo Log giải quyết những vấn đề gì?
+- Làm thế nào để sử dụng `EXPLAIN` để phân tích Execution Plan của SQL?
+- Vì sao Redis có hiệu năng cao? Làm thế nào để xử lý Cache Penetration, Cache Breakdown và Cache Avalanche?
+- Redis Persistence, Replication, Sentinel và Cluster giải quyết những bài toán nào?
+- MongoDB và Elasticsearch phù hợp với những loại hệ thống nào?
 
-## 相关专题
+## Chuyên đề liên quan
 
-- [高性能系统知识体系](../high-performance/)
-- [高可用系统知识体系](../high-availability/)
-- [分布式系统知识体系](../distributed-system/)
-- [系统设计](../system-design/)
+- [Hệ thống kiến thức Hệ thống hiệu năng cao](../high-performance/)
+- [Hệ thống kiến thức Hệ thống sẵn sàng cao](../high-availability/)
+- [Hệ thống kiến thức Hệ thống phân tán](../distributed-system/)
+- [Thiết kế hệ thống](../system-design/)
 
 <!-- @include: @article-footer.snippet.md -->

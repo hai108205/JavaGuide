@@ -1,35 +1,35 @@
 ---
-title: MySQL隐式转换造成索引失效
-description: 深入分析MySQL中隐式类型转换导致索引失效的原因和场景，通过实际案例演示字符串与数字比较时的性能问题，并给出避免索引失效的最佳实践。
-category: 数据库
+title: Index mất hiệu lực do chuyển đổi ngầm định trong MySQL
+description: Phân tích chuyên sâu nguyên nhân và các tình huống khiến Index mất hiệu lực do chuyển đổi kiểu ngầm định trong MySQL, thông qua các ví dụ thực tế minh họa vấn đề hiệu năng khi so sánh giữa chuỗi và số, đồng thời đưa ra các thực hành tốt nhất để tránh Index mất hiệu lực.
+category: Cơ sở dữ liệu
 tag:
   - MySQL
-  - 性能优化
+  - Tối ưu hiệu năng
 head:
   - - meta
     - name: keywords
-      content: MySQL隐式转换,索引失效,类型转换,MySQL性能优化,数据类型不匹配,全表扫描,SQL优化
+      content: Chuyển đổi ngầm định trong MySQL,Index mất hiệu lực,chuyển đổi kiểu dữ liệu,tối ưu hiệu năng MySQL,kiểu dữ liệu không khớp,quét toàn bảng,tối ưu SQL
 ---
 
-> 本次测试使用的 MySQL 版本是 `5.7.26`，随着 MySQL 版本的更新某些特性可能会发生改变，本文不代表所述观点和结论于 MySQL 所有版本均准确无误，版本差异请自行甄别。
+> Phiên bản MySQL được sử dụng trong lần kiểm thử này là `5.7.26`, cùng với việc các phiên bản MySQL được cập nhật, một số tính năng có thể thay đổi, bài viết này không đảm bảo các quan điểm và kết luận nêu ra đều chính xác tuyệt đối trên mọi phiên bản MySQL, vui lòng tự phân biệt sự khác biệt giữa các phiên bản.
 >
-> 原文：<https://www.guitu18.com/post/2019/11/24/61.html>
+> Bài gốc: <https://www.guitu18.com/post/2019/11/24/61.html>
 
-## 前言
+## Lời mở đầu
 
-数据库优化是一个任重而道远的任务，想要做优化必须深入理解数据库的各种特性。在开发过程中我们经常会遇到一些原因很简单但造成的后果却很严重的疑难杂症，这类问题往往还不容易定位，排查费时费力最后发现是一个很小的疏忽造成的，又或者是因为不了解某个技术特性产生的。
+Tối ưu hóa cơ sở dữ liệu là một nhiệm vụ lâu dài và gian nan, muốn làm tối ưu thì phải hiểu sâu các đặc tính khác nhau của cơ sở dữ liệu. Trong quá trình phát triển, chúng ta thường gặp một số vấn đề khó hiểu mà nguyên nhân rất đơn giản nhưng hậu quả gây ra lại rất nghiêm trọng, những vấn đề kiểu này thường còn khó định vị, mất nhiều thời gian và công sức để điều tra, cuối cùng phát hiện ra là do một sơ suất rất nhỏ gây ra, hoặc là do không hiểu một đặc tính kỹ thuật nào đó mà sinh ra.
 
-于数据库层面，最常见的恐怕就是索引失效了，且一开始因为数据量小还不易被发现。但随着业务的拓展数据量的提升，性能问题慢慢的就体现出来了，处理不及时还很容易造成雪球效应，最终导致数据库卡死甚至瘫痪。造成索引失效的原因可能有很多种，相关技术博客已经有太多了，今天我要记录的是**隐式转换造成的索引失效**。
+Ở tầng cơ sở dữ liệu, phổ biến nhất có lẽ là Index mất hiệu lực, và ban đầu do lượng dữ liệu nhỏ nên còn khó bị phát hiện. Nhưng cùng với sự mở rộng nghiệp vụ và sự gia tăng lượng dữ liệu, vấn đề hiệu năng dần dần sẽ lộ ra, nếu xử lý không kịp thời còn rất dễ gây ra hiệu ứng quả cầu tuyết, cuối cùng dẫn đến cơ sở dữ liệu bị treo thậm chí tê liệt. Nguyên nhân khiến Index mất hiệu lực có thể có rất nhiều, các blog kỹ thuật liên quan đã có quá nhiều, hôm nay tôi muốn ghi lại là **Index mất hiệu lực do chuyển đổi ngầm định (implicit conversion) gây ra**.
 
-## 数据准备
+## Chuẩn bị dữ liệu
 
-首先使用存储过程生成 1000 万条测试数据，
-测试表一共建立了 7 个字段（包括主键），`num1`和`num2`保存的是和`ID`一样的顺序数字，其中`num2`是字符串类型。
-`type1`和`type2`保存的都是主键对 5 的取模，目的是模拟实际应用中常用类似 type 类型的数据，但是`type2`是没有建立索引的。
-`str1`和`str2`都是保存了一个 20 位长度的随机字符串，`str1`不能为`NULL`，`str2`允许为`NULL`，相应的生成测试数据的时候我也会在`str2`字段生产少量`NULL`值（每 100 条数据产生一个`NULL`值）。
+Trước tiên sử dụng stored procedure (thủ tục lưu trữ) để tạo ra 10 triệu bản ghi dữ liệu kiểm thử,
+bảng kiểm thử tổng cộng đã tạo 7 trường (bao gồm cả Primary Key), `num1` và `num2` lưu các số tuần tự giống như `ID`, trong đó `num2` là kiểu chuỗi.
+`type1` và `type2` đều lưu kết quả lấy phần dư của Primary Key chia cho 5, mục đích là mô phỏng dữ liệu dạng type thường dùng trong ứng dụng thực tế, nhưng `type2` không được tạo Index.
+`str1` và `str2` đều lưu một chuỗi ngẫu nhiên có độ dài 20 ký tự, `str1` không được phép `NULL`, `str2` cho phép `NULL`, tương ứng khi tạo dữ liệu kiểm thử tôi cũng sẽ tạo ra một lượng nhỏ giá trị `NULL` ở trường `str2` (mỗi 100 bản ghi dữ liệu sẽ sinh ra một giá trị `NULL`).
 
 ```sql
--- 创建测试数据表
+-- Tạo bảng dữ liệu kiểm thử
 DROP TABLE IF EXISTS test1;
 CREATE TABLE `test1` (
     `id` int(11) NOT NULL,
@@ -46,7 +46,7 @@ CREATE TABLE `test1` (
     KEY `str1` (`str1`),
     KEY `str2` (`str2`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
--- 创建存储过程
+-- Tạo stored procedure
 DROP PROCEDURE IF EXISTS pre_test1;
 DELIMITER //
 CREATE PROCEDURE `pre_test1`()
@@ -56,7 +56,7 @@ BEGIN
     WHILE i < 10000000 DO
         SET i = i + 1;
         SET @str1 = SUBSTRING(MD5(RAND()),1,20);
-        -- 每100条数据str2产生一个null值
+        -- Cứ mỗi 100 bản ghi dữ liệu thì str2 sinh ra một giá trị null
         IF i % 100 = 0 THEN
             SET @str2 = NULL;
         ELSE
@@ -66,26 +66,26 @@ BEGIN
         `type1`, `type2`, `str1`, `str2`)
         VALUES (CONCAT('', i), CONCAT('', i),
         CONCAT('', i), i%5, i%5, @str1, @str2);
-        -- 事务优化，每一万条数据提交一次事务
+        -- Tối ưu Transaction, cứ mỗi 10 nghìn bản ghi dữ liệu thì commit Transaction một lần
         IF i % 10000 = 0 THEN
             COMMIT;
         END IF;
     END WHILE;
 END;
 // DELIMITER ;
--- 执行存储过程
+-- Thực thi stored procedure
 CALL pre_test1();
 ```
 
-数据量比较大，还涉及使用`MD5`生成随机字符串，所以速度有点慢，稍安勿躁，耐心等待即可。
+Lượng dữ liệu khá lớn, lại liên quan đến việc sử dụng `MD5` để sinh chuỗi ngẫu nhiên, nên tốc độ hơi chậm, hãy bình tĩnh chờ đợi.
 
-1000 万条数据，我用了 33 分钟才跑完（实际时间跟你电脑硬件配置有关）。这里贴几条生成的数据，大致长这样。
+Với 10 triệu bản ghi dữ liệu, tôi mất 33 phút mới chạy xong (thời gian thực tế phụ thuộc vào cấu hình phần cứng máy tính của bạn). Ở đây tôi dán vài bản ghi dữ liệu được tạo ra, đại khái trông như thế này.
 
 ![](https://oss.javaguide.cn/github/javaguide/mysqlindex-invalidation-caused-by-implicit-conversion-01.png)
 
-## SQL 测试
+## Kiểm thử SQL
 
-先来看这组 SQL，一共四条，我们的测试数据表`num1`是`int`类型，`num2`是`varchar`类型，但是存储的数据都是跟主键`id`一样的顺序数字，两个字段都建立有索引。
+Trước tiên xem nhóm SQL này, tổng cộng có bốn câu, trường `num1` của bảng dữ liệu kiểm thử là kiểu `int`, `num2` là kiểu `varchar`, nhưng dữ liệu được lưu đều là các số tuần tự giống với Primary Key `id`, cả hai trường đều đã được tạo Index.
 
 ```sql
 1: SELECT * FROM `test1` WHERE num1 = 10000;
@@ -94,39 +94,39 @@ CALL pre_test1();
 4: SELECT * FROM `test1` WHERE num2 = '10000';
 ```
 
-这四条 SQL 都是有针对性写的，12 查询的字段是 int 类型，34 查询的字段是`varchar`类型。12 或 34 查询的字段虽然都相同，但是一个条件是数字，一个条件是用引号引起来的字符串。这样做有什么区别呢？先不看下边的测试结果你能猜出这四条 SQL 的效率顺序吗？
+Bốn câu SQL này đều được viết có chủ đích, câu 1 và 2 truy vấn trường kiểu int, câu 3 và 4 truy vấn trường kiểu `varchar`. Câu 1 và 2 hoặc câu 3 và 4 tuy truy vấn cùng một trường, nhưng một bên điều kiện là số, một bên điều kiện là chuỗi được đặt trong dấu nháy kép. Làm như vậy có gì khác biệt? Trước khi xem kết quả kiểm thử bên dưới, bạn có thể đoán được thứ tự hiệu năng của bốn câu SQL này không?
 
-经测试这四条 SQL 最后的执行结果却相差很大，其中 124 三条 SQL 基本都是瞬间出结果，大概在 0.001~0.005 秒，在千万级的数据量下这样的结果可以判定这三条 SQL 性能基本没差别了。但是第三条 SQL，多次测试耗时基本在 4.5~4.8 秒之间。
+Qua kiểm thử, kết quả thực thi cuối cùng của bốn câu SQL này lại chênh lệch rất lớn, trong đó ba câu 1, 2, 4 về cơ bản đều cho kết quả ngay lập tức, khoảng 0.001~0.005 giây, với lượng dữ liệu ở mức hàng chục triệu thì kết quả như vậy có thể phán định hiệu năng của ba câu SQL này về cơ bản không có khác biệt. Nhưng câu SQL thứ ba, qua nhiều lần kiểm thử, thời gian thực thi cơ bản nằm trong khoảng 4.5~4.8 giây.
 
-为什么 34 两条 SQL 效率相差那么大，但是同样做对比的 12 两条 SQL 却没什么差别呢？查看一下执行计划，下边分别 1234 条 SQL 的执行计划数据：
+Tại sao hai câu SQL 3 và 4 hiệu quả chênh lệch lớn như vậy, nhưng hai câu 1 và 2 cũng làm đối chiếu tương tự lại không có khác biệt gì? Hãy xem kế hoạch thực thi (Execution Plan), dưới đây lần lượt là dữ liệu kế hoạch thực thi của các câu SQL 1, 2, 3, 4:
 
 ![](https://oss.javaguide.cn/github/javaguide/mysqlindex-invalidation-caused-by-implicit-conversion-02.png)
 
-可以看到，124 三条 SQL 都能使用到索引，连接类型都为`ref`，扫描行数都为 1，所以效率非常高。再看看第三条 SQL，没有用上索引，所以为全表扫描，`rows`直接到达 1000 万了，所以性能差别才那么大。
+Có thể thấy, ba câu SQL 1, 2, 4 đều có thể sử dụng Index, loại kết nối đều là `ref`, số hàng quét đều là 1, nên hiệu quả rất cao. Nhìn lại câu SQL thứ ba, không dùng được Index, nên phải quét toàn bảng, `rows` trực tiếp lên đến 10 triệu, nên sự khác biệt về hiệu năng mới lớn như vậy.
 
-仔细观察你会发现，34 两条 SQL 查询的字段`num2`是`varchar`类型的，查询条件等号右边加引号的第 4 条 SQL 是用到索引的，那么是查询的数据类型和字段数据类型不一致造成的吗？如果是这样那 12 两条 SQL 查询的字段`num1`是`int`类型，但是第 2 条 SQL 查询条件右边加了引号为什么还能用上索引呢。
+Quan sát kỹ bạn sẽ phát hiện, trường `num2` mà hai câu SQL 3 và 4 truy vấn là kiểu `varchar`, câu SQL thứ 4 có điều kiện truy vấn bên phải dấu bằng được đặt trong dấu nháy kép thì dùng được Index, vậy có phải do kiểu dữ liệu truy vấn và kiểu dữ liệu của trường không khớp gây ra không? Nếu đúng như vậy thì trường `num1` mà hai câu SQL 1 và 2 truy vấn là kiểu `int`, nhưng điều kiện truy vấn của câu SQL thứ 2 bên phải có đặt dấu nháy kép tại sao vẫn dùng được Index.
 
-查阅 MySQL 相关文档发现是隐式转换造成的，看一下官方的描述：
+Tra cứu tài liệu liên quan của MySQL thì phát hiện ra là do chuyển đổi ngầm định gây ra, hãy xem mô tả chính thức:
 
-> 官方文档：[12.2 Type Conversion in Expression Evaluation](https://dev.mysql.com/doc/refman/5.7/en/type-conversion.html?spm=5176.100239.blogcont47339.5.1FTben)
+> Tài liệu chính thức: [12.2 Type Conversion in Expression Evaluation](https://dev.mysql.com/doc/refman/5.7/en/type-conversion.html?spm=5176.100239.blogcont47339.5.1FTben)
 >
-> 当操作符与不同类型的操作数一起使用时，会发生类型转换以使操作数兼容。某些转换是隐式发生的。例如，MySQL 会根据需要自动将字符串转换为数字，反之亦然。以下规则描述了比较操作的转换方式：
+> Khi toán tử được sử dụng cùng với các toán hạng khác kiểu nhau, chuyển đổi kiểu sẽ xảy ra để làm cho các toán hạng tương thích. Một số chuyển đổi xảy ra một cách ngầm định. Ví dụ, MySQL sẽ tự động chuyển chuỗi thành số khi cần thiết, và ngược lại. Các quy tắc sau mô tả cách chuyển đổi cho các phép toán so sánh:
 >
-> 1. 两个参数至少有一个是`NULL`时，比较的结果也是`NULL`，特殊的情况是使用`<=>`对两个`NULL`做比较时会返回`1`，这两种情况都不需要做类型转换
-> 2. 两个参数都是字符串，会按照字符串来比较，不做类型转换
-> 3. 两个参数都是整数，按照整数来比较，不做类型转换
-> 4. 十六进制的值和非数字做比较时，会被当做二进制串
-> 5. 有一个参数是`TIMESTAMP`或`DATETIME`，并且另外一个参数是常量，常量会被转换为`timestamp`
-> 6. 有一个参数是`decimal`类型，如果另外一个参数是`decimal`或者整数，会将整数转换为`decimal`后进行比较，如果另外一个参数是浮点数，则会把`decimal`转换为浮点数进行比较
-> 7. **所有其他情况下，两个参数都会被转换为浮点数再进行比较**
+> 1. Khi ít nhất một trong hai tham số là `NULL`, kết quả so sánh cũng là `NULL`, trường hợp đặc biệt là khi sử dụng `<=>` để so sánh hai giá trị `NULL` sẽ trả về `1`, cả hai trường hợp này đều không cần chuyển đổi kiểu dữ liệu
+> 2. Khi cả hai tham số đều là chuỗi, sẽ so sánh theo chuỗi, không chuyển đổi kiểu dữ liệu
+> 3. Khi cả hai tham số đều là số nguyên, sẽ so sánh theo số nguyên, không chuyển đổi kiểu dữ liệu
+> 4. Khi giá trị hệ thập lục phân được so sánh với giá trị không phải số, sẽ được xem như chuỗi nhị phân
+> 5. Khi một tham số là `TIMESTAMP` hoặc `DATETIME`, và tham số còn lại là hằng số, hằng số sẽ được chuyển đổi thành `timestamp`
+> 6. Khi một tham số là kiểu `decimal`, nếu tham số còn lại là `decimal` hoặc số nguyên, sẽ chuyển số nguyên thành `decimal` rồi so sánh, nếu tham số còn lại là số dấu phẩy động, thì sẽ chuyển `decimal` thành số dấu phẩy động rồi so sánh
+> 7. **Trong tất cả các trường hợp khác, cả hai tham số đều sẽ được chuyển đổi thành số dấu phẩy động rồi mới so sánh**
 
-根据官方文档的描述，我们的第 23 两条 SQL 都发生了隐式转换，第 2 条 SQL 的查询条件`num1 = '10000'`，左边是`int`类型右边是字符串，第 3 条 SQL 相反，那么根据官方转换规则第 7 条，左右两边都会转换为浮点数再进行比较。
+Theo mô tả trong tài liệu chính thức, hai câu SQL thứ 2 và 3 của chúng ta đều xảy ra chuyển đổi ngầm định, điều kiện truy vấn của câu SQL thứ 2 là `num1 = '10000'`, bên trái là kiểu `int` bên phải là chuỗi, câu SQL thứ 3 thì ngược lại, vậy theo quy tắc chuyển đổi chính thức điều thứ 7, cả hai bên trái phải đều sẽ được chuyển đổi thành số dấu phẩy động rồi mới so sánh.
 
-先看第 2 条 SQL：``SELECT * FROM `test1` WHERE num1 = '10000';`` **左边为 int 类型**`10000`，转换为浮点数还是`10000`，右边字符串类型`'10000'`，转换为浮点数也是`10000`。两边的转换结果都是唯一确定的，所以不影响使用索引。
+Xem câu SQL thứ 2 trước: ``SELECT * FROM `test1` WHERE num1 = '10000';`` **Bên trái là kiểu int** `10000`, chuyển thành số dấu phẩy động vẫn là `10000`, bên phải là kiểu chuỗi `'10000'`, chuyển thành số dấu phẩy động cũng là `10000`. Kết quả chuyển đổi của cả hai bên đều là duy nhất và xác định, nên không ảnh hưởng đến việc sử dụng Index.
 
-第 3 条 SQL：``SELECT * FROM `test1` WHERE num2 = 10000;`` **左边是字符串类型**`'10000'`，转浮点数为 10000 是唯一的，右边`int`类型`10000`转换结果也是唯一的。但是，因为左边是检索条件，`'10000'`转到`10000`虽然是唯一，但是其他字符串也可以转换为`10000`，比如`'10000a'`，`'010000'`，`'10000'`等等都能转为浮点数`10000`，这样的情况下，是不能用到索引的。
+Câu SQL thứ 3: ``SELECT * FROM `test1` WHERE num2 = 10000;`` **Bên trái là kiểu chuỗi** `'10000'`, chuyển thành số dấu phẩy động là 10000 là duy nhất, bên phải là kiểu `int` `10000` kết quả chuyển đổi cũng là duy nhất. Nhưng, vì bên trái là điều kiện tìm kiếm, `'10000'` chuyển thành `10000` tuy là duy nhất, nhưng các chuỗi khác cũng có thể chuyển thành `10000`, ví dụ `'10000a'`, `'010000'`, `'10000'` v.v. đều có thể chuyển thành số dấu phẩy động `10000`, trong tình huống như vậy, không thể dùng được Index.
 
-关于这个**隐式转换**我们可以通过查询测试验证一下，先插入几条数据，其中`num2='10000a'`、`'010000'`和`'10000'`：
+Về **chuyển đổi ngầm định** này, chúng ta có thể thông qua truy vấn kiểm thử để xác minh, trước tiên chèn vào vài bản ghi dữ liệu, trong đó `num2='10000a'`, `'010000'` và `'10000'`:
 
 ```sql
 INSERT INTO `test1` (`id`, `num1`, `num2`, `type1`, `type2`, `str1`, `str2`) VALUES ('10000001', '10000', '10000a', '0', '0', '2df3d9465ty2e4hd523', '2df3d9465ty2e4hd523');
@@ -134,34 +134,34 @@ INSERT INTO `test1` (`id`, `num1`, `num2`, `type1`, `type2`, `str1`, `str2`) VAL
 INSERT INTO `test1` (`id`, `num1`, `num2`, `type1`, `type2`, `str1`, `str2`) VALUES ('10000003', '10000', ' 10000', '0', '0', '2df3d9465ty2e4hd523', '2df3d9465ty2e4hd523');
 ```
 
-然后使用第三条 SQL 语句``SELECT * FROM `test1` WHERE num2 = 10000;``进行查询：
+Sau đó sử dụng câu SQL thứ ba ``SELECT * FROM `test1` WHERE num2 = 10000;`` để truy vấn:
 
 ![](https://oss.javaguide.cn/github/javaguide/mysqlindex-invalidation-caused-by-implicit-conversion-03.png)
 
-从结果可以看到，后面插入的三条数据也都匹配上了。那么这个字符串隐式转换的规则是什么呢？为什么`num2='10000a'`、`'010000'`和`'10000'`这三种情形都能匹配上呢？查阅相关资料发现规则如下：
+Từ kết quả có thể thấy, ba bản ghi dữ liệu vừa chèn vào sau đó cũng đều khớp. Vậy quy tắc chuyển đổi ngầm định của chuỗi này là gì? Tại sao ba trường hợp `num2='10000a'`, `'010000'` và `'10000'` đều có thể khớp? Tra cứu các tài liệu liên quan thì phát hiện quy tắc như sau:
 
-1. **不以数字开头**的字符串都将转换为`0`。如`'abc'`、`'a123bc'`、`'abc123'`都会转化为`0`；
-2. **以数字开头的**字符串转换时会进行截取，从第一个字符截取到第一个非数字内容为止。比如`'123abc'`会转换为`123`，`'012abc'`会转换为`012`也就是`12`，`'5.3a66b78c'`会转换为`5.3`，其他同理。
+1. Chuỗi **không bắt đầu bằng số** đều sẽ được chuyển đổi thành `0`. Ví dụ `'abc'`, `'a123bc'`, `'abc123'` đều sẽ được chuyển thành `0`;
+2. Chuỗi **bắt đầu bằng số** khi chuyển đổi sẽ được cắt, cắt từ ký tự đầu tiên đến ký tự không phải số đầu tiên thì dừng. Ví dụ `'123abc'` sẽ được chuyển thành `123`, `'012abc'` sẽ được chuyển thành `012` tức là `12`, `'5.3a66b78c'` sẽ được chuyển thành `5.3`, các trường hợp khác tương tự.
 
-现对以上规则做如下测试验证：
+Bây giờ thực hiện các kiểm thử sau để xác minh các quy tắc trên:
 
 ![](https://oss.javaguide.cn/github/javaguide/mysqlindex-invalidation-caused-by-implicit-conversion-04.png)
 
-如此也就印证了之前的查询结果了。
+Như vậy cũng đã xác nhận lại kết quả truy vấn trước đó.
 
-再次写一条 SQL 查询 str1 字段：``SELECT * FROM `test1` WHERE str1 = 1234;``
+Viết thêm một câu SQL để truy vấn trường str1: ``SELECT * FROM `test1` WHERE str1 = 1234;``
 
 ![](https://oss.javaguide.cn/github/javaguide/mysqlindex-invalidation-caused-by-implicit-conversion-05.png)
 
-## 分析和总结
+## Phân tích và tổng kết
 
-通过上面的测试我们发现 MySQL 使用操作符的一些特性：
+Thông qua các kiểm thử trên, chúng ta phát hiện một số đặc tính của MySQL khi sử dụng toán tử:
 
-1. 当操作符**左右两边的数据类型不一致**时，会发生**隐式转换**。
-2. 当 where 查询操作符**左边为数值类型**时发生了隐式转换，那么对效率影响不大，但还是不推荐这么做。
-3. 当 where 查询操作符**左边为字符类型**时发生了隐式转换，那么会导致索引失效，造成全表扫描效率极低。
-4. 字符串转换为数值类型时，非数字开头的字符串会转化为`0`，以数字开头的字符串会截取从第一个字符到第一个非数字内容为止的值为转化结果。
+1. Khi **kiểu dữ liệu hai bên trái phải của toán tử không khớp**, sẽ xảy ra **chuyển đổi ngầm định**.
+2. Khi toán tử truy vấn where có **bên trái là kiểu số** và xảy ra chuyển đổi ngầm định, thì ảnh hưởng đến hiệu quả không lớn, nhưng vẫn không khuyến khích làm như vậy.
+3. Khi toán tử truy vấn where có **bên trái là kiểu chuỗi** và xảy ra chuyển đổi ngầm định, thì sẽ dẫn đến Index mất hiệu lực, gây ra quét toàn bảng với hiệu quả cực thấp.
+4. Khi chuỗi được chuyển thành kiểu số, chuỗi không bắt đầu bằng số sẽ được chuyển thành `0`, chuỗi bắt đầu bằng số sẽ được cắt lấy giá trị từ ký tự đầu tiên đến ký tự không phải số đầu tiên làm kết quả chuyển đổi.
 
-所以，我们在写 SQL 时一定要养成良好的习惯，查询的字段是什么类型，等号右边的条件就写成对应的类型。特别当查询的字段是字符串时，等号右边的条件一定要用引号引起来标明这是一个字符串，否则会造成索引失效触发全表扫描。
+Vì vậy, khi viết SQL chúng ta nhất định phải hình thành thói quen tốt, trường truy vấn là kiểu gì thì điều kiện bên phải dấu bằng hãy viết thành kiểu tương ứng. Đặc biệt khi trường truy vấn là chuỗi, điều kiện bên phải dấu bằng nhất định phải được đặt trong dấu nháy kép để đánh dấu đây là một chuỗi, nếu không sẽ khiến Index mất hiệu lực và kích hoạt quét toàn bảng.
 
 <!-- @include: @article-footer.snippet.md -->

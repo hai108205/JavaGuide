@@ -1,50 +1,50 @@
 ---
-title: MySQL日期类型选择建议
-description: 深入对比MySQL中DATETIME和TIMESTAMP的区别，分析时区处理、存储空间、取值范围等差异，给出日期类型选择的最佳实践建议。
-category: 数据库
+title: Gợi ý lựa chọn kiểu dữ liệu ngày giờ trong MySQL
+description: So sánh chuyên sâu sự khác biệt giữa DATETIME và TIMESTAMP trong MySQL, phân tích các khác biệt về xử lý múi giờ, không gian lưu trữ, phạm vi giá trị, và đưa ra các gợi ý thực hành tốt nhất cho việc lựa chọn kiểu dữ liệu ngày giờ.
+category: Cơ sở dữ liệu
 tag:
   - MySQL
 head:
   - - meta
     - name: keywords
-      content: MySQL时间存储,DATETIME,TIMESTAMP,时间戳,时区处理,日期类型选择,MySQL日期函数
+      content: MySQL lưu trữ thời gian,DATETIME,TIMESTAMP,Timestamp,Xử lý múi giờ,Lựa chọn kiểu ngày giờ,Hàm ngày giờ MySQL
 ---
 
-在日常的软件开发工作中，存储时间是一项基础且常见的需求。无论是记录数据的操作时间、金融交易的发生时间，还是行程的出发时间、用户的下单时间等等，时间信息与我们的业务逻辑和系统功能紧密相关。因此，正确选择和使用 MySQL 的日期时间类型至关重要，其恰当与否甚至可能对业务的准确性和系统的稳定性产生显著影响。
+Trong công việc phát triển phần mềm hằng ngày, lưu trữ thời gian là một nhu cầu cơ bản và phổ biến. Dù là ghi lại thời gian thao tác dữ liệu, thời gian phát sinh giao dịch tài chính, hay thời gian khởi hành của chuyến đi, thời gian đặt hàng của người dùng, v.v., thông tin thời gian luôn gắn chặt với logic nghiệp vụ và chức năng hệ thống của chúng ta. Vì vậy, việc lựa chọn và sử dụng đúng kiểu dữ liệu ngày giờ của MySQL là vô cùng quan trọng; sự đúng đắn của nó thậm chí có thể ảnh hưởng đáng kể đến tính chính xác của nghiệp vụ và sự ổn định của hệ thống.
 
-本文旨在帮助开发者重新审视并深入理解 MySQL 中不同的时间存储方式，以便做出更合适项目业务场景的选择。
+Bài viết này nhằm giúp các lập trình viên nhìn nhận lại và hiểu sâu các cách lưu trữ thời gian khác nhau trong MySQL, để có thể đưa ra lựa chọn phù hợp hơn với kịch bản nghiệp vụ của dự án.
 
-## 不要用字符串存储日期
+## Không nên dùng chuỗi (string) để lưu trữ ngày giờ
 
-和许多数据库初学者一样，笔者在早期学习阶段也曾尝试使用字符串（如 VARCHAR）类型来存储日期和时间，甚至一度认为这是一种简单直观的方法。毕竟，'YYYY-MM-DD HH:MM:SS' 这样的格式看起来清晰易懂。
+Giống như nhiều người mới học cơ sở dữ liệu, ở giai đoạn học tập ban đầu, tác giả cũng từng thử dùng kiểu chuỗi (như VARCHAR) để lưu trữ ngày và giờ, thậm chí từng cho rằng đây là một cách đơn giản và trực quan. Dù sao thì định dạng như 'YYYY-MM-DD HH:MM:SS' trông cũng rõ ràng và dễ hiểu.
 
-但是，这是不正确的做法，主要会有下面两个问题：
+Nhưng đây là cách làm không đúng, chủ yếu sẽ có hai vấn đề sau:
 
-1. **空间效率**：与 MySQL 内建的日期时间类型相比，字符串通常需要占用更多的存储空间来表示相同的时间信息。
-2. **查询与计算效率低下**：
-   - **比较操作复杂且低效**：基于字符串的日期比较需要按照字典序逐字符进行，这不仅不直观（例如，'2024-05-01' 会小于 '2024-1-10'），而且效率远低于使用原生日期时间类型进行的数值或时间点比较。
-   - **计算功能受限**：无法直接利用数据库提供的丰富日期时间函数进行运算（例如，计算两个日期之间的间隔、对日期进行加减操作等），需要先转换格式，增加了复杂性。
-   - **索引性能不佳**：基于字符串的索引在处理范围查询（如查找特定时间段内的数据）时，其效率和灵活性通常不如原生日期时间类型的索引。
+1. **Hiệu quả không gian**: so với kiểu ngày giờ tích hợp sẵn của MySQL, chuỗi thường cần chiếm nhiều không gian lưu trữ hơn để biểu diễn cùng một thông tin thời gian.
+2. **Hiệu quả truy vấn và tính toán thấp**:
+   - **Thao tác so sánh phức tạp và kém hiệu quả**: việc so sánh ngày giờ dựa trên chuỗi cần thực hiện từng ký tự theo thứ tự từ điển; điều này không chỉ thiếu trực quan (ví dụ, '2024-05-01' sẽ nhỏ hơn '2024-1-10') mà hiệu quả còn thấp hơn nhiều so với so sánh số hoặc thời điểm bằng kiểu ngày giờ nguyên bản.
+   - **Chức năng tính toán bị hạn chế**: không thể trực tiếp sử dụng các hàm ngày giờ phong phú do cơ sở dữ liệu cung cấp để tính toán (ví dụ, tính khoảng cách giữa hai ngày, cộng trừ ngày), mà cần chuyển đổi định dạng trước, làm tăng độ phức tạp.
+   - **Hiệu năng Index không tốt**: Index dựa trên chuỗi khi xử lý truy vấn phạm vi (như tìm dữ liệu trong một khoảng thời gian cụ thể) thường có hiệu quả và tính linh hoạt kém hơn Index của kiểu ngày giờ nguyên bản.
 
-## DATETIME 和 TIMESTAMP 选择
+## Lựa chọn giữa DATETIME và TIMESTAMP
 
-`DATETIME` 和 `TIMESTAMP` 是 MySQL 中两种非常常用的、用于存储包含日期和时间信息的数据类型。它们都可以存储精确到秒（MySQL 5.6.4+ 支持更高精度的小数秒）的时间值。那么，在实际应用中，我们应该如何在这两者之间做出选择呢？
+`DATETIME` và `TIMESTAMP` là hai kiểu dữ liệu rất phổ biến trong MySQL, dùng để lưu trữ dữ liệu chứa thông tin ngày và giờ. Cả hai đều có thể lưu giá trị thời gian chính xác đến giây (từ MySQL 5.6.4+ hỗ trợ độ chính xác cao hơn với fractional seconds). Vậy trong ứng dụng thực tế, chúng ta nên lựa chọn giữa hai kiểu này như thế nào?
 
-下面我们从几个关键维度对它们进行对比：
+Dưới đây chúng ta so sánh chúng theo một số khía cạnh quan trọng:
 
-### 时区信息
+### Thông tin múi giờ
 
-`DATETIME` 类型存储的是**字面量的日期和时间值**，它本身**不包含任何时区信息**。当你插入一个 `DATETIME` 值时，MySQL 存储的就是你提供的那个确切的时间，不会进行任何时区转换。
+Kiểu `DATETIME` lưu trữ **giá trị ngày giờ theo nghĩa đen (literal)**, bản thân nó **không chứa bất kỳ thông tin múi giờ nào**. Khi bạn chèn một giá trị `DATETIME`, MySQL lưu trữ chính xác thời gian mà bạn cung cấp, không thực hiện bất kỳ chuyển đổi múi giờ nào.
 
-**这样就会有什么问题呢？** 如果你的应用需要支持多个时区，或者服务器、客户端的时区可能发生变化，那么使用 `DATETIME` 时，应用程序需要自行处理时区的转换和解释。如果处理不当（例如，假设所有存储的时间都属于同一个时区，但实际环境变化了），可能会导致时间显示或计算上的混乱。
+**Điều này sẽ gây ra vấn đề gì?** Nếu ứng dụng của bạn cần hỗ trợ nhiều múi giờ, hoặc múi giờ của server, client có thể thay đổi, thì khi sử dụng `DATETIME`, ứng dụng phải tự xử lý việc chuyển đổi và diễn giải múi giờ. Nếu xử lý không đúng (ví dụ, giả định tất cả thời gian được lưu trữ đều thuộc cùng một múi giờ, nhưng môi trường thực tế đã thay đổi), có thể dẫn đến hỗn loạn trong việc hiển thị hoặc tính toán thời gian.
 
-**`TIMESTAMP` 和时区有关**。存储时，MySQL 会将当前会话时区下的时间值转换成 UTC（协调世界时）进行内部存储。当查询 `TIMESTAMP` 字段时，MySQL 又会将存储的 UTC 时间转换回当前会话所设置的时区来显示。
+**`TIMESTAMP` có liên quan đến múi giờ**. Khi lưu trữ, MySQL sẽ chuyển giá trị thời gian trong múi giờ của phiên (session) hiện tại sang UTC (Giờ phối hợp quốc tế) để lưu trữ nội bộ. Khi truy vấn trường `TIMESTAMP`, MySQL lại chuyển thời gian UTC đã lưu trữ về múi giờ được thiết lập trong phiên hiện tại để hiển thị.
 
-这意味着，对于同一条记录的 `TIMESTAMP` 字段，在不同的会话时区设置下查询，可能会看到不同的本地时间表示，但它们都对应着同一个绝对时间点（UTC 时间）。这对于需要全球化、多时区支持的应用来说非常有用。
+Điều này có nghĩa là, đối với trường `TIMESTAMP` của cùng một bản ghi, khi truy vấn với thiết lập múi giờ của phiên khác nhau, có thể thấy biểu diễn giờ địa phương khác nhau, nhưng chúng đều tương ứng với cùng một thời điểm tuyệt đối (thời gian UTC). Điều này rất hữu ích cho các ứng dụng cần hỗ trợ toàn cầu hóa, đa múi giờ.
 
-下面实际演示一下！
+Dưới đây hãy demo thực tế!
 
-建表 SQL 语句：
+Câu lệnh SQL tạo bảng:
 
 ```sql
 CREATE TABLE `time_zone_test` (
@@ -55,19 +55,19 @@ CREATE TABLE `time_zone_test` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 
-插入一条数据（假设当前会话时区为系统默认，例如 UTC+0）:：
+Chèn một bản ghi dữ liệu (giả sử múi giờ của phiên hiện tại là mặc định của hệ thống, ví dụ UTC+0):
 
 ```sql
 INSERT INTO time_zone_test(date_time,time_stamp) VALUES(NOW(),NOW());
 ```
 
-查询数据（在同一时区会话下）：
+Truy vấn dữ liệu (trong cùng một phiên múi giờ):
 
 ```sql
 SELECT date_time, time_stamp FROM time_zone_test;
 ```
 
-结果：
+Kết quả:
 
 ```plain
 +---------------------+---------------------+
@@ -77,16 +77,16 @@ SELECT date_time, time_stamp FROM time_zone_test;
 +---------------------+---------------------+
 ```
 
-现在，修改当前会话的时区为东八区 (UTC+8):
+Bây giờ, đổi múi giờ của phiên hiện tại sang múi giờ phía Đông thứ tám (UTC+8):
 
 ```sql
 SET time_zone = '+8:00';
 ```
 
-再次查询数据：
+Truy vấn dữ liệu lần nữa:
 
 ```bash
-# TIMESTAMP 的值自动转换为 UTC+8 时间
+# Giá trị TIMESTAMP tự động được chuyển sang giờ UTC+8
 +---------------------+---------------------+
 | date_time           | time_stamp          |
 +---------------------+---------------------+
@@ -94,56 +94,56 @@ SET time_zone = '+8:00';
 +---------------------+---------------------+
 ```
 
-**扩展：MySQL 时区设置常用 SQL 命令**
+**Mở rộng: Các câu lệnh SQL thường dùng để thiết lập múi giờ trong MySQL**
 
 ```sql
-# 查看当前会话时区
+# Xem múi giờ của phiên hiện tại
 SELECT @@session.time_zone;
-# 设置当前会话时区
+# Thiết lập múi giờ của phiên hiện tại
 SET time_zone = 'Europe/Helsinki';
 SET time_zone = "+00:00";
-# 数据库全局时区设置
+# Xem thiết lập múi giờ toàn cục của cơ sở dữ liệu
 SELECT @@global.time_zone;
-# 设置全局时区
+# Thiết lập múi giờ toàn cục
 SET GLOBAL time_zone = '+8:00';
 SET GLOBAL time_zone = 'Europe/Helsinki';
 ```
 
-### 占用空间
+### Không gian lưu trữ
 
-下图是 MySQL 日期类型所占的存储空间（官方文档传送门：<https://dev.mysql.com/doc/refman/8.0/en/storage-requirements.html>）：
+Hình dưới đây là không gian lưu trữ mà các kiểu ngày giờ trong MySQL chiếm (link tài liệu chính thức: <https://dev.mysql.com/doc/refman/8.0/en/storage-requirements.html>):
 
 ![](https://oss.javaguide.cn/github/javaguide/FhRGUVHFK0ujRPNA75f6CuOXQHTE.jpeg)
 
-在 MySQL 5.6.4 之前，DateTime 和 TIMESTAMP 的存储空间是固定的，分别为 8 字节和 4 字节。但是从 MySQL 5.6.4 开始，它们的存储空间会根据毫秒精度的不同而变化，DateTime 的范围是 5~8 字节，TIMESTAMP 的范围是 4~7 字节。
+Trước MySQL 5.6.4, không gian lưu trữ của DateTime và TIMESTAMP là cố định, lần lượt là 8 byte và 4 byte. Nhưng từ MySQL 5.6.4 trở đi, không gian lưu trữ của chúng thay đổi tùy theo độ chính xác mili giây khác nhau; phạm vi của DateTime là 5~8 byte, phạm vi của TIMESTAMP là 4~7 byte.
 
-### 表示范围
+### Phạm vi biểu diễn
 
-`TIMESTAMP` 表示的时间范围更小，只能到 2038 年：
+Phạm vi thời gian mà `TIMESTAMP` biểu diễn nhỏ hơn, chỉ đến năm 2038:
 
-- `DATETIME`：'1000-01-01 00:00:00.000000' 到 '9999-12-31 23:59:59.999999'
-- `TIMESTAMP`：'1970-01-01 00:00:01.000000' UTC 到 '2038-01-19 03:14:07.999999' UTC
+- `DATETIME`: từ '1000-01-01 00:00:00.000000' đến '9999-12-31 23:59:59.999999'
+- `TIMESTAMP`: từ '1970-01-01 00:00:01.000000' UTC đến '2038-01-19 03:14:07.999999' UTC
 
-### 性能
+### Hiệu năng
 
-由于 `TIMESTAMP` 在存储和检索时需要进行 UTC 与当前会话时区的转换，这个过程可能涉及到额外的计算开销，尤其是在需要调用操作系统底层接口获取或处理时区信息时。虽然现代数据库和操作系统对此进行了优化，但在某些极端高并发或对延迟极其敏感的场景下，`DATETIME` 因其不涉及时区转换，处理逻辑相对更简单直接，可能会表现出微弱的性能优势。
+Do `TIMESTAMP` cần chuyển đổi giữa UTC và múi giờ của phiên hiện tại khi lưu trữ và truy xuất, quá trình này có thể liên quan đến chi phí tính toán bổ sung, đặc biệt là khi cần gọi interface tầng thấp của hệ điều hành để lấy hoặc xử lý thông tin múi giờ. Mặc dù cơ sở dữ liệu và hệ điều hành hiện đại đã tối ưu hóa điều này, nhưng trong một số kịch bản có độ đồng thời cực cao hoặc cực kỳ nhạy cảm về độ trễ, `DATETIME` do không liên quan đến chuyển đổi múi giờ nên logic xử lý tương đối đơn giản và trực tiếp hơn, có thể thể hiện ưu thế hiệu năng nhẹ.
 
-为了获得可预测的行为并可能减少 `TIMESTAMP` 的转换开销，推荐的做法是在应用程序层面统一管理时区，或者在数据库连接/会话级别显式设置 `time_zone` 参数，而不是依赖服务器的默认或操作系统时区。
+Để có được hành vi có thể dự đoán và có thể giảm chi phí chuyển đổi của `TIMESTAMP`, cách làm được khuyến nghị là quản lý múi giờ thống nhất ở tầng ứng dụng, hoặc thiết lập tường minh tham số `time_zone` ở cấp kết nối cơ sở dữ liệu/phiên, thay vì phụ thuộc vào mặc định của server hoặc múi giờ của hệ điều hành.
 
-## 数值时间戳是更好的选择吗？
+## Numeric Timestamp có phải là lựa chọn tốt hơn không?
 
-除了上述两种类型，实践中也常用整数类型（`INT` 或 `BIGINT`）来存储所谓的“Unix 时间戳”（即从 1970 年 1 月 1 日 00:00:00 UTC 起至目标时间的总秒数，或毫秒数）。
+Ngoài hai kiểu nói trên, trong thực tế cũng thường dùng kiểu số nguyên (`INT` hoặc `BIGINT`) để lưu trữ cái gọi là "Unix Timestamp" (tức tổng số giây, hoặc số mili giây tính từ 00:00:00 UTC ngày 1 tháng 1 năm 1970 đến thời điểm mục tiêu).
 
-这种存储方式的具有 `TIMESTAMP` 类型的所具有一些优点，并且使用它的进行日期排序以及对比等操作的效率会更高，跨系统也很方便，毕竟只是存放的数值。缺点也很明显，就是数据的可读性太差了，你无法直观的看到具体时间。
+Cách lưu trữ này có một số ưu điểm mà kiểu `TIMESTAMP` có, hơn nữa hiệu quả của các thao tác như sắp xếp và so sánh ngày giờ khi sử dụng nó sẽ cao hơn, và cũng tiện lợi khi làm việc giữa các hệ thống, vì dù sao cũng chỉ lưu giá trị số. Nhược điểm cũng rất rõ ràng, đó là tính dễ đọc của dữ liệu quá kém, bạn không thể nhìn trực tiếp thời gian cụ thể.
 
-时间戳的定义如下：
+Định nghĩa của timestamp như sau:
 
-> 时间戳的定义是从一个基准时间开始算起，这个基准时间是「1970-1-1 00:00:00 +0:00」，从这个时间开始，用整数表示，以秒计时，随着时间的流逝这个时间整数不断增加。这样一来，我只需要一个数值，就可以完美地表示时间了，而且这个数值是一个绝对数值，即无论的身处地球的任何角落，这个表示时间的时间戳，都是一样的，生成的数值都是一样的，并且没有时区的概念，所以在系统的中时间的传输中，都不需要进行额外的转换了，只有在显示给用户的时候，才转换为字符串格式的本地时间。
+> Định nghĩa của timestamp được tính bắt đầu từ một thời điểm gốc; thời điểm gốc này là 「1970-1-1 00:00:00 +0:00」. Bắt đầu từ thời điểm này, dùng số nguyên để biểu diễn, tính bằng giây; theo sự trôi qua của thời gian, số nguyên thời gian này không ngừng tăng lên. Như vậy, chỉ cần một giá trị số là có thể biểu diễn thời gian một cách hoàn hảo, hơn nữa giá trị số này là một giá trị tuyệt đối, tức là dù ở bất kỳ góc nào trên Trái Đất, timestamp biểu diễn thời gian này đều giống nhau, giá trị số sinh ra đều giống nhau, và không có khái niệm múi giờ, nên trong việc truyền tải thời gian giữa các hệ thống đều không cần chuyển đổi bổ sung, chỉ khi hiển thị cho người dùng mới chuyển sang giờ địa phương ở định dạng chuỗi.
 
-数据库中实际操作：
+Thao tác thực tế trong cơ sở dữ liệu:
 
 ```sql
--- 将日期时间字符串转换为 Unix 时间戳 (秒)
+-- Chuyển chuỗi ngày giờ sang Unix Timestamp (giây)
 mysql> SELECT UNIX_TIMESTAMP('2020-01-11 09:53:32');
 +---------------------------------------+
 | UNIX_TIMESTAMP('2020-01-11 09:53:32') |
@@ -152,7 +152,7 @@ mysql> SELECT UNIX_TIMESTAMP('2020-01-11 09:53:32');
 +---------------------------------------+
 1 row in set (0.00 sec)
 
--- 将 Unix 时间戳 (秒) 转换为日期时间格式
+-- Chuyển Unix Timestamp (giây) sang định dạng ngày giờ
 mysql> SELECT FROM_UNIXTIME(1578707612);
 +---------------------------+
 | FROM_UNIXTIME(1578707612) |
@@ -162,41 +162,41 @@ mysql> SELECT FROM_UNIXTIME(1578707612);
 1 row in set (0.01 sec)
 ```
 
-## PostgreSQL 中没有 DATETIME
+## PostgreSQL không có DATETIME
 
-由于有读者提到 PostgreSQL（PG） 的时间类型，因此这里拓展补充一下。PG 官方文档对时间类型的描述地址：<https://www.postgresql.org/docs/current/datatype-datetime.html>。
+Vì có bạn đọc nhắc đến kiểu thời gian của PostgreSQL (PG), nên ở đây bổ sung thêm. Địa chỉ mô tả về kiểu thời gian trong tài liệu chính thức của PG: <https://www.postgresql.org/docs/current/datatype-datetime.html>.
 
-![PostgreSQL 时间类型总结](https://oss.javaguide.cn/github/javaguide/mysql/pg-datetime-types.png)
+![Tổng kết kiểu thời gian trong PostgreSQL](https://oss.javaguide.cn/github/javaguide/mysql/pg-datetime-types.png)
 
-可以看到，PG 没有名为 `DATETIME` 的类型：
+Có thể thấy, PG không có kiểu tên là `DATETIME`:
 
-- PG 的 `TIMESTAMP WITHOUT TIME ZONE`在功能上最接近 MySQL 的 `DATETIME`。它存储日期和时间，但不包含任何时区信息，存储的是字面值。
-- PG 的`TIMESTAMP WITH TIME ZONE` (或 `TIMESTAMPTZ`) 相当于 MySQL 的 `TIMESTAMP`。它在存储时会将输入值转换为 UTC，并在检索时根据当前会话的时区进行转换显示。
+- `TIMESTAMP WITHOUT TIME ZONE` của PG về chức năng gần nhất với `DATETIME` của MySQL. Nó lưu trữ ngày và giờ, nhưng không chứa bất kỳ thông tin múi giờ nào, lưu trữ giá trị theo nghĩa đen.
+- `TIMESTAMP WITH TIME ZONE` của PG (hoặc `TIMESTAMPTZ`) tương đương với `TIMESTAMP` của MySQL. Khi lưu trữ, nó sẽ chuyển giá trị đầu vào sang UTC, và khi truy xuất sẽ chuyển đổi theo múi giờ của phiên hiện tại để hiển thị.
 
-对于绝大多数需要记录精确发生时间点的应用场景，`TIMESTAMPTZ`是 PostgreSQL 中最推荐、最健壮的选择，因为它能最好地处理时区复杂性。
+Đối với tuyệt đại đa số kịch bản ứng dụng cần ghi lại thời điểm phát sinh chính xác, `TIMESTAMPTZ` là lựa chọn được khuyến nghị nhất, vững chắc nhất trong PostgreSQL, vì nó xử lý tốt nhất sự phức tạp của múi giờ.
 
-## 总结
+## Tổng kết
 
-MySQL 中时间到底怎么存储才好？`DATETIME`?`TIMESTAMP`?还是数值时间戳？
+Trong MySQL, thời gian rốt cuộc nên lưu trữ như thế nào cho tốt? `DATETIME`? `TIMESTAMP`? Hay numeric timestamp?
 
-并没有一个银弹，很多程序员会觉得数值型时间戳是真的好，效率又高还各种兼容，但是很多人又觉得它表现的不够直观。
+Không có viên đạn bạc nào cả; nhiều lập trình viên sẽ thấy numeric timestamp thực sự rất tốt, hiệu quả cao lại tương thích đủ đường, nhưng nhiều người lại thấy nó biểu diễn không đủ trực quan.
 
-《高性能 MySQL 》这本神书的作者就是推荐 TIMESTAMP，原因是数值表示时间不够直观。下面是原文：
+Tác giả của cuốn sách kinh điển 《高性能 MySQL》(High Performance MySQL) chính là người khuyến nghị dùng TIMESTAMP, lý do là biểu diễn thời gian bằng số không đủ trực quan. Dưới đây là nguyên văn:
 
 <img src="https://oss.javaguide.cn/github/javaguide/%E9%AB%98%E6%80%A7%E8%83%BDmysql-%E4%B8%8D%E6%8E%A8%E8%8D%90%E7%94%A8%E6%95%B0%E5%80%BC%E6%97%B6%E9%97%B4%E6%88%B3.jpg" style="zoom:50%;" />
 
-每种方式都有各自的优势，根据实际场景选择最合适的才是王道。下面再对这三种方式做一个简单的对比，以供大家实际开发中选择正确的存放时间的数据类型：
+Mỗi cách đều có ưu thế riêng, tùy theo kịch bản thực tế mà lựa chọn cách phù hợp nhất mới là điều quan trọng. Dưới đây làm thêm một so sánh đơn giản về ba cách này, để mọi người tham khảo khi lựa chọn kiểu dữ liệu lưu trữ thời gian đúng trong phát triển thực tế:
 
-| 类型         | 存储空间 | 日期格式                       | 日期范围                                                     | 是否带时区信息 |
-| ------------ | -------- | ------------------------------ | ------------------------------------------------------------ | -------------- |
-| DATETIME     | 5~8 字节 | YYYY-MM-DD hh:mm:ss[.fraction] | 1000-01-01 00:00:00[.000000] ～ 9999-12-31 23:59:59[.999999] | 否             |
-| TIMESTAMP    | 4~7 字节 | YYYY-MM-DD hh:mm:ss[.fraction] | 1970-01-01 00:00:01[.000000] ～ 2038-01-19 03:14:07[.999999] | 是             |
-| 数值型时间戳 | 4 字节   | 全数字如 1578707612            | 1970-01-01 00:00:01 之后的时间                               | 否             |
+| Kiểu dữ liệu      | Không gian lưu trữ | Định dạng ngày giờ             | Phạm vi ngày giờ                                             | Có kèm thông tin múi giờ không |
+| ----------------- | ------------------ | ------------------------------ | ------------------------------------------------------------ | ------------------------------ |
+| DATETIME          | 5~8 byte           | YYYY-MM-DD hh:mm:ss[.fraction] | 1000-01-01 00:00:00[.000000] ～ 9999-12-31 23:59:59[.999999] | Không                          |
+| TIMESTAMP         | 4~7 byte           | YYYY-MM-DD hh:mm:ss[.fraction] | 1970-01-01 00:00:01[.000000] ～ 2038-01-19 03:14:07[.999999] | Có                             |
+| Numeric timestamp | 4 byte             | Toàn số như 1578707612         | Thời gian sau 1970-01-01 00:00:01                            | Không                          |
 
-**选择建议小结：**
+**Tóm tắt gợi ý lựa chọn:**
 
-- `TIMESTAMP` 的核心优势在于其内建的时区处理能力。数据库负责 UTC 存储和基于会话时区的自动转换，简化了需要处理多时区应用的开发。如果应用需要处理多时区，或者希望数据库能自动管理时区转换，`TIMESTAMP` 是自然的选择（注意其时间范围限制，也就是 2038 年问题）。
-- 如果应用场景不涉及时区转换，或者希望应用程序完全控制时区逻辑，并且需要表示 2038 年之后的时间，`DATETIME` 是更稳妥的选择。
-- 如果极度关注比较性能，或者需要频繁跨系统传递时间数据，并且可以接受可读性的牺牲（或总是在应用层转换），数值时间戳是一个强大的选项。
+- Ưu thế cốt lõi của `TIMESTAMP` nằm ở khả năng xử lý múi giờ được tích hợp sẵn. Cơ sở dữ liệu chịu trách nhiệm lưu trữ UTC và tự động chuyển đổi dựa trên múi giờ của phiên, đơn giản hóa việc phát triển các ứng dụng cần xử lý đa múi giờ. Nếu ứng dụng cần xử lý đa múi giờ, hoặc muốn cơ sở dữ liệu tự động quản lý việc chuyển đổi múi giờ, `TIMESTAMP` là lựa chọn tự nhiên (chú ý giới hạn phạm vi thời gian của nó, tức vấn đề năm 2038).
+- Nếu kịch bản ứng dụng không liên quan đến chuyển đổi múi giờ, hoặc muốn ứng dụng kiểm soát hoàn toàn logic múi giờ, và cần biểu diễn thời gian sau năm 2038, `DATETIME` là lựa chọn vững chắc hơn.
+- Nếu cực kỳ quan tâm đến hiệu năng so sánh, hoặc cần thường xuyên truyền dữ liệu thời gian giữa các hệ thống, và có thể chấp nhận hy sinh tính dễ đọc (hoặc luôn chuyển đổi ở tầng ứng dụng), numeric timestamp là một lựa chọn mạnh mẽ.
 
 <!-- @include: @article-footer.snippet.md -->
