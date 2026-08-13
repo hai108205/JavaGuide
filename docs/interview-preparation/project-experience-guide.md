@@ -1,6 +1,6 @@
 ---
-title: 项目经验指南
-description: 项目经验指南：针对没有项目/项目平淡的求职者，给出获取实战项目经验的方法与选择建议，并讲清如何做出项目亮点、如何复盘与表达，提升简历与面试竞争力。
+title: Hướng dẫn Kinh nghiệm Dự án
+description: "Hướng dẫn kinh nghiệm dự án: Dành cho những người tìm việc chưa có dự án hoặc dự án còn đơn điệu, đưa ra phương pháp và gợi ý lựa chọn để có được kinh nghiệm dự án thực chiến, đồng thời giải thích rõ cách tạo điểm sáng cho dự án, cách phục hồi và trình bày, nhằm nâng cao sức cạnh tranh của CV và phỏng vấn."
 category: 面试准备
 icon: "mdi:projector-screen-outline"
 head:
@@ -9,111 +9,111 @@ head:
       content: 项目经验,校招项目,实战项目,项目亮点,简历项目描述,后端项目,面试项目准备,项目复盘
 ---
 
-::: tip 友情提示
-本文节选自 **[《Java 面试指北》](../zhuanlan/java-mian-shi-zhi-bei.md)**。这是一份教你如何更高效地准备面试的专栏，内容和 JavaGuide 互补，涵盖常见八股文（系统设计、常见框架、分布式、高并发 ……）、优质面经等内容。
+::: tip Gợi ý thân thiện
+Bài viết này được trích từ **[《Java 面试指北》](../zhuanlan/java-mian-shi-zhi-bei.md)**. Đây là một chuyên mục hướng dẫn bạn cách chuẩn bị phỏng vấn hiệu quả hơn, nội dung bổ sung cho JavaGuide, bao gồm các câu hỏi "bát cổ văn" phổ biến (thiết kế hệ thống, các framework thông dụng, hệ thống phân tán, high concurrency...), các bài phỏng vấn chất lượng và nhiều nội dung khác.
 :::
 
-## 没有项目经验怎么办?
+## Không có kinh nghiệm dự án thì phải làm sao?
 
-没有项目经验是大部分应届生会碰到的一个问题。甚至说，有很多有工作经验的程序员，对自己在公司做的项目不满意，也想找一个比较有技术含量的项目来做。
+Không có kinh nghiệm dự án là vấn đề mà phần lớn sinh viên mới tốt nghiệp sẽ gặp phải. Thậm chí có rất nhiều lập trình viên đã có kinh nghiệm làm việc, nhưng không hài lòng với dự án mình làm ở công ty, cũng muốn tìm một dự án có hàm lượng kỹ thuật cao hơn để thực hiện.
 
-说几种我觉得比较靠谱的获取项目经验的方式，希望能够对你有启发。
+Tôi xin nêu một vài cách mà tôi cho là khá đáng tin cậy để có được kinh nghiệm dự án, hy vọng có thể truyền cảm hứng cho bạn.
 
-### 实战项目视频/专栏
+### Video/Chuyên mục Dự án Thực chiến
 
-在网上找一个符合自己能力与找工作需求的实战项目视频或者专栏，跟着老师一起做。
+Tìm kiếm một video hoặc chuyên mục dự án thực chiến trên mạng phù hợp với năng lực và nhu cầu tìm việc của bạn, làm theo cùng với giảng viên.
 
-你可以通过慕课网、哔哩哔哩、拉勾、极客时间、培训机构（比如黑马、尚硅谷）等渠道获取到适合自己的实战项目视频/专栏。
+Bạn có thể tìm được video/chuyên mục dự án thực chiến phù hợp với mình thông qua các kênh như Muke, Bilibili, Lagou, GeekTime, các trung tâm đào tạo (như Heima, Shangguigu).
 
-![慕课网实战课](https://oss.javaguide.cn/javamianshizhibei/mukewangzhiazhanke.png)
+![Khóa học Thực chiến Muke](https://oss.javaguide.cn/javamianshizhibei/mukewangzhiazhanke.png)
 
-尽量选择一个适合自己的项目，没必要必须做分布式/微服务项目，对于绝大部分同学来说，能把一个单机项目做好就已经很不错了。
+Hãy cố gắng chọn một dự án phù hợp với bản thân, không nhất thiết phải làm dự án phân tán/microservice. Đối với đại đa số các bạn, có thể làm tốt một dự án đơn khối (monolithic) đã là rất tốt rồi.
 
-我面试过很多求职者，简历上看着有微服务的项目经验，结果随便问两个问题就知道根本不是自己做的或者说做的时候压根没认真思考。这种情况会给我留下非常不好的印象。
+Tôi đã phỏng vấn rất nhiều ứng viên, CV ghi là có kinh nghiệm dự án microservice, kết quả hỏi bừa hai câu là biết ngay không phải tự mình làm hoặc khi làm không hề suy nghĩ nghiêm túc. Tình huống này sẽ để lại cho tôi ấn tượng rất không tốt.
 
-我在 **[《Java 面试指北》](../zhuanlan/java-mian-shi-zhi-bei.md)** 的「面试准备篇」中也说过：
+Trong phần "Chuẩn bị Phỏng vấn" của **[《Java 面试指北》](../zhuanlan/java-mian-shi-zhi-bei.md)**, tôi cũng đã nói:
 
-> 个人认为也没必要非要去做微服务或者分布式项目，不一定对你面试有利。微服务或者分布式项目涉及的知识点太多，一般人很难吃透。并且，这类项目其实对于校招生来说稍微有一点超标了。即使你做出来，很多面试官也会认为不是你独立完成的。
+> Cá nhân tôi cho rằng cũng không nhất thiết phải làm dự án microservice hay phân tán, chưa chắc đã có lợi cho phỏng vấn của bạn. Dự án microservice hay phân tán liên quan đến quá nhiều kiến thức, người bình thường rất khó nắm vững hết. Hơn nữa, loại dự án này thực ra hơi quá sức đối với sinh viên mới ra trường. Ngay cả khi bạn làm ra được, nhiều người phỏng vấn cũng sẽ cho rằng không phải do bạn độc lập hoàn thành.
 >
-> 其实，你能把一个单体项目做到极致也很好，对于个人能力提升不比做微服务或者分布式项目差。如何做到极致？代码质量这里就不提了，更重要的是你要尽量让自己的项目有一些亮点（比如你是如何提升项目性能的、如何解决项目中存在的一个痛点的），项目经历取得的成果尽量要量化一下比如我使用 xxx 技术解决了 xxx 问题，系统 qps 从 xxx 提高到了 xxx。
+> Thực ra, bạn có thể làm một dự án đơn khối đến mức cực hạn cũng rất tốt, đối với việc nâng cao năng lực cá nhân không hề thua kém gì làm dự án microservice hay phân tán. Làm thế nào để đạt đến cực hạn? Chất lượng code thì không cần nhắc ở đây nữa, quan trọng hơn là bạn phải cố gắng làm cho dự án của mình có một số điểm sáng (ví dụ như bạn đã cải thiện hiệu năng dự án như thế nào, giải quyết một điểm đau trong dự án ra sao), kết quả đạt được từ kinh nghiệm dự án hãy cố gắng định lượng hóa, ví dụ tôi đã sử dụng công nghệ xxx giải quyết vấn đề xxx, QPS hệ thống tăng từ xxx lên xxx.
 
-跟着老师做的过程中，你一定要有自己的思考，不要浅尝辄止。对于很多知识点，别人的讲解可能只是满足项目就够了，你自己想多点知识的话，对于重要的知识点就要自己学会去深入学习。
+Trong quá trình làm theo giảng viên, bạn nhất định phải có suy nghĩ của riêng mình, đừng chỉ hời hợt qua loa. Đối với nhiều điểm kiến thức, phần giải thích của người khác có thể chỉ đủ để đáp ứng dự án, nếu bạn muốn biết nhiều hơn, thì đối với những điểm kiến thức quan trọng, bạn phải tự mình học cách đào sâu.
 
-### 实战类开源项目
+### Dự án Mã nguồn Mở Thực chiến
 
-GitHub 或者码云上面有很多实战类别项目，你可以选择一个来研究，为了让自己对这个项目更加理解，在理解原有代码的基础上，你可以对原有项目进行改进或者增加功能。
+Trên GitHub hoặc Gitee có rất nhiều dự án thực chiến, bạn có thể chọn một dự án để nghiên cứu. Để hiểu sâu hơn về dự án đó, trên cơ sở hiểu code gốc, bạn có thể cải tiến hoặc thêm chức năng cho dự án gốc.
 
-你可以参考 [Java 优质开源实战项目](https://javaguide.cn/open-source-project/practical-project.html "Java 优质开源实战项目") 上面推荐的实战类开源项目，质量都很高，项目类型也比较全面，涵盖博客/论坛系统、考试/刷题系统、商城系统、权限管理系统、快速开发脚手架以及各种轮子。
+Bạn có thể tham khảo các dự án mã nguồn mở thực chiến được giới thiệu trên [Dự án Thực chiến Mã nguồn Mở Chất lượng Cao Java](https://javaguide.cn/open-source-project/practical-project.html "Java 优质开源实战项目"), chất lượng đều rất cao, loại hình dự án cũng khá toàn diện, bao gồm hệ thống blog/diễn đàn, hệ thống thi/luyện tập, hệ thống thương mại điện tử, hệ thống quản lý phân quyền, scaffold phát triển nhanh và các loại bánh xe (wheels).
 
-![Java 优质开源实战项目](https://oss.javaguide.cn/javamianshizhibei/javaguide-practical-project.png)
+![Dự án Thực chiến Mã nguồn Mở Chất lượng Cao Java](https://oss.javaguide.cn/javamianshizhibei/javaguide-practical-project.png)
 
-一定要记住：**不光要做，还要改进，改善。不论是实战项目视频或者专栏还是实战类开源项目，都一定会有很多可以完善改进的地方。**
+Nhất định phải nhớ: **Không chỉ làm, mà còn phải cải tiến, cải thiện. Bất kể là video/chuyên mục dự án thực chiến hay dự án mã nguồn mở thực chiến, chắc chắn sẽ có rất nhiều chỗ có thể hoàn thiện và cải tiến.**
 
-### 从头开始做
+### Bắt đầu từ con số 0
 
-自己动手去做一个自己想完成的东西，遇到不会的东西就临时去学，现学现卖。
+Tự tay làm một thứ mà bạn muốn hoàn thành, gặp chỗ nào không biết thì học tạm thời, học đến đâu làm đến đó.
 
-这个要求比较高，我建议你已经有了一个项目经验之后，再采用这个方法。如果你没有做过项目的话，还是老老实实采用上面两个方法比较好。
+Cách này yêu cầu khá cao, tôi khuyên bạn nên có sẵn một kinh nghiệm dự án rồi mới áp dụng phương pháp này. Nếu bạn chưa từng làm dự án, thì hãy thành thật áp dụng hai phương pháp trên đã.
 
-### 参加各种大公司组织的各种大赛
+### Tham gia các cuộc thi do các công ty lớn tổ chức
 
-如果参加这种赛事能获奖的话，项目含金量非常高。即使没获奖也没啥，也可以写简历上。
+Nếu tham gia các cuộc thi này mà đạt giải, thì hàm lượng vàng của dự án là rất cao. Ngay cả khi không đạt giải cũng không sao, vẫn có thể ghi vào CV.
 
-![阿里云天池大赛](https://oss.javaguide.cn/xingqiu/up-673f598477242691900a1e72c5d8b26df2c.png)
+![Cuộc thi Alibaba Tianchi](https://oss.javaguide.cn/xingqiu/up-673f598477242691900a1e72c5d8b26df2c.png)
 
-### 参与实际项目
+### Tham gia dự án thực tế
 
-通常情况下，你有如下途径接触到企业实际项目的开发：
+Thông thường, bạn có những con đường sau để tiếp xúc với việc phát triển dự án thực tế của doanh nghiệp:
 
-1. 老师接的项目；
-2. 自己接的私活；
-3. 实习/工作接触到的项目；
+1. Dự án do giảng viên nhận;
+2. Công việc freelance tự nhận;
+3. Dự án tiếp xúc trong quá trình thực tập/làm việc;
 
-老师接的项目和自己接的私活通常都是一些偏业务的项目，很少会涉及到性能优化。这种情况下，你可以考虑对项目进行改进，别怕花时间，某个时间用心做好一件事情就好比如你对项目的数据模型进行改进、引入缓存提高访问速度等等。
+Dự án do giảng viên nhận và công việc freelance tự nhận thường là những dự án thiên về nghiệp vụ, rất ít khi liên quan đến tối ưu hiệu năng. Trong trường hợp này, bạn có thể cân nhắc cải tiến dự án, đừng sợ mất thời gian, hãy dành thời gian làm tốt một việc nào đó, ví dụ như bạn cải tiến mô hình dữ liệu của dự án,引入缓存提高访问速度, v.v.
 
-实习/工作接触到的项目类似，如果遇到一些偏业务的项目，也是要自己私下对项目进行改进优化。
+Dự án tiếp xúc trong quá trình thực tập/làm việc cũng tương tự, nếu gặp một số dự án thiên về nghiệp vụ, cũng phải tự mình cải tiến và tối ưu dự án sau giờ làm.
 
-尽量是真的对项目进行了优化，这本身也是对个人能力的提升。如果你实在是没时间去实践的话，也没关系，吃透这个项目优化手段就好，把一些面试可能会遇到的问题提前准备一下。
+Tốt nhất là thực sự đã tiến hành tối ưu dự án, bản thân việc này cũng là sự nâng cao năng lực cá nhân. Nếu bạn thực sự không có thời gian để thực hành, cũng không sao, chỉ cần nắm vững các phương pháp tối ưu dự án này là được, chuẩn bị trước một số câu hỏi có thể gặp trong phỏng vấn.
 
-## 有没有还不错的项目推荐？
+## Có dự án nào tương đối ổn để giới thiệu không?
 
-**[《Java 面试指北》](../zhuanlan/java-mian-shi-zhi-bei.md)** 的「面试准备篇」中有一篇文章专门整理了一些比较高质量的实战项目，包含业务项目、轮子项目、国外公开课 Lab 和视频类实战项目教程推荐，非常适合用来学习或者作为项目经验。
+Trong phần "Chuẩn bị Phỏng vấn" của **[《Java 面试指北》](../zhuanlan/java-mian-shi-zhi-bei.md)** có một bài viết chuyên tổng hợp một số dự án thực chiến chất lượng khá cao, bao gồm dự án nghiệp vụ, dự án bánh xe (wheels), bài Lab khóa học công khai nước ngoài và đề xuất hướng dẫn dự án thực chiến dạng video, rất phù hợp để học tập hoặc dùng làm kinh nghiệm dự án.
 
-![优质 Java 实战项目推荐](https://oss.javaguide.cn/javamianshizhibei/project-experience-guide.png)
+![Đề xuất Dự án Thực chiến Java Chất lượng](https://oss.javaguide.cn/javamianshizhibei/project-experience-guide.png)
 
-这篇文章一共推荐了 15+ 个实战项目，有业务类的，也有轮子类的，有开源项目、也有视频教程。对于参加校招的小伙伴，我更建议做一个业务类项目加上一个轮子类的项目。
+Bài viết này tổng cộng giới thiệu hơn 15 dự án thực chiến, có cả dự án nghiệp vụ lẫn dự án bánh xe, có dự án mã nguồn mở, cũng có hướng dẫn video. Đối với các bạn tham gia tuyển dụng trường, tôi khuyên nên làm một dự án nghiệp vụ cộng với một dự án bánh xe.
 
-## 我跟着视频做的项目会被面试官嫌弃不？
+## Dự án tôi làm theo video có bị người phỏng vấn chê không?
 
-很多应届生都是跟着视频做的项目，这个大部分面试官都心知肚明。
+Rất nhiều sinh viên mới ra trường đều làm dự án theo video, điều này phần lớn người phỏng vấn đều biết rõ.
 
-不排除确实有些面试官不吃这一套，这个也看人。不过我相信大多数面试官都是能理解的，毕竟你在学校的时候实际上是没有什么获得实际项目经验的途径的。
+Không loại trừ khả năng có một số người phỏng vấn không thích kiểu này, cũng tùy người. Tuy nhiên tôi tin rằng đa số người phỏng vấn đều có thể thông cảm, dù sao khi bạn còn đi học thực tế không có con đường nào để có được kinh nghiệm dự án thực tế.
 
-大部分应届生的项目经验都是自己在网上找的或者像你一样买的付费课程跟着做的，极少部分是比较真实的项目。 从你能想着做一个实战项目来说，我觉得初衷是好的，确实也能真正学到东西。 但是，究竟有多少是自己掌握了很重要。看视频最忌讳的是被动接受，自己多改进一下，多思考一下！就算是你跟着视频做的项目，也是可以优化的！
+Phần lớn kinh nghiệm dự án của sinh viên mới ra trường đều là tự tìm trên mạng hoặc giống như bạn mua khóa học trả phí rồi làm theo, cực kỳ ít là dự án thực tế. Từ việc bạn có ý định làm một dự án thực chiến, tôi cho rằng ý định ban đầu là tốt, thực sự cũng có thể học được kiến thức. Nhưng, quan trọng là bạn tự mình nắm được bao nhiêu. Điều tối kỵ khi xem video là tiếp nhận thụ động, hãy tự mình cải tiến nhiều hơn, suy nghĩ nhiều hơn! Ngay cả khi bạn làm dự án theo video, cũng có thể tối ưu được!
 
-**如果你想真正学到东西的话，建议不光要把项目单纯完成跑起来，还要去自己尝试着优化！**
+**Nếu bạn thực sự muốn học được kiến thức, tôi khuyên không chỉ đơn thuần hoàn thành dự án và chạy được, mà còn phải tự mình thử tối ưu!**
 
-简单说几个比较容易的优化点：
+Nêu vài điểm tối ưu tương đối dễ:
 
-1. **全局异常处理**：很多项目这方面都做的不是很好，可以参考我的这篇文章：[《使用枚举简单封装一个优雅的 Spring Boot 全局异常处理！》](https://mp.weixin.qq.com/s/Y4Q4yWRqKG_lw0GLUsY2qw) 来做优化。
-2. **项目的技术选型优化**：比如使用 Guava 做本地缓存的地方可以换成 **Caffeine** 。Caffeine 的各方面的表现要更加好！再比如 Controller 层是否放了太多的业务逻辑。
-3. **数据库方面**：数据库设计可否优化？索引是否使用使用正确？SQL 语句是否可以优化？是否需要进行读写分离？
-4. **缓存**：项目有没有哪些数据是经常被访问的？是否引入缓存来提高响应速度？
-5. **安全**：项目是否存在安全问题？
+1. **Xử lý Ngoại lệ Toàn cục**: Nhiều dự án làm chưa tốt về mặt này, có thể tham khảo bài viết này của tôi: [《Sử dụng Enum Đóng gói Một cách Thanh lịch Xử lý Ngoại lệ Toàn cục Spring Boot!》](https://mp.weixin.qq.com/s/Y4Q4yWRqKG_lw0GLUsY2qw) để tối ưu.
+2. **Tối ưu Lựa chọn Công nghệ cho Dự án**: Ví dụ như những chỗ sử dụng Guava làm Local Cache có thể đổi thành **Caffeine**. Caffeine có hiệu năng tốt hơn về mọi mặt! Lại ví dụ như tầng Controller có chứa quá nhiều logic nghiệp vụ hay không.
+3. **Về Cơ sở dữ liệu**: Thiết kế cơ sở dữ liệu có thể tối ưu được không? Index đã được sử dụng đúng chưa? Câu lệnh SQL có thể tối ưu được không? Có cần thực hiện phân tách đọc-ghi không?
+4. **Cache**: Dự án có những dữ liệu nào thường xuyên được truy cập? Có nên引入缓存 để tăng tốc độ phản hồi không?
+5. **Bảo mật**: Dự án có tồn tại vấn đề bảo mật không?
 6. ……
 
-另外，我在星球分享过常见的性能优化方向实践案例，涉及到多线程、异步、索引、缓存等方向，强烈推荐你看看：<https://t.zsxq.com/06EqfeMZZ> 。
+Ngoài ra, tôi đã chia sẻ các case study thực tế về các hướng tối ưu hiệu năng phổ biến trên Cộng đồng, liên quan đến các hướng như đa luồng, bất đồng bộ, index, cache, rất khuyên bạn nên xem: <https://t.zsxq.com/06EqfeMZZ> .
 
-最后，**再给大家推荐一个 IDEA 优化代码的小技巧，超级实用！**
+Cuối cùng, **xin giới thiệu thêm với các bạn một mẹo nhỏ tối ưu code trong IDEA, cực kỳ hữu ích!**
 
-分析你的代码：右键项目-> Analyze->Inspect Code
+Phân tích code của bạn: Chuột phải vào dự án -> Analyze -> Inspect Code
 
 ![](https://oss.javaguide.cn/xingqiu/up-651672bce128025a135c1536cd5dc00532e.png)
 
-扫描完成之后，IDEA 会给出一些可能存在的代码坏味道比如命名问题。
+Sau khi quét xong, IDEA sẽ đưa ra một số "code smell" có thể tồn tại như vấn đề về đặt tên.
 
 ![](https://oss.javaguide.cn/xingqiu/up-05c83b319941995b07c8020fddc57f26037.png)
 
-并且，你还可以自定义检查规则。
+Hơn nữa, bạn còn có thể tùy chỉnh quy tắc kiểm tra.
 
 ![](https://oss.javaguide.cn/xingqiu/up-6b618ad3bad0bc3f76e6066d90c8cd2f255.png)
