@@ -1,81 +1,81 @@
 ---
-title: RAG 知识库文档如何更新：增量更新、版本控制、去重与全量重建
-description: 深入解析 RAG 知识库更新的核心目标与工程实践，涵盖 Embedding 模型一致性、元数据设计、同步机制、增量更新与全量重建对比、生产级灰度发布与回滚方案，以及常见踩坑点。
-category: AI 应用开发
+title: "Cập nhật tài liệu knowledge base RAG: cập nhật gia tăng, kiểm soát phiên bản, khử trùng lặp và xây dựng lại toàn bộ"
+description: Phân tích sâu mục tiêu cốt lõi và thực hành engineering của việc cập nhật knowledge base RAG, bao phủ tính nhất quán Embedding model, thiết kế metadata, cơ chế đồng bộ, so sánh cập nhật gia tăng và xây dựng lại toàn bộ, giải pháp gray release production-level và rollback, cùng các điểm thường vấp phải.
+category: Phát triển ứng dụng AI
 head:
   - - meta
     - name: keywords
-      content: RAG知识库更新,增量索引,全量重建,版本控制,向量数据库更新,Embedding模型一致性,去重,幂等更新
+      content: RAG Knowledge Base Update,Incremental Index,Full Rebuild,Version Control,Vector Database Update,Embedding Model Consistency,Deduplication,Idempotent Update
 ---
 
-第一个企业知识库 RAG 系统上线后，很多团队都会碰到一个很真实的问题：文档明明更新了，回答还是老样子。
+Sau khi hệ thống RAG knowledge base doanh nghiệp đầu tiên lên production, nhiều team đều gặp một vấn đề rất thực: tài liệu rõ ràng đã cập nhật, câu trả lời vẫn như cũ.
 
-这时候先别急着怪 LLM。更常见的原因是知识库没有同步更新，或者更新链路只做了“写入新内容”，没有处理旧版本、权限、索引一致性这些细节。文档变更频繁之后，问题会更明显：每次都全量重建索引，成本和耗时扛不住；只更新变化部分，又怕漏掉旧块；只插入新向量，不清理旧版本，过期内容还会继续被召回；换了 Embedding 模型，历史数据到底要不要全部重索引，也绕不开。
+Lúc này đừng vội đổ lỗi cho LLM. Nguyên nhân phổ biến hơn là knowledge base không đồng bộ cập nhật, hoặc chuỗi cập nhật chỉ làm "ghi nội dung mới", không xử lý các chi tiết như phiên bản cũ, quyền, nhất quán chỉ mục. Sau khi tài liệu thay đổi thường xuyên, vấn đề càng rõ: mỗi lần xây dựng lại toàn bộ chỉ mục, chi phí và thời gian chịu không nổi; chỉ cập nhật phần thay đổi, lại sợ sót khối cũ; chỉ chèn vector mới, không dọn phiên bản cũ, nội dung quá hạn còn tiếp tục được recall; đổi Embedding model, dữ liệu lịch sử có cần re-index toàn bộ không, cũng không né được.
 
-这些问题背后，其实是 RAG 知识库的动态性、准确性、一致性、可回滚、可观测这几件事没有处理好。
+Phía sau những vấn đề này, thực ra là các mặt tính động, tính chính xác, tính nhất quán, khả năng rollback, khả năng quan sát của knowledge base RAG chưa được xử lý tốt.
 
-这篇文章讲 RAG 知识库更新的工程实践，全文接近 8000 字。重点看几个问题：
+Bài viết này nói về thực hành engineering cập nhật knowledge base RAG, toàn văn gần 8000 chữ. Trọng điểm xem mấy vấn đề:
 
-1. 知识库更新到底要解决什么；
-2. 为什么 Embedding 模型一致性是第一条硬规则；
-3. 元数据怎么设计，才能支持增量更新和版本回滚；
-4. 文档新增、修改、删除怎么同步到向量库和全文索引；
-5. 增量更新和全量重建各适合什么场景；灰度发布、回滚和可观测性怎么落地；
-6. 生产里最容易踩的几个坑。
+1. Cập nhật knowledge base rốt cuộc phải giải quyết gì;
+2. Vì sao tính nhất quán Embedding model là quy tắc cứng đầu tiên;
+3. Metadata thiết kế thế nào, mới hỗ trợ được cập nhật gia tăng và rollback phiên bản;
+4. Tài liệu thêm mới, sửa đổi, xóa đồng bộ vào vector store và full-text index thế nào;
+5. Cập nhật gia tăng và xây dựng lại toàn bộ mỗi loại phù hợp kịch bản nào; gray release, rollback và khả năng quan sát triển khai thế nào;
+6. Mấy cái hố dễ vấp nhất trong production.
 
-## 知识库更新要解决哪些问题？
+## Cập nhật knowledge base phải giải quyết những vấn đề gì?
 
-在讲具体方案之前，先把目标说清楚。
+Trước khi nói giải pháp cụ thể, trước tiên nói rõ mục tiêu.
 
-**知识库更新要解决的不是“怎么写一个同步任务”，而是更新之后，系统回答还能保持准、快、不越权，并且出了问题能定位、能恢复。**
+**Cập nhật knowledge base không phải giải quyết "viết thế nào một tác vụ đồng bộ", mà là sau khi cập nhật, câu trả lời của hệ thống vẫn giữ được chính xác, nhanh, không vượt quyền, và khi có vấn đề định vị được, phục hồi được.**
 
-动态性指的是，文档变了，索引要能跟上。这个“及时”不一定都是秒级，可能是分钟级，也可能是天级，取决于业务对实时性的要求。内部制度库也许一天同步一次就够，客服知识库和合规条款就可能需要更快。
+Tính động chỉ, tài liệu đổi, chỉ mục phải theo kịp. "Kịp thời" này không nhất thiết là cấp giây, có thể cấp phút, cũng có thể cấp ngày, tùy thuộc yêu cầu thời gian thực của nghiệp vụ. Kho quy chế nội bộ có lẽ đồng bộ một lần một ngày là đủ, knowledge base CSKH và điều khoản tuân thủ có thể cần nhanh hơn.
 
-准确性指的是，更新后召回的内容要和当前文档一致，不能文档已经改了，模型还在引用旧版本。这个问题一旦发生，用户感知会很明显。
+Tính chính xác chỉ, sau khi cập nhật nội dung recall phải khớp tài liệu hiện tại, không thể tài liệu đã đổi mà model còn trích dẫn phiên bản cũ. Vấn đề này một khi xảy ra, cảm nhận của người dùng rất rõ.
 
-一致性更麻烦。同一个文档有不同版本，向量库、元数据库、全文检索又是不同系统，任何一端漏写或延迟，都可能导致结果不一致。
+Tính nhất quán phiền to hơn. Cùng một tài liệu có nhiều phiên bản, vector store, metadata database, full-text search lại là các hệ thống khác nhau, bất kỳ một đầu nào bỏ sót hoặc trễ, đều có thể dẫn đến kết quả không nhất quán.
 
-可回滚是为了出故障时能快速切回上一个健康状态，而不是靠人工临时修数据。可观测则要求更新过程能监控，更新结果能评估，失败原因能追到具体环节。
+Khả năng rollback là để khi có sự cố có thể nhanh chóng quay về trạng thái lành mạnh trước đó, thay vì dựa vào người sửa dữ liệu tạm thời. Khả năng quan sát thì yêu cầu quá trình cập nhật giám sát được, kết quả cập nhật đánh giá được, nguyên nhân thất bại truy được đến khâu cụ thể.
 
-这些目标看起来像常识，但很多项目只做了第一步“更新”，后面几步全靠运气。结果就是文档改了十版，回答还停在第一版；删了一篇敏感文档，过了几个月还能被召回出来。
+Những mục tiêu này trông như tri thức thông thường, nhưng nhiều project chỉ làm bước đầu "cập nhật", mấy bước sau đều dựa vào may mắn. Kết quả là tài liệu sửa mười bản, câu trả lời còn dừng ở bản một; xóa một tài liệu nhạy cảm, vài tháng sau vẫn recall được ra.
 
-## 为什么 Embedding 模型必须保持一致？
+## Vì sao Embedding model phải giữ nhất quán?
 
-这一点要单独拎出来讲：索引时用的 Embedding 模型，必须和查询时用的模型一致。
+Điểm này phải tách riêng ra nói: Embedding model dùng lúc lập chỉ mục, phải khớp với model dùng lúc truy vấn.
 
-Embedding 模型会把文本转成向量，不同模型的向量空间并不通用。同一句话用 OpenAI 的 `text-embedding-3-small` 编码，和用 sentence-transformers 的 `all-MiniLM-L6-v2` 编码，得到的向量没有可比性。如果索引用模型 A，查询用模型 B，就等于在两个不同空间里算相似度。
+Embedding model chuyển văn bản thành vector, không gian vector của các model khác nhau không dùng chung. Cùng một câu dùng `text-embedding-3-small` của OpenAI mã hóa, và dùng `all-MiniLM-L6-v2` của sentence-transformers mã hóa, vector nhận được không so sánh được. Nếu chỉ mục dùng model A, truy vấn dùng model B, khác gì trong hai không gian khác nhau tính độ tương tự.
 
-具体表现还要看向量维度。如果维度不同，通常无法放进同一个索引，很多向量库会直接拒绝插入或查询。如果维度相同但模型不同，相似度分数也不具备可比性，召回结果不能信。它不是简单的“随机”，而是整个排序基础已经坏了。
+Biểu hiện cụ thể còn phải xem chiều vector. Nếu chiều khác nhau, thường không đưa vào cùng một chỉ mục được, nhiều vector store sẽ trực tiếp từ chối chèn hoặc truy vấn. Nếu chiều giống nhưng model khác, điểm độ tương tự cũng không so sánh được, kết quả recall không tin được. Nó không phải "ngẫu nhiên" đơn giản, mà nền móng sắp xếp toàn bộ đã hỏng.
 
-生产里最容易忽视的有两个场景。
+Hai kịch bản dễ bỏ qua nhất trong production.
 
-**第一个是模型升级。** 业务方觉得新模型效果更好，想从 `text-embedding-3-small` 切到 `text-embedding-3-large`。这意味着历史数据必须重新编码、重新入索引。工程上可以用双索引并行和灰度切流降低风险，但重建这一步绕不过去。
+**Kịch bản một là nâng cấp model.** Phía nghiệp vụ thấy model mới hiệu quả hơn, muốn chuyển từ `text-embedding-3-small` sang `text-embedding-3-large`. Điều này nghĩa là dữ liệu lịch sử phải mã hóa lại, re-index lại. Về mặt engineering có thể dùng song song hai chỉ mục và gray cut-credit để giảm rủi ro, nhưng bước xây dựng lại không né được.
 
-**第二个是本地模型和 API 模型混用。** 测试环境用本地 sentence-transformers，生产环境用 OpenAI API。这种差异在团队协作里特别常见，测试看起来正常，上线后召回率直接腰斩。
+**Kịch bản hai là dùng lẫn model local và model API.** Môi trường test dùng sentence-transformers local, môi trường production dùng OpenAI API. Khác biệt này rất phổ biến trong hợp tác team, test trông bình thường, lên production recall rate trực tiếp chặt một nửa.
 
-比较稳的做法是把 Embedding 模型信息写进元数据，每次查询时都校验模型版本。不匹配时，要么拒绝查询，要么打警告日志并降级到更保守的召回策略。
+Cách vững là viết thông tin Embedding model vào metadata, mỗi lần truy vấn đều kiểm tra phiên bản model. Không khớp thì hoặc từ chối truy vấn, hoặc đánh log cảnh báo và hạ cấp sang chiến lược recall thận trọng hơn.
 
-| 字段                      | 说明     | 示例                     |
-| ------------------------- | -------- | ------------------------ |
-| `embedding_model`         | 模型名称 | `text-embedding-3-large` |
-| `embedding_model_version` | 模型版本 | `2025-01-15`             |
-| `embedding_dimension`     | 向量维度 | `3072`                   |
+| Trường                    | Giải thích      | Ví dụ                    |
+| ------------------------- | --------------- | ------------------------ |
+| `embedding_model`         | Tên model       | `text-embedding-3-large` |
+| `embedding_model_version` | Phiên bản model | `2025-01-15`             |
+| `embedding_dimension`     | Chiều vector    | `3072`                   |
 
-当 Embedding 模型需要升级时，建议按下面的流程走：
+Khi Embedding model cần nâng cấp, khuyên đi theo quy trình sau:
 
-1. 在新索引中用新模型重建所有数据。
-2. 新旧索引并行运行一段时间，对比召回率和回答质量。
-3. 确认新索引稳定后，通过索引别名把流量切到新索引。
-4. 保留旧索引一段时间，用于快速回滚。
-5. 确认没有问题后，再删除旧索引。
+1. Trong chỉ mục mới dùng model mới xây dựng lại toàn bộ dữ liệu.
+2. Chỉ mục cũ mới song song chạy một thời gian, so sánh recall rate và chất lượng câu trả lời.
+3. Xác nhận chỉ mục mới ổn định rồi, qua index alias chuyển traffic sang chỉ mục mới.
+4. Giữ chỉ mục cũ một thời gian, dùng để rollback nhanh.
+5. Xác nhận không còn vấn đề rồi, mới xóa chỉ mục cũ.
 
-这个思路和数据库蓝绿部署很像：不要原地改，先建一套新的，验证通过后再切。
+Tư duy này rất giống blue-green deploy của database: đừng sửa tại chỗ, trước tiên dựng một bộ mới, xác minh xong rồi mới cắt.
 
-## 如何设计支持更新的元数据体系？
+## Thiết kế hệ thống metadata hỗ trợ cập nhật như thế nào?
 
-好的元数据设计，是增量更新和回滚的前提。很多 RAG 系统跑着跑着会“失忆”，不是因为不知道文档内容，而是不知道这条向量对应哪个文档、哪个版本、什么时候入库、权限是什么。
+Metadata thiết kế tốt, là tiền đề của cập nhật gia tăng và rollback. Nhiều hệ thống RAG chạy mãi rồi "mất trí nhớ", không phải vì không biết nội dung tài liệu, mà vì không biết vector này tương ứng với tài liệu nào, phiên bản nào, lưu kho lúc nào, quyền gì.
 
-每个 Chunk 至少应该带上这些元数据：
+Mỗi Chunk ít nhất nên mang những metadata này:
 
 ```json
 {
@@ -88,8 +88,8 @@ Embedding 模型会把文本转成向量，不同模型的向量空间并不通�
   "chunk_overlap": 50,
   "source_id": "confluence-page-123",
   "source_type": "confluence",
-  "title": "订单中心接口文档",
-  "section_path": "技术文档 / 订单系统 / 接口规范",
+  "title": "Tài liệu interface trung tâm đơn hàng",
+  "section_path": "Tài liệu kỹ thuật / Hệ thống đơn hàng / Quy phạm interface",
   "page": 5,
   "tenant_id": "tenant-001",
   "acl": ["role:admin", "team:order-team"],
@@ -102,197 +102,197 @@ Embedding 模型会把文本转成向量，不同模型的向量空间并不通�
 }
 ```
 
-切分策略也要版本化。切分方式、重叠率、解析方式一旦变化，影响不比 Embedding 模型小，也应该触发重建或双索引灰度。记录 `chunk_strategy`、`chunk_size`、`chunk_overlap` 这些字段，后面做评估和回滚才有依据。
+Chiến lược chia cũng phải version hóa. Cách chia, tỷ lệ chồng lấp, cách phân giải một khi thay đổi, ảnh hưởng không nhỏ hơn Embedding model, cũng nên kích hoạt rebuild hoặc gray hai chỉ mục. Ghi các trường `chunk_strategy`, `chunk_size`, `chunk_overlap`, sau này đánh giá và rollback mới có căn cứ.
 
-`content_hash` 是增量更新的核心。它不是文件哈希，而是文档正文或 Chunk 内容的哈希。常见算法有几种：MD5 速度快，但有碰撞风险，适合对碰撞不敏感的场景；SHA-256 碰撞风险极低，更推荐生产使用；SimHash 适合判断内容是否大致相同，常用于网页去重，但不能精确定位具体变化点。
+`content_hash` là cốt lõi của cập nhật gia tăng. Nó không phải hash file, mà là hash nội dung chính hoặc nội dung Chunk. Có vài thuật toán phổ biến: MD5 nhanh, nhưng có rủi ro đụng độ, phù hợp kịch bản không nhạy đụng độ; SHA-256 rủi ro đụng độ cực thấp, production khuyến nghị hơn; SimHash phù hợp phán đoán nội dung có gần như giống nhau không, thường dùng khử trùng lặp web, nhưng không chỉ chính xác được điểm thay đổi cụ thể.
 
-生产环境里，`content_hash` 主要用来判断“这段文本有没有变”。入库时计算哈希，和数据库里已有记录对比。如果一致，说明内容没变，可以跳过 Embedding；如果不一致，就要重新编码。
+Trong môi trường production, `content_hash` chủ yếu dùng phán đoán "đoạn văn bản này có đổi chưa". Lúc lưu kho tính hash, so với bản ghi đã có trong database. Nếu khớp, nghĩa là nội dung chưa đổi, có thể bỏ qua Embedding; nếu không khớp, phải mã hóa lại.
 
-`version_id` 记录文档修改次数。每次文档更新，`version_id` 加一。它配合 `content_hash` 使用，可以追踪变更历史，也方便回滚。
+`version_id` ghi số lần sửa tài liệu. Mỗi lần tài liệu cập nhật, `version_id` cộng một. Nó phối hợp `content_hash` dùng, có thể truy vết lịch sử thay đổi, cũng tiện rollback.
 
-`is_deleted` 是软删除标记，也是高频踩坑点。很多团队删除文档时，直接从向量库里删记录。问题是删除事件没有被保留下来，同一篇文档再次上传时，系统很难判断这是新文档，还是历史文档重新上传。加上 `is_deleted` 后，逻辑会清楚很多：收到删除事件时，把 `is_deleted` 设为 `true`；收到重新上传事件时，把它设回 `false`，并重新计算 `content_hash`；查询时默认只保留 `is_deleted = false` 的记录。
+`is_deleted` là cờ soft-delete, cũng là điểm hay vấp tần suất cao. Nhiều team xóa tài liệu, trực tiếp xóa bản ghi khỏi vector store. Vấn đề là sự kiện xóa không được giữ lại, khi cùng một tài liệu được upload lại, hệ thống rất khó phán đoán đây là tài liệu mới, hay tài liệu lịch sử upload lại. Thêm `is_deleted` vào, logic rõ hơn nhiều: nhận sự kiện xóa, đặt `is_deleted` thành `true`; nhận sự kiện upload lại, đặt lại thành `false`, và tính lại `content_hash`; khi truy vấn mặc định chỉ giữ bản ghi `is_deleted = false`.
 
-软删除不只是为了区分新旧文档，它还给审计、误删恢复、延迟物理删除、跨系统一致性留了缓冲窗口。
+Soft-delete không chỉ để phân biệt tài liệu mới cũ, nó còn để lại cửa sổ đệm cho audit, phục hồi xóa nhầm, xóa vật lý trễ, nhất quán xuyên hệ thống.
 
-`tenant_id` 和 `acl` 是多租户和权限控制的基础。查询时优先在检索阶段做租户和粗粒度 ACL 预过滤，避免无权限文档占用 Top-K，影响召回质量。复杂权限，比如动态权限、跨租户继承，可以在返回引用前再做二次鉴权，防止越权引用。
+`tenant_id` và `acl` là nền tảng của multi-tenant và kiểm soát quyền. Khi truy vấn ưu tiên trong giai đoạn truy vấn làm lọc trước tenant và ACL thô, tránh tài liệu không có quyền chiếm Top-K, ảnh hưởng chất lượng recall. Quyền phức tạp, như quyền động, kế thừa xuyên tenant, có thể trước khi trả về trích dẫn làm xác thực lần hai, phòng trích dẫn vượt quyền.
 
-## 新增、修改、删除文档如何同步？
+## Thêm mới, sửa đổi, xóa tài liệu đồng bộ thế nào?
 
-文档从源系统到向量库，中间会经过多个环节。任何一环出问题，都会导致数据不一致。
+Tài liệu từ hệ thống nguồn đến vector store, giữa có nhiều khâu. Bất kỳ một khâu nào có vấn đề, đều dẫn đến dữ liệu không nhất quán.
 
 ```mermaid
 flowchart TD
-    %% ========== 配色声明 ==========
+    %% ========== Khai báo màu ==========
     classDef source fill:#3498DB,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef process fill:#E67E22,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef storage fill:#27AE60,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef monitor fill:#9B59B6,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef error fill:#C0392B,color:#FFFFFF,stroke:none,rx:10,ry:10
 
-    Source[源系统<br/>Confluence/Git/DB]:::source
-    Detect[变更检测<br/>Webhook/CDC/定时轮询]:::process
-    Queue[消息队列<br/>Kafka/RabbitMQ]:::process
-    Process[文档处理<br/>解析/切分/哈希]:::process
-    Dedup[去重检查<br/>content_hash比对]:::process
-    Embed[Embedding<br/>生成向量]:::process
-    Metadata[元数据库<br/>PostgreSQL/MySQL]:::storage
-    Vector[向量库<br/>Pinecone/Milvus/pgvector]:::storage
-    Fulltext[全文索引<br/>ES/Solr]:::storage
-    Monitor[监控告警<br/>更新状态/召回率]:::monitor
-    Error[错误处理<br/>重试/死信队列]:::error
+    Source[Hệ thống nguồn<br/>Confluence/Git/DB]:::source
+    Detect[Phát hiện thay đổi<br/>Webhook/CDC/polling định giờ]:::process
+    Queue[Message queue<br/>Kafka/RabbitMQ]:::process
+    Process[Xử lý tài liệu<br/>phân giải/chia/hash]:::process
+    Dedup[Kiểm tra khử trùng lặp<br/>so sánh content_hash]:::process
+    Embed[Embedding<br/>sinh vector]:::process
+    Metadata[Metadata database<br/>PostgreSQL/MySQL]:::storage
+    Vector[Vector store<br/>Pinecone/Milvus/pgvector]:::storage
+    Fulltext[Full-text index<br/>ES/Solr]:::storage
+    Monitor[Giám sát cảnh báo<br/>trạng thái cập nhật/recall rate]:::monitor
+    Error[Xử lý lỗi<br/>retry/dead letter queue]:::error
 
     Source --> Detect
     Detect --> Queue
     Queue --> Process
     Process --> Dedup
-    Dedup -->|无变化| Monitor
-    Dedup -->|有变化| Embed
+    Dedup -->|không thay đổi| Monitor
+    Dedup -->|có thay đổi| Embed
     Embed --> Metadata
-    Metadata -->|写入失败| Error
+    Metadata -->|ghi thất bại| Error
     Embed --> Vector
-    Vector -->|写入失败| Error
-    Dedup -->|有变化| Fulltext
-    Fulltext -->|写入失败| Error
-    Process -->|处理失败| Error
-    Error -->|重试| Queue
-    Monitor -->|异常| Error
+    Vector -->|ghi thất bại| Error
+    Dedup -->|có thay đổi| Fulltext
+    Fulltext -->|ghi thất bại| Error
+    Process -->|xử lý thất bại| Error
+    Error -->|retry| Queue
+    Monitor -->|bất thường| Error
 
     linkStyle default stroke-width:2px,stroke:#333333,opacity:0.8
 ```
 
-这里要特别注意部分成功。向量库、元数据库、全文索引通常不在同一个事务域，一次写三端很可能出现部分成功。更稳的做法是以元数据库作为 source of truth，记录每个 Chunk 的索引状态，比如 `index_status = 'ready' / 'partial_failed'`。后台补偿任务定期重试失败端，再通过 reconciliation 扫描差异。
+Đây phải đặc biệt chú ý thành công một phần. Vector store, metadata database, full-text index thường không cùng một domain transaction, một lần ghi ba đầu rất có thể thành công một phần. Cách vững hơn là lấy metadata database làm source of truth, ghi trạng thái chỉ mục của mỗi Chunk, ví dụ `index_status = 'ready' / 'partial_failed'`. Tác vụ bù trừ nền định kỳ retry đầu thất bại, rồi qua reconciliation quét chênh lệch.
 
-### 新增文档
+### Tài liệu thêm mới
 
-新增是三类操作里最简单的。一般流程是：解析文档，提取正文、标题、层级结构；按既定策略切分 Chunk；计算每个 Chunk 的 `content_hash`；检查哈希是否已经存在；不存在时生成向量，并写入向量库、元数据库、全文索引。
+Thêm mới là đơn giản nhất trong ba loại thao tác. Quy trình chung: phân giải tài liệu, trích nội dung chính, tiêu đề, cấu trúc cấp; theo chiến lược đã định chia Chunk; tính `content_hash` của mỗi Chunk; kiểm tra hash đã tồn tại chưa; chưa tồn tại thì sinh vector, và ghi vào vector store, metadata database, full-text index.
 
-幂等性很重要。新增操作必须能重复执行。即使消息队列重复投递同一条消息，或者 worker 崩溃重启后再次处理，也不应该产生重复记录。
+Tính idempotent rất quan trọng. Thao tác thêm mới phải thực thi lặp được. Dù message queue gửi trùng một message, hoặc worker sập khởi động lại rồi xử lý lại, cũng không được tạo bản ghi trùng lặp.
 
-### 修改文档
+### Tài liệu sửa đổi
 
-修改比新增复杂，关键问题是旧版本数据怎么办。
+Sửa đổi phức tạp hơn thêm mới, vấn đề then chốt là dữ liệu phiên bản cũ xử lý thế nào.
 
-比较推荐的做法是软删除旧版本，再写入新版：
+Cách khuyến nghị hơn là soft-delete phiên bản cũ, rồi ghi phiên bản mới:
 
-1. 根据 `doc_id` 查询元数据库，找到旧版本的 `chunk_id` 列表。
-2. 把旧 Chunk 标记为 `is_deleted = true`，或者直接物理删除。
-3. 写入新版本的 Chunk 和向量。
+1. Theo `doc_id` truy vấn metadata database, tìm danh sách `chunk_id` của phiên bản cũ.
+2. Đánh dấu Chunk cũ `is_deleted = true`, hoặc trực tiếp xóa vật lý.
+3. Ghi Chunk và vector của phiên bản mới.
 
-如果向量库支持基于主键的原子更新，比如 Milvus 的 upsert，可以直接覆盖同一主键记录。但要注意，upsert 只能覆盖同一主键实体。如果文档重新切分后 Chunk 数量或 `chunk_id` 变化，仍然要按 `doc_id + version_id` 清理旧版本残留。
+Nếu vector store hỗ trợ cập nhật nguyên tử dựa trên primary key, như upsert của Milvus, có thể trực tiếp ghi đè bản ghi cùng primary key. Nhưng lưu ý, upsert chỉ ghi đè được entity cùng primary key. Nếu tài liệu chia lại làm Chunk số lượng hoặc `chunk_id` thay đổi, vẫn phải theo `doc_id + version_id` dọn tàn dư phiên bản cũ.
 
-如果不支持原子更新，就只能先删旧记录，再写新记录。两步之间会有一个很短的窗口，查询可能同时命中新旧内容。所以高风险业务要配合版本过滤或别名切换，避免用户看到混合结果。
+Nếu không hỗ trợ cập nhật nguyên tử, chỉ có thể trước tiên xóa bản ghi cũ, rồi ghi bản ghi mới. Giữa hai bước có một cửa sổ rất ngắn, truy vấn có thể đồng thời trúng nội dung cũ mới. Vậy nên nghiệp vụ rủi ro cao phải phối hợp lọc phiên bản hoặc đổi alias, tránh người dùng thấy kết quả lẫn lộn.
 
-一个很常见的坑是只写新向量，不删旧向量。
+Một cái hố rất phổ biến là chỉ ghi vector mới, không xóa vector cũ.
 
-我见过不止一个项目这样出问题：文档改了 10 版，向量库里留下 10 个版本。用户查询时，最匹配的反而可能是第 3 版旧内容，模型就会基于过时信息回答。修改操作必须包含清理旧向量这一步，否则知识库会持续失真。
+Tôi từng thấy không chỉ một project hỏng kiểu này: tài liệu sửa 10 bản, trong vector store để lại 10 phiên bản. Người dùng truy vấn, bản khớp nhất có thể lại là nội dung cũ bản 3, model sẽ dựa trên thông tin quá hạn trả lời. Thao tác sửa phải bao gồm bước dọn vector cũ, nếu không knowledge base sẽ méo mó liên tục.
 
-### 删除文档
+### Tài liệu xóa
 
-删除可以分为软删除和物理删除。
+Xóa có thể chia soft-delete và xóa vật lý.
 
-软删除是把 `is_deleted` 标记设为 `true`。这是更推荐的做法，因为它保留了变更历史，支持误删恢复。
+Soft-delete là đặt cờ `is_deleted` thành `true`. Đây là cách khuyến nghị hơn, vì nó giữ lịch sử thay đổi, hỗ trợ phục hồi xóa nhầm.
 
-物理删除是从向量库、元数据库、全文索引中彻底移除记录。通常建议软删除后等待一段时间，比如 30 天，确认没有问题后再做物理删除。
+Xóa vật lý là loại hoàn toàn khỏi vector store, metadata database, full-text index. Thường khuyên sau soft-delete chờ một thời gian, ví dụ 30 ngày, xác nhận không còn vấn đề rồi mới xóa vật lý.
 
-软删除方便恢复和审计，但会增加存储成本和过滤开销。物理删除更彻底，适合合规删除、敏感数据删除，但恢复成本高。生产上更常见的是“软删除 + 延迟物理删除 + 删除审计日志”。如果是敏感文档，还要清理 rerank 缓存、LLM 上下文缓存等旁路缓存。
+Soft-delete tiện phục hồi và audit, nhưng tăng chi phí lưu trữ và chi phí lọc. Xóa vật lý triệt để hơn, phù hợp xóa tuân thủ, xóa dữ liệu nhạy cảm, nhưng chi phí phục hồi cao. Trong production phổ biến hơn là "soft-delete + xóa vật lý trễ + log audit xóa". Nếu là tài liệu nhạy cảm, còn phải dọn cache nexus như rerank cache, LLM context cache.
 
-删除还有一个隐蔽问题：权限变更后的“幽灵数据”。比如一篇文档原本所有员工可见，后来改成“仅高管可见”。如果向量库里的旧 `acl` 没更新，普通员工查询时可能仍然召回这篇文档。正确做法是权限变更触发文档重新索引，确保元数据里的 `acl` 是最新的。如果向量库支持原子更新 ACL 字段，也可以不重建向量，只更新元数据。
+Xóa còn có một vấn đề kín: "dữ liệu ma" sau khi quyền thay đổi. Ví dụ một tài liệu vốn mọi nhân viên đều thấy được, sau đổi thành "chỉ lãnh đạo cấp cao thấy". Nếu `acl` cũ trong vector store không cập nhật, nhân viên thường khi truy vấn vẫn có thể recall được tài liệu này. Cách làm đúng là thay đổi quyền kích hoạt tài liệu re-index, đảm bảo `acl` trong metadata là mới nhất. Nếu vector store hỗ trợ cập nhật nguyên tử trường ACL, cũng có thể không rebuild vector, chỉ cập nhật metadata.
 
-## 增量更新和全量重建各适合什么场景？
+## Cập nhật gia tăng và xây dựng lại toàn bộ mỗi loại phù hợp kịch bản nào?
 
-生产环境里，这个问题很常见。我的经验是：增量更新负责日常变化，定期全量重建负责长期健康。
+Trong môi trường production, câu hỏi này rất phổ biến. Kinh nghiệm của tôi là: cập nhật gia tăng đảm nhận thay đổi hằng ngày, xây dựng lại toàn bộ định kỳ đảm nhận sức khỏe dài hạn.
 
-| 维度       | 增量更新             | 全量重建                                     |
-| ---------- | -------------------- | -------------------------------------------- |
-| 触发条件   | 文档变更事件         | 定时任务或手动触发                           |
-| 覆盖范围   | 仅变化的文档         | 整个知识库                                   |
-| 计算成本   | 低，只处理变化部分   | 高，需要处理全部数据                         |
-| 更新延迟   | 低，可近实时         | 高，可能需要数小时                           |
-| 数据一致性 | 依赖变更检测准确性   | 需基于源系统快照或版本时间戳保证与源系统一致 |
-| 适用场景   | 日常变更、高频更新   | 模型升级、策略调整、故障恢复                 |
-| 主要风险   | 变更漏检导致数据陈旧 | 重建期间服务不可用                           |
+| Chiều               | Cập nhật gia tăng                         | Xây dựng lại toàn bộ                                                                      |
+| ------------------- | ----------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Điều kiện kích hoạt | Sự kiện thay đổi tài liệu                 | Tác vụ định giờ hoặc kích hoạt thủ công                                                   |
+| Phạm vi bao phủ     | Chỉ tài liệu thay đổi                     | Toàn bộ knowledge base                                                                    |
+| Chi phí tính toán   | Thấp, chỉ xử lý phần thay đổi             | Cao, phải xử lý toàn bộ dữ liệu                                                           |
+| Độ trễ cập nhật     | Thấp, có thể gần thời gian thực           | Cao, có thể cần vài giờ                                                                   |
+| Nhất quán dữ liệu   | Phụ thuộc độ chính xác phát hiện thay đổi | Cần dựa trên snapshot hoặc timestamp phiên bản hệ thống nguồn đảm bảo khớp hệ thống nguồn |
+| Kịch bản phù hợp    | Thay đổi hằng ngày, cập nhật tần suất cao | Nâng cấp model, điều chỉnh chiến lược, phục hồi sự cố                                     |
+| Rủi ro chính        | Bỏ sót phát hiện thay đổi gây dữ liệu cũ  | Trong lúc rebuild dịch vụ không khả dụng                                                  |
 
-### 增量更新适合什么场景？
+### Cập nhật gia tăng phù hợp kịch bản nào?
 
-增量更新适合文档变更频率适中、对实时性有要求、知识库规模较大的场景。比如每天几十到几百次文档变更，业务能接受分钟级同步，全量重建成本又比较高。
+Cập nhật gia tăng phù hợp kịch bản tần suất thay đổi tài liệu vừa phải, có yêu cầu thời gian thực, quy mô knowledge base lớn. Ví dụ mỗi ngày vài chục đến vài trăm lần thay đổi tài liệu, nghiệp vụ chấp nhận đồng bộ cấp phút, chi phí xây dựng lại toàn bộ lại khá cao.
 
-增量更新依赖变更检测机制。常见方案有三种：
+Cập nhật gia tăng phụ thuộc cơ chế phát hiện thay đổi. Có ba giải pháp phổ biến:
 
-1. Webhook / 事件驱动：源系统，比如 Confluence、Git、数据库，主动提供变更通知，RAG 系统订阅并处理。延迟最低，但要求源系统支持。
-2. CDC（Change Data Capture）：监听数据库 binlog 或变更日志，捕获数据变化。适合结构化数据源。
-3. 定时轮询：按固定间隔，比如每 5 分钟扫描源系统，对比 `updated_at` 时间戳。实现简单，但有延迟，也会给源系统带来压力。
+1. Webhook / event-driven: hệ thống nguồn, như Confluence, Git, database, chủ động gửi thông báo thay đổi, hệ thống RAG đăng ký và xử lý. Độ trễ thấp nhất, nhưng yêu cầu hệ thống nguồn hỗ trợ.
+2. CDC (Change Data Capture): nghe binlog hoặc log thay đổi của database, chụp sự thay đổi dữ liệu. Phù hợp nguồn dữ liệu có cấu trúc.
+3. Polling định giờ: theo khoảng cố định, ví dụ mỗi 5 phút quét hệ thống nguồn, so sánh timestamp `updated_at`. Triển khai đơn giản, nhưng có độ trễ, cũng gây áp lực cho hệ thống nguồn.
 
-生产里更稳的是事件驱动 + 轮询兜底。事件驱动处理日常增量，轮询用来防漏检。中间加消息队列，比如 Kafka、RocketMQ，用来解耦源系统和 RAG 处理流程。
+Trong production vững hơn là event-driven + polling chốt lại. Event-driven xử lý tăng dần hằng ngày, polling dùng phòng bỏ sót phát hiện. Giữa thêm message queue, như Kafka, RocketMQ, dùng để tách rời hệ thống nguồn và quy trình xử lý RAG.
 
-### 全量重建适合什么场景？
+### Xây dựng lại toàn bộ phù hợp kịch bản nào?
 
-全量重建通常用于这几类情况：
+Xây dựng lại toàn bộ thường dùng cho mấy loại tình huống:
 
-- Embedding 模型升级。这是硬需求，绕不过去。
-- Chunk 策略调整。比如从固定 500 Token 改成语义切分，历史数据也要按新策略重新切。
-- 数据结构变更。比如新增或修改元数据字段。
-- 严重故障恢复。增量链路长期失灵，数据已经明显陈旧。
-- 定期健康维护。部分向量库在高频删除后会留下 tombstone 删除标记、索引碎片，甚至出现召回退化。具体表现和索引类型、产品实现有关，比如基于 HNSW + tombstone 清理机制的产品，最好查对应向量库文档确认。
+- Nâng cấp Embedding model. Đây là yêu cầu cứng, không né được.
+- Điều chỉnh chiến lược Chunk. Ví dụ từ cố định 500 Token đổi thành chia ngữ nghĩa, dữ liệu lịch sử cũng phải theo chiến lược mới chia lại.
+- Thay đổi cấu trúc dữ liệu. Ví dụ thêm hoặc sửa trường metadata.
+- Phục hồi sự cố nghiêm trọng. Chuỗi gia tăng trục trặc lâu ngày, dữ liệu đã cũ rõ rệt.
+- Bảo trì sức khỏe định kỳ. Một số vector store sau khi xóa tần suất cao sẽ để lại tombstone marker xóa, mảnh vỡ chỉ mục, thậm chí xuất hiện suy thoái recall. Biểu hiện cụ thể và loại chỉ mục, cách triển khai sản phẩm có liên quan, ví dụ sản phẩm dựa trên HNSW + cơ chế dọn tombstone, tốt nhất tra tài liệu vector store tương ứng xác nhận.
 
-全量重建最怕服务中断。比较稳的做法是索引别名切换：
+Xây dựng lại toàn bộ sợ nhất gián đoạn dịch vụ. Cách vững là đổi index alias:
 
 ```mermaid
 flowchart LR
-    %% ========== 配色声明 ==========
+    %% ========== Khai báo màu ==========
     classDef alias fill:#9B59B6,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef index fill:#3498DB,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef active fill:#27AE60,color:#FFFFFF,stroke:none,rx:10,ry:10
 
-    subgraph Build["重建阶段"]
-        Old[旧索引<br/>index_v1]:::index
-        BuildProcess[后台重建<br/>index_v2]:::index
+    subgraph Build["Giai đoạn rebuild"]
+        Old[Chỉ mục cũ<br/>index_v1]:::index
+        BuildProcess[Rebuild nền<br/>index_v2]:::index
     end
 
-    subgraph Switch["切换阶段"]
-        Alias["prod_index<br/>别名"]:::alias
-        New[新索引<br/>index_v2]:::active
-        Old2[旧索引<br/>index_v1]:::index
+    subgraph Switch["Giai đoạn chuyển"]
+        Alias["prod_index<br/>alias"]:::alias
+        New[Chỉ mục mới<br/>index_v2]:::active
+        Old2[Chỉ mục cũ<br/>index_v1]:::index
     end
 
-    Old -->|当前服务| Alias
-    BuildProcess -->|验证完成| Alias
-    Alias -->|切换| New
-    Old2 -.->|保留备用| Alias
+    Old -->|phục vụ hiện tại| Alias
+    BuildProcess -->|xác minh xong| Alias
+    Alias -->|chuyển| New
+    Old2 -.->|giữ dự phòng| Alias
 
     linkStyle default stroke-width:2px,stroke:#333333,opacity:0.8
 ```
 
-步骤大致是：
+Các bước đại khái:
 
-1. 查询服务通过索引别名 `prod_index` 访问，旧索引是 `index_v1`。
-2. 后台启动重建任务，构建新索引 `index_v2`。
-3. 新索引验证通过后，把别名 `prod_index` 指向 `index_v2`。Milvus / Zilliz 的 alias 机制支持在 collection 间切换，其他向量库是否有同等能力要单独确认。
-4. 保留旧索引 `index_v1` 一段时间，比如 7 天，用于快速回滚。
-5. 确认没问题后，删除旧索引。
+1. Dịch vụ truy vấn qua index alias `prod_index` truy cập, chỉ mục cũ là `index_v1`.
+2. Nền khởi động tác vụ rebuild, xây dựng chỉ mục mới `index_v2`.
+3. Chỉ mục mới xác minh xong, đổi alias `prod_index` trỏ về `index_v2`. Cơ chế alias của Milvus / Zilliz hỗ trợ chuyển giữa collection, các vector store khác có năng lực tương đương không phải xác nhận riêng.
+4. Giữ chỉ mục cũ `index_v1` một thời gian, như 7 ngày, dùng rollback nhanh.
+5. Xác nhận không còn vấn đề rồi, xóa chỉ mục cũ.
 
-### 生产推荐的稳态策略
+### Chiến lược trạng thái ổn định khuyến nghị production
 
-比较稳的组合是：实时增量 + 定期全量重建 + 事件驱动的紧急重建。
+Tổ hợp vững hơn là: cập nhật gia tăng thời gian thực + xây dựng lại toàn bộ định kỳ + rebuild khẩn cấp event-driven.
 
-实时增量负责通过 Webhook 或 CDC 捕获变更事件，尽快更新向量库。定期全量重建负责清理残留数据、修正累积误差、确保数据完整性，可以按周或按月执行。紧急重建则用于模型升级、策略变更、大规模权限调整这类风险较高的变化。
+Cập nhật gia tăng thời gian thực qua Webhook hoặc CDC chụp sự kiện thay đổi, cập nhật vector store sớm nhất có thể. Xây dựng lại toàn bộ định kỳ dọn dữ liệu tàn dư, sửa lỗi tích lũy, đảm bảo tính toàn vẹn dữ liệu, có thể theo tuần hoặc tháng thực thi. Rebuild khẩn cấp thì dùng cho những thay đổi rủi ro cao như nâng cấp model, thay đổi chiến lược, điều chỉnh quyền quy mô lớn.
 
-这个组合不花哨，但能同时兼顾实时性和长期健康。
+Tổ hợp này không màu mè, nhưng đồng thời đảm bảo được thời gian thực và sức khỏe dài hạn.
 
-## 如何让更新链路稳定可靠？
+## Làm thế nào khiến chuỗi cập nhật ổn định đáng tin?
 
-### 幂等更新：消息队列的好搭档
+### Cập nhật idempotent: bạn đồng hành tốt của message queue
 
-消息队列天然会有重复投递。网络抖动、consumer 崩溃重启、offset 没提交，都可能导致同一条消息被重复消费。
+Message queue tự nhiên sẽ gửi lặp. Giật mạng, consumer sập khởi động lại, offset chưa commit, đều có thể khiến cùng một message bị tiêu thụ lặp.
 
-幂等更新的重点是去重依据。比较可靠的是基于 `doc_id + content_hash` 或 `doc_id + version_id` 做唯一约束。但要注意，并发场景下，简单“先查再写”不够安全，两条相同或乱序消息同时到达时，仍然可能互相覆盖或重复写入。
+Trọng điểm của cập nhật idempotent là căn cứ khử trùng lặp. Đáng tin hơn là dựa trên `doc_id + content_hash` hoặc `doc_id + version_id` làm ràng buộc duy nhất. Nhưng lưu ý, trong kịch bản đồng thời, "trước tiên tra rồi ghi" đơn giản chưa đủ an toàn, hai message giống nhau hoặc lộn thứ tự cùng đến lúc đó, vẫn có thể ghi đè lẫn nhau hoặc ghi lặp.
 
-更稳的做法有几种：
+Có vài cách vững hơn:
 
-1. 依赖唯一约束：以 `doc_id + content_hash` 或 `doc_id + version_id` 建唯一索引，插入时让数据库拒绝重复。
-2. 乐观锁 / 分布式锁：写入新版本前先拿锁，防止并发覆盖。
-3. 事务 outbox：变更事件先写入 outbox 表，再由消费者幂等处理。
+1. Dựa vào ràng buộc duy nhất: lấy `doc_id + content_hash` hoặc `doc_id + version_id` dựng unique index, khi chèn để database từ chối trùng lặp.
+2. Optimistic lock / distributed lock: trước khi ghi phiên bản mới lấy lock trước, phòng ghi đè đồng thời.
+3. Transaction outbox: sự kiện thay đổi trước tiên ghi vào bảng outbox, rồi consumer xử lý idempotent.
 
-下面是基于唯一约束的示例：
+Dưới đây là ví dụ dựa trên ràng buộc duy nhất:
 
 ```python
 def process_document_change(event):
@@ -301,10 +301,10 @@ def process_document_change(event):
     version_id = event.get('version_id', 1)
     chunk_hash = compute_hash(content)
 
-    # 基于 doc_id + chunk_hash 构造唯一 chunk_id（确定性）
+    # Dựa trên doc_id + chunk_hash cấu tạo chunk_id duy nhất (xác định)
     chunk_id = f"{doc_id}_{version_id}_{compute_hash(content[:100])}"
 
-    # 尝试插入，利用数据库唯一约束幂等
+    # Thử chèn, tận dụng ràng buộc duy nhất database chốt idempotent
     try:
         db.execute("""
             INSERT INTO chunks (doc_id, chunk_id, content_hash, version_id, is_deleted)
@@ -316,12 +316,12 @@ def process_document_change(event):
             'content_hash': chunk_hash,
             'version_id': version_id
         })
-        # 只有插入成功才继续处理（冲突说明内容未变）
+        # Chỉ chèn thành công mới tiếp tục xử lý (xung đột nghĩa là nội dung chưa đổi)
         if db.rowcount == 0:
             logger.info(f"Doc {doc_id} already exists, skipping")
             return
 
-        # 生成向量并写入
+        # Sinh vector và ghi
         embedding = embedding_model.encode(content)
         vector_db.upsert(doc_id, chunk_id, embedding, {
             'doc_id': doc_id,
@@ -334,180 +334,180 @@ def process_document_change(event):
         raise
 ```
 
-这段代码的重点是利用数据库唯一约束保证幂等，而不是先查再写。并发场景下，两条消息同时到达，数据库会拒绝重复插入，不会让应用层自己猜谁先谁后。
+Trọng điểm đoạn code này là tận dụng ràng buộc duy nhất database đảm bảo idempotent, chứ không phải tra rồi ghi. Trong kịch bản đồng thời, hai message cùng đến, database sẽ từ chối chèn trùng, không để tầng ứng dụng tự đoán ai trước ai sau.
 
-### 乱序事件处理
+### Xử lý sự kiện lộn thứ tự
 
-消息队列的投递顺序不一定总是符合预期。RAG 更新链路里，先收到 v3 再收到 v2 很常见。如果不处理乱序，旧版本就可能覆盖新版本。
+Thứ tự gửi của message queue không phải lúc nào cũng khớp kỳ vọng. Trong chuỗi cập nhật RAG, trước tiên nhận v3 rồi nhận v2 rất phổ biến. Nếu không xử lý lộn thứ tự, phiên bản cũ có thể ghi đè phiên bản mới.
 
-通常要做几件事：
+Thường phải làm vài việc:
 
-1. 每个文档事件携带 `source_version`、`updated_at` 或单调递增的 `revision`，用于判断新旧。
-2. 写入前校验 `event.version >= current_version`，旧事件直接丢弃或写入审计日志。
-3. 对同一 `doc_id` 做分区有序消费，比如 Kafka key 使用 `doc_id`，保证同一文档的消息落在同一 partition。
-4. 对乱序丢弃做监控打点，方便发现源系统事件异常。
+1. Mỗi event tài liệu mang `source_version`, `updated_at` hoặc `revision` đơn điệu tăng, dùng phán đoán cũ mới.
+2. Trước khi ghi kiểm tra `event.version >= current_version`, event cũ trực tiếp bỏ hoặc ghi log audit.
+3. Với cùng `doc_id` làm tiêu thụ có thứ tự theo partition, ví dụ Kafka key dùng `doc_id`, đảm bảo message cùng một tài liệu rơi vào cùng partition.
+4. Với việc bỏ event lộn thứ tự làm monitor đếm, tiện phát hiện sự kiện hệ thống nguồn bất thường.
 
-### 失败重试和死信队列
+### Retry thất bại và dead letter queue
 
-处理链路的任何环节都可能失败：网络抖动、API 限流、向量库暂时不可用、解析器异常，都会发生。
+Bất kỳ khâu nào trong chuỗi xử lý đều có thể thất bại: giật mạng, API rate-limit, vector store tạm thời không khả dụng, parser bất thường, đều xảy ra.
 
-比较稳的策略是指数退避重试 + 死信队列兜底。
+Chiến lược vững hơn là exponential backoff retry + dead letter queue chốt lại.
 
 ```python
 def process_with_retry(event, max_retries=3):
     for attempt in range(max_retries):
         try:
             process_document_change(event)
-            return  # 成功，直接返回
+            return  # Thành công, trả về trực tiếp
         except TransientError as e:
-            wait_time = 2 ** attempt  # 指数退避：2s, 4s, 8s
+            wait_time = 2 ** attempt  # Exponential backoff: 2s, 4s, 8s
             logger.warning(f"Attempt {attempt + 1} failed: {e}, retrying in {wait_time}s")
             time.sleep(wait_time)
         except PermanentError as e:
-            # 永久性错误（如格式错误），不重试，直接打入死信队列
+            # Lỗi vĩnh viễn (như sai format), không retry, đưa thẳng vào DLQ
             logger.error(f"Permanent error, sending to DLQ: {e}")
             dlq.send(event, reason=str(e))
             return
 
-    # 超过最大重试次数，打入死信队列并告警
+    # Vượt số retry tối đa, đưa vào DLQ và cảnh báo
     logger.error(f"Max retries exceeded for {event['doc_id']}")
     dlq.send(event, reason="max_retries_exceeded")
     alert.trigger(f"Document update failed after {max_retries} retries: {event['doc_id']}")
 ```
 
-错误分类很重要。网络超时、API 限流这类瞬时错误可以重试；格式错误、字段缺失这类永久错误不应该反复重试，重试多少次都不会成功，只会浪费资源。
+Phân loại lỗi rất quan trọng. Lỗi tạm thời như timeout mạng, API rate-limit có thể retry; lỗi vĩnh viễn như sai format, thiếu trường không nên retry lặp, retry bao nhiêu cũng không thành công, chỉ lãng phí tài nguyên.
 
-死信队列里的消息不能一直堆着。建议定期 Review，比如每周看一次，修复原因后再重新投递。
+Message trong dead letter queue không thể chất mãi. Khuyên định kỳ Review, như mỗi tuần xem một lần, sửa xong nguyên nhân rồi gửi lại.
 
-### 回滚机制：出问题时的应急通道
+### Cơ chế rollback: kênh ứng phó khẩn cấp khi có vấn đề
 
-回滚不是后悔药，而是应急通道。好的回滚机制应该让操作者能快速切回上一个健康状态。
+Rollback không phải thuốc hối hận, mà là kênh ứng phó khẩn cấp. Cơ chế rollback tốt nên để người thao tác nhanh chóng quay về trạng thái lành mạnh trước đó.
 
-索引别名切换的回滚最简单。别名切换后，如果新索引有问题，把别名指回旧索引即可。前提是旧索引还没删。
+Rollback đổi index alias đơn giản nhất. Sau khi đổi alias, nếu chỉ mục mới có vấn đề, đổi alias trỏ về chỉ mục cũ là xong. Tiền đề là chỉ mục cũ chưa xóa.
 
-模型升级的回滚，要在升级前记录旧模型的 `model_name` 和 `model_version`。如果新模型表现异常，就切回旧模型，同时触发基于旧模型的全量重建。
+Rollback nâng cấp model, phải trước khi nâng cấp ghi lại `model_name` và `model_version` của model cũ. Nếu model mới biểu hiện bất thường, chuyển về model cũ, đồng thời kích hoạt rebuild toàn bộ dựa trên model cũ.
 
-数据版本回滚可以利用 `updated_at` 和 `version_id` 字段。需要回滚到某个时间点时，从历史快照恢复。快照可以是向量库 snapshot，也可以放在独立对象存储里。
+Rollback phiên bản dữ liệu có thể tận dụng trường `updated_at` và `version_id`. Cần rollback đến một thời điểm nào đó, thì từ snapshot lịch sử phục hồi. Snapshot có thể là snapshot vector store, cũng có thể đặt trong object storage độc lập.
 
-权限回滚要更谨慎。如果权限变更导致数据泄露，第一步不是慢慢修索引，而是立刻阻断影响范围：下线相关知识库或租户检索入口、禁用问题索引、强制引用前鉴权。只有无法界定影响面时，才考虑全局停服。
+Rollback quyền phải thận trọng hơn. Nếu thay đổi quyền gây rò rỉ dữ liệu, bước đầu không phải từ từ sửa chỉ mục, mà lập tức chặn phạm vi ảnh hưởng: đóng cổng truy vấn knowledge base hoặc tenant liên quan, vô hiệu chỉ mục có vấn đề, bắt buộc xác thực quyền trước khi trích dẫn. Chỉ khi không xác định được phạm vi ảnh hưởng, mới cân nhắc dừng dịch vụ toàn cục.
 
 ```python
 def rollback_to_version(target_version_id):
-    # 查询目标版本的快照
+    # Truy vấn snapshot phiên bản mục tiêu
     snapshot = get_snapshot(version_id=target_version_id)
     if not snapshot:
         raise ValueError(f"No snapshot found for version {target_version_id}")
 
-    # 停止服务
+    # Dừng dịch vụ
     service.set_status('maintenance')
 
-    # 恢复快照
+    # Phục hồi snapshot
     vector_db.restore(snapshot)
 
-    # 重启服务
+    # Khởi động lại dịch vụ
     service.set_status('active')
 
-    # 发送告警
+    # Gửi cảnh báo
     alert.trigger(f"System rolled back to version {target_version_id}")
 ```
 
-### 灰度发布：新策略先小流量验证
+### Gray release: chiến lược mới trước tiên xác minh trên traffic nhỏ
 
-知识库更新策略也要像 APP 发布一样灰度，不要一把梭。
+Chiến lược cập nhật knowledge base cũng phải gray như phát hành APP, đừng một phát tung hết.
 
-常见灰度方式有几种：按文档数量灰度，比如先更新 10% 文档；按用户灰度，比如先让 5% 用户看到新索引结果；按问题类型灰度，比如先验证精确查询这类对索引变化更敏感的问题。
+Các cách gray phổ biến: gray theo số lượng tài liệu, ví dụ trước tiên cập nhật 10% tài liệu; gray theo người dùng, ví dụ trước tiên cho 5% người dùng thấy kết quả chỉ mục mới; gray theo loại câu hỏi, ví dụ trước tiên xác minh truy vấn chính xác là loại nhạy cảm với thay đổi chỉ mục hơn.
 
-灰度期间要重点盯这些指标。下面的阈值只是示例，生产环境要基于历史基线、离线评估集和线上 A/B 结果校准，不能直接照抄。
+Trong thời gian gray phải trọng điểm theo dõi các chỉ số này. Ngưỡng dưới chỉ là ví dụ, môi trường production phải hiệu chuẩn dựa trên baseline lịch sử, tập đánh giá offline và kết quả A/B online, không thể chép thẳng.
 
-| 指标                          | 含义                                 | 告警阈值   |
-| ----------------------------- | ------------------------------------ | ---------- |
-| `retrieval_hit_rate@10`       | 前 10 个召回结果中包含正确答案的比例 | 下降 > 5%  |
-| `avg_answer_latency`          | 平均回答延迟                         | 上升 > 20% |
-| `citation_accuracy`           | 引用准确性                           | 下降 > 3%  |
-| `user_feedback_negative_rate` | 用户负面反馈率                       | 上升 > 2%  |
+| Chỉ số                        | Ý nghĩa                                                 | Ngưỡng cảnh báo |
+| ----------------------------- | ------------------------------------------------------- | --------------- |
+| `retrieval_hit_rate@10`       | Tỷ lệ trong 10 kết quả recall đầu chứa câu trả lời đúng | giảm > 5%       |
+| `avg_answer_latency`          | Độ trễ câu trả lời trung bình                           | tăng > 20%      |
+| `citation_accuracy`           | Độ chính xác trích dẫn                                  | giảm > 3%       |
+| `user_feedback_negative_rate` | Tỷ lệ phản hồi tiêu cực người dùng                      | tăng > 2%       |
 
-任何一个关键指标触发告警，都应该暂停灰度，先排查问题。别等全量上线后才发现召回质量掉了。
+Bất kỳ chỉ số then chốt nào kích hoạt cảnh báo, đều nên tạm dừng gray, trước tiên truy vấn vấn đề. Đừng đợi lên hết production mới phát hiện chất lượng recall giảm.
 
-## 知识库更新有哪些常见坑？
+## Cập nhật knowledge base có những cái hố thường gặp nào?
 
-### 坑一：只插入新向量，不删除旧向量
+### Hố một: chỉ chèn vector mới, không xóa vector cũ
 
-这是最常见的问题。文档被修改 5 次，向量库里留下 5 个版本。用户查询时召回旧版本，模型基于过时信息回答。
+Đây là vấn đề phổ biến nhất. Tài liệu bị sửa 5 lần, vector store để lại 5 phiên bản. Người dùng truy vấn recall phiên bản cũ, model dựa trên thông tin quá hạn trả lời.
 
-解决思路很简单，但必须做：修改文档时同步处理旧向量。可以在写入新向量前，先根据 `doc_id` 清理旧记录。
+Cách giải quyết rất đơn giản, nhưng phải làm: khi sửa tài liệu đồng thời xử lý vector cũ. Có thể trước khi ghi vector mới, trước tiên theo `doc_id` dọn bản ghi cũ.
 
-### 坑二：Embedding 模型混用
+### Hố hai: dùng lẫn Embedding model
 
-索引用模型 A，查询用模型 B，向量空间完全不兼容。
+Chỉ mục dùng model A, truy vấn dùng model B, không gian vector hoàn toàn không tương thích.
 
-解决方式是把 `embedding_model` 和 `embedding_model_version` 作为必填元数据。查询前校验模型版本，不匹配就拒绝或降级。
+Cách giải quyết là đặt `embedding_model` và `embedding_model_version` làm metadata bắt buộc. Trước khi truy vấn kiểm tra phiên bản model, không khớp thì từ chối hoặc hạ cấp.
 
-### 坑三：Chunk 策略变了，但历史数据不重建
+### Hố ba: chiến lược Chunk đổi, nhưng dữ liệu lịch sử không rebuild
 
-从固定长度切分改成语义切分，从 500 Token 改成 800 Token，只对新文档生效，历史数据还是旧策略。这会导致一个知识库里混着多套切分逻辑，召回评估也会变得很乱。
+Từ chia độ dài cố định đổi thành chia ngữ nghĩa, từ 500 Token đổi thành 800 Token, chỉ có hiệu lực với tài liệu mới, dữ liệu lịch sử vẫn chiến lược cũ. Điều này khiến một knowledge base trộn nhiều bộ logic chia, đánh giá recall cũng trở nên rất loạn.
 
-解决方式是 Chunk 策略变更触发全量重建。这不是增量能解决的问题。
+Cách giải quyết là thay đổi chiến lược Chunk kích hoạt rebuild toàn bộ. Đây không phải thứ gia tăng giải quyết được.
 
-### 坑四：文档删除后仍被召回
+### Hố bốn: tài liệu xóa rồi vẫn bị recall
 
-软删除没做好，或者删除逻辑只处理了向量库，没处理全文索引。
+Soft-delete làm không tốt, hoặc logic xóa chỉ xử lý vector store, không xử lý full-text index.
 
-删除操作必须三端一致：向量库、元数据库、全文索引都要同步处理。更稳的做法是用 outbox pattern 记录变更事件，消费者幂等执行；再通过定期 reconciliation 对比源系统、元数据库、向量库、全文索引，修复漏删、漏写和乱序事件。
+Thao tác xóa phải nhất quán ba đầu: vector store, metadata database, full-text index đều phải đồng bộ xử lý. Cách vững hơn là dùng outbox pattern ghi sự kiện thay đổi, consumer thực thi idempotent; rồi qua reconciliation định kỳ so sánh hệ thống nguồn, metadata database, vector store, full-text index, sửa bỏ sót xóa, bỏ sót ghi và sự kiện lộn thứ tự.
 
-### 坑五：权限元数据不同步
+### Hố năm: metadata quyền không đồng bộ
 
-文档权限从“公开”改成“仅管理员可见”，但向量库里的 `acl` 字段没更新。
+Quyền tài liệu từ "công khai" đổi thành "chỉ admin thấy", nhưng trường `acl` trong vector store không cập nhật.
 
-权限变更必须触发文档重新索引。如果向量库支持原子更新 ACL 字段，可以只更新元数据而不重建向量，但前提是向量库有这个能力。
+Thay đổi quyền phải kích hoạt tài liệu re-index. Nếu vector store hỗ trợ cập nhật nguyên tử trường ACL, có thể chỉ cập nhật metadata không rebuild vector, nhưng tiền đề là vector store có năng lực đó.
 
-### 坑六：变更检测漏检
+### Hố sáu: bỏ sót phát hiện thay đổi
 
-Webhook 漏发、CDC 延迟、轮询间隔太大，都会导致文档已经变了，但索引没变。
+Webhook gửi thiếu, CDC trễ, khoảng polling quá lớn, đều khiến tài liệu đã đổi nhưng chỉ mục không đổi.
 
-解决方式是事件驱动 + 轮询兜底。同时建立数据新鲜度监控，定期检查源系统和向量库里的 `updated_at`。如果源系统时间比索引时间新超过阈值，就触发告警，必要时自动重新索引。
+Cách giải quyết là event-driven + polling chốt lại. Đồng thời xây dựng giám sát độ tươi dữ liệu, định kỳ kiểm tra `updated_at` trong hệ thống nguồn và vector store. Nếu thời gian hệ thống nguồn mới hơn thời gian chỉ mục vượt ngưỡng, kích hoạt cảnh báo, cần thiết tự động re-index.
 
-## 如何保证知识库更新的可观测性？
+## Làm thế nào đảm bảo khả năng quan sát của cập nhật knowledge base?
 
-知识库更新链路必须有监控，否则就是盲跑。文档有没有更新、哪一步失败、失败后有没有补偿，不能靠用户投诉来发现。
+Chuỗi cập nhật knowledge base phải có giám sát, nếu không là chạy mù. Tài liệu có cập nhật không, bước nào thất bại, sau khi thất bại có bù trừ không, không thể dựa vào khiếu nại người dùng phát hiện.
 
-关键监控指标可以从这些开始：
+Các chỉ số giám sát then chốt có thể bắt đầu từ những cái này:
 
-| 指标                          | 说明                                   | 推荐告警阈值     |
-| ----------------------------- | -------------------------------------- | ---------------- |
-| `index_lag_seconds`           | 从文档变更到索引完成的时间             | > 5 分钟         |
-| `failed_updates_total`        | 失败的更新操作累计数                   | > 0 持续 10 分钟 |
-| `dlq_size`                    | 死信队列当前积压量                     | > 100            |
-| `retrieval_hit_rate`          | 召回准确率                             | 环比下降 > 5%    |
-| `stale_docs_count`            | 陈旧文档数量，源系统已更新但索引未更新 | > 10             |
-| `source_to_queue_lag_seconds` | 源系统变更到事件入队延迟               | > 1 分钟         |
-| `queue_to_index_lag_seconds`  | 事件入队到索引完成延迟                 | > 5 分钟         |
-| `index_success_rate`          | 索引成功率                             | < 99%            |
-| `partial_index_count`         | 部分写入成功但未完成的文档数           | > 0 持续 30 分钟 |
-| `acl_mismatch_count`          | 源系统 ACL 与索引 ACL 不一致数量       | > 0              |
+| Chỉ số                        | Giải thích                                                    | Ngưỡng cảnh báo khuyến nghị |
+| ----------------------------- | ------------------------------------------------------------- | --------------------------- |
+| `index_lag_seconds`           | Thời gian từ khi tài liệu thay đổi đến lúc chỉ mục xong       | > 5 phút                    |
+| `failed_updates_total`        | Số tích lũy thao tác cập nhật thất bại                        | > 0 duy trì 10 phút         |
+| `dlq_size`                    | Lượng tích tụ hiện tại dead letter queue                      | > 100                       |
+| `retrieval_hit_rate`          | Độ chính xác recall                                           | so với kỳ trước giảm > 5%   |
+| `stale_docs_count`            | Số tài liệu cũ, hệ thống nguồn đã cập nhật nhưng chỉ mục chưa | > 10                        |
+| `source_to_queue_lag_seconds` | Độ trễ từ thay đổi hệ thống nguồn đến event vào queue         | > 1 phút                    |
+| `queue_to_index_lag_seconds`  | Độ trễ từ event vào queue đến lúc chỉ mục xong                | > 5 phút                    |
+| `index_success_rate`          | Tỷ lệ thành công chỉ mục                                      | < 99%                       |
+| `partial_index_count`         | Số tài liệu ghi một phần thành công nhưng chưa xong           | > 0 duy trì 30 phút         |
+| `acl_mismatch_count`          | Số không khớp giữa ACL hệ thống nguồn và ACL chỉ mục          | > 0                         |
 
-每次更新操作都应该记录审计日志，包括 `doc_id`、`change_type`（新增 / 修改 / 删除）、`timestamp`、`operator`（自动 / 手动）、`result`（成功 / 失败）、`error_message`。真正出问题时，这些字段能帮你快速定位是哪条记录、哪个环节、什么时候失败的。
+Mỗi thao tác cập nhật đều nên ghi log audit, gồm `doc_id`, `change_type` (thêm mới / sửa đổi / xóa), `timestamp`, `operator` (tự động / thủ công), `result` (thành công / thất bại), `error_message`. Khi thật sự có vấn đề, những trường này giúp bạn nhanh chóng định vị là bản ghi nào, khâu nào, thất bại lúc nào.
 
-## 总结
+## Tổng kết
 
-RAG 知识库更新不只是写一个定时任务重新索引。它涉及变更检测、数据一致性、幂等写入、版本控制、灰度发布、回滚机制和可观测性。
+Cập nhật knowledge base RAG không chỉ là viết một tác vụ định giờ re-index. Nó liên quan đến phát hiện thay đổi, nhất quán dữ liệu, ghi idempotent, kiểm soát phiên bản, gray release, cơ chế rollback và khả năng quan sát.
 
-几个结论可以记住。
+Vài kết luận có thể ghi nhớ.
 
-Embedding 模型一致性是硬规则。更换模型必须全量重建索引，不能偷懒。
+Tính nhất quán Embedding model là quy tắc cứng. Đổi model phải rebuild toàn bộ chỉ mục, không được lười.
 
-元数据设计是增量更新的前提。`doc_id`、`content_hash`、`version_id`、`is_deleted` 这些字段，是幂等更新、版本追踪和回滚的基础。
+Thiết kế metadata là tiền đề của cập nhật gia tăng. Các trường `doc_id`, `content_hash`, `version_id`, `is_deleted` là nền tảng của cập nhật idempotent, truy vết phiên bản và rollback.
 
-删除操作必须三端一致。向量库、元数据库、全文索引都要同步处理，否则迟早会出现幽灵数据。
+Thao tác xóa phải nhất quán ba đầu. Vector store, metadata database, full-text index đều phải đồng bộ xử lý, nếu không sớm muộn sẽ xuất hiện dữ liệu ma.
 
-增量更新负责日常变化，全量重建负责周期性健康维护。两者配合起来，系统才不容易长期漂移。
+Cập nhật gia tăng đảm nhận thay đổi hằng ngày, xây dựng lại toàn bộ đảm nhận bảo trì sức khỏe định kỳ. Hai cái phối hợp, hệ thống mới khó trôi dạt dài hạn.
 
-索引别名切换是生产级灰度和回滚的常用做法。先建新索引，验证后切换，旧索引保留一段时间兜底。
+Đổi index alias là cách làm phổ biến cho gray và rollback production-level. Trước tiên dựng chỉ mục mới, xác minh rồi chuyển, giữ chỉ mục cũ một thời gian chốt lại.
 
-幂等、重试、死信队列是更新链路可靠性的基本盘。可观测性则是最后一道防线：不知道更新有没有成功，就等于没更新。
+Idempotent, retry, dead letter queue là phần cơ bản của độ tin cậy chuỗi cập nhật. Khả năng quan sát là tuyến phòng thủ cuối: không biết cập nhật có thành công không, khác gì chưa cập nhật.
 
-RAG 知识库维护不是上线前做一次就结束，而是上线后才真正开始。
+Bảo trì knowledge base RAG không phải làm một lần trước khi lên production là xong, mà sau khi lên production mới thật sự bắt đầu.
 
-## 参考资料
+## Tài liệu tham khảo
 
 - [How to Update RAG Knowledge Base Without Rebuilding Everything](https://particula.tech/blog/update-rag-knowledge-without-rebuilding)
 - [RAG Knowledge Base Management: Updates & Refresh](https://apxml.com/courses/optimizing-rag-for-production/chapter-7-rag-scalability-reliability-maintainability/rag-knowledge-base-updates)

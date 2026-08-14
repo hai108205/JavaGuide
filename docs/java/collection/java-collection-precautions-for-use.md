@@ -1,6 +1,6 @@
 ---
-title: Java集合使用注意事项总结
-description: Java集合使用注意事项总结：基于阿里巴巴开发手册梳理集合判空、Arrays.asList陷阱、subList问题、并发容器选择等最佳实践，避免常见错误。
+title: Tổng hợp lưu ý khi sử dụng Java Collection
+description: "Tổng hợp lưu ý khi sử dụng Java Collection: dựa trên Alibaba Java Development Manual, tổng hợp các best practice như kiểm tra collection rỗng, bẫy Arrays.asList, vấn đề subList, lựa chọn concurrent collection, v.v. để tránh các lỗi phổ biến."
 category: Java
 tag:
   - Java集合
@@ -10,19 +10,19 @@ head:
       content: Java集合最佳实践,集合判空,Arrays.asList,subList,并发容器,集合使用注意事项,性能优化
 ---
 
-这篇文章我根据《阿里巴巴 Java 开发手册》总结了关于集合使用常见的注意事项以及其具体原理。
+Bài viết này tổng hợp các lưu ý phổ biến khi sử dụng collection cùng nguyên lý cụ thể, dựa trên tài liệu "Alibaba Java Development Manual".
 
-强烈建议小伙伴们多多阅读几遍，避免自己写代码的时候出现这些低级的问题。
+Bạn nên đọc lại nhiều lần để tránh mắc phải những lỗi cơ bản này khi viết code.
 
-## 集合判空
+## Kiểm tra collection rỗng
 
-《阿里巴巴 Java 开发手册》的描述如下：
+Mô tả trong "Alibaba Java Development Manual" như sau:
 
-> **判断所有集合内部的元素是否为空，使用 `isEmpty()` 方法，而不是 `size()==0` 的方式。**
+> **Để kiểm tra tất cả phần tử bên trong collection có rỗng hay không, hãy sử dụng phương thức `isEmpty()` thay vì `size() == 0`.**
 
-这是因为 `isEmpty()` 方法的可读性更好，并且时间复杂度为 `O(1)`。
+Lý do là phương thức `isEmpty()` có khả năng đọc hiểu tốt hơn và độ phức tạp thời gian là `O(1)`.
 
-绝大部分我们使用的集合的 `size()` 方法的时间复杂度也是 `O(1)`，不过，也有很多复杂度不是 `O(1)` 的，比如 `java.util.concurrent` 包下的 `ConcurrentLinkedQueue`。`ConcurrentLinkedQueue` 的 `isEmpty()` 方法通过 `first()` 方法进行判断，其中 `first()` 方法返回的是队列中第一个值不为 `null` 的节点（节点值为 `null` 的原因是在迭代器中使用的逻辑删除）
+Phần lớn collection chúng ta sử dụng, phương thức `size()` cũng có độ phức tạp `O(1)`, tuy nhiên cũng có nhiều trường hợp không phải `O(1)`, ví dụ như `ConcurrentLinkedQueue` trong gói `java.util.concurrent`. Phương thức `isEmpty()` của `ConcurrentLinkedQueue` thực hiện kiểm tra thông qua phương thức `first()`, trong đó `first()` trả về node đầu tiên trong hàng đợi có giá trị khác `null` (giá trị node bằng `null` là do cơ chế xóa logic được sử dụng trong iterator).
 
 ```java
 public boolean isEmpty() { return first() == null; }
@@ -43,7 +43,7 @@ Node<E> first() {
 }
 ```
 
-由于在插入与删除元素时，都会执行 `updateHead(h, p)` 方法，所以该方法的执行的时间复杂度可以近似为 `O(1)`。而 `size()` 方法需要遍历整个链表，时间复杂度为 `O(n)`
+Do khi thêm và xóa phần tử, phương thức `updateHead(h, p)` đều được thực thi, nên độ phức tạp thời gian của phương thức này có thể xấp xỉ `O(1)`. Trong khi đó, phương thức `size()` cần duyệt qua toàn bộ linked list, độ phức tạp thời gian là `O(n)`.
 
 ```java
 public int size() {
@@ -56,7 +56,7 @@ public int size() {
 }
 ```
 
-此外，在 `ConcurrentHashMap` 1.7 中 `size()` 方法和 `isEmpty()` 方法的时间复杂度也不太一样。`ConcurrentHashMap` 1.7 将元素数量存储在每个 `Segment` 中，`size()` 方法需要统计每个 `Segment` 的数量，而 `isEmpty()` 只需要找到第一个不为空的 `Segment` 即可。但是在 `ConcurrentHashMap` 1.8 中的 `size()` 方法和 `isEmpty()` 都需要调用 `sumCount()` 方法，汇总 `baseCount` 和 `CounterCell[]` 中的计数。下面是 `sumCount()` 方法的源码：
+Ngoài ra, trong `ConcurrentHashMap` 1.7, độ phức tạp thời gian của `size()` và `isEmpty()` cũng không giống nhau. `ConcurrentHashMap` 1.7 lưu trữ số lượng phần tử trong mỗi `Segment`, `size()` cần thống kê số lượng của từng `Segment`, trong khi `isEmpty()` chỉ cần tìm `Segment` đầu tiên không rỗng. Tuy nhiên trong `ConcurrentHashMap` 1.8, cả `size()` và `isEmpty()` đều cần gọi `sumCount()` để tổng hợp `baseCount` và số đếm trong `CounterCell[]`. Dưới đây là mã nguồn của `sumCount()`:
 
 ```java
 final long sumCount() {
@@ -70,13 +70,13 @@ final long sumCount() {
 }
 ```
 
-在并发环境下，`ConcurrentHashMap` 1.8 使用 `baseCount` 和 `CounterCell[]` 分散计数更新时的竞争，而不是在每个 `Node` 中保存节点数量。在 `ConcurrentHashMap` 1.7 中，元素数量存储在每个 `Segment` 中，`size()` 方法需要统计每个 `Segment` 的数量，而 `isEmpty()` 只需要找到第一个不为空的 `Segment` 即可。
+Trong môi trường đa luồng, `ConcurrentHashMap` 1.8 sử dụng `baseCount` và `CounterCell[]` để phân tán cạnh tranh khi cập nhật số đếm, thay vì lưu số lượng node trong mỗi `Node`. Trong `ConcurrentHashMap` 1.7, số lượng phần tử được lưu trong mỗi `Segment`, `size()` cần thống kê số lượng của từng `Segment`, còn `isEmpty()` chỉ cần tìm `Segment` đầu tiên không rỗng.
 
-## 集合转 Map
+## Chuyển collection sang Map
 
-《阿里巴巴 Java 开发手册》的描述如下：
+Mô tả trong "Alibaba Java Development Manual" như sau:
 
-> **在使用 `java.util.stream.Collectors` 类的 `toMap()` 方法转为 `Map` 集合时，一定要注意当 value 为 null 时会抛 NPE 异常。**
+> **Khi sử dụng phương thức `toMap()` của lớp `java.util.stream.Collectors` để chuyển sang `Map`, cần đặc biệt lưu ý rằng khi value là null sẽ ném ra ngoại lệ NPE (NullPointerException).**
 
 ```java
 class Person {
@@ -92,9 +92,9 @@ bookList.add(new Person("martin",null));
 bookList.stream().collect(Collectors.toMap(Person::getName, Person::getPhoneNumber));
 ```
 
-下面我们来解释一下原因。
+Dưới đây chúng ta sẽ giải thích nguyên nhân.
 
-首先，我们来看 `java.util.stream.Collectors` 类的 `toMap()` 方法，可以看到其内部调用了 `Map` 接口的 `merge()` 方法。
+Trước tiên, hãy xem phương thức `toMap()` của lớp `java.util.stream.Collectors`, có thể thấy bên trong nó gọi phương thức `merge()` của interface `Map`.
 
 ```java
 public static <T, K, U, M extends Map<K, U>>
@@ -109,9 +109,9 @@ Collector<T, ?, M> toMap(Function<? super T, ? extends K> keyMapper,
 }
 ```
 
-`Map` 接口的 `merge()` 方法如下，这个方法是接口中的默认实现。
+Phương thức `merge()` của interface `Map` như sau, đây là default implementation trong interface.
 
-> 如果你还不了解 Java 8 新特性的话，请看这篇文章：[《Java8 新特性总结》](https://mp.weixin.qq.com/s/ojyl7B6PiHaTWADqmUq2rw)。
+> Nếu bạn chưa quen với các tính năng mới của Java 8, hãy xem bài viết: [《Java8 新特性总结》](https://mp.weixin.qq.com/s/ojyl7B6PiHaTWADqmUq2rw).
 
 ```java
 default V merge(K key, V value,
@@ -130,7 +130,7 @@ default V merge(K key, V value,
 }
 ```
 
-`merge()` 方法会先调用 `Objects.requireNonNull()` 方法判断 value 是否为空。
+Phương thức `merge()` sẽ gọi `Objects.requireNonNull()` trước để kiểm tra value có null hay không.
 
 ```java
 public static <T> T requireNonNull(T obj) {
@@ -140,25 +140,25 @@ public static <T> T requireNonNull(T obj) {
 }
 ```
 
-> `Collectors` 也提供了无需 mergeFunction 的 `toMap()` 方法，但此时若出现 key 冲突，则会抛出 `duplicateKeyException` 异常，因此强烈建议使用 `toMap()` 方法必填 mergeFunction。
+> `Collectors` cũng cung cấp phương thức `toMap()` không yêu cầu mergeFunction, nhưng lúc này nếu xảy ra xung đột key, nó sẽ ném ra ngoại lệ `duplicateKeyException`, do đó rất khuyến khích luôn truyền mergeFunction khi sử dụng `toMap()`.
 
-## 集合遍历
+## Duyệt collection
 
-《阿里巴巴 Java 开发手册》的描述如下：
+Mô tả trong "Alibaba Java Development Manual" như sau:
 
-> **不要在 foreach 循环里进行元素的 `remove/add` 操作。remove 元素请使用 `Iterator` 方式，如果并发操作，需要对 `Iterator` 对象加锁。**
+> **Không thực hiện thao tác `remove/add` phần tử bên trong vòng lặp foreach. Để remove phần tử, hãy sử dụng `Iterator`; nếu thao tác trong môi trường đa luồng, cần khóa (lock) đối tượng `Iterator`.**
 
-需要注意的是，仅对 `Iterator` 对象加锁并不能阻止其他线程修改集合。以 `Collections.synchronizedXxx()` 返回的同步包装器为例，遍历时应当同步包装后的集合对象，并确保所有访问都通过该包装器完成。
+Cần lưu ý rằng chỉ khóa đối tượng `Iterator` không thể ngăn các luồng khác sửa đổi collection. Lấy ví dụ với synchronized wrapper trả về từ `Collections.synchronizedXxx()`, khi duyệt cần đồng bộ trên chính đối tượng collection đã được wrap, và đảm bảo mọi truy cập đều thông qua wrapper đó.
 
-通过反编译你会发现 foreach 语法底层其实还是依赖 `Iterator`。不过， `remove/add` 操作直接调用的是集合自己的方法，而不是 `Iterator` 的 `remove/add` 方法
+Thông qua decompile, bạn sẽ thấy cú pháp foreach thực chất vẫn dựa trên `Iterator`. Tuy nhiên, thao tác `remove/add` gọi trực tiếp phương thức của chính collection, chứ không phải phương thức `remove/add` của `Iterator`.
 
-这就导致 `Iterator` 莫名其妙地发现自己有元素被 `remove/add`，然后，它就会抛出一个 `ConcurrentModificationException` 来提示用户发生了并发修改异常。这就是单线程状态下产生的 **fail-fast 机制**。
+Điều này khiến `Iterator` đột nhiên phát hiện có phần tử bị `remove/add`, và sau đó nó sẽ ném ra `ConcurrentModificationException` để cảnh báo người dùng đã xảy ra concurrent modification. Đây chính là **cơ chế fail-fast** xảy ra ngay cả trong môi trường đơn luồng.
 
-> **fail-fast 机制**：多个线程对 fail-fast 集合进行修改的时候，可能会抛出 `ConcurrentModificationException`。 即使是单线程下也有可能会出现这种情况，上面已经提到过。
+> **Cơ chế fail-fast**: Khi nhiều luồng cùng sửa đổi một fail-fast collection, có thể ném ra `ConcurrentModificationException`. Ngay cả trong môi trường đơn luồng, tình huống này cũng có thể xảy ra như đã đề cập ở trên.
 >
-> 相关阅读：[什么是 fail-fast](https://www.cnblogs.com/54chensongxia/p/12470446.html)。
+> Bài viết liên quan: [什么是 fail-fast](https://www.cnblogs.com/54chensongxia/p/12470446.html).
 
-Java8 开始，可以使用 `Collection#removeIf()` 方法删除满足特定条件的元素，如
+Từ Java 8 trở đi, bạn có thể sử dụng `Collection#removeIf()` để xóa các phần tử thỏa mãn điều kiện cụ thể, ví dụ:
 
 ```java
 List<Integer> list = new ArrayList<>();
@@ -169,19 +169,19 @@ list.removeIf(filter -> filter % 2 == 0); /* 删除list中的所有偶数 */
 System.out.println(list); /* [1, 3, 5, 7, 9] */
 ```
 
-除了上面介绍的直接使用 `Iterator` 进行遍历操作之外，你还可以：
+Ngoài cách sử dụng `Iterator` để duyệt như đã giới thiệu ở trên, bạn còn có thể:
 
-- 使用普通的 for 循环
-- 根据场景使用支持快照迭代或弱一致性迭代的集合类。例如，`CopyOnWriteArrayList` 的迭代器基于快照，`ConcurrentHashMap` 的迭代器是弱一致的。
+- Sử dụng vòng lặp for thông thường
+- Sử dụng lớp collection hỗ trợ snapshot iterator hoặc weakly consistent iterator tùy theo ngữ cảnh. Ví dụ, iterator của `CopyOnWriteArrayList` dựa trên snapshot, iterator của `ConcurrentHashMap` là weakly consistent.
 - ……
 
-## 集合去重
+## Loại bỏ phần tử trùng lặp trong collection
 
-《阿里巴巴 Java 开发手册》的描述如下：
+Mô tả trong "Alibaba Java Development Manual" như sau:
 
-> **可以利用 `Set` 元素唯一的特性，可以快速对一个集合进行去重操作，避免使用 `List` 的 `contains()` 进行遍历去重或者判断包含操作。**
+> **Có thể tận dụng đặc tính phần tử duy nhất của `Set` để nhanh chóng loại bỏ trùng lặp cho một collection, tránh sử dụng `contains()` của `List` để duyệt và loại bỏ trùng lặp hoặc kiểm tra contains.**
 
-这里我们以 `HashSet` 和 `ArrayList` 为例说明。
+Ở đây chúng ta lấy `HashSet` và `ArrayList` làm ví dụ.
 
 ```java
 // Set 去重代码示例
@@ -211,9 +211,9 @@ public static <T> List<T> removeDuplicateByList(List<T> data) {
 
 ```
 
-两者的核心差别在于 `contains()` 方法的实现。
+Sự khác biệt cốt lõi giữa hai cách nằm ở cách triển khai phương thức `contains()`.
 
-`HashSet` 的 `contains()` 方法底部依赖的 `HashMap` 的 `containsKey()` 方法，时间复杂度接近于 O（1）（没有出现哈希冲突的时候为 O（1））。
+Phương thức `contains()` của `HashSet` phụ thuộc vào `containsKey()` của `HashMap` bên dưới, độ phức tạp thời gian gần bằng O(1) (khi không xảy ra hash collision thì là O(1)).
 
 ```java
 private transient HashMap<E,Object> map;
@@ -222,9 +222,9 @@ public boolean contains(Object o) {
 }
 ```
 
-我们有 N 个元素插入进 Set 中，那时间复杂度就接近是 O (n)。
+Khi chúng ta chèn N phần tử vào Set, độ phức tạp thời gian sẽ xấp xỉ O(n).
 
-`ArrayList` 的 `contains()` 方法是通过遍历所有元素的方法来做的，时间复杂度接近是 O(n)。
+Phương thức `contains()` của `ArrayList` được thực hiện bằng cách duyệt qua tất cả phần tử, độ phức tạp thời gian xấp xỉ O(n).
 
 ```java
 public boolean contains(Object o) {
@@ -245,13 +245,13 @@ public int indexOf(Object o) {
 
 ```
 
-## 集合转数组
+## Chuyển collection sang array
 
-《阿里巴巴 Java 开发手册》的描述如下：
+Mô tả trong "Alibaba Java Development Manual" như sau:
 
-> **使用集合转数组的方法，必须使用集合的 `toArray(T[] array)`，传入的是类型完全一致、长度为 0 的空数组。**
+> **Khi chuyển collection sang array, phải sử dụng `toArray(T[] array)` của collection, truyền vào một mảng rỗng có độ dài 0 và kiểu hoàn toàn khớp.**
 
-`toArray(T[] array)` 方法的参数是一个泛型数组，如果 `toArray` 方法中没有传递任何参数的话返回的是 `Object` 类 型数组。
+Tham số của `toArray(T[] array)` là một generic array. Nếu `toArray` không truyền bất kỳ tham số nào, nó sẽ trả về mảng kiểu `Object`.
 
 ```java
 String [] s= new String[]{
@@ -263,17 +263,17 @@ Collections.reverse(list);
 s=list.toArray(new String[0]);
 ```
 
-由于 JVM 优化，`new String[0]` 作为 `Collection.toArray()` 方法的参数现在使用更好，`new String[0]` 就是起一个模板的作用，指定了返回数组的类型，0 是为了节省空间，因为它只是为了说明返回的类型。详见：<https://shipilev.net/blog/2016/arrays-wisdom-ancients/>
+Do tối ưu hóa của JVM, `new String[0]` hiện là cách tốt hơn khi dùng làm tham số cho `Collection.toArray()`. `new String[0]` đóng vai trò như một template, chỉ định kiểu của mảng trả về, 0 là để tiết kiệm không gian, vì nó chỉ nhằm mục đích khai báo kiểu trả về. Xem thêm: <https://shipilev.net/blog/2016/arrays-wisdom-ancients/>
 
-## 数组转集合
+## Chuyển array sang collection
 
-《阿里巴巴 Java 开发手册》的描述如下：
+Mô tả trong "Alibaba Java Development Manual" như sau:
 
-> **使用工具类 `Arrays.asList()` 把数组转换成集合时，不能使用其修改集合相关的方法， 它的 `add/remove/clear` 方法会抛出 `UnsupportedOperationException` 异常。**
+> **Khi sử dụng `Arrays.asList()` để chuyển array thành collection, không được sử dụng các phương thức sửa đổi collection, vì `add/remove/clear` của nó sẽ ném ra ngoại lệ `UnsupportedOperationException`.**
 
-我在之前的一个项目中就遇到一个类似的坑。
+Tôi đã từng gặp phải một cái bẫy tương tự trong dự án trước đây.
 
-`Arrays.asList()` 在平时开发中还是比较常见的，我们可以使用它将一个数组转换为一个 `List` 集合。
+`Arrays.asList()` khá phổ biến trong quá trình phát triển hàng ngày, chúng ta có thể dùng nó để chuyển một array thành `List`.
 
 ```java
 String[] myArray = {"Apple", "Banana", "Orange"};
@@ -282,7 +282,7 @@ List<String> myList = Arrays.asList(myArray);
 List<String> myList = Arrays.asList("Apple","Banana", "Orange");
 ```
 
-JDK 源码对于这个方法的说明：
+Mô tả trong mã nguồn JDK về phương thức này:
 
 ```java
 /**
@@ -294,9 +294,9 @@ public static <T> List<T> asList(T... a) {
 }
 ```
 
-下面我们来总结一下使用注意事项。
+Dưới đây là tổng hợp các lưu ý khi sử dụng.
 
-**1、`Arrays.asList()` 不会将基本类型数组自动装箱并展开为列表元素。**
+**1. `Arrays.asList()` sẽ không tự động boxing (autobox) kiểu nguyên thủy và mở rộng thành các phần tử của list.**
 
 ```java
 int[] myArray = {1, 2, 3};
@@ -308,15 +308,15 @@ int[] array = (int[]) myList.get(0);
 System.out.println(array[0]);//1
 ```
 
-当传入一个原生数据类型数组时，`Arrays.asList()` 的真正得到的参数就不是数组中的元素，而是数组对象本身！此时 `List` 的唯一元素就是这个数组，这也就解释了上面的代码。
+Khi truyền vào một mảng kiểu dữ liệu nguyên thủy, tham số thực sự mà `Arrays.asList()` nhận được không phải là các phần tử trong mảng, mà là chính đối tượng mảng đó! Lúc này phần tử duy nhất của `List` chính là mảng này, điều này giải thích cho đoạn code ở trên.
 
-我们使用包装类型数组就可以解决这个问题。
+Chúng ta có thể giải quyết vấn đề này bằng cách sử dụng mảng kiểu wrapper (wrapper type).
 
 ```java
 Integer[] myArray = {1, 2, 3};
 ```
 
-**2、使用集合的修改方法: `add()`、`remove()`、`clear()` 会抛出异常。**
+**2. Sử dụng các phương thức sửa đổi collection: `add()`, `remove()`, `clear()` sẽ ném ra ngoại lệ.**
 
 ```java
 List myList = Arrays.asList(1, 2, 3);
@@ -325,14 +325,14 @@ myList.remove(1);//运行时报错：UnsupportedOperationException
 myList.clear();//运行时报错：UnsupportedOperationException
 ```
 
-`Arrays.asList()` 方法返回的并不是 `java.util.ArrayList`，而是 `java.util.Arrays` 的一个内部类，这个内部类并没有实现集合的修改方法或者说并没有重写这些方法。
+Phương thức `Arrays.asList()` trả về không phải là `java.util.ArrayList`, mà là một inner class của `java.util.Arrays`. Inner class này không triển khai các phương thức sửa đổi collection, hay nói cách khác là không override các phương thức đó.
 
 ```java
 List myList = Arrays.asList(1, 2, 3);
 System.out.println(myList.getClass());//class java.util.Arrays$ArrayList
 ```
 
-下图是 `java.util.Arrays$ArrayList` 的简易源码，我们可以看到这个类重写的方法有哪些。
+Hình dưới đây là mã nguồn đơn giản của `java.util.Arrays$ArrayList`, chúng ta có thể thấy lớp này đã override những phương thức nào.
 
 ```java
   private static class ArrayList<E> extends AbstractList<E>
@@ -377,7 +377,7 @@ System.out.println(myList.getClass());//class java.util.Arrays$ArrayList
     }
 ```
 
-我们再看一下 `java.util.AbstractList` 的 `add/remove/clear` 方法就知道为什么会抛出 `UnsupportedOperationException` 了。
+Hãy xem phương thức `add/remove/clear` của `java.util.AbstractList` để hiểu tại sao lại ném ra `UnsupportedOperationException`.
 
 ```java
 public E remove(int index) {
@@ -403,9 +403,9 @@ protected void removeRange(int fromIndex, int toIndex) {
 }
 ```
 
-**那我们如何正确的将数组转换为 `ArrayList` ?**
+**Vậy làm thế nào để chuyển đổi array thành `ArrayList` một cách chính xác?**
 
-1、手动实现工具类
+1. Tự triển khai utility class
 
 ```java
 //JDK1.5+
@@ -423,13 +423,13 @@ Integer [] myArray = { 1, 2, 3 };
 System.out.println(arrayToList(myArray).getClass());//class java.util.ArrayList
 ```
 
-2、最简便的方法
+2. Cách đơn giản nhất
 
 ```java
 List list = new ArrayList<>(Arrays.asList("a", "b", "c"))
 ```
 
-3、使用 Java8 的 `Stream`（推荐）
+3. Sử dụng `Stream` của Java 8 (khuyến khích)
 
 ```java
 Integer [] myArray = { 1, 2, 3 };
@@ -439,16 +439,16 @@ int [] myArray2 = { 1, 2, 3 };
 List myList = Arrays.stream(myArray2).boxed().collect(Collectors.toList());
 ```
 
-4、使用 Guava
+4. Sử dụng Guava
 
-对于不可变集合，你可以使用[`ImmutableList`](https://github.com/google/guava/blob/master/guava/src/com/google/common/collect/ImmutableList.java)类及其[`of()`](https://github.com/google/guava/blob/master/guava/src/com/google/common/collect/ImmutableList.java#L101)与[`copyOf()`](https://github.com/google/guava/blob/master/guava/src/com/google/common/collect/ImmutableList.java#L225)工厂方法：（参数不能为空）
+Đối với immutable collection, bạn có thể sử dụng lớp [`ImmutableList`](https://github.com/google/guava/blob/master/guava/src/com/google/common/collect/ImmutableList.java) cùng các factory method [`of()`](https://github.com/google/guava/blob/master/guava/src/com/google/common/collect/ImmutableList.java#L101) và [`copyOf()`](https://github.com/google/guava/blob/master/guava/src/com/google/common/collect/ImmutableList.java#L225): (tham số không được null)
 
 ```java
 List<String> il = ImmutableList.of("string", "elements");  // from varargs
 List<String> il = ImmutableList.copyOf(aStringArray);      // from array
 ```
 
-对于可变集合，你可以使用[`Lists`](https://github.com/google/guava/blob/master/guava/src/com/google/common/collect/Lists.java)类及其[`newArrayList()`](https://github.com/google/guava/blob/master/guava/src/com/google/common/collect/Lists.java#L87)工厂方法：
+Đối với mutable collection, bạn có thể sử dụng lớp [`Lists`](https://github.com/google/guava/blob/master/guava/src/com/google/common/collect/Lists.java) cùng factory method [`newArrayList()`](https://github.com/google/guava/blob/master/guava/src/com/google/common/collect/Lists.java#L87):
 
 ```java
 List<String> l1 = Lists.newArrayList(anotherListOrCollection);    // from collection
@@ -456,14 +456,14 @@ List<String> l2 = Lists.newArrayList(aStringArray);               // from array
 List<String> l3 = Lists.newArrayList("or", "string", "elements"); // from varargs
 ```
 
-5、使用 Apache Commons Collections
+5. Sử dụng Apache Commons Collections
 
 ```java
 List<String> list = new ArrayList<String>();
 CollectionUtils.addAll(list, str);
 ```
 
-6、 使用 Java9 的 `List.of()` 方法
+6. Sử dụng `List.of()` của Java 9
 
 ```java
 Integer[] array = {1, 2, 3};

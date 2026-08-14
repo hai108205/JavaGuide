@@ -1,6 +1,6 @@
 ---
-title: 斩获 20+ 大厂 offer 的面试经验分享
-description: "斩获 20+ 大厂 offer 的面试经验分享：围绕技术知识与面试总结梳理关键概念、常见问题与实践要点，帮助你高效学习与备战面试。"
+title: Chia sẻ kinh nghiệm phỏng vấn giành được offer từ 20+ công ty lớn
+description: "Chia sẻ kinh nghiệm phỏng vấn giành được offer từ 20+ công ty lớn: xoay quanh kiến thức kỹ thuật và tổng kết phỏng vấn, hệ thống hóa các khái niệm then chốt, câu hỏi thường gặp và điểm mấu chốt thực hành, giúp bạn học tập hiệu quả và chuẩn bị cho phỏng vấn."
 category: 技术文章精选集
 author: 业余码农
 tag:
@@ -11,192 +11,192 @@ head:
       content: 大厂面试,面试技巧,自我介绍,项目经历,技术面试,编码能力,HR面试,offer选择
 ---
 
-> **推荐语**：很实用的面试经验分享！
+> **Lời giới thiệu**: Chia sẻ kinh nghiệm phỏng vấn rất thực tế!
 >
-> **原文地址**：<https://mp.weixin.qq.com/s/HXKg6-H0kGUU2OA1DS43Bw>
+> **Địa chỉ bài gốc**: <https://mp.weixin.qq.com/s/HXKg6-H0kGUU2OA1DS43Bw>
 
-突然回想起当年，我也在秋招时也斩获了 20+的互联网各大厂 offer。现在想起来也是有点唏嘘，毕竟拿得再多也只能选择一家。不过许多朋友想让我分享下互联网面试方法，今天就来给大家仔细讲讲打法！
+Bỗng nhớ lại năm đó, trong kỳ tuyển dụng mùa thu, tôi cũng giành được hơn 20 offer từ các công ty lớn trong ngành internet. Giờ nghĩ lại cũng thấy hơi tiếc nuối, dù sao thì nhận nhiều đến mấy cũng chỉ được chọn một nhà mà thôi. Tuy nhiên, nhiều bạn bè muốn tôi chia sẻ về phương pháp phỏng vấn ngành internet, hôm nay tôi sẽ kể chi tiết cho mọi người nghe cách "đánh trận" nhé!
 
-如今金九银十已经过去，满是硝烟的求职战场上也只留下一处处炮灰。在现在这段日子，又是重新锻炼，时刻准备着明年金三银四的时候。
+Nay kỳ "vàng chín bạc mười" (tháng 9, tháng 10) đã qua đi, chiến trường tìm việc đầy khói lửa chỉ còn lại từng đống tro tàn. Trong khoảng thời gian này, chính là lúc rèn luyện lại, chuẩn bị sẵn sàng cho kỳ "vàng ba bạc bốn" (tháng 3, tháng 4) năm sau.
 
-对于还没毕业的学生来说，明年三四月是春招补招或者实习招聘的机会；对于职场老油条来说，明年三四月也是拿完年终奖准备提桶跑路的时候。
+Đối với những sinh viên chưa tốt nghiệp, tháng 3, tháng 4 năm sau là cơ hội tuyển bổ sung mùa xuân hoặc tuyển thực tập sinh; còn với những "lão làng" trong nghề, đó cũng là lúc lĩnh xong thưởng cuối năm rồi chuẩn bị "xách thùng bỏ đi" (nghỉ việc).
 
-所以这段日子，就需要好好准备积累面试方法以及面试经验，明年的冲锋陷阵打下基础。这篇文章将为大家讲讲，程序员应该如何准备好技术面试。
+Vì vậy, trong khoảng thời gian này, chúng ta cần chuẩn bị kỹ, tích lũy phương pháp và kinh nghiệm phỏng vấn, làm nền tảng cho cuộc xung phong năm sau. Bài viết này sẽ chia sẻ cho mọi người, lập trình viên nên chuẩn bị cho buổi phỏng vấn kỹ thuật như thế nào.
 
-一般而言，互联网公司技术岗的招聘都会根据需要设置为 3 ～ 4 轮面试，一些 HC 较少的岗位可能还会经历 5 ～ 8 轮面试不等。除此之外，视公司情况，面试之前还可能也会设定相应的笔试环节。
+Thông thường, các công ty internet tuyển vị trí kỹ thuật thường sắp xếp 3 ～ 4 vòng phỏng vấn tùy theo nhu cầu, một số vị trí có chỉ tiêu tuyển (HC) ít thậm chí có thể trải qua 5 ～ 8 vòng. Ngoài ra, tùy vào tình hình công ty, trước phỏng vấn có thể còn có thêm các vòng thi viết tương ứng.
 
-多轮的面试中包括技术面和 HR 面。相对来说，在整体的招聘流程中，技术面的决定性比较重要，HR 面更多的是确认候选人的基本情况和职业素养。
+Trong nhiều vòng phỏng vấn bao gồm vòng kỹ thuật và vòng HR. Tương đối mà nói, trong toàn bộ quy trình tuyển dụng, vòng kỹ thuật có tính quyết định quan trọng hơn, vòng HR chủ yếu xác nhận tình hình cơ bản và tố chất nghề nghiệp của ứng viên.
 
-不过在某些大厂，HR 也具有一票否决权，所以每一轮面试都该好好准备和应对。技术面试一般可分为五个部分：
+Tuy nhiên, ở một số công ty lớn, HR cũng có quyền phủ quyết, vì vậy mỗi vòng phỏng vấn đều nên chuẩn bị và ứng phó thật tốt. Phỏng vấn kỹ thuật thường được chia thành năm phần:
 
-1. 双方自我介绍
-2. 项目经历
-3. 专业知识考查
-4. 编码能力考察
-5. 候选人 Q&A
+1. Hai bên tự giới thiệu
+2. Kinh nghiệm dự án
+3. Kiểm tra kiến thức chuyên môn
+4. Đánh giá năng lực code
+5. Hỏi đáp (Q&A) với ứng viên
 
-## 双方自我介绍
+## Tự giới thiệu hai bên
 
-面试往往是以自我介绍作为开场，很多时候一段条理清晰逻辑明确的开场会决定整场面试的氛围和节奏。
+Phỏng vấn thường mở đầu bằng phần tự giới thiệu, và rất nhiều khi một phần mở đầu rành mạch, logic rõ ràng sẽ quyết định không khí và nhịp độ của cả buổi phỏng vấn.
 
-**作为候选人，我们可以在自我介绍中适当的为本次面试提供指向性的信息，以辅助面试官去发掘自己身上的亮点和长处**。
+**Với tư cách ứng viên, chúng ta có thể trong phần tự giới thiệu đưa ra những thông tin định hướng cho buổi phỏng vấn này, để hỗ trợ nhà tuyển dụng khám phá ra điểm sáng và thế mạnh của mình.**
 
-其实自我介绍并不是简单的个人基本情况的条条过目，而是对自己简历的有效性概括。
+Thực ra tự giới thiệu không phải đơn giản là điểm qua từng mục thông tin cá nhân cơ bản, mà là sự khái quát hiệu quả về chính bản thân hồ sơ của mình.
 
-什么是有效性概括呢，就是意味着需要对简历中的信息进行核心关键词的提取整合。一段话下来，就能够让面试官对你整体的情况有了了解，从而能够引导面试官的联系提问。
+"Khái quát hiệu quả" là gì? Nghĩa là cần trích xuất và tổng hợp các từ khóa cốt lõi từ thông tin trong hồ sơ. Chỉ cần một đoạn nói, đã có thể giúp nhà tuyển dụng nắm được tình hình tổng thể của bạn, từ đó định hướng được các câu hỏi liên quan của họ.
 
-## 项目经历
+## Kinh nghiệm dự án
 
-项目经历是面试过程中非常重要的一环，特别是在社招的面试中。一般社招的职级越高，往往越看重项目经历。
+Kinh nghiệm dự án là một phần rất quan trọng trong quá trình phỏng vấn, đặc biệt là trong phỏng vấn tuyển dụng xã hội (tuyển người có kinh nghiệm). Thông thường, cấp bậc tuyển xã hội càng cao thì càng coi trọng kinh nghiệm dự án.
 
-而对于一般的校招生而言，几份岗位度匹配度以及项目完整性高的项目经历可以成为面试的亮点，也是决定于拿`SP` or `SSP`的关键。
+Còn đối với sinh viên mới tốt nghiệp thông thường, những dự án có độ phù hợp với vị trí và độ hoàn chỉnh cao có thể trở thành điểm sáng trong phỏng vấn, đồng thời cũng là yếu tố quyết định giành được `SP` hay `SSP`.
 
-但是准备好项目经历，并不是一件容易的事情。很多人并不清楚应该怎样去描述自己的项目，更不知道应该在经历中如何去体现自己的优势和亮点。
+Nhưng chuẩn bị tốt kinh nghiệm dự án không phải là chuyện dễ dàng. Nhiều người không rõ nên mô tả dự án của mình như thế nào, càng không biết nên thể hiện ưu thế và điểm sáng của bản thân trong kinh nghiệm ra sao.
 
-这里针对项目经历给大家提几点建议：
+Ở đây tôi xin đưa vài gợi ý về kinh nghiệm dự án:
 
-**1、高效有条理的描述**
+**1、Mô tả hiệu quả và có trình tự**
 
-项目经历的一般是简历里篇幅最大的部分，所以在面试时这部分同样重要。在表述时，语言的逻辑和条理一定要清晰，以保证面试官能够在最快的时间抓到你的项目的整体思路。
+Kinh nghiệm dự án thường là phần chiếm nhiều chỗ nhất trong hồ sơ, vì vậy trong phỏng vấn phần này cũng quan trọng tương đương. Khi trình bày, logic và trình tự của ngôn ngữ phải thật rõ ràng, để đảm bảo nhà tuyển dụng có thể nắm bắt được tư duy tổng thể của dự án của bạn trong thời gian nhanh nhất.
 
-相信很多人都听说过写简历的各种原则，比如`STAR`、`SMART`等。但实际上这些原则都可以用来规范自己的表达逻辑。
+Chắc hẳn nhiều người từng nghe qua các nguyên tắc viết hồ sơ như `STAR`, `SMART`... Nhưng thực ra những nguyên tắc này đều có thể dùng để chuẩn hóa logic diễn đạt của bản thân.
 
-`STAR`原则相对简单，用来在面试过程中规范自己的条理非常有效。所谓`STAR`，即`Situation`、`Target`、`Action`、`Result`。这跟写论文写文档的逻辑划分大体一致。
+Nguyên tắc `STAR` khá đơn giản, dùng để chuẩn hóa trình tự của bản thân trong quá trình phỏng vấn rất hiệu quả. `STAR` tức là `Situation`, `Target`, `Action`, `Result`. Điều này gần giống với cách phân chia logic khi viết luận văn, viết tài liệu.
 
-- `Situation`: 即项目背景，需要将项目提出的原因、现状以及出发点表述清楚。简单来说，就是要将项目提出的来龙去脉描述清晰。比如某某平台建设的原因，是切入用户怎样的痛点之类的。
-- `Target`: 即项目目标，这点描述的是项目预期达到或完成的程度。**最好是有可量化的指标和预期结果。**比如性能优化的指标、架构优化所带来的业务收益等等。
-- `Action`: 即方法方案，意味着完成项目具体实施的行为。这点在技术面试中最为重要，也是表现候选人能力的基础。**项目的方法或方案可以从技术栈出发，根据采用的不同技术点来具体写明解决了哪些问题。**比如用了什么框架/技术实现了什么架构/优化/设计，解决了项目中什么样的问题。
-- `Result`: 即项目获得结果，这点可以在面试中讲讲自己经历过项目后的思考和反思。这样会让面试官感受到你的成长和沉淀，会比直接的结果并动人。
+- `Situation`: tức là bối cảnh dự án, cần trình bày rõ lý do đề xuất dự án, hiện trạng cũng như điểm xuất phát. Nói đơn giản, là mô tả rõ ràng ngọn nguồn của việc dự án được đưa ra. Ví dụ như lý do xây dựng nền tảng nào đó là nhằm giải quyết điểm đau (pain point) gì của người dùng...
+- `Target`: tức là mục tiêu dự án, điểm này mô tả mức độ dự án dự kiến đạt được hoặc hoàn thành. **Tốt nhất nên có chỉ số định lượng được và kết quả dự kiến.** Ví dụ như chỉ số tối ưu hiệu năng, lợi ích nghiệp vụ mang lại từ tối ưu kiến trúc...
+- `Action`: tức là phương pháp và giải pháp, nghĩa là các hành động hoàn thành việc triển khai cụ thể của dự án. Điểm này quan trọng nhất trong phỏng vấn kỹ thuật, cũng là nền tảng thể hiện năng lực của ứng viên. **Phương pháp hoặc giải pháp của dự án có thể xuất phát từ công nghệ (tech stack), dựa trên các điểm kỹ thuật khác nhau được áp dụng để viết rõ đã giải quyết những vấn đề gì.** Ví dụ như đã dùng framework/công nghệ gì để hiện thực hóa kiến trúc/tối ưu/thiết kế gì, giải quyết vấn đề gì trong dự án.
+- `Result`: tức là kết quả đạt được của dự án, điểm này có thể kể trong phỏng vấn về suy nghĩ và phản tư của bản thân sau khi trải qua dự án. Như vậy sẽ khiến nhà tuyển dụng cảm nhận được sự trưởng thành và tích lũy của bạn, so với việc chỉ liệt kê kết quả một cách khô khan sẽ thuyết phục hơn.
 
-**2、充分准备项目亮点**
+**2、Chuẩn bị đầy đủ điểm sáng của dự án**
 
-说实话，大部分人其实都没有十分亮眼的项目，但是并不意味着没有项目经历的亮点。特别是在面试中。
+Nói thật, phần lớn mọi người thực ra không có dự án nào thật sự rực rỡ, nhưng điều đó không có nghĩa là kinh nghiệm dự án không có điểm sáng. Đặc biệt là trong phỏng vấn.
 
-在面试中，你可以通过充分的准备以及深入的思考来突出你的项目亮点。比如可以从以下几个方向入手：
+Trong phỏng vấn, bạn có thể làm nổi bật điểm sáng dự án thông qua chuẩn bị đầy đủ và suy nghĩ sâu sắc. Ví dụ có thể bắt đầu từ vài hướng sau:
 
-- 充分了解项目的业务逻辑和技术架构
-- 熟悉项目的整体架构和关键设计
-- 明确的知道业务架构或技术方案选型以及决策逻辑
-- 深入掌握项目中涉及的组件以及框架
-- 熟悉项目中的疑难杂症或长期遗留 bug 的解决方案
+- Hiểu đầy đủ logic nghiệp vụ và kiến trúc kỹ thuật của dự án
+- Quen thuộc kiến trúc tổng thể và thiết kế mấu chốt của dự án
+- Biết rõ quá trình lựa chọn nghiệm thu (tech selection) của kiến trúc nghiệp vụ hoặc giải pháp kỹ thuật cũng như logic quyết định
+- Nắm sâu các component và framework liên quan trong dự án
+- Quen thuộc các giải pháp cho vấn đề nan giải hoặc bug tồn đọng lâu ngày trong dự án
 - ……
 
-## 专业知识考查
+## Kiểm tra kiến thức chuyên môn
 
-有经验的面试官往往会在对项目经历刨根问底的同时，从中考察你的专业知识。
+Nhà tuyển dụng có kinh nghiệm thường đồng thời đào sâu hỏi đến tận cùng kinh nghiệm dự án, và từ đó kiểm tra kiến thức chuyên môn của bạn.
 
-所谓专业知识，对于程序员而言就是意向岗位的计算机知识图谱。对于校招生来说，大部分都是计算机基础；而对于社招而言，很大部分可能是对应岗位的技能树。
+Cái gọi là kiến thức chuyên môn, đối với lập trình viên chính là bản đồ tri thức máy tính (kiến thức nền tảng về máy tính) của vị trí dự định ứng tuyển. Đối với sinh viên mới tốt nghiệp, phần lớn là kiến thức nền tảng máy tính; còn đối với người tuyển dụng xã hội, phần lớn có thể là cây kỹ năng (skill tree) tương ứng với vị trí.
 
-计算机基础主要就是计算机网络、操作系统、编程语言之类的，也就是所谓的八股文。虽然这些东西在实际的工作中可能用处并不多，但是却是面试官评估候选人潜力的标准。
+Kiến thức nền tảng máy tính chủ yếu là mạng máy tính, hệ điều hành, ngôn ngữ lập trình... tức là cái gọi là "bát cổ văn" (kiến thức lý thuyết kinh điển). Mặc dù những thứ này trong công việc thực tế có thể không được dùng nhiều, nhưng lại là tiêu chuẩn để nhà tuyển dụng đánh giá tiềm năng của ứng viên.
 
-而对应岗位的技能树就需要根据具体的岗位来划分，**比如说客户端岗位可能会问移动操作系统理解、端性能优化、客户端架构以及跨端框架之类的。跟直播视频相关的岗位，还会问音视频处理、通信等相关的知识。**
+Còn cây kỹ năng tương ứng với vị trí thì cần phân chia theo vị trí cụ thể, **ví dụ vị trí client (client-side) có thể hỏi về hiểu biết hệ điều hành di động, tối ưu hiệu năng phía ứng dụng, kiến trúc client cũng như các framework đa nền tảng (cross-platform). Các vị trí liên quan đến live stream video sẽ hỏi thêm về xử lý âm thanh/hình ảnh, truyền thông và các kiến thức liên quan.**
 
-而后端岗位可能就更偏向于**高可用架构、事务理论、分布式中间件以及一些服务化、异步、高可用可扩展的架构设计思想**。
+Còn vị trí backend có lẽ nghiêng về **kiến trúc tính sẵn sàng cao (high availability), lý thuyết transaction, middleware phân tán cũng như các tư tưởng thiết kế kiến trúc như service hóa, async, tính sẵn sàng cao và khả năng mở rộng**.
 
-总而言之，工作经验越丰富，岗位技术能的问题也就越深入。
+Tóm lại, kinh nghiệm làm việc càng phong phú thì các câu hỏi về kỹ năng kỹ thuật của vị trí cũng càng chuyên sâu.
 
-怎么在面试前去准备这些技术点，在这里我就不过多说了， 因为很多学习路线以及说的很清楚了。
+Làm thế nào để chuẩn bị các điểm kỹ thuật này trước khi phỏng vấn, ở đây tôi không nói nhiều nữa, vì rất nhiều lộ trình học tập đã trình bày rất rõ ràng rồi.
 
-这里我就讲讲在应对面试的时候，该怎样去更好的表达描述清楚。
+Ở đây tôi chỉ nói về việc khi đối mặt với phỏng vấn, nên diễn đạt mô tả rõ ràng tốt hơn như thế nào.
 
-这里针对专业知识考察给大家提几点建议：
+Ở đây xin đưa vài gợi ý về phần kiểm tra kiến thức chuyên môn:
 
-**1、提前建立一份技术知识图谱**
+**1、Xây dựng sớm một bản đồ tri thức kỹ thuật**
 
-在面试之前，可以先将自己比较熟悉的知识点做一个简单的归纳总结，根据不同方向和领域画个简单的草图。这是为了辅助自己在面试时能够进行合理的扩展和延伸。
+Trước khi phỏng vấn, có thể tổng hợp đơn giản các điểm kiến thức mình tương đối quen thuộc, vẽ một bản phác thảo đơn giản theo các hướng và lĩnh vực khác nhau. Việc này để hỗ trợ bản thân có thể mở rộng và phát triển một cách hợp lý khi phỏng vấn.
 
-面试官一问一答形式的面试总是会给人不太好的面试体验，所以在回答技术要点的过程中，要善于利用自己已有的知识图谱来进行技术广度的扩展和技术深度的钻研。这样一来能够引导面试官往你擅长的方向去提问，二来能够尽可能多的展现自己的亮点。
+Phỏng vấn theo hình thức hỏi đáp một chiều thường mang lại trải nghiệm phỏng vấn không tốt, vì vậy trong quá trình trả lời các điểm kỹ thuật, nên khéo léo tận dụng bản đồ tri thức sẵn có của mình để mở rộng bề rộng kỹ thuật và đào sâu chiều sâu kỹ thuật. Một là có thể định hướng nhà tuyển dụng hỏi theo hướng bạn giỏi, hai là có thể thể hiện càng nhiều điểm sáng của bản thân càng tốt.
 
-**2、结合具体经验来总结理解**
+**2、Kết hợp kinh nghiệm cụ thể để tổng kết hiểu biết**
 
-技术点本身都是非常死板和冰冷的，但是如果能够将生硬的技术点与具体的案例结合起来描述，会让人眼前一亮。同时也能够表明自己是的的确确理解了该知识点。
+Các điểm kỹ thuật tự thân rất khô cứng và lạnh lùng, nhưng nếu có thể kết hợp các điểm kỹ thuật khô khan với các case cụ thể để mô tả, sẽ khiến người nghe bất ngờ thích thú. Đồng thời cũng chứng tỏ bạn thực sự đã hiểu điểm kiến thức đó.
 
-现在网上各种面试素材应有尽有，可能你背背题就能够应付面试官的提问。但是面试官也同样知道这点，所以他能够很清楚的判别出你是否在背题。
+Hiện nay trên mạng đủ loại tài liệu phỏng vấn, có thể bạn chỉ cần học thuộc đề là đã ứng phó được các câu hỏi của nhà tuyển dụng. Nhưng nhà tuyển dụng cũng biết rõ điều này, nên họ có thể phân biệt rất rõ bạn có đang học thuộc lòng đề hay không.
 
-因此，结合具体的经验来解释表达问题是能够防止被误认为背题的有效方法。可能有人会问了，那具体的经验哪里去找呢。
+Vì vậy, kết hợp kinh nghiệm cụ thể để giải thích, diễn đạt vấn đề là phương pháp hiệu quả để tránh bị hiểu nhầm là thuộc lòng đề. Có thể có người sẽ hỏi, vậy kinh nghiệm cụ thể tìm ở đâu ra?
 
-这就得靠平时的积累了，平时需要多积累沉淀，多看大厂的各类技术输出。经验不一定是自己的，也可以是从别的地方总结而来的。
+Điều này phải dựa vào tích lũy thường ngày, thường ngày cần tích lũy và lắng đọng nhiều, chăm đọc các bài chia sẻ kỹ thuật của các công ty lớn. Kinh nghiệm không nhất thiết là của mình, cũng có thể là tổng kết từ những nơi khác.
 
-此外，也可以结合自己在做项目的过程中的一些技术选型经验以及技术方案更新迭代的过程进行融会贯通，相互结合的来进行表述。
+Ngoài ra, cũng có thể kết hợp một số kinh nghiệm lựa chọn công nghệ (tech selection) trong quá trình làm dự án cũng như quá trình thay đổi và cập nhật các giải pháp kỹ thuật, dung hòa và lồng ghép với nhau để trình bày.
 
-## 编码能力考察
+## Đánh giá năng lực code
 
-编码能力考察就是咱们俗称的手撕代码，也是许多同学最害怕的一关。很多人会觉得面试结果就是看手撕代码的表现，但其实并不一定。
+Đánh giá năng lực code chính là cái mà chúng ta hay gọi là "xé giấy viết code" (tự viết code), cũng là cửa ải khiến nhiều bạn sợ nhất. Nhiều người nghĩ kết quả phỏng vấn chính là xem phần trình diễn viết code, nhưng thực ra không hẳn vậy.
 
-**首先得明确的一点是，编码能力不完全等于算法能力。**很多同学面试时候算法题明明写出来了，但是最终的面试评价却是编码能力一般。还有很多同学面试时算法题死活没通过，但是面试官却觉得他的编码能力还可以。
+**Điều đầu tiên cần làm rõ là, năng lực code không hoàn toàn tương đương với năng lực thuật toán.** Nhiều bạn khi phỏng vấn rõ ràng viết được bài thuật toán, nhưng đánh giá cuối cùng của buổi phỏng vấn lại là năng lực code bình thường. Còn có nhiều bạn khi phỏng vấn bài thuật toán nhất định không qua được, nhưng nhà tuyển dụng lại cảm thấy năng lực code của họ vẫn ổn.
 
-所以一定要注意区分这点，编码能力不完全等于算法能力。从公司出发，如果纯粹为了出难度高的算法题来筛选候选人，是没有意义的。因为大家都知道，进了公司可能工作几年都写不了几个算法。
+Vì vậy nhất định phải chú ý phân biệt điểm này, năng lực code không hoàn toàn tương đương với năng lực thuật toán. Đứng từ góc độ công ty, nếu thuần túy ra các bài thuật toán độ khó cao để sàng lọc ứng viên, là vô nghĩa. Bởi ai cũng biết, vào công ty rồi có khi làm vài năm cũng chẳng viết được mấy thuật toán.
 
-要记住，做算法题只是一个用来验证编码能力和逻辑思维的手段和方式。
+Hãy nhớ rằng, làm bài thuật toán chỉ là một phương tiện và cách thức dùng để kiểm chứng năng lực code và tư duy logic.
 
-当然说到底，在准备这一块的面试时，算法题肯定得刷，但是不该盲目追求难度，甚至是死记硬背。
+Tất nhiên nói cho cùng, khi chuẩn bị phần phỏng vấn này, bài thuật toán chắc chắn phải luyện, nhưng không nên mù quáng theo đuổi độ khó, thậm chí là học vẹt.
 
-几点面试时的建议：
+Vài lời khuyên khi phỏng vấn:
 
-**1、数据结构和算法思想是基础**
+**1、Cấu trúc dữ liệu và tư tưởng thuật toán là nền tảng**
 
-算法本身实际上是逻辑思考的产物，所以掌握算法思想比会做某一道题要更有意义。数据结构是帮助实现算法的工具，这也很编程的基本能力。所以这二者的熟悉程度是手撕代码的基础。
+Thuật toán tự thân thực ra là sản phẩm của tư duy logic, vì vậy nắm được tư tưởng thuật toán còn có ý nghĩa hơn việc làm được một bài cụ thể. Cấu trúc dữ liệu là công cụ giúp hiện thực hóa thuật toán, đây cũng là năng lực cơ bản của lập trình. Vì vậy mức độ quen thuộc với hai thứ này chính là nền tảng của việc viết code.
 
-**2、不要忽视编码规范**
+**2、Đừng bỏ qua chuẩn code (coding standards)**
 
-这点就是提醒大家要记住，就算是一段很简单的算法题也能够从中看出你的编码能力。这往往就体现在一些基本的编码规范上。你说你编程经验有 3 年，但是发现连基本的函数封装类型保护都不会，让人怎么相信呢。
+Điểm này là nhắc mọi người phải ghi nhớ, dù chỉ là một bài thuật toán đơn giản cũng có thể nhìn ra được năng lực code của bạn. Điều này thường thể hiện ở một số chuẩn code cơ bản. Bạn nói mình có 3 năm kinh nghiệm lập trình, nhưng bị phát hiện ngay cả đóng gói hàm (function encapsulation) và bảo vệ kiểu dữ liệu cơ bản cũng không biết, thì làm sao người ta tin được?
 
-**3、沟通很重要**
+**3、Giao tiếp rất quan trọng**
 
-手撕代码绝对不是一个闭卷考试的过程，而是一个相互沟通的过程。上面也说过，考察算法也是为了考察逻辑思维能力。所以让面试官知道你思考问题的思路以及逻辑比你直接写出答案更重要。
+Viết code tuyệt đối không phải là một quá trình thi đóng sách (thi không mở tài liệu), mà là một quá trình giao tiếp qua lại. Ở trên cũng đã nói, kiểm tra thuật toán cũng là để kiểm tra khả năng tư duy logic. Vì vậy, để nhà tuyển dụng biết được cách tư duy giải quyết vấn đề và logic của bạn quan trọng hơn việc bạn viết thẳng ra đáp án.
 
-不仅如此，提前沟通清楚思路，遇到题意不明确的地方及时询问，也是节省大家时间，给面试官留下好印象的机会。
+Không những vậy, trao đổi rõ ý tưởng từ trước, gặp chỗ đề bài chưa rõ thì kịp thời hỏi lại, cũng là cách tiết kiệm thời gian cho mọi người, đồng thời là cơ hội để lại ấn tượng tốt với nhà tuyển dụng.
 
-此外，自己写的代码一定要经得住推敲和质疑，自己能够讲的明白。这也是能够区分「背题」和「真正会做」的地方。
+Ngoài ra, code mình viết nhất định phải chịu được sự suy xét và chất vấn, bản thân phải giải thích được rõ ràng. Đây cũng là nơi phân biệt được giữa "thuộc lòng đề" và "thực sự biết làm".
 
-最后，如果代码实在写不出来，但是也可以适当的表达自己的思路并与面试官交流探讨。毕竟面试也是一个学习的过程。
+Cuối cùng, nếu code thật sự viết không ra, thì vẫn có thể thể hiện hợp lý ý tưởng của mình và trao đổi, thảo luận với nhà tuyển dụng. Dù sao phỏng vấn cũng là một quá trình học tập.
 
-## 候选人 Q&A
+## Hỏi đáp (Q&A) với ứng viên
 
-一般正常的话，都会有候选人反问环节。倘若没有，可能是想让你回家等消息。
+Thông thường nếu mọi chuyện diễn ra bình thường, đều sẽ có phần ứng viên hỏi ngược lại. Nếu không có, có lẽ là muốn bạn về nhà chờ tin.
 
-反问环节其实也可以是面试中重要的环节，因为这个时候你能够从面试官口中获得关于公司关于岗位更具体真实的信息。
+Phần hỏi ngược lại thực ra cũng có thể là một phần quan trọng trong phỏng vấn, bởi vì lúc này bạn có thể thu được từ miệng nhà tuyển dụng những thông tin cụ thể và chân thực hơn về công ty, về vị trí.
 
-这些信息可以帮助我们做出更全面更理性的决策，毕竟求职也是一个双向选择的过程。
+Những thông tin này có thể giúp chúng ta đưa ra quyết định toàn diện và hợp lý hơn, dù sao tìm việc cũng là một quá trình lựa chọn hai chiều.
 
-## 加分项
+## Điểm cộng (plus điểm)
 
-最后，给能够坚持看到最后的同学一个福利。我们来谈谈面试中的加分项。
+Cuối cùng, một món quà dành cho những bạn kiên trì đọc đến cuối. Chúng ta hãy nói về các điểm cộng trong phỏng vấn.
 
-很多同学会觉得明明面试时候的问题都答上来了，但是最终却没有通过面试，或者面试评价并不高。这很有可能就是面试过程中缺少了亮点，可能你并不差，但是没有打动面试官的地方。
+Nhiều bạn cảm thấy rõ ràng các câu hỏi trong phỏng vấn đều trả lời được, nhưng cuối cùng vẫn không qua, hoặc đánh giá phỏng vấn không cao. Rất có thể là do thiếu điểm sáng trong quá trình phỏng vấn, có thể bạn không kém, nhưng không có chỗ nào khiến nhà tuyển dụng rung động.
 
-一般面试官会从下面几个方面去考察候选人的亮点：
+Nhà tuyển dụng thường đánh giá điểm sáng của ứng viên từ vài khía cạnh sau:
 
-**1、沟通**
+**1、Giao tiếp**
 
-面试毕竟是问答与表达的艺术，所以你流利的表达，清晰有条理的思路自然能够增加面试官对你的高感度。同时如果还具有举一反三的思维，那也能够从侧面证明你的潜力。
+Phỏng vấn xét cho cùng là nghệ thuật của hỏi đáp và diễn đạt, vì vậy sự diễn đạt trôi chảy, tư duy rõ ràng có mạch lạc của bạn tự nhiên sẽ tăng độ cảm tình của nhà tuyển dụng dành cho bạn. Đồng thời nếu còn có tư duy suy một ra ba, thì cũng có thể chứng minh được tiềm năng của bạn từ một góc độ khác.
 
-**2、匹配度**
+**2、Mức độ phù hợp**
 
-这一点毋庸置疑，但是却很容易被忽视。因为往往大家都会认为，匹配度不高的都在简历筛选阶段被刷掉了。但其实在面试过程中，面试官同样也会评估面试人与岗位的匹配度。
+Khía cạnh này không cần bàn cãi, nhưng lại rất dễ bị xem nhẹ. Bởi vì thường mọi người đều cho rằng, những người có độ phù hợp không cao đều đã bị loại ở giai đoạn lọc hồ sơ. Nhưng thực ra trong quá trình phỏng vấn, nhà tuyển dụng cũng đánh giá mức độ phù hợp giữa người phỏng vấn với vị trí.
 
-这个匹配度与工作经历强相关，与之前做过的业务和技术联系很大。特别是某些垂直领域的技术岗位，比如财经、资金、音视频等。
+Mức độ phù hợp này liên quan chặt chẽ với kinh nghiệm làm việc, có mối liên hệ lớn với nghiệp vụ và kỹ thuật từng làm trước đây. Đặc biệt là một số vị trí kỹ thuật trong các lĩnh vực dọc (vertical) như tài chính, dòng tiền, âm thanh/hình ảnh...
 
-所以在面试中，如若有跟目标岗位匹配度很高的经历和项目，可以着重详细介绍。
+Vì vậy trong phỏng vấn, nếu có kinh nghiệm và dự án có độ phù hợp cao với vị trí mục tiêu, có thể tập trung giới thiệu chi tiết.
 
-**3、高业绩，有超出岗位的思考**
+**3、Thành tích cao, có suy nghĩ vượt ra ngoài vị trí**
 
-这点就是可遇不可及，毕竟不是所有人都能够拿着好业绩然后跳槽。但是上一份工作所带来的好业绩，以及在重要项目中的骨干身份会为自己的经历加分。
+Điểm này là chuyện khó gặp khó cầu, dù sao không phải ai cũng có thể mang theo thành tích tốt rồi nhảy việc. Nhưng thành tích tốt mang lại từ công việc trước, cũng như vai trò trụ cột trong các dự án quan trọng sẽ cộng điểm cho kinh nghiệm của bạn.
 
-同时，如果能在面试中表现出超出岗位本身的能力，更能引起面试官注意。比如具备一定的技术视野，具备良好的规划能力，或者对业务方向有比较深入的见解。这些都能够成为亮点。
+Đồng thời, nếu có thể thể hiện trong phỏng vấn năng lực vượt ra ngoài phạm vi vị trí, càng dễ thu hút sự chú ý của nhà tuyển dụng. Ví dụ như có tầm nhìn kỹ thuật nhất định, có khả năng hoạch định tốt, hoặc có những hiểu biết tương đối sâu sắc về hướng nghiệp vụ. Những điều này đều có thể trở thành điểm sáng.
 
-**4、技术深度或广度**
+**4、Chiều sâu hoặc bề rộng kỹ thuật**
 
-相信很多人都听过，职场中最受欢迎的是`T`型人才。也就是在拥有一定技术广度的基础上，在自己擅长的领域十分拔尖。这样的人才的确很难得，既要求能够胜任自己的在职工作，又能够不设边界的学习和输出其它领域的知识。
+Chắc hẳn nhiều người từng nghe, được chào đón nhất trong môi trường công sở là nhân tài hình chữ `T`. Tức là trên nền tảng có một bề rộng kỹ thuật nhất định, đồng thời rất xuất sắc trong lĩnh vực mình giỏi. Loại nhân tài như vậy đúng là khó có được, vừa đòi hỏi đảm nhận tốt công việc hiện tại, vừa có thể không đặt giới hạn học hỏi và chia sẻ kiến thức các lĩnh vực khác.
 
-除此之外，**比 T 型人才更为难得是所谓 π 型人才，相比于 T 型人才，有了不止一项拔尖的领域。这类人才更是公司会抢占的资源。**
+Ngoài ra, **thứ còn hiếm hơn nhân tài hình chữ `T` chính là nhân tài hình chữ `π` (pi), so với nhân tài hình chữ `T`, họ có nhiều hơn một lĩnh vực xuất sắc. Loại nhân tài này càng là nguồn tài nguyên mà công ty sẽ tranh giành.**
 
-## 总结
+## Tổng kết
 
-面试虽说是考察和筛选优秀人才的过程，但说到底还是人与人沟通并展现自我的方式。所以掌握有效面试的技巧也是帮助自己收获更多的工具。
+Phỏng vấn tuy được nói là quá trình kiểm tra và sàng lọc nhân tài xuất sắc, nhưng nói cho cùng vẫn là cách con người giao tiếp và thể hiện bản thân. Vì vậy nắm vững kỹ năng phỏng vấn hiệu quả cũng là công cụ giúp bản thân thu hoạch được nhiều hơn.
 
-这篇文章其实算讲的是方法论，很多我们一看就明白的「道理」实施起来可能会很难。可能会遇到一个不按常理出牌的面试官，也可能也会遇到一个沟通困难的面试官，当然也可能会撞上一个不怎么匹配的岗位。
+Bài viết này thực ra nói về phương pháp luận (methodology), rất nhiều "đạo lý" mà chúng ta nhìn phát hiểu ngay khi thực hiện lại có thể rất khó. Có thể sẽ gặp một nhà tuyển dụng không theo lẽ thường, cũng có thể gặp một nhà tuyển dụng khó giao tiếp, tất nhiên cũng có thể đụng phải một vị trí không mấy phù hợp.
 
-总而言之，为了自己想要争取的东西，做好足够的准备总是没有坏处的。祝愿大家能成为`π`型人才，获得想要的`offer`！
+Tóm lại, vì những thứ bản thân muốn phấn đấu giành lấy, chuẩn bị đầy đủ luôn không có hại gì. Chúc mọi người đều có thể trở thành nhân tài hình chữ `π`, giành được `offer` như mong muốn!
 
 <!-- @include: @article-footer.snippet.md -->

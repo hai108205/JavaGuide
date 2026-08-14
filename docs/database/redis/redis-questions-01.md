@@ -1,246 +1,246 @@
 ---
-title: Redis常见面试题总结(上)
-description: 最新Redis面试题总结（上）：深入讲解Redis基础、五大常用数据结构、单线程模型原理、持久化机制、内存淘汰与过期策略、分布式锁与消息队列实现。适合准备后端面试的开发者！
-category: 数据库
+title: Tổng hợp câu hỏi phỏng vấn Redis thường gặp (Phần 1)
+description: "Tổng hợp câu hỏi phỏng vấn Redis mới nhất (Phần 1): giải thích chuyên sâu về nền tảng Redis, năm cấu trúc dữ liệu thông dụng, nguyên lý mô hình Single Thread, cơ chế Persistence, chiến lược Eviction và Expire của Memory, triển khai Distributed Lock và Message Queue. Phù hợp cho các lập trình viên đang chuẩn bị phỏng vấn Backend!"
+category: Cơ sở dữ liệu
 tag:
   - Redis
 head:
   - - meta
     - name: keywords
-      content: Redis面试题,Redis基础,Redis数据结构,Redis线程模型,Redis持久化,Redis内存管理,Redis性能优化,Redis分布式锁,Redis消息队列,Redis延时队列,Redis缓存策略,Redis单线程,Redis多线程,Redis过期策略,Redis淘汰策略
+      content: Câu hỏi phỏng vấn Redis,Nền tảng Redis,Cấu trúc dữ liệu Redis,Mô hình thread Redis,Persistence Redis,Quản lý Memory Redis,Tối ưu hiệu năng Redis,Distributed Lock Redis,Message Queue Redis,Delayed Queue Redis,Chiến lược Cache Redis,Single Thread Redis,Multi Thread Redis,Chiến lược Expire Redis,Chiến lược Eviction Redis
 ---
 
-## Redis 基础
+## Nền tảng Redis
 
-### 什么是 Redis？
+### Redis là gì?
 
-[Redis](https://redis.io/) （**RE**mote **DI**ctionary **S**erver）是一个基于 C 语言开发的开源 NoSQL 数据库（BSD 许可）。与传统数据库不同的是，Redis 的数据是保存在内存中的（内存数据库，支持持久化），因此读写速度非常快，被广泛应用于分布式缓存方向。并且，Redis 存储的是 KV 键值对数据。
+[Redis](https://redis.io/) (**RE**mote **DI**ctionary **S**erver) là một cơ sở dữ liệu NoSQL mã nguồn mở (giấy phép BSD) được phát triển dựa trên ngôn ngữ C. Khác với các cơ sở dữ liệu truyền thống, dữ liệu của Redis được lưu trong Memory (bộ nhớ trong, cơ sở dữ liệu in-memory, có hỗ trợ Persistence - lưu trữ bền vững), vì vậy tốc độ đọc ghi rất nhanh, được ứng dụng rộng rãi trong lĩnh vực Cache phân tán (Distributed Cache). Hơn nữa, Redis lưu trữ dữ liệu dạng cặp KV (Key-Value).
 
-为了满足不同的业务场景，Redis 内置了多种数据类型实现（比如 String、Hash、Sorted Set、Bitmap、HyperLogLog、GEO）。并且，Redis 还支持事务、持久化、Lua 脚本、发布订阅模型、多种开箱即用的集群方案（Redis Sentinel、Redis Cluster）。
+Để đáp ứng các kịch bản nghiệp vụ khác nhau, Redis tích hợp sẵn nhiều kiểu dữ liệu (ví dụ String, Hash, Sorted Set, Bitmap, HyperLogLog, GEO). Đồng thời, Redis còn hỗ trợ Transaction (giao dịch), Persistence, Lua script, mô hình Publish-Subscribe (xuất bản - đăng ký) và nhiều giải pháp Cluster sẵn sàng sử dụng ngay (Redis Sentinel, Redis Cluster).
 
-![Redis 数据类型概览](https://oss.javaguide.cn/github/javaguide/database/redis/redis-overview-of-data-types-2023-09-28.jpg)
+![Tổng quan các kiểu dữ liệu của Redis](https://oss.javaguide.cn/github/javaguide/database/redis/redis-overview-of-data-types-2023-09-28.jpg)
 
-Redis 没有外部依赖，Linux 和 OS X 是 Redis 开发和测试最多的两个操作系统，官方推荐生产环境使用 Linux 部署 Redis。
+Redis không có phụ thuộc bên ngoài, Linux và OS X là hai hệ điều hành mà Redis được phát triển và kiểm thử nhiều nhất, khuyến nghị chính thức là triển khai Redis trên Linux cho môi trường production.
 
-个人学习的话，你可以自己本机安装 Redis 或者通过 Redis 官网提供的[在线 Redis 环境](https://try.redis.io/)（少部分命令无法使用）来实际体验 Redis。
+Với việc học cá nhân, bạn có thể tự cài đặt Redis trên máy hoặc trải nghiệm thực tế Redis thông qua [môi trường Redis trực tuyến](https://try.redis.io/) do trang chủ Redis cung cấp (một số ít lệnh không sử dụng được).
 
 ![try-redis](https://oss.javaguide.cn/github/javaguide/database/redis/try.redis.io.png)
 
-全世界有非常多的网站使用到了 Redis，[techstacks.io](https://techstacks.io/) 专门维护了一个[使用 Redis 的热门站点列表](https://techstacks.io/tech/redis)，感兴趣的话可以看看。
+Trên thế giới có rất nhiều website sử dụng Redis, [techstacks.io](https://techstacks.io/) có duy trì riêng một [danh sách các trang phổ biến sử dụng Redis](https://techstacks.io/tech/redis), nếu quan tâm bạn có thể xem qua.
 
-### ⭐️Redis 为什么这么快？
+### ⭐️Tại sao Redis lại nhanh đến vậy?
 
-Redis 内部做了非常多的性能优化，比较重要的有下面 4 点：
+Bên trong Redis đã thực hiện rất nhiều tối ưu hiệu năng, quan trọng nhất là 4 điểm dưới đây:
 
-1. **纯内存操作 (Memory-Based Storage)** ：这是最主要的原因。Redis 数据读写操作都发生在内存中，访问速度是纳秒级别，而传统数据库频繁读写磁盘的速度是毫秒级别，两者相差数个数量级。
-2. **高效的 I/O 模型 (I/O Multiplexing & Single-Threaded Event Loop)** ：Redis 使用单线程事件循环配合 I/O 多路复用技术，让单个线程可以同时处理多个网络连接上的 I/O 事件（如读写），避免了多线程模型中的上下文切换和锁竞争问题。虽然是单线程，但结合内存操作的高效性和 I/O 多路复用，使得 Redis 能轻松处理大量并发请求（Redis 线程模型会在后文中详细介绍到）。
-3. **优化的内部数据结构 (Optimized Data Structures)** ：Redis 提供多种数据类型（如 String, List, Hash, Set, Sorted Set 等），其内部实现采用高度优化的编码方式（如 ziplist, quicklist, skiplist, hashtable 等）。Redis 会根据数据大小和类型动态选择最合适的内部编码，以在性能和空间效率之间取得最佳平衡。
-4. **简洁高效的通信协议 (Simple Protocol - RESP)** ：Redis 使用的是自己设计的 RESP (REdis Serialization Protocol) 协议。这个协议实现简单、解析性能好，并且是二进制安全的。客户端和服务端之间通信的序列化/反序列化开销很小，有助于提升整体的交互速度。
+1. **Hoàn toàn thao tác trên Memory (Memory-Based Storage)**: Đây là nguyên nhân chủ yếu nhất. Mọi thao tác đọc ghi dữ liệu của Redis đều diễn ra trong Memory, tốc độ truy cập ở mức nano giây, trong khi các cơ sở dữ liệu truyền thống đọc ghi đĩa thường xuyên với tốc độ ở mức mili giây, hai bên chênh nhau vài bậc độ lớn.
+2. **Mô hình I/O hiệu quả (I/O Multiplexing & Single-Threaded Event Loop)**: Redis sử dụng Event Loop (vòng lặp sự kiện) Single Thread (đơn luồng) kết hợp với kỹ thuật I/O Multiplexing (ghép kênh I/O), cho phép một thread duy nhất xử lý đồng thời các sự kiện I/O (như đọc ghi) trên nhiều kết nối mạng, tránh được vấn đề chuyển đổi ngữ cảnh và tranh chấp khóa trong mô hình đa luồng. Tuy là Single Thread, nhưng kết hợp giữa hiệu quả của thao tác Memory và I/O Multiplexing giúp Redis dễ dàng xử lý lượng lớn yêu cầu đồng thời (mô hình thread của Redis sẽ được giới thiệu chi tiết ở phần sau).
+3. **Cấu trúc dữ liệu nội bộ được tối ưu (Optimized Data Structures)**: Redis cung cấp nhiều kiểu dữ liệu (như String, List, Hash, Set, Sorted Set, v.v.), triển khai nội bộ sử dụng các phương pháp mã hóa được tối ưu cao (như ziplist, quicklist, skiplist, hashtable, v.v.). Redis sẽ dựa vào kích thước và kiểu dữ liệu để động lựa chọn phương pháp mã hóa nội bộ phù hợp nhất, nhằm đạt được sự cân bằng tối ưu giữa hiệu năng và hiệu suất không gian.
+4. **Giao thức giao tiếp đơn giản hiệu quả (Simple Protocol - RESP)**: Redis sử dụng giao thức RESP (REdis Serialization Protocol) do chính họ thiết kế. Giao thức này triển khai đơn giản, hiệu năng phân giải tốt, và an toàn với nhị phân (binary-safe). Chi phí tuần tự hóa/giải tuần tự hóa khi giao tiếp giữa client và server rất nhỏ, góp phần nâng cao tốc độ tương tác tổng thể.
 
-> 下面这张图片总结的挺不错的，分享一下，出自 [Why is Redis so fast?](https://twitter.com/alexxubyte/status/1498703822528544770)。
+> Bức ảnh dưới đây tổng kết khá tốt, xin chia sẻ, nguồn từ [Why is Redis so fast?](https://twitter.com/alexxubyte/status/1498703822528544770).
 
 ![why-redis-so-fast](https://oss.javaguide.cn/github/javaguide/database/redis/why-redis-so-fast.png)
 
-那既然都这么快了，为什么不直接用 Redis 当主数据库呢？主要是因为内存成本太高，并且 Redis 提供的数据持久化仍然有数据丢失的风险。
+Vậy đã nhanh như thế, tại sao không dùng Redis luôn làm cơ sở dữ liệu chính? Chủ yếu là vì chi phí Memory quá cao, và cơ chế Persistence dữ liệu mà Redis cung cấp vẫn có nguy cơ mất dữ liệu.
 
-### 除了 Redis，你还知道其他分布式缓存方案吗？
+### Ngoài Redis, bạn còn biết giải pháp Cache phân tán nào khác không?
 
-如果面试中被问到这个问题的话，面试官主要想看看：
+Nếu trong phỏng vấn bị hỏi câu này, điều interviewer chủ yếu muốn xem là:
 
-1. 你在选择 Redis 作为分布式缓存方案时，是否是经过严谨的调研和思考，还是只是因为 Redis 是当前的“热门”技术。
-2. 你在分布式缓存方向的技术广度。
+1. Khi chọn Redis làm giải pháp Cache phân tán, bạn đã nghiên cứu và suy nghĩ kỹ lưỡng hay chưa, hay chỉ vì Redis là công nghệ "hot" hiện tại.
+2. Độ rộng kiến thức của bạn trong lĩnh vực Cache phân tán.
 
-如果你了解其他方案，并且能解释为什么最终选择了 Redis（更进一步！），这会对你面试表现加分不少！
+Nếu bạn biết các giải pháp khác, và có thể giải thích tại sao cuối cùng lại chọn Redis (tiến thêm một bước!), điều này sẽ cộng thêm khá nhiều điểm cho màn phỏng vấn của bạn!
 
-下面简单聊聊常见的分布式缓存技术选型。
+Dưới đây cùng điểm qua một số lựa chọn công nghệ Cache phân tán phổ biến.
 
-分布式缓存的话，比较老牌同时也是使用的比较多的还是 **Memcached** 和 **Redis**。不过，现在基本没有看过还有项目使用 **Memcached** 来做缓存，都是直接用 **Redis**。
+Về Cache phân tán, khá lâu đời đồng thời được sử dụng nhiều vẫn là **Memcached** và **Redis**. Tuy nhiên, hiện tại gần như không còn thấy dự án nào dùng **Memcached** để làm Cache nữa, đều trực tiếp dùng **Redis**.
 
-Memcached 是分布式缓存最开始兴起的那会，比较常用的。后来，随着 Redis 的发展，大家慢慢都转而使用更加强大的 Redis 了。
+Memcached khá thông dụng vào thời kỳ Cache phân tán mới bắt đầu nổi lên. Về sau, cùng với sự phát triển của Redis, mọi người dần chuyển sang sử dụng Redis mạnh mẽ hơn.
 
-有一些大厂也开源了类似于 Redis 的分布式高性能 KV 存储数据库，例如，腾讯开源的 [**Tendis**](https://github.com/Tencent/Tendis)。Tendis 基于知名开源项目 [RocksDB](https://github.com/facebook/rocksdb) 作为存储引擎 ，100% 兼容 Redis 协议和 Redis4.0 所有数据模型。关于 Redis 和 Tendis 的对比，腾讯官方曾经发过一篇文章：[Redis vs Tendis：冷热混合存储版架构揭秘](https://mp.weixin.qq.com/s/MeYkfOIdnU6LYlsGb24KjQ)，可以简单参考一下。
+Một số công ty lớn cũng đã mã nguồn mở các cơ sở dữ liệu lưu trữ KV phân tán hiệu năng cao tương tự Redis, ví dụ [**Tendis**](https://github.com/Tencent/Tendis) do Tencent mở nguồn. Tendis dựa trên dự án mã nguồn mở nổi tiếng [RocksDB](https://github.com/facebook/rocksdb) làm storage engine, tương thích 100% với giao thức Redis và tất cả các mô hình dữ liệu của Redis 4.0. Về so sánh giữa Redis và Tendis, phía Tencent từng đăng một bài viết: [Redis vs Tendis：冷热混合存储版架构揭秘](https://mp.weixin.qq.com/s/MeYkfOIdnU6LYlsGb24KjQ), có thể tham khảo đơn giản.
 
-不过，从 Tendis 这个项目的 Github 提交记录可以看出，Tendis 开源版几乎已经没有被维护更新了，加上其关注度并不高，使用的公司也比较少。因此，不建议你使用 Tendis 来实现分布式缓存。
+Tuy nhiên, từ lịch sử commit trên Github của dự án Tendis có thể thấy, bản mở nguồn của Tendis gần như đã không còn được bảo trì cập nhật, cộng thêm mức độ quan tâm không cao, số công ty sử dụng cũng khá ít. Vì vậy, không khuyến nghị bạn dùng Tendis để triển khai Cache phân tán.
 
-目前，比较业界认可的 Redis 替代品还是下面这两个开源分布式缓存（都是通过碰瓷 Redis 火的）：
+Hiện tại, các sản phẩm thay thế Redis được giới trong ngành công nhận nhiều hơn vẫn là hai dự án Cache phân tán mã nguồn mở dưới đây (đều nổi lên nhờ "ăn theo" Redis):
 
-- [Dragonfly](https://github.com/dragonflydb/dragonfly)：一种针对现代应用程序负荷需求而构建的内存数据库，完全兼容 Redis 和 Memcached 的 API，迁移时无需修改任何代码，号称全世界最快的内存数据库。
-- [KeyDB](https://github.com/Snapchat/KeyDB)：Redis 的一个高性能分支，专注于多线程、内存效率和高吞吐量。
+- [Dragonfly](https://github.com/dragonflydb/dragonfly): Một cơ sở dữ liệu in-memory được xây dựng cho nhu cầu tải của các ứng dụng hiện đại, hoàn toàn tương thích với API của Redis và Memcached, khi chuyển đổi không cần sửa bất kỳ dòng code nào, tự xưng là cơ sở dữ liệu in-memory nhanh nhất thế giới.
+- [KeyDB](https://github.com/Snapchat/KeyDB): Một nhánh hiệu năng cao của Redis, tập trung vào đa luồng, hiệu quả Memory và throughput cao.
 
-不过，个人还是建议分布式缓存首选 Redis，毕竟经过了这么多年的考验，生态非常优秀，资料也很全面！
+Tuy nhiên, cá nhân tôi vẫn khuyến nghị chọn Redis đầu tiên cho Cache phân tán, dù sao đã trải qua kiểm chứng nhiều năm như vậy, hệ sinh thái rất tốt, tài liệu cũng rất đầy đủ!
 
-PS：篇幅问题，我这并没有对上面提到的分布式缓存选型做详细介绍和对比，感兴趣的话，可以自行研究一下。
+PS: Vì vấn đề dung lượng, ở đây tôi không giới thiệu và so sánh chi tiết các lựa chọn Cache phân tán kể trên, nếu quan tâm, bạn có thể tự nghiên cứu thêm.
 
-### 说一下 Redis 和 Memcached 的区别和共同点
+### Hãy nêu điểm khác biệt và điểm chung giữa Redis và Memcached
 
-现在公司一般都是用 Redis 来实现缓存，而且 Redis 自身也越来越强大了！不过，了解 Redis 和 Memcached 的区别和共同点，有助于我们在做相应的技术选型的时候，能够做到有理有据！
+Hiện nay các công ty thường dùng Redis để triển khai Cache, và bản thân Redis cũng ngày càng mạnh mẽ hơn! Tuy nhiên, việc nắm rõ điểm khác biệt và điểm chung giữa Redis và Memcached giúp chúng ta khi lựa chọn công nghệ có thể đưa ra quyết định có lý có cứ!
 
-**共同点**：
+**Điểm chung**:
 
-1. 都是基于内存的数据库，一般都用来当做缓存使用。
-2. 都有过期策略。
-3. 两者的性能都非常高。
+1. Đều là cơ sở dữ liệu dựa trên Memory, thường được dùng làm Cache.
+2. Đều có chiến lược Expire (hết hạn).
+3. Hiệu năng của cả hai đều rất cao.
 
-**区别**：
+**Điểm khác biệt**:
 
-1. **数据类型**：Redis 支持更丰富的数据类型（支持更复杂的应用场景）。Redis 不仅仅支持简单的 k/v 类型的数据，同时还提供 list、set、zset、hash 等数据结构的存储；而 Memcached 只支持最简单的 k/v 数据类型。
-2. **数据持久化**：Redis 支持数据的持久化，可以将内存中的数据保持在磁盘中，重启的时候可以再次加载进行使用；而 Memcached 把数据全部存在内存之中。也就是说，Redis 有灾难恢复机制，而 Memcached 没有。
-3. **集群模式支持**：Memcached 没有原生的集群模式，需要依靠客户端来实现往集群中分片写入数据；而 Redis 自 3.0 版本起是原生支持集群模式的。
-4. **线程模型**：Memcached 是多线程、非阻塞 IO 复用的网络模型；而 Redis 使用单线程的多路 IO 复用模型（Redis 6.0 针对网络数据的读写引入了多线程）。
-5. **特性支持**：Redis 支持发布订阅模型、Lua 脚本、事务等功能，而 Memcached 不支持。并且，Redis 支持更多的编程语言。
-6. **过期数据删除**：Memcached 过期数据的删除策略只用了惰性删除，而 Redis 同时使用了惰性删除与定期删除。
+1. **Kiểu dữ liệu**: Redis hỗ trợ kiểu dữ liệu phong phú hơn (hỗ trợ kịch bản ứng dụng phức tạp hơn). Redis không chỉ hỗ trợ dữ liệu kiểu k/v đơn giản, đồng thời còn cung cấp khả năng lưu trữ các cấu trúc dữ liệu như list, set, zset, hash; trong khi Memcached chỉ hỗ trợ kiểu dữ liệu k/v đơn giản nhất.
+2. **Persistence dữ liệu**: Redis hỗ trợ Persistence dữ liệu, có thể giữ dữ liệu trong Memory lên đĩa, khi khởi động lại có thể nạp lại để sử dụng; còn Memcached lưu toàn bộ dữ liệu trong Memory. Nói cách khác, Redis có cơ chế khôi phục thảm họa, còn Memcached thì không.
+3. **Hỗ trợ chế độ Cluster**: Memcached không có chế độ Cluster nguyên bản, cần dựa vào client để ghi dữ liệu theo dạng shard (phân mảnh) vào Cluster; còn Redis từ phiên bản 3.0 đã hỗ trợ nguyên bản chế độ Cluster.
+4. **Mô hình thread**: Memcached là mô hình mạng đa luồng, non-blocking IO multiplexing; còn Redis sử dụng mô hình Single Thread với IO multiplexing (Redis 6.0 đưa thêm đa luồng vào cho việc đọc ghi dữ liệu mạng).
+5. **Hỗ trợ tính năng**: Redis hỗ trợ mô hình Publish-Subscribe, Lua script, Transaction, v.v., còn Memcached thì không. Hơn nữa, Redis hỗ trợ nhiều ngôn ngữ lập trình hơn.
+6. **Xóa dữ liệu hết hạn**: Chiến lược xóa dữ liệu hết hạn của Memcached chỉ dùng Lazy Deletion (xóa trì hoãn), còn Redis sử dụng đồng thời cả Lazy Deletion và Periodic Deletion (xóa định kỳ).
 
-相信看了上面的对比之后，我们已经没有什么理由可以选择使用 Memcached 来作为自己项目的分布式缓存了。
+Tin rằng sau khi xem so sánh ở trên, chúng ta gần như không còn lý do gì để chọn Memcached làm Cache phân tán cho dự án của mình nữa.
 
-### ⭐️为什么要用 Redis？
+### ⭐️Tại sao phải dùng Redis?
 
-**1、访问速度更快**
+**1. Tốc độ truy cập nhanh hơn**
 
-传统数据库数据保存在磁盘，而 Redis 基于内存，内存的访问速度比磁盘快很多。引入 Redis 之后，我们可以把一些高频访问的数据放到 Redis 中，这样下次就可以直接从内存中读取，速度可以提升几十倍甚至上百倍。
+Dữ liệu của cơ sở dữ liệu truyền thống lưu trên đĩa, còn Redis dựa trên Memory, tốc độ truy cập Memory nhanh hơn đĩa rất nhiều. Sau khi đưa Redis vào, chúng ta có thể đưa một số dữ liệu được truy cập thường xuyên vào Redis, như vậy lần sau có thể đọc trực tiếp từ Memory, tốc độ có thể tăng vài chục lần thậm chí hàng trăm lần.
 
-**2、高并发**
+**2. High Concurrency (đồng thời cao)**
 
-一般像 MySQL 这类的数据库的 QPS 大概都在 4k 左右（4 核 8g），但是使用 Redis 缓存之后很容易达到 5w+，甚至能达到 10w+（就单机 Redis 的情况，Redis 集群的话会更高）。
+Thông thường các cơ sở dữ liệu như MySQL có QPS khoảng 4k (cấu hình 4 nhân 8g), nhưng khi dùng Redis Cache thì dễ dàng đạt 5w+, thậm chí có thể đạt 10w+ (với Redis đơn máy, Redis Cluster thì còn cao hơn).
 
-> QPS（Query Per Second）：服务器每秒可以执行的查询次数；
+> QPS (Query Per Second): số truy vấn server có thể thực hiện mỗi giây;
 
-由此可见，直接操作缓存能够承受的数据库请求数量是远远大于直接访问数据库的，所以我们可以考虑把数据库中的部分数据转移到缓存中去，这样用户的一部分请求会直接到缓存这里而不用经过数据库。进而，我们也就提高了系统整体的并发。
+Có thể thấy, số lượng yêu cầu mà thao tác trực tiếp với Cache có thể chịu được lớn hơn rất nhiều so với truy cập trực tiếp cơ sở dữ liệu, vì vậy chúng ta có thể cân nhắc chuyển một phần dữ liệu trong cơ sở dữ liệu sang Cache, như vậy một phần yêu cầu của người dùng sẽ đến thẳng Cache mà không cần đi qua cơ sở dữ liệu. Từ đó, chúng ta nâng cao được mức độ đồng thời của toàn hệ thống.
 
-**3、功能全面**
+**3. Chức năng toàn diện**
 
-Redis 除了可以用作缓存之外，还可以用于分布式锁、限流、消息队列、延时队列等场景，功能强大！
+Redis ngoài việc dùng làm Cache, còn có thể dùng cho Distributed Lock (khóa phân tán), Rate Limiting (giới hạn lưu lượng), Message Queue (hàng đợi tin nhắn), Delayed Queue (hàng đợi trì hoãn), v.v., chức năng rất mạnh mẽ!
 
-### ⭐️为什么用 Redis 而不用本地缓存呢？
+### ⭐️Tại sao dùng Redis mà không dùng Cache cục bộ (Local Cache)?
 
-| 特性         | 本地缓存                             | Redis                            |
-| ------------ | ------------------------------------ | -------------------------------- |
-| 数据一致性   | 多服务器部署时存在数据不一致问题     | 数据一致                         |
-| 内存限制     | 受限于单台服务器内存                 | 独立部署，内存空间更大           |
-| 数据丢失风险 | 服务器宕机数据丢失                   | 可持久化，数据不易丢失           |
-| 管理维护     | 分散，管理不便                       | 集中管理，提供丰富的管理工具     |
-| 功能丰富性   | 功能有限，通常只提供简单的键值对存储 | 功能丰富，支持多种数据结构和功能 |
+| Đặc điểm               | Local Cache                                                             | Redis                                                           |
+| ---------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Tính nhất quán dữ liệu | Khi triển khai trên nhiều server tồn tại vấn đề dữ liệu không nhất quán | Dữ liệu nhất quán                                               |
+| Giới hạn Memory        | Bị giới hạn bởi Memory của một server                                   | Triển khai độc lập, không gian Memory lớn hơn                   |
+| Nguy cơ mất dữ liệu    | Server gặp sự cố là mất dữ liệu                                         | Có thể Persistence, dữ liệu khó bị mất                          |
+| Quản lý bảo trì        | Phân tán, quản lý bất tiện                                              | Quản lý tập trung, cung cấp công cụ quản lý phong phú           |
+| Độ phong phú chức năng | Chức năng hạn chế, thường chỉ cung cấp lưu trữ cặp Key-Value đơn giản   | Chức năng phong phú, hỗ trợ nhiều cấu trúc dữ liệu và tính năng |
 
-关于本地缓存、分布式缓存和多级缓存的详细介绍，可以看我写的这篇文章：[缓存基础常见面试题总结](http://localhost:8080/database/redis/cache-basics.html)。
+Về giới thiệu chi tiết Local Cache, Distributed Cache và Multi-level Cache (Cache đa tầng), có thể xem bài viết này do tôi viết: [Tổng hợp câu hỏi phỏng vấn thường gặp về nền tảng Cache](http://localhost:8080/database/redis/cache-basics.html).
 
-### 常见的缓存读写策略有哪些？
+### Có những chiến lược đọc ghi Cache phổ biến nào?
 
-关于常见的缓存读写策略的详细介绍，可以看我写的这篇文章：[3 种常用的缓存读写策略详解](https://javaguide.cn/database/redis/3-commonly-used-cache-read-and-write-strategies.html)。
+Về giới thiệu chi tiết các chiến lược đọc ghi Cache phổ biến, có thể xem bài viết này do tôi viết: [Giải thích chi tiết 3 chiến lược đọc ghi Cache thường dùng](https://javaguide.cn/database/redis/3-commonly-used-cache-read-and-write-strategies.html).
 
-### 什么是 Redis Module？有什么用？
+### Redis Module là gì? Có tác dụng gì?
 
-Redis 从 4.0 版本开始，支持通过 Module 来扩展其功能以满足特殊的需求。这些 Module 以动态链接库（so 文件）的形式被加载到 Redis 中，这是一种非常灵活的动态扩展功能的实现方式，值得借鉴学习！
+Từ phiên bản 4.0, Redis hỗ trợ mở rộng chức năng thông qua Module để đáp ứng các nhu cầu đặc biệt. Các Module này được nạp vào Redis dưới dạng thư viện liên kết động (file so), đây là một cách triển khai mở rộng chức năng động rất linh hoạt, đáng để học hỏi!
 
-我们每个人都可以基于 Redis 去定制化开发自己的 Module，比如实现搜索引擎功能、自定义分布式锁和分布式限流。
+Mỗi người chúng ta đều có thể dựa trên Redis để tùy biến phát triển Module của riêng mình, ví dụ triển khai chức năng search engine, Distributed Lock tùy chỉnh và Rate Limiting phân tán tùy chỉnh.
 
-目前，被 Redis 官方推荐的 Module 有：
+Hiện tại, các Module được Redis chính thức khuyến nghị gồm:
 
-- [RediSearch](https://github.com/RediSearch/RediSearch)：用于实现搜索引擎的模块。
-- [RedisJSON](https://github.com/RedisJSON/RedisJSON)：用于处理 JSON 数据的模块。
-- [RedisGraph](https://github.com/RedisGraph/RedisGraph)：用于实现图形数据库的模块。
-- [RedisTimeSeries](https://github.com/RedisTimeSeries/RedisTimeSeries)：用于处理时间序列数据的模块。
-- [RedisBloom](https://github.com/RedisBloom/RedisBloom)：用于实现布隆过滤器的模块。
-- [RedisAI](https://github.com/RedisAI/RedisAI)：用于执行深度学习/机器学习模型并管理其数据的模块。
-- [RedisCell](https://github.com/brandur/redis-cell)：用于实现分布式限流的模块。
+- [RediSearch](https://github.com/RediSearch/RediSearch): Module dùng để triển khai search engine.
+- [RedisJSON](https://github.com/RedisJSON/RedisJSON): Module dùng để xử lý dữ liệu JSON.
+- [RedisGraph](https://github.com/RedisGraph/RedisGraph): Module dùng để triển khai cơ sở dữ liệu đồ thị.
+- [RedisTimeSeries](https://github.com/RedisTimeSeries/RedisTimeSeries): Module dùng để xử lý dữ liệu chuỗi thời gian.
+- [RedisBloom](https://github.com/RedisBloom/RedisBloom): Module dùng để triển khai Bloom Filter.
+- [RedisAI](https://github.com/RedisAI/RedisAI): Module dùng để thực thi mô hình Deep Learning/Machine Learning và quản lý dữ liệu của chúng.
+- [RedisCell](https://github.com/brandur/redis-cell): Module dùng để triển khai Rate Limiting phân tán.
 - ……
 
-关于 Redis 模块的详细介绍，可以查看官方文档：<https://redis.io/modules>。
+Về giới thiệu chi tiết các Module của Redis, có thể xem tài liệu chính thức: <https://redis.io/modules>.
 
-## ⭐️Redis 应用
+## ⭐️Ứng dụng Redis
 
-### Redis 除了做缓存，还能做什么？
+### Ngoài làm Cache, Redis còn làm được gì?
 
-- **分布式锁**：通过 Redis 来做分布式锁是一种比较常见的方式。通常情况下，我们都是基于 Redisson 来实现分布式锁。关于 Redis 实现分布式锁的详细介绍，可以看我写的这篇文章：[分布式锁详解](https://javaguide.cn/distributed-system/distributed-lock.html)。
-- **限流**：一般是通过 Redis + Lua 脚本的方式来实现限流。如果不想自己写 Lua 脚本的话，也可以直接利用 Redisson 中的 `RRateLimiter` 来实现分布式限流，其底层实现就是基于 Lua 代码+令牌桶算法。
-- **消息队列**：Redis 自带的 List 数据结构可以作为一个简单的队列使用。Redis 5.0 中增加的 Stream 类型的数据结构更加适合用来做消息队列。它比较类似于 Kafka，有主题和消费组的概念，支持消息持久化以及 ACK 机制。
-- **延时队列**：Redisson 内置了延时队列（基于 Sorted Set 实现的）。
-- **分布式 Session**：利用 String 或者 Hash 数据类型保存 Session 数据，所有的服务器都可以访问。
-- **复杂业务场景**：通过 Redis 以及 Redis 扩展（比如 Redisson）提供的数据结构，我们可以很方便地完成很多复杂的业务场景，比如通过 Bitmap 统计活跃用户、通过 Sorted Set 维护排行榜、通过 HyperLogLog 统计网站 UV 和 PV。
+- **Distributed Lock**: Dùng Redis để làm Distributed Lock là một cách khá phổ biến. Thông thường, chúng ta đều dựa trên Redisson để triển khai Distributed Lock. Về giới thiệu chi tiết Redis triển khai Distributed Lock, có thể xem bài viết này do tôi viết: [Giải thích chi tiết Distributed Lock](https://javaguide.cn/distributed-system/distributed-lock.html).
+- **Rate Limiting**: Thường triển khai Rate Limiting bằng cách Redis + Lua script. Nếu không muốn tự viết Lua script, bạn cũng có thể trực tiếp dùng `RRateLimiter` trong Redisson để triển khai Rate Limiting phân tán, triển khai bên dưới của nó chính là dựa trên Lua code + thuật toán Token Bucket.
+- **Message Queue**: Cấu trúc dữ liệu List có sẵn của Redis có thể dùng làm một hàng đợi đơn giản. Cấu trúc dữ liệu kiểu Stream được thêm vào từ Redis 5.0 càng phù hợp hơn để làm Message Queue. Nó khá giống Kafka, có khái niệm topic và consumer group, hỗ trợ Persistence tin nhắn và cơ chế ACK.
+- **Delayed Queue**: Redisson tích hợp sẵn Delayed Queue (triển khai dựa trên Sorted Set).
+- **Distributed Session**: Dùng kiểu dữ liệu String hoặc Hash để lưu dữ liệu Session, tất cả các server đều có thể truy cập.
+- **Kịch bản nghiệp vụ phức tạp**: Thông qua Redis và các cấu trúc dữ liệu mà phần mở rộng của Redis (ví dụ Redisson) cung cấp, chúng ta có thể hoàn thành rất nhiều kịch bản nghiệp vụ phức tạp một cách thuận tiện, ví dụ dùng Bitmap thống kê người dùng hoạt động, dùng Sorted Set duy trì bảng xếp hạng, dùng HyperLogLog thống kê UV và PV của website.
 - ……
 
-### 如何基于 Redis 实现分布式锁？
+### Làm thế nào để triển khai Distributed Lock dựa trên Redis?
 
-关于 Redis 实现分布式锁的详细介绍，可以看我写的这篇文章：[分布式锁详解](https://javaguide.cn/distributed-system/distributed-lock-implementations.html)。
+Về giới thiệu chi tiết Redis triển khai Distributed Lock, có thể xem bài viết này do tôi viết: [Giải thích chi tiết Distributed Lock](https://javaguide.cn/distributed-system/distributed-lock-implementations.html).
 
-### Redis 可以做消息队列么？怎么实现？
+### Redis có thể làm Message Queue không? Triển khai thế nào?
 
-先说结论：
+Nói kết luận trước:
 
-- **如果业务简单、量小、追求极致性能**，且能容忍极小概率的数据丢失，使用 **Redis Stream** 是最优解，因为它省去了部署维护 MQ 的成本，可以复用现有的 Redis 组件（大部分需要用到 MQ 的项目，通常都会需要 Redis）。
-- **如果是金融级业务、海量数据、需要严格保证不丢消息**，必须选择 **Kafka、RabbitMQ** 等更成熟的 MQ。
+- **Nếu nghiệp vụ đơn giản, lưu lượng nhỏ, theo đuổi hiệu năng cực cao**, và có thể chấp nhận mất dữ liệu với xác suất cực nhỏ, thì dùng **Redis Stream** là lựa chọn tối ưu, vì nó tiết kiệm chi phí triển khai và bảo trì MQ, có thể tái sử dụng thành phần Redis sẵn có (phần lớn các dự án cần dùng MQ thường cũng cần Redis).
+- **Nếu là nghiệp vụ cấp tài chính, dữ liệu khổng lồ, cần đảm bảo nghiêm ngặt không mất tin nhắn**, bắt buộc phải chọn các MQ trưởng thành hơn như **Kafka, RabbitMQ**.
 
-这个问题还是挺重要，技术选型也能用上，我专门写了一篇文章详细介绍和分析，推荐时间充足的同学抽空认真看几遍，收藏一下：[Redis 能做消息队列吗？怎么实现？](https://javaguide.cn/database/redis/redis-stream-mq.html)。
+Vấn đề này khá quan trọng, cũng hữu ích khi lựa chọn công nghệ, tôi đã viết riêng một bài giới thiệu và phân tích chi tiết, khuyến nghị các bạn có thời gian hãy đọc kỹ vài lần và lưu lại: [Redis có thể làm Message Queue không? Triển khai thế nào?](https://javaguide.cn/database/redis/redis-stream-mq.html).
 
-### 如何基于 Redis 实现延时任务？
+### Làm thế nào để triển khai Delayed Task dựa trên Redis?
 
-> 类似的问题：
+> Câu hỏi tương tự:
 >
-> - 订单在 10 分钟后未支付就失效，如何用 Redis 实现？
-> - 红包 24 小时未被查收自动退还，如何用 Redis 实现？
+> - Đơn hàng chưa thanh toán sau 10 phút sẽ hết hiệu lực, dùng Redis triển khai thế nào?
+> - Lì xì (red packet) không được nhận trong 24 giờ sẽ tự động hoàn lại, dùng Redis triển khai thế nào?
 
-基于 Redis 实现延时任务的功能无非就下面两种方案：
+Chức năng triển khai Delayed Task (tác vụ trì hoãn) dựa trên Redis chỉ có hai giải pháp sau:
 
-1. Redis 过期事件监听。
-2. Redisson 内置的延时队列。
+1. Lắng nghe sự kiện Expire của Redis.
+2. Delayed Queue tích hợp sẵn của Redisson.
 
-Redis 过期事件监听存在时效性较差、丢消息、多服务实例下消息重复消费等问题，不被推荐使用。
+Lắng nghe sự kiện Expire của Redis tồn tại các vấn đề như tính kịp thời kém, mất tin nhắn, tiêu thụ tin nhắn trùng lặp khi có nhiều service instance, không được khuyến nghị sử dụng.
 
-Redisson 内置的延时队列具备下面这些优势：
+Delayed Queue tích hợp sẵn của Redisson có những ưu điểm dưới đây:
 
-1. **减少了丢消息的可能**：DelayedQueue 中的消息会被持久化，即使 Redis 宕机了，根据持久化机制，也只可能丢失一点消息，影响不大。当然了，你也可以使用扫描数据库的方法作为补偿机制。
-2. **消息不存在重复消费问题**：每个客户端都是从同一个目标队列中获取任务的，不存在重复消费的问题。
+1. **Giảm khả năng mất tin nhắn**: Tin nhắn trong DelayedQueue sẽ được Persistence, kể cả khi Redis gặp sự cố, theo cơ chế Persistence, cũng chỉ có thể mất một chút tin nhắn, ảnh hưởng không lớn. Tất nhiên, bạn cũng có thể dùng phương pháp quét cơ sở dữ liệu làm cơ chế bù đắp.
+2. **Tin nhắn không tồn tại vấn đề tiêu thụ trùng lặp**: Mỗi client đều lấy tác vụ từ cùng một hàng đợi mục tiêu, không tồn tại vấn đề tiêu thụ trùng lặp.
 
-关于 Redis 实现延时任务的详细介绍，可以看我写的这篇文章：[如何基于 Redis 实现延时任务？](./redis-delayed-task.md)。
+Về giới thiệu chi tiết Redis triển khai Delayed Task, có thể xem bài viết này do tôi viết: [Làm thế nào để triển khai Delayed Task dựa trên Redis?](./redis-delayed-task.md).
 
-## ⭐️Redis 数据类型
+## ⭐️Kiểu dữ liệu Redis
 
-关于 Redis 5 种基础数据类型和 3 种特殊数据类型的详细介绍请看下面这两篇文章以及 [Redis 官方文档](https://redis.io/docs/data-types/)：
+Về giới thiệu chi tiết 5 kiểu dữ liệu cơ bản và 3 kiểu dữ liệu đặc biệt của Redis, hãy xem hai bài viết dưới đây và [tài liệu chính thức của Redis](https://redis.io/docs/data-types/):
 
-- [Redis 5 种基本数据类型详解](https://javaguide.cn/database/redis/redis-data-structures-01.html)
-- [Redis 3 种特殊数据类型详解](https://javaguide.cn/database/redis/redis-data-structures-02.html)
+- [Giải thích chi tiết 5 kiểu dữ liệu cơ bản của Redis](https://javaguide.cn/database/redis/redis-data-structures-01.html)
+- [Giải thích chi tiết 3 kiểu dữ liệu đặc biệt của Redis](https://javaguide.cn/database/redis/redis-data-structures-02.html)
 
-### Redis 常用的数据类型有哪些？
+### Redis có những kiểu dữ liệu thường dùng nào?
 
-Redis 中比较常见的数据类型有下面这些：
+Các kiểu dữ liệu thường gặp trong Redis gồm:
 
-- **5 种基础数据类型**：String（字符串）、List（列表）、Set（集合）、Hash（散列）、Zset（有序集合）。
-- **3 种特殊数据类型**：HyperLogLog（基数统计）、Bitmap （位图）、Geospatial (地理位置)。
+- **5 kiểu dữ liệu cơ bản**: String (chuỗi), List (danh sách), Set (tập hợp), Hash (bảng băm), Zset (tập hợp có thứ tự).
+- **3 kiểu dữ liệu đặc biệt**: HyperLogLog (thống kê cardinality - lực lượng), Bitmap (bản đồ bit), Geospatial (vị trí địa lý).
 
-除了上面提到的之外，还有一些其他的比如 [Bloom filter（布隆过滤器）](https://javaguide.cn/cs-basics/data-structure/bloom-filter.html)、Bitfield（位域）。
+Ngoài những kiểu kể trên, còn có một số kiểu khác như [Bloom filter (bộ lọc Bloom)](https://javaguide.cn/cs-basics/data-structure/bloom-filter.html), Bitfield (trường bit).
 
-### String 的应用场景有哪些？
+### Các kịch bản ứng dụng của String là gì?
 
-String 是 Redis 中最简单同时也是最常用的一个数据类型。它是一种二进制安全的数据类型，可以用来存储任何类型的数据比如字符串、整数、浮点数、图片（图片的 base64 编码或者解码或者图片的路径）、序列化后的对象。
+String là kiểu dữ liệu đơn giản nhất đồng thời cũng được dùng nhiều nhất trong Redis. Đây là kiểu dữ liệu an toàn với nhị phân (binary-safe), có thể dùng để lưu bất kỳ loại dữ liệu nào như chuỗi, số nguyên, số thực dấu phẩy động, ảnh (mã hóa hoặc giải mã base64 của ảnh, hoặc đường dẫn ảnh), đối tượng đã tuần tự hóa.
 
-String 的常见应用场景如下：
+Các kịch bản ứng dụng thường gặp của String như sau:
 
-- 常规数据（比如 Session、Token、序列化后的对象、图片的路径）的缓存；
-- 计数比如用户单位时间的请求数（简单限流可以用到）、页面单位时间的访问数；
-- 分布式锁（利用 `SETNX key value` 命令可以实现一个最简易的分布式锁）；
+- Cache dữ liệu thông thường (ví dụ Session, Token, đối tượng đã tuần tự hóa, đường dẫn ảnh);
+- Đếm số, ví dụ số yêu cầu của người dùng trong một đơn vị thời gian (có thể dùng cho Rate Limiting đơn giản), số lượt truy cập trang trong một đơn vị thời gian;
+- Distributed Lock (dùng lệnh `SETNX key value` có thể triển khai một Distributed Lock đơn giản nhất);
 - ……
 
-关于 String 的详细介绍请看这篇文章：[Redis 5 种基本数据类型详解](https://javaguide.cn/database/redis/redis-data-structures-01.html)。
+Về giới thiệu chi tiết String, hãy xem bài viết này: [Giải thích chi tiết 5 kiểu dữ liệu cơ bản của Redis](https://javaguide.cn/database/redis/redis-data-structures-01.html).
 
-### String 还是 Hash 存储对象数据更好呢？
+### String hay Hash lưu trữ dữ liệu đối tượng thì tốt hơn?
 
-简单对比一下二者：
+So sánh đơn giản giữa hai kiểu:
 
-- **对象存储方式**：String 存储的是序列化后的对象数据，存放的是整个对象，操作简单直接。Hash 是对对象的每个字段单独存储，可以获取部分字段的信息，也可以修改或者添加部分字段，节省网络流量。如果对象中某些字段需要经常变动或者经常需要单独查询对象中的个别字段信息，Hash 就非常适合。
-- **内存消耗**：Hash 通常比 String 更节省内存，特别是在字段较多且字段长度较短时。Redis 对小型 Hash 进行优化（如使用 ziplist 存储），进一步降低内存占用。
-- **复杂对象存储**：String 在处理多层嵌套或复杂结构的对象时更方便，因为无需处理每个字段的独立存储和操作。
-- **性能**：String 的操作通常具有 O(1) 的时间复杂度，因为它存储的是整个对象，操作简单直接，整体读写的性能较好。Hash 由于需要处理多个字段的增删改查操作，在字段较多且经常变动的情况下，可能会带来额外的性能开销。
+- **Cách lưu trữ đối tượng**: String lưu trữ dữ liệu đối tượng đã tuần tự hóa, lưu cả đối tượng hoàn chỉnh, thao tác đơn giản trực tiếp. Hash lưu riêng từng field của đối tượng, có thể lấy thông tin của một phần field, cũng có thể sửa hoặc thêm một phần field, tiết kiệm lưu lượng mạng. Nếu một số field trong đối tượng thường xuyên thay đổi hoặc thường cần truy vấn riêng thông tin từng field, Hash sẽ rất phù hợp.
+- **Tiêu hao Memory**: Hash thường tiết kiệm Memory hơn String, đặc biệt khi số field nhiều và độ dài field ngắn. Redis tối ưu cho các Hash nhỏ (ví dụ lưu bằng ziplist), càng giảm mức chiếm dụng Memory.
+- **Lưu trữ đối tượng phức tạp**: String thuận tiện hơn khi xử lý các đối tượng lồng nhau nhiều tầng hoặc có cấu trúc phức tạp, vì không cần xử lý lưu trữ và thao tác riêng từng field.
+- **Hiệu năng**: Thao tác trên String thường có độ phức tạp thời gian O(1), vì nó lưu cả đối tượng hoàn chỉnh, thao tác đơn giản trực tiếp, hiệu năng đọc ghi tổng thể tốt. Hash do cần xử lý các thao tác thêm xóa sửa tra trên nhiều field, trong trường hợp field nhiều và thường xuyên thay đổi, có thể phát sinh thêm chi phí hiệu năng.
 
-总结：
+Tổng kết:
 
-- 在绝大多数情况下，**String** 更适合存储对象数据，尤其是当对象结构简单且整体读写是主要操作时。
-- 如果你需要频繁操作对象的部分字段或节省内存，**Hash** 可能是更好的选择。
+- Trong đa số trường hợp, **String** phù hợp hơn để lưu trữ dữ liệu đối tượng, đặc biệt khi cấu trúc đối tượng đơn giản và đọc ghi tổng thể là thao tác chủ yếu.
+- Nếu bạn cần thao tác thường xuyên trên một phần field của đối tượng hoặc muốn tiết kiệm Memory, **Hash** có thể là lựa chọn tốt hơn.
 
-### String 的底层实现是什么？
+### Triển khai bên dưới của String là gì?
 
-Redis 是基于 C 语言编写的，但 Redis 的 String 类型的底层实现并不是 C 语言中的字符串（即以空字符 `\0` 结尾的字符数组），而是自己编写了 [SDS](https://github.com/antirez/sds)（Simple Dynamic String，简单动态字符串）来作为底层实现。
+Redis được viết bằng ngôn ngữ C, nhưng triển khai bên dưới của kiểu String trong Redis không phải là chuỗi trong ngôn ngữ C (tức mảng ký tự kết thúc bằng ký tự null `\0`), mà tự viết [SDS](https://github.com/antirez/sds) (Simple Dynamic String, chuỗi động đơn giản) để làm triển khai bên dưới.
 
-SDS 最早是 Redis 作者为日常 C 语言开发而设计的 C 字符串，后来被应用到了 Redis 上，并经过了大量的修改完善以适合高性能操作。
+SDS ban đầu là chuỗi C do tác giả Redis thiết kế cho việc phát triển C hằng ngày, sau đó được ứng dụng vào Redis, và trải qua rất nhiều chỉnh sửa hoàn thiện để phù hợp với thao tác hiệu năng cao.
 
-Redis7.0 的 SDS 的部分源码如下（<https://github.com/redis/redis/blob/7.0/src/sds.h>）：
+Một phần source code của SDS trong Redis 7.0 như sau (<https://github.com/redis/redis/blob/7.0/src/sds.h>):
 
 ```c
 /* Note: sdshdr5 is never used, we just access the flags byte directly.
@@ -275,9 +275,9 @@ struct __attribute__ ((__packed__)) sdshdr64 {
 };
 ```
 
-通过源码可以看出，SDS 共有五种实现方式：SDS_TYPE_5（并未用到）、SDS_TYPE_8、SDS_TYPE_16、SDS_TYPE_32、SDS_TYPE_64，其中只有后四种实际用到。Redis 会根据初始化的长度决定使用哪种类型，从而减少内存的使用。
+Qua source code có thể thấy, SDS có tổng cộng năm cách triển khai: SDS_TYPE_5 (không được dùng), SDS_TYPE_8, SDS_TYPE_16, SDS_TYPE_32, SDS_TYPE_64, trong đó chỉ bốn loại sau thực sự được dùng. Redis sẽ dựa vào độ dài khởi tạo để quyết định dùng loại nào, từ đó giảm mức sử dụng Memory.
 
-| 类型     | 字节 | 位  |
+| Loại     | Byte | Bit |
 | -------- | ---- | --- |
 | sdshdr5  | < 1  | <8  |
 | sdshdr8  | 1    | 8   |
@@ -285,21 +285,21 @@ struct __attribute__ ((__packed__)) sdshdr64 {
 | sdshdr32 | 4    | 32  |
 | sdshdr64 | 8    | 64  |
 
-对于后四种实现都包含了下面这 4 个属性：
+Bốn loại triển khai sau đều bao gồm 4 thuộc tính dưới đây:
 
-- `len`：字符串的长度也就是已经使用的字节数。
-- `alloc`：总共可用的字符空间大小，alloc-len 就是 SDS 剩余的空间大小。
-- `buf[]`：实际存储字符串的数组。
-- `flags`：低三位保存类型标志。
+- `len`: độ dài chuỗi, tức số byte đã sử dụng.
+- `alloc`: tổng kích thước không gian ký tự khả dụng, alloc-len chính là kích thước không gian còn lại của SDS.
+- `buf[]`: mảng thực sự lưu trữ chuỗi.
+- `flags`: ba bit thấp lưu cờ kiểu (type flag).
 
-SDS 相比于 C 语言中的字符串有如下提升：
+SDS so với chuỗi trong ngôn ngữ C có những cải tiến sau:
 
-1. **可以避免缓冲区溢出**：C 语言中的字符串被修改（比如拼接）时，一旦没有分配足够长度的内存空间，就会造成缓冲区溢出。SDS 被修改时，会先根据 len 属性检查空间大小是否满足要求，如果不满足，则先扩展至所需大小再进行修改操作。
-2. **获取字符串长度的复杂度较低**：C 语言中的字符串的长度通常是经过遍历计数来实现的，时间复杂度为 O(n)。SDS 的长度获取直接读取 len 属性即可，时间复杂度为 O(1)。
-3. **减少内存分配次数**：为了避免修改（增加/减少）字符串时，每次都需要重新分配内存（C 语言的字符串是这样的），SDS 实现了空间预分配和惰性空间释放两种优化策略。当 SDS 需要增加字符串时，Redis 会为 SDS 分配好内存，并且根据特定的算法分配多余的内存，这样可以减少连续执行字符串增长操作所需的内存重分配次数。当 SDS 需要减少字符串时，这部分内存不会立即被回收，会被记录下来，等待后续使用（支持手动释放，有对应的 API）。
-4. **二进制安全**：C 语言中的字符串以空字符 `\0` 作为字符串结束的标识，这存在一些问题，像一些二进制文件（比如图片、视频、音频）就可能包括空字符，C 字符串无法正确保存。SDS 使用 len 属性判断字符串是否结束，不存在这个问题。
+1. **Tránh được buffer overflow**: Khi chuỗi trong ngôn ngữ C bị sửa (ví dụ nối chuỗi), một khi không cấp phát đủ không gian Memory có độ dài cần thiết, sẽ gây ra buffer overflow. Khi SDS bị sửa, trước tiên sẽ dựa vào thuộc tính len để kiểm tra kích thước không gian có đáp ứng yêu cầu không, nếu không đủ, sẽ mở rộng lên kích thước cần thiết trước rồi mới thực hiện thao tác sửa.
+2. **Độ phức tạp lấy độ dài chuỗi thấp hơn**: Độ dài chuỗi trong ngôn ngữ C thường phải duyệt qua từng ký tự để đếm, độ phức tạp thời gian là O(n). Việc lấy độ dài của SDS chỉ cần đọc trực tiếp thuộc tính len, độ phức tạp thời gian là O(1).
+3. **Giảm số lần cấp phát Memory**: Để tránh mỗi lần sửa (tăng/giảm) chuỗi đều phải cấp phát lại Memory (chuỗi trong ngôn ngữ C là như vậy), SDS triển khai hai chiến lược tối ưu là pre-allocation (cấp phát trước không gian) và lazy free (giải phóng không gian trì hoãn). Khi SDS cần tăng chuỗi, Redis sẽ cấp phát Memory cho SDS, và dựa theo thuật toán cụ thể cấp phát thêm Memory dư, như vậy giảm được số lần cấp phát lại Memory khi thực hiện liên tiếp các thao tác tăng chuỗi. Khi SDS cần giảm chuỗi, phần Memory này sẽ không được thu hồi ngay, mà được ghi nhận lại, chờ sử dụng sau này (hỗ trợ giải phóng thủ công, có API tương ứng).
+4. **An toàn với nhị phân (binary-safe)**: Chuỗi trong ngôn ngữ C dùng ký tự null `\0` làm ký hiệu kết thúc chuỗi, điều này tồn tại một số vấn đề, như một số file nhị phân (ví dụ ảnh, video, âm thanh) có thể chứa ký tự null, chuỗi C không thể lưu đúng. SDS dùng thuộc tính len để phán đoán chuỗi đã kết thúc hay chưa, không tồn tại vấn đề này.
 
-🤐 多提一嘴，很多文章里 SDS 的定义是下面这样的：
+🤐 Nói thêm một chút, trong nhiều bài viết, định nghĩa SDS như dưới đây:
 
 ```c
 struct sdshdr {
@@ -309,78 +309,78 @@ struct sdshdr {
 };
 ```
 
-这个也没错，Redis 3.2 之前就是这样定义的。后来，由于这种方式的定义存在问题，`len` 和 `free` 的定义用了 4 个字节，造成了浪费。Redis 3.2 之后，Redis 改进了 SDS 的定义，将其划分为了现在的 5 种类型。
+Điều này cũng không sai, trước Redis 3.2 định nghĩa đúng là như vậy. Về sau, do cách định nghĩa này có vấn đề, định nghĩa của `len` và `free` dùng 4 byte, gây lãng phí. Từ Redis 3.2 trở đi, Redis đã cải tiến định nghĩa SDS, chia thành 5 loại như hiện tại.
 
-### 购物车信息用 String 还是 Hash 存储更好呢?
+### Thông tin giỏ hàng nên lưu bằng String hay Hash thì tốt hơn?
 
-由于购物车中的商品频繁修改和变动，购物车信息建议使用 Hash 存储：
+Do các mặt hàng trong giỏ hàng được sửa và thay đổi thường xuyên, thông tin giỏ hàng nên dùng Hash để lưu trữ:
 
-- 用户 id 为 key
-- 商品 id 为 field，商品数量为 value
+- id người dùng làm key
+- id mặt hàng làm field, số lượng mặt hàng làm value
 
-![Hash维护简单的购物车信息](https://oss.javaguide.cn/github/javaguide/database/redis/hash-shopping-cart.png)
+![Hash duy trì thông tin giỏ hàng đơn giản](https://oss.javaguide.cn/github/javaguide/database/redis/hash-shopping-cart.png)
 
-那用户购物车信息的维护具体应该怎么操作呢？
+Vậy việc duy trì thông tin giỏ hàng của người dùng cụ thể nên thao tác thế nào?
 
-- 用户添加商品就是往 Hash 里面增加新的 field 与 value；
-- 查询购物车信息就是遍历对应的 Hash；
-- 更改商品数量直接修改对应的 value 值（直接 set 或者做运算皆可）；
-- 删除商品就是删除 Hash 中对应的 field；
-- 清空购物车直接删除对应的 key 即可。
+- Người dùng thêm mặt hàng là thêm field và value mới vào Hash;
+- Truy vấn thông tin giỏ hàng là duyệt Hash tương ứng;
+- Thay đổi số lượng mặt hàng thì sửa trực tiếp giá trị value tương ứng (trực tiếp set hoặc làm phép tính đều được);
+- Xóa mặt hàng là xóa field tương ứng trong Hash;
+- Xóa sạch giỏ hàng thì xóa trực tiếp key tương ứng là được.
 
-这里只是以业务比较简单的购物车场景举例，实际电商场景下，field 只保存一个商品 id 是没办法满足需求的。
+Ở đây chỉ lấy kịch bản giỏ hàng có nghiệp vụ đơn giản làm ví dụ, trong kịch bản thương mại điện tử thực tế, field chỉ lưu một id mặt hàng thì không thể đáp ứng được nhu cầu.
 
-### 使用 Redis 实现一个排行榜怎么做？
+### Dùng Redis triển khai một bảng xếp hạng như thế nào?
 
-Redis 中有一个叫做 `Sorted Set`（有序集合）的数据类型经常被用在各种排行榜的场景，比如直播间送礼物的排行榜、朋友圈的微信步数排行榜、王者荣耀中的段位排行榜、话题热度排行榜等等。
+Trong Redis có một kiểu dữ liệu tên là `Sorted Set` (tập hợp có thứ tự) thường xuyên được dùng trong các kịch bản bảng xếp hạng, ví dụ bảng xếp hạng tặng quà trong phòng livestream, bảng xếp hạng số bước chân WeChat trong vòng bạn bè, bảng xếp hạng hạng rank trong Vương Giả Vinh Diệu, bảng xếp hạng độ hot của chủ đề, v.v.
 
-相关的一些 Redis 命令：`ZRANGE`（从小到大排序）、`ZREVRANGE`（从大到小排序）、`ZREVRANK`（指定元素排名）。
+Một số lệnh Redis liên quan: `ZRANGE` (sắp xếp từ nhỏ đến lớn), `ZREVRANGE` (sắp xếp từ lớn đến nhỏ), `ZREVRANK` (hạng của phần tử chỉ định).
 
 ![](https://oss.javaguide.cn/github/javaguide/database/redis/2021060714195385.png)
 
-[《Java 面试指北》](https://javaguide.cn/zhuanlan/java-mian-shi-zhi-bei.html) 的「技术面试题篇」就有一篇文章详细介绍如何使用 Sorted Set 来设计制作一个排行榜，感兴趣的小伙伴可以看看。
+Trong phần 「技术面试题篇」 của [《Java 面试指北》](https://javaguide.cn/zhuanlan/java-mian-shi-zhi-bei.html) có một bài viết giới thiệu chi tiết cách dùng Sorted Set để thiết kế một bảng xếp hạng, bạn nào quan tâm có thể xem.
 
 ![](https://oss.javaguide.cn/github/javaguide/database/redis/image-20220719071115140.png)
 
-### Redis 的有序集合底层为什么要用跳表，而不用平衡树、红黑树或者 B+ 树？
+### Tại sao bên dưới tập hợp có thứ tự của Redis lại dùng Skip List mà không dùng cây cân bằng, cây đỏ đen hay cây B+?
 
-这道面试题很多大厂比较喜欢问，难度还是有点大的。
+Câu hỏi phỏng vấn này được nhiều công ty lớn thích hỏi, độ khó cũng khá cao.
 
-- 平衡树 vs 跳表：平衡树的插入、删除和查询的时间复杂度和跳表一样都是 **O(log n)**。对于范围查询来说，平衡树也可以通过中序遍历的方式达到和跳表一样的效果。但是它的每一次插入或者删除操作都需要保证整颗树左右节点的绝对平衡，只要不平衡就要通过旋转操作来保持平衡，这个过程是比较耗时的。跳表诞生的初衷就是为了克服平衡树的一些缺点。跳表使用概率平衡而不是严格强制的平衡，因此，跳表中的插入和删除算法比平衡树的等效算法简单得多，速度也快得多。
-- 红黑树 vs 跳表：相比较于红黑树来说，跳表的实现也更简单一些，不需要通过旋转和染色（红黑变换）来保证黑平衡。并且，按照区间来查找数据这个操作，红黑树的效率没有跳表高。
-- B+ 树 vs 跳表：B+ 树更适合作为数据库和文件系统中常用的索引结构之一，它的核心思想是通过可能少的 IO 定位到尽可能多的索引来获得查询数据。对于 Redis 这种内存数据库来说，它对这些并不感冒，因为 Redis 作为内存数据库它不可能存储大量的数据，所以对于索引不需要通过 B+ 树这种方式进行维护，只需按照概率进行随机维护即可，节约内存。而且使用跳表实现 zset 时相较前者来说更简单一些，在进行插入时只需通过索引将数据插入到链表中合适的位置再随机维护一定高度的索引即可，也不需要像 B+ 树那样插入时发现失衡时还需要对节点分裂与合并。
+- Cây cân bằng vs Skip List: độ phức tạp thời gian của thao tác thêm, xóa và truy vấn trên cây cân bằng cũng giống Skip List, đều là **O(log n)**. Với truy vấn phạm vi, cây cân bằng cũng có thể đạt hiệu quả như Skip List thông qua duyệt cây theo thứ tự giữa (in-order traversal). Nhưng mỗi thao tác thêm hoặc xóa đều cần đảm bảo sự cân bằng tuyệt đối giữa node trái và node phải của toàn cây, chỉ cần mất cân bằng là phải dùng thao tác xoay để giữ cân bằng, quá trình này khá tốn thời gian. Skip List ra đời chính là để khắc phục một số nhược điểm của cây cân bằng. Skip List sử dụng cân bằng theo xác suất thay vì cân bằng bắt buộc nghiêm ngặt, vì vậy, thuật toán thêm và xóa trong Skip List đơn giản hơn rất nhiều so với thuật toán tương đương của cây cân bằng, tốc độ cũng nhanh hơn nhiều.
+- Cây đỏ đen vs Skip List: so với cây đỏ đen, triển khai của Skip List cũng đơn giản hơn, không cần dùng xoay và đổi màu (biến đổi đỏ đen) để đảm bảo cân bằng đen. Hơn nữa, với thao tác tìm dữ liệu theo khoảng, hiệu quả của cây đỏ đen không cao bằng Skip List.
+- Cây B+ vs Skip List: cây B+ phù hợp hơn để làm một trong những cấu trúc chỉ mục thường dùng trong cơ sở dữ liệu và hệ thống file, tư tưởng cốt lõi của nó là thông qua số lần IO ít nhất có thể để định vị được càng nhiều chỉ mục càng tốt nhằm lấy được dữ liệu truy vấn. Với cơ sở dữ liệu in-memory như Redis, nó không cần những thứ này, vì Redis là cơ sở dữ liệu in-memory nên không thể lưu trữ lượng dữ liệu lớn, vì vậy với chỉ mục không cần duy trì theo cách cây B+, chỉ cần duy trì ngẫu nhiên theo xác suất là được, tiết kiệm Memory. Hơn nữa khi dùng Skip List để triển khai zset thì đơn giản hơn so với cây B+, khi thêm chỉ cần thông qua chỉ mục để chèn dữ liệu vào vị trí phù hợp trong danh sách liên kết rồi duy trì ngẫu nhiên chỉ mục ở độ cao nhất định là được, cũng không cần như cây B+ khi thêm mà phát hiện mất cân bằng còn phải tách và gộp node.
 
-另外，我还单独写了一篇文章从有序集合的基本使用到跳表的源码分析和实现，让你会对 Redis 的有序集合底层实现的跳表有着更深刻的理解和掌握：[Redis 为什么用跳表实现有序集合](https://javaguide.cn/database/redis/redis-skiplist.html)。如果只想先过一遍跳表的基础结构、复杂度和范围查询，可以看 [跳表面试题总结](https://javaguide.cn/cs-basics/data-structure/skip-list.html)。
+Ngoài ra, tôi còn viết riêng một bài từ cách sử dụng cơ bản của tập hợp có thứ tự đến phân tích source code và triển khai của Skip List, giúp bạn hiểu và nắm vững sâu hơn về Skip List trong triển khai bên dưới của tập hợp có thứ tự trong Redis: [Tại sao Redis dùng Skip List để triển khai tập hợp có thứ tự](https://javaguide.cn/database/redis/redis-skiplist.html). Nếu chỉ muốn lướt qua trước cấu trúc cơ bản, độ phức tạp và truy vấn phạm vi của Skip List, có thể xem [Tổng hợp câu hỏi phỏng vấn Skip List](https://javaguide.cn/cs-basics/data-structure/skip-list.html).
 
-### Set 的应用场景是什么？
+### Kịch bản ứng dụng của Set là gì?
 
-Redis 中 `Set` 是一种无序集合，集合中的元素没有先后顺序但都唯一，有点类似于 Java 中的 `HashSet` 。
+`Set` trong Redis là một tập hợp không có thứ tự, các phần tử trong tập hợp không có thứ tự trước sau nhưng đều duy nhất, hơi giống `HashSet` trong Java.
 
-`Set` 的常见应用场景如下：
+Các kịch bản ứng dụng thường gặp của `Set` như sau:
 
-- 存放的数据不能重复的场景：网站 UV 统计（数据量巨大的场景还是 `HyperLogLog` 更适合一些）、文章点赞、动态点赞等等。
-- 需要获取多个数据源交集、并集和差集的场景：共同好友（交集）、共同粉丝（交集）、共同关注（交集）、好友推荐（差集）、音乐推荐（差集）、订阅号推荐（差集+交集）等等。
-- 需要随机获取数据源中的元素的场景：抽奖系统、随机点名等等。
+- Kịch bản dữ liệu lưu trữ không được trùng lặp: thống kê UV của website (kịch bản có lượng dữ liệu khổng lồ thì `HyperLogLog` vẫn phù hợp hơn), like bài viết, like bài đăng động, v.v.
+- Kịch bản cần lấy giao, hợp và hiệu của nhiều nguồn dữ liệu: bạn chung (giao), người theo dõi chung (giao), mối quan tâm chung (giao), gợi ý kết bạn (hiệu), gợi ý âm nhạc (hiệu), gợi ý kênh đăng ký (hiệu + giao), v.v.
+- Kịch bản cần lấy ngẫu nhiên phần tử trong nguồn dữ liệu: hệ thống bốc thăm, gọi tên ngẫu nhiên, v.v.
 
-### 使用 Set 实现抽奖系统怎么做？
+### Dùng Set triển khai hệ thống bốc thăm như thế nào?
 
-如果想要使用 `Set` 实现一个简单的抽奖系统的话，直接使用下面这几个命令就可以了：
+Nếu muốn dùng `Set` để triển khai một hệ thống bốc thăm đơn giản, chỉ cần dùng trực tiếp mấy lệnh dưới đây:
 
-- `SADD key member1 member2 ...`：向指定集合添加一个或多个元素。
-- `SPOP key count`：随机移除并获取指定集合中一个或多个元素，适合不允许重复中奖的场景。
-- `SRANDMEMBER key count`：随机获取指定集合中指定数量的元素，适合允许重复中奖的场景。
+- `SADD key member1 member2 ...`: thêm một hoặc nhiều phần tử vào tập hợp chỉ định.
+- `SPOP key count`: xóa ngẫu nhiên và lấy một hoặc nhiều phần tử trong tập hợp chỉ định, phù hợp với kịch bản không cho phép trúng thưởng trùng lặp.
+- `SRANDMEMBER key count`: lấy ngẫu nhiên số lượng phần tử chỉ định trong tập hợp chỉ định, phù hợp với kịch bản cho phép trúng thưởng trùng lặp.
 
-### 使用 Bitmap 统计活跃用户怎么做？
+### Dùng Bitmap thống kê người dùng hoạt động như thế nào?
 
-Bitmap 存储的是连续的二进制数字（0 和 1），通过 Bitmap，只需要一个 bit 位来表示某个元素对应的值或者状态，key 就是对应元素本身。我们知道 8 个 bit 可以组成一个 byte，所以 Bitmap 本身会极大的节省储存空间。
+Bitmap lưu trữ các số nhị phân liên tục (0 và 1), thông qua Bitmap, chỉ cần một bit để biểu thị giá trị hoặc trạng thái tương ứng của một phần tử nào đó, key chính là bản thân phần tử tương ứng. Chúng ta biết 8 bit có thể tạo thành một byte, vì vậy bản thân Bitmap sẽ tiết kiệm rất lớn không gian lưu trữ.
 
-你可以将 Bitmap 看作是一个存储二进制数字（0 和 1）的数组，数组中每个元素的下标叫做 offset（偏移量）。
+Bạn có thể xem Bitmap như một mảng lưu các số nhị phân (0 và 1), chỉ số (index) của mỗi phần tử trong mảng gọi là offset (độ lệch).
 
 ![img](https://oss.javaguide.cn/github/javaguide/database/redis/image-20220720194154133.png)
 
-如果想要使用 Bitmap 统计活跃用户的话，可以使用日期（精确到天）作为 key，然后用户 ID 为 offset，如果当日活跃过就设置为 1。
+Nếu muốn dùng Bitmap để thống kê người dùng hoạt động, có thể dùng ngày (chính xác đến ngày) làm key, sau đó dùng ID người dùng làm offset, nếu trong ngày có hoạt động thì đặt thành 1.
 
-初始化数据：
+Khởi tạo dữ liệu:
 
 ```bash
 > SETBIT 20210308 1 1
@@ -391,7 +391,7 @@ Bitmap 存储的是连续的二进制数字（0 和 1），通过 Bitmap，只�
 (integer) 0
 ```
 
-统计 20210308~20210309 总活跃用户数：
+Thống kê tổng số người dùng hoạt động từ 20210308~20210309:
 
 ```bash
 > BITOP and desk1 20210308 20210309
@@ -400,7 +400,7 @@ Bitmap 存储的是连续的二进制数字（0 和 1），通过 Bitmap，只�
 (integer) 1
 ```
 
-统计 20210308~20210309 在线活跃用户数：
+Thống kê số người dùng hoạt động online từ 20210308~20210309:
 
 ```bash
 > BITOP or desk2 20210308 20210309
@@ -409,159 +409,159 @@ Bitmap 存储的是连续的二进制数字（0 和 1），通过 Bitmap，只�
 (integer) 2
 ```
 
-### HyperLogLog 适合什么场景？
+### HyperLogLog phù hợp với kịch bản nào?
 
-HyperLogLog (HLL) 是一种非常巧妙的概率性数据结构，它专门解决一类非常棘手的大数据问题：在海量数据中，用极小的内存，估算一个集合中不重复元素的数量，也就是我们常说的基数（Cardinality）
+HyperLogLog (HLL) là một cấu trúc dữ liệu xác suất rất khéo léo, nó chuyên giải quyết một loại bài toán big data rất hóc búa: trong dữ liệu khổng lồ, dùng Memory cực nhỏ để ước tính số lượng phần tử không trùng lặp trong một tập hợp, tức là cardinality (lực lượng) mà chúng ta thường nói.
 
-HLL 做的最核心的权衡，就是用一点点精确度的损失，来换取巨大的内存空间节省。它给出的不是一个 100%精确的数字，而是一个带有很小标准误差（Redis 中默认是 0.81%）的近似值。
+Sự đánh đổi cốt lõi nhất mà HLL thực hiện là dùng một chút tổn thất về độ chính xác để đổi lấy việc tiết kiệm không gian Memory khổng lồ. Nó đưa ra không phải một con số chính xác 100%, mà là một giá trị gần đúng với sai số chuẩn rất nhỏ (mặc định trong Redis là 0.81%).
 
-**基于这个核心权衡，HyperLogLog 最适合以下特征的场景：**
+**Dựa trên sự đánh đổi cốt lõi này, HyperLogLog phù hợp nhất với các kịch bản có đặc điểm sau:**
 
-1. **数据量巨大，内存敏感：** 这是 HLL 的主战场。比如，要统计一个亿级日活 App 的每日独立访客数。如果用传统的 Set 来存储用户 ID，一个 ID 占几十个字节，上亿个 ID 可能需要几个 GB 甚至几十 GB 的内存，这在很多场景下是不可接受的。而 HLL，在 Redis 中只需要固定的 12KB 内存，就能处理天文数字级别的基数，这是一个颠覆性的优势。
-2. **对结果的精确度要求不是 100%：** 这是使用 HLL 的前提。比如，产品经理想知道一个热门帖子的 UV（独立访客数）是大约 1000 万还是 1010 万，这个细微的差别通常不影响商业决策。但如果场景是统计一个交易系统的准确交易笔数，那 HLL 就完全不适用，因为金融场景要求 100%的精确。
+1. **Lượng dữ liệu khổng lồ, nhạy cảm về Memory:** Đây là chiến trường chính của HLL. Ví dụ, cần thống kê số khách truy cập độc lập hằng ngày của một App có DAU (người dùng hoạt động hằng ngày) cấp trăm triệu. Nếu dùng Set truyền thống để lưu ID người dùng, một ID chiếm vài chục byte, hàng trăm triệu ID có thể cần vài GB thậm chí vài chục GB Memory, điều này không thể chấp nhận được trong nhiều kịch bản. Còn HLL, trong Redis chỉ cần cố định 12KB Memory, là có thể xử lý cardinality cấp con số thiên văn, đây là một ưu điểm mang tính đột phá.
+2. **Yêu cầu về độ chính xác của kết quả không phải 100%:** Đây là tiền đề để dùng HLL. Ví dụ, product manager muốn biết UV (số khách truy cập độc lập) của một bài đăng hot là khoảng 10 triệu hay 10,1 triệu, sự khác biệt nhỏ này thường không ảnh hưởng đến quyết định kinh doanh. Nhưng nếu kịch bản là thống kê số giao dịch chính xác của một hệ thống giao dịch, thì HLL hoàn toàn không phù hợp, vì kịch bản tài chính yêu cầu chính xác 100%.
 
-**所以，HyperLogLog 具体的应用场景就非常清晰了：**
+**Vì vậy, các kịch bản ứng dụng cụ thể của HyperLogLog rất rõ ràng:**
 
-- **网站/App 的 UV（Unique Visitor）统计：** 比如统计首页每天有多少个不同的 IP 或用户 ID 访问过。
-- **搜索引擎关键词统计：** 统计每天有多少个不同的用户搜索了某个关键词。
-- **社交网络互动统计：** 比如统计一条微博被多少个不同的用户转发过。
+- **Thống kê UV (Unique Visitor) của website/App:** Ví dụ thống kê mỗi ngày có bao nhiêu IP hoặc ID người dùng khác nhau truy cập trang chủ.
+- **Thống kê từ khóa của search engine:** Thống kê mỗi ngày có bao nhiêu người dùng khác nhau tìm kiếm một từ khóa nào đó.
+- **Thống kê tương tác mạng xã hội:** Ví dụ thống kê một bài Weibo được bao nhiêu người dùng khác nhau chia sẻ lại.
 
-在这些场景下，我们关心的是数量级和趋势，而不是个位数的差异。
+Trong những kịch bản này, chúng ta quan tâm đến bậc độ lớn và xu hướng, chứ không phải sự khác biệt ở hàng đơn vị.
 
-最后，Redis 的实现还非常智能，它内部会根据基数的大小，在**稀疏矩阵**（占用空间更小）和**稠密矩阵**（固定的 12KB）之间自动切换，进一步优化了内存使用。总而言之，当您需要对海量数据进行去重计数，并且可以接受微小误差时，HyperLogLog 就是不二之选。
+Cuối cùng, triển khai của Redis còn rất thông minh, bên trong nó sẽ dựa vào độ lớn của cardinality để tự động chuyển đổi giữa **ma trận thưa** (sparse, chiếm không gian nhỏ hơn) và **ma trận dày đặc** (dense, cố định 12KB), càng tối ưu thêm việc sử dụng Memory. Tóm lại, khi bạn cần đếm không trùng lặp trên dữ liệu khổng lồ, và có thể chấp nhận sai số nhỏ, HyperLogLog chính là lựa chọn duy nhất.
 
-### 使用 HyperLogLog 统计页面 UV 怎么做？
+### Dùng HyperLogLog thống kê UV của trang như thế nào?
 
-使用 HyperLogLog 统计页面 UV 主要需要用到下面这两个命令：
+Dùng HyperLogLog thống kê UV của trang chủ yếu cần dùng hai lệnh dưới đây:
 
-- `PFADD key element1 element2 ...`：添加一个或多个元素到 HyperLogLog 中。
-- `PFCOUNT key1 key2`：获取一个或者多个 HyperLogLog 的唯一计数。
+- `PFADD key element1 element2 ...`: thêm một hoặc nhiều phần tử vào HyperLogLog.
+- `PFCOUNT key1 key2`: lấy số đếm duy nhất của một hoặc nhiều HyperLogLog.
 
-1、将访问指定页面的每个用户 ID 添加到 `HyperLogLog` 中。
+1. Thêm ID của mỗi người dùng truy cập trang chỉ định vào `HyperLogLog`.
 
 ```bash
 PFADD PAGE_1:UV USER1 USER2 ...... USERn
 ```
 
-2、统计指定页面的 UV。
+2. Thống kê UV của trang chỉ định.
 
 ```bash
 PFCOUNT PAGE_1:UV
 ```
 
-### 如果我想判断一个元素是否不在海量元素集合中，用什么数据类型？
+### Nếu muốn phán đoán một phần tử có không thuộc một tập hợp phần tử khổng lồ hay không, dùng kiểu dữ liệu gì?
 
-这是布隆过滤器的经典应用场景。布隆过滤器可以告诉你一个元素一定不存在或者可能存在，它也有极高的空间效率和一定的误判率，但绝不会漏报。也就是说，布隆过滤器说某个元素存在，小概率会误判。布隆过滤器说某个元素不在，那么这个元素一定不在。
+Đây là kịch bản ứng dụng kinh điển của Bloom Filter. Bloom Filter có thể cho bạn biết một phần tử chắc chắn không tồn tại hoặc có thể tồn tại, nó cũng có hiệu suất không gian cực cao và một tỷ lệ dương tính giả nhất định, nhưng tuyệt đối không bỏ sót. Nghĩa là, Bloom Filter nói phần tử nào đó tồn tại, xác suất nhỏ sẽ là phán đoán sai. Bloom Filter nói phần tử nào đó không tồn tại, thì phần tử đó chắc chắn không tồn tại.
 
-Bloom Filter 的简单原理图如下：
+Sơ đồ nguyên lý đơn giản của Bloom Filter như sau:
 
-![Bloom Filter 的简单原理示意图](https://oss.javaguide.cn/github/javaguide/cs-basics/algorithms/bloom-filter-simple-schematic-diagram.png)
+![Sơ đồ nguyên lý đơn giản của Bloom Filter](https://oss.javaguide.cn/github/javaguide/cs-basics/algorithms/bloom-filter-simple-schematic-diagram.png)
 
-当字符串存储要加入到布隆过滤器中时，该字符串首先由多个哈希函数生成不同的哈希值，然后将对应的位数组的下标设置为 1（当位数组初始化时，所有位置均为 0）。当第二次存储相同字符串时，因为先前的对应位置已设置为 1，所以很容易知道此值已经存在（去重非常方便）。
+Khi một chuỗi cần được thêm vào Bloom Filter, chuỗi này trước tiên được nhiều hàm hash tạo ra các giá trị hash khác nhau, sau đó đặt chỉ số tương ứng trong mảng bit thành 1 (khi khởi tạo mảng bit, tất cả các vị trí đều là 0). Khi lưu chuỗi giống nhau lần thứ hai, vì các vị trí tương ứng trước đó đã được đặt thành 1, nên dễ dàng biết giá trị này đã tồn tại (việc loại trùng rất thuận tiện).
 
-如果我们需要判断某个字符串是否在布隆过滤器中时，只需要对给定字符串再次进行相同的哈希计算，得到值之后判断位数组中的每个元素是否都为 1，如果值都为 1，那么说明这个值在布隆过滤器中，如果存在一个值不为 1，说明该元素不在布隆过滤器中。
+Nếu chúng ta cần phán đoán một chuỗi nào đó có trong Bloom Filter hay không, chỉ cần thực hiện lại tính hash giống hệt trên chuỗi đã cho, sau khi có giá trị thì phán đoán xem mỗi phần tử trong mảng bit có đều là 1 không, nếu đều là 1, thì giá trị này có trong Bloom Filter, nếu tồn tại một giá trị không phải 1, thì phần tử đó không có trong Bloom Filter.
 
-关于布隆过滤器的误判、删除困难、Guava 和 RedisBloom 使用，可以继续看 [布隆过滤器详解](https://javaguide.cn/cs-basics/data-structure/bloom-filter.html)。
+Về dương tính giả, khó xóa, cách dùng Guava và RedisBloom của Bloom Filter, có thể xem tiếp [Giải thích chi tiết Bloom Filter](https://javaguide.cn/cs-basics/data-structure/bloom-filter.html).
 
-## ⭐️Redis 持久化机制（重要）
+## ⭐️Cơ chế Persistence của Redis (quan trọng)
 
-Redis 持久化机制（RDB 持久化、AOF 持久化、RDB 和 AOF 的混合持久化）相关的问题比较多，也比较重要，于是我单独抽了一篇文章来总结 Redis 持久化机制相关的知识点和问题：[Redis 持久化机制详解](https://javaguide.cn/database/redis/redis-persistence.html)。
+Các vấn đề liên quan đến cơ chế Persistence của Redis (RDB Persistence, AOF Persistence, Persistence hỗn hợp RDB và AOF) khá nhiều, cũng khá quan trọng, vì vậy tôi đã tách riêng một bài viết để tổng hợp các kiến thức và vấn đề liên quan đến cơ chế Persistence của Redis: [Giải thích chi tiết cơ chế Persistence của Redis](https://javaguide.cn/database/redis/redis-persistence.html).
 
-## ⭐️Redis 线程模型（重要）
+## ⭐️Mô hình thread của Redis (quan trọng)
 
-对于读写命令来说，Redis 一直是单线程模型。不过，在 Redis 4.0 版本之后引入了多线程来执行一些大键值对的异步删除操作，Redis 6.0 版本之后引入了多线程来处理网络请求（提高网络 IO 读写性能）。
+Với các lệnh đọc ghi, Redis luôn là mô hình Single Thread. Tuy nhiên, từ phiên bản Redis 4.0 trở đi đã đưa thêm đa luồng để thực hiện một số thao tác xóa bất đồng bộ các cặp Key-Value lớn, từ phiên bản Redis 6.0 trở đi đã đưa thêm đa luồng để xử lý yêu cầu mạng (nâng cao hiệu năng đọc ghi IO mạng).
 
-### Redis 单线程模型了解吗？
+### Bạn có hiểu về mô hình Single Thread của Redis không?
 
-**Redis 基于 Reactor 模式设计开发了一套高效的事件处理模型**（Netty 的线程模型也基于 Reactor 模式，Reactor 模式不愧是高性能 IO 的基石），这套事件处理模型对应的是 Redis 中的文件事件处理器（file event handler）。由于文件事件处理器（file event handler）是单线程方式运行的，所以我们一般都说 Redis 是单线程模型。
+**Redis thiết kế và phát triển một bộ mô hình xử lý sự kiện hiệu quả dựa trên mô hình Reactor** (mô hình thread của Netty cũng dựa trên mô hình Reactor, mô hình Reactor xứng đáng là nền tảng của IO hiệu năng cao), bộ mô hình xử lý sự kiện này tương ứng với file event handler (bộ xử lý sự kiện file) trong Redis. Do file event handler chạy theo cách Single Thread, nên chúng ta thường nói Redis là mô hình Single Thread.
 
-《Redis 设计与实现》有一段话是这样介绍文件事件处理器的，我觉得写得挺不错。
+Trong cuốn 《Redis 设计与实现》 (Thiết kế và triển khai Redis) có một đoạn giới thiệu về file event handler như sau, tôi thấy viết khá hay.
 
-> Redis 基于 Reactor 模式开发了自己的网络事件处理器：这个处理器被称为文件事件处理器（file event handler）。
+> Redis phát triển bộ xử lý sự kiện mạng của riêng mình dựa trên mô hình Reactor: bộ xử lý này được gọi là file event handler.
 >
-> - 文件事件处理器使用 I/O 多路复用（multiplexing）程序来同时监听多个套接字，并根据套接字目前执行的任务来为套接字关联不同的事件处理器。
-> - 当被监听的套接字准备好执行连接应答（accept）、读取（read）、写入（write）、关 闭（close）等操作时，与操作相对应的文件事件就会产生，这时文件事件处理器就会调用套接字之前关联好的事件处理器来处理这些事件。
+> - File event handler sử dụng chương trình I/O Multiplexing (ghép kênh) để đồng thời lắng nghe nhiều socket, và dựa trên tác vụ mà socket đang thực hiện để gắn các bộ xử lý sự kiện khác nhau cho socket.
+> - Khi socket được lắng nghe sẵn sàng thực hiện các thao tác như accept (đáp ứng kết nối), read (đọc), write (ghi), close (đóng), sự kiện file tương ứng với thao tác sẽ được sinh ra, lúc này file event handler sẽ gọi bộ xử lý sự kiện đã gắn trước đó của socket để xử lý các sự kiện này.
 >
-> **虽然文件事件处理器以单线程方式运行，但通过使用 I/O 多路复用程序来监听多个套接字**，文件事件处理器既实现了高性能的网络通信模型，又可以很好地与 Redis 服务器中其他同样以单线程方式运行的模块进行对接，这保持了 Redis 内部单线程设计的简单性。
+> **Tuy file event handler chạy theo cách Single Thread, nhưng thông qua việc sử dụng chương trình I/O Multiplexing để lắng nghe nhiều socket**, file event handler vừa triển khai được mô hình giao tiếp mạng hiệu năng cao, vừa có thể kết nối tốt với các module khác cũng chạy theo cách Single Thread trong Redis server, điều này giữ được tính đơn giản của thiết kế Single Thread bên trong Redis.
 
-**既然是单线程，那怎么监听大量的客户端连接呢？**
+**Đã là Single Thread, thì làm sao lắng nghe lượng lớn kết nối client?**
 
-Redis 通过 **IO 多路复用程序** 来监听来自客户端的大量连接（或者说是监听多个 socket），它会将感兴趣的事件及类型（读、写）注册到内核中并监听每个事件是否发生。
+Redis thông qua **chương trình IO Multiplexing** để lắng nghe lượng lớn kết nối từ client (hay nói cách khác là lắng nghe nhiều socket), nó sẽ đăng ký các sự kiện và kiểu quan tâm (đọc, ghi) vào kernel và lắng nghe xem mỗi sự kiện có xảy ra hay không.
 
-这样的好处非常明显：**I/O 多路复用技术的使用让 Redis 不需要额外创建多余的线程来监听客户端的大量连接，降低了资源的消耗**（和 NIO 中的 `Selector` 组件很像）。
+Lợi ích của cách này rất rõ ràng: **việc sử dụng kỹ thuật I/O Multiplexing khiến Redis không cần tạo thêm thread thừa để lắng nghe lượng lớn kết nối của client, giảm tiêu hao tài nguyên** (rất giống component `Selector` trong NIO).
 
-文件事件处理器（file event handler）主要是包含 4 个部分：
+File event handler chủ yếu bao gồm 4 phần:
 
-- 多个 socket（客户端连接）
-- IO 多路复用程序（支持多个客户端连接的关键）
-- 文件事件分派器（将 socket 关联到相应的事件处理器）
-- 事件处理器（连接应答处理器、命令请求处理器、命令回复处理器）
+- Nhiều socket (kết nối client)
+- Chương trình IO Multiplexing (then chốt để hỗ trợ nhiều kết nối client)
+- Bộ phân phát sự kiện file (gắn socket với bộ xử lý sự kiện tương ứng)
+- Bộ xử lý sự kiện (bộ xử lý đáp ứng kết nối, bộ xử lý yêu cầu lệnh, bộ xử lý phản hồi lệnh)
 
-![文件事件处理器（file event handler）](https://oss.javaguide.cn/github/javaguide/database/redis/redis-event-handler.png)
+![File event handler](https://oss.javaguide.cn/github/javaguide/database/redis/redis-event-handler.png)
 
-### Redis6.0 之前为什么不使用多线程？
+### Tại sao trước Redis 6.0 không dùng đa luồng?
 
-虽然说 Redis 是单线程模型，但实际上，**Redis 在 4.0 之后的版本中就已经加入了对多线程的支持。**
+Tuy nói Redis là mô hình Single Thread, nhưng thực tế, **từ phiên bản Redis 4.0 trở đi đã thêm hỗ trợ cho đa luồng.**
 
-不过，Redis 4.0 增加的多线程主要是针对一些大键值对的删除操作的命令，使用这些命令就会使用主线程之外的其他线程来“异步处理”，从而减少对主线程的影响。
+Tuy nhiên, đa luồng mà Redis 4.0 thêm vào chủ yếu nhắm đến một số lệnh thao tác xóa các cặp Key-Value lớn, sử dụng các lệnh này sẽ dùng các thread khác ngoài main thread để "xử lý bất đồng bộ", từ đó giảm ảnh hưởng lên main thread.
 
-为此，Redis 4.0 之后新增了几个异步命令：
+Vì vậy, từ Redis 4.0 trở đi đã thêm một số lệnh bất đồng bộ:
 
-- `UNLINK`：可以看作是 `DEL` 命令的异步版本。
-- `FLUSHALL ASYNC`：用于清空所有数据库的所有键，不限于当前 `SELECT` 的数据库。
-- `FLUSHDB ASYNC`：用于清空当前 `SELECT` 数据库中的所有键。
+- `UNLINK`: có thể xem là phiên bản bất đồng bộ của lệnh `DEL`.
+- `FLUSHALL ASYNC`: dùng để xóa tất cả key của tất cả database, không giới hạn ở database đang `SELECT`.
+- `FLUSHDB ASYNC`: dùng để xóa tất cả key trong database đang `SELECT`.
 
 ![redis4.0 more thread](https://oss.javaguide.cn/github/javaguide/database/redis/redis4.0-more-thread.png)
 
-总的来说，直到 Redis 6.0 之前，Redis 的主要操作仍然是单线程处理的。
+Nhìn chung, cho đến trước Redis 6.0, các thao tác chính của Redis vẫn được xử lý bằng Single Thread.
 
-**那 Redis6.0 之前为什么不使用多线程？** 我觉得主要原因有 3 点：
+**Vậy tại sao trước Redis 6.0 không dùng đa luồng?** Tôi cho rằng nguyên nhân chính có 3 điểm:
 
-- 单线程编程容易并且更容易维护；
-- Redis 的性能瓶颈不在 CPU，主要在内存和网络；
-- 多线程就会存在死锁、线程上下文切换等问题，甚至会影响性能。
+- Lập trình Single Thread dễ dàng và dễ bảo trì hơn;
+- Nút thắt hiệu năng của Redis không nằm ở CPU, chủ yếu ở Memory và mạng;
+- Đa luồng sẽ tồn tại các vấn đề như deadlock, chuyển đổi ngữ cảnh thread, thậm chí ảnh hưởng đến hiệu năng.
 
-相关阅读：[为什么 Redis 选择单线程模型？](https://draveness.me/whys-the-design-redis-single-thread/)。
+Đọc thêm: [Tại sao Redis chọn mô hình Single Thread?](https://draveness.me/whys-the-design-redis-single-thread/).
 
-### Redis6.0 之后为何引入了多线程？
+### Tại sao từ Redis 6.0 trở đi lại đưa vào đa luồng?
 
-**Redis6.0 引入多线程主要是为了提高网络 IO 读写性能**，因为这个算是 Redis 中的一个性能瓶颈（Redis 的瓶颈主要受限于内存和网络）。
+**Redis 6.0 đưa vào đa luồng chủ yếu để nâng cao hiệu năng đọc ghi IO mạng**, vì đây được xem là một nút thắt hiệu năng trong Redis (nút thắt của Redis chủ yếu bị giới hạn bởi Memory và mạng).
 
-虽然，Redis6.0 引入了多线程，但是 Redis 的多线程只是在网络数据的读写这类耗时操作上使用了，执行命令仍然是单线程顺序执行。因此，你也不需要担心线程安全问题。
+Tuy Redis 6.0 đưa vào đa luồng, nhưng đa luồng của Redis chỉ được dùng cho các thao tác tốn thời gian như đọc ghi dữ liệu mạng, việc thực thi lệnh vẫn là Single Thread thực thi tuần tự. Vì vậy, bạn cũng không cần lo lắng về vấn đề thread safety (an toàn luồng).
 
-Redis6.0 的多线程默认是禁用的，只使用主线程。如需开启需要设置 IO 线程数 > 1，需要修改 redis 配置文件 `redis.conf`：
+Đa luồng của Redis 6.0 mặc định bị vô hiệu hóa, chỉ dùng main thread. Nếu cần bật thì phải đặt số IO thread > 1, cần sửa file cấu hình redis `redis.conf`:
 
 ```bash
-io-threads 4 #设置1的话只会开启主线程，官网建议4核的机器建议设置为2或3个线程，8核的建议设置为6个线程
+io-threads 4 #nếu đặt 1 thì chỉ bật main thread, trang chủ khuyến nghị máy 4 nhân nên đặt 2 hoặc 3 thread, máy 8 nhân khuyến nghị đặt 6 thread
 ```
 
-另外：
+Ngoài ra:
 
-- io-threads 的个数一旦设置，不能通过 config 动态设置。
-- 当设置 ssl 后，io-threads 将不工作。
+- Số lượng io-threads một khi đã đặt, không thể thay đổi động thông qua config.
+- Khi đã đặt ssl, io-threads sẽ không hoạt động.
 
-开启多线程后，默认只会使用多线程进行 IO 写入 writes，即发送数据给客户端，如果需要开启多线程 IO 读取 reads，同样需要修改 redis 配置文件 `redis.conf`：
+Sau khi bật đa luồng, mặc định chỉ dùng đa luồng cho IO writes (ghi), tức gửi dữ liệu cho client, nếu cần bật đa luồng cho IO reads (đọc), cũng cần sửa file cấu hình redis `redis.conf`:
 
 ```bash
 io-threads-do-reads yes
 ```
 
-但是官网描述开启多线程读并不能有太大提升，因此一般情况下并不建议开启。
+Nhưng theo mô tả của trang chủ, bật đa luồng cho đọc không cải thiện được nhiều, vì vậy thông thường không khuyến nghị bật.
 
-相关阅读：
+Đọc thêm:
 
-- [Redis 6.0 新特性-多线程连环 13 问！](https://mp.weixin.qq.com/s/FZu3acwK6zrCBZQ_3HoUgw)
-- [Redis 多线程网络模型全面揭秘](https://segmentfault.com/a/1190000039223696)（推荐）
+- [Tính năng mới Redis 6.0 - 13 câu hỏi liên hoàn về đa luồng!](https://mp.weixin.qq.com/s/FZu3acwK6zrCBZQ_3HoUgw)
+- [Giải mã toàn diện mô hình mạng đa luồng của Redis](https://segmentfault.com/a/1190000039223696) (khuyến nghị)
 
-### Redis 后台线程了解吗？
+### Bạn có hiểu về background thread của Redis không?
 
-我们虽然经常说 Redis 是单线程模型（主要逻辑是单线程完成的），但实际还有一些后台线程用于执行一些比较耗时的操作：
+Tuy chúng ta thường nói Redis là mô hình Single Thread (logic chính được hoàn thành bằng Single Thread), nhưng thực tế còn có một số background thread (luồng nền) dùng để thực hiện các thao tác tốn thời gian:
 
-- 通过 `bio_close_file` 后台线程来释放 AOF / RDB 等过程中产生的临时文件资源。
-- 通过 `bio_aof_fsync` 后台线程调用 `fsync` 函数将系统内核缓冲区还未同步到到磁盘的数据强制刷到磁盘（AOF 文件）。
-- 通过 `bio_lazy_free` 后台线程释放大对象（已删除）占用的内存空间.
+- Thông qua background thread `bio_close_file` để giải phóng tài nguyên file tạm thời sinh ra trong các quá trình như AOF / RDB.
+- Thông qua background thread `bio_aof_fsync` gọi hàm `fsync` để buộc ghi dữ liệu chưa được đồng bộ từ buffer của kernel hệ thống xuống đĩa (file AOF).
+- Thông qua background thread `bio_lazy_free` để giải phóng không gian Memory mà các đối tượng lớn (đã xóa) chiếm dụng.
 
-在`bio.h` 文件中有定义（Redis 6.0 版本，源码地址：<https://github.com/redis/redis/blob/6.0/src/bio.h>）：
+Trong file `bio.h` có định nghĩa (phiên bản Redis 6.0, địa chỉ source code: <https://github.com/redis/redis/blob/6.0/src/bio.h>):
 
 ```java
 #ifndef __BIO_H
@@ -584,80 +584,80 @@ void bioKillThreads(void);
 #endif
 ```
 
-关于 Redis 后台线程的详细介绍可以查看 [Redis 6.0 后台线程有哪些？](https://juejin.cn/post/7102780434739626014) 这篇就文章。
+Về giới thiệu chi tiết background thread của Redis, có thể xem bài viết [Redis 6.0 có những background thread nào?](https://juejin.cn/post/7102780434739626014).
 
-## ⭐️Redis 内存管理
+## ⭐️Quản lý Memory của Redis
 
-### Redis 给缓存数据设置过期时间有什么用？
+### Việc đặt thời gian Expire cho dữ liệu Cache trong Redis có tác dụng gì?
 
-一般情况下，我们设置保存的缓存数据的时候都会设置一个过期时间。为什么呢？
+Thông thường, khi lưu dữ liệu Cache chúng ta đều đặt một thời gian Expire (hết hạn). Tại sao vậy?
 
-内存是有限且珍贵的，如果不对缓存数据设置过期时间，那内存占用就会一直增长，最终可能会导致 OOM 问题。通过设置合理的过期时间，Redis 会自动删除暂时不需要的数据，为新的缓存数据腾出空间。
+Memory là hữu hạn và quý giá, nếu không đặt thời gian Expire cho dữ liệu Cache, thì mức chiếm dụng Memory sẽ tăng liên tục, cuối cùng có thể dẫn đến vấn đề OOM. Thông qua việc đặt thời gian Expire hợp lý, Redis sẽ tự động xóa dữ liệu tạm thời không cần đến, nhường chỗ cho dữ liệu Cache mới.
 
-Redis 自带了给缓存数据设置过期时间的功能，比如：
+Redis có sẵn chức năng đặt thời gian Expire cho dữ liệu Cache, ví dụ:
 
 ```bash
-127.0.0.1:6379> expire key 60 # 数据在 60s 后过期
+127.0.0.1:6379> expire key 60 # dữ liệu sẽ hết hạn sau 60s
 (integer) 1
-127.0.0.1:6379> setex key 60 value # 数据在 60s 后过期 (setex:[set] + [ex]pire)
+127.0.0.1:6379> setex key 60 value # dữ liệu sẽ hết hạn sau 60s (setex:[set] + [ex]pire)
 OK
-127.0.0.1:6379> ttl key # 查看数据还有多久过期
+127.0.0.1:6379> ttl key # xem dữ liệu còn bao lâu nữa thì hết hạn
 (integer) 56
 ```
 
-注意 ⚠️：Redis 中除了字符串类型有自己独有设置过期时间的命令 `setex` 外，其他方法都需要依靠 `expire` 命令来设置过期时间 。另外，`persist` 命令可以移除一个键的过期时间。
+Chú ý ⚠️: Trong Redis, ngoài kiểu chuỗi có lệnh riêng `setex` để đặt thời gian Expire, các phương pháp khác đều cần dựa vào lệnh `expire` để đặt thời gian Expire. Ngoài ra, lệnh `persist` có thể xóa bỏ thời gian Expire của một key.
 
-**过期时间除了有助于缓解内存的消耗，还有什么其他用么？**
+**Thời gian Expire ngoài việc giúp giảm tiêu hao Memory, còn tác dụng nào khác không?**
 
-很多时候，我们的业务场景就是需要某个数据只在某一时间段内存在，比如我们的短信验证码可能只在 1 分钟内有效，用户登录的 Token 可能只在 1 天内有效。
+Rất nhiều khi, kịch bản nghiệp vụ của chúng ta cần dữ liệu nào đó chỉ tồn tại trong một khoảng thời gian, ví dụ mã xác minh SMS có thể chỉ có hiệu lực trong 1 phút, Token đăng nhập của người dùng có thể chỉ có hiệu lực trong 1 ngày.
 
-如果使用传统的数据库来处理的话，一般都是自己判断过期，这样更麻烦并且性能要差很多。
+Nếu dùng cơ sở dữ liệu truyền thống để xử lý, thường là phải tự phán đoán hết hạn, như vậy phiền phức hơn và hiệu năng kém hơn nhiều.
 
-### Redis 是如何判断数据是否过期的呢？
+### Redis phán đoán dữ liệu đã hết hạn như thế nào?
 
-Redis 通过一个叫做过期字典（可以看作是 hash 表）来保存数据过期的时间。过期字典的键指向 Redis 数据库中的某个 key（键），过期字典的值是一个 long long 类型的整数，这个整数保存了 key 所指向的数据库键的过期时间（毫秒精度的 UNIX 时间戳）。
+Redis thông qua một thứ gọi là expire dictionary (từ điển hết hạn, có thể xem như bảng hash) để lưu thời gian hết hạn của dữ liệu. Key của expire dictionary trỏ đến một key nào đó trong Redis database, value của expire dictionary là một số nguyên kiểu long long, số nguyên này lưu thời gian hết hạn của key trong database mà nó trỏ đến (UNIX timestamp với độ chính xác mili giây).
 
-![Redis 过期字典](https://oss.javaguide.cn/github/javaguide/database/redis/redis-expired-dictionary.png)
+![Expire dictionary của Redis](https://oss.javaguide.cn/github/javaguide/database/redis/redis-expired-dictionary.png)
 
-过期字典是存储在 redisDb 这个结构里的：
+Expire dictionary được lưu trong cấu trúc redisDb:
 
 ```c
 typedef struct redisDb {
     ...
 
-    dict *dict;     //数据库键空间,保存着数据库中所有键值对
-    dict *expires   // 过期字典,保存着键的过期时间
+    dict *dict;     //không gian key của database, lưu tất cả cặp Key-Value trong database
+    dict *expires   // expire dictionary, lưu thời gian hết hạn của key
     ...
 } redisDb;
 ```
 
-在查询一个 key 的时候，Redis 首先检查该 key 是否存在于过期字典中（时间复杂度为 O(1)），如果不在就直接返回，在的话需要判断一下这个 key 是否过期，过期直接删除 key 然后返回 null。
+Khi truy vấn một key, Redis trước tiên kiểm tra key đó có tồn tại trong expire dictionary hay không (độ phức tạp thời gian là O(1)), nếu không có thì trả về trực tiếp, nếu có thì cần phán đoán xem key này đã hết hạn chưa, hết hạn thì xóa key rồi trả về null.
 
-### Redis 过期 key 删除策略了解么？
+### Bạn có biết về chiến lược xóa key hết hạn của Redis không?
 
-如果假设你设置了一批 key 只能存活 1 分钟，那么 1 分钟后，Redis 是怎么对这批 key 进行删除的呢？
+Giả sử bạn đặt một loạt key chỉ sống được 1 phút, vậy sau 1 phút, Redis xóa loạt key này như thế nào?
 
-常用的过期数据的删除策略就下面这几种：
+Các chiến lược xóa dữ liệu hết hạn thường dùng gồm mấy loại dưới đây:
 
-1. **惰性删除**：只会在取出/查询 key 的时候才对数据进行过期检查。这种方式对 CPU 最友好，但是可能会造成太多过期 key 没有被删除。
-2. **定期删除**：周期性地随机从设置了过期时间的 key 中抽查一批，然后逐个检查这些 key 是否过期，过期就删除 key。相比于惰性删除，定期删除对内存更友好，对 CPU 不太友好。
-3. **延迟队列**：把设置过期时间的 key 放到一个延迟队列里，到期之后就删除 key。这种方式可以保证每个过期 key 都能被删除，但维护延迟队列太麻烦，队列本身也要占用资源。
-4. **定时删除**：每个设置了过期时间的 key 都会在设置的时间到达时立即被删除。这种方法可以确保内存中不会有过期的键，但是它对 CPU 的压力最大，因为它需要为每个键都设置一个定时器。
+1. **Lazy Deletion (xóa trì hoãn)**: chỉ kiểm tra hết hạn khi lấy/truy vấn key. Cách này thân thiện nhất với CPU, nhưng có thể khiến quá nhiều key hết hạn không được xóa.
+2. **Periodic Deletion (xóa định kỳ)**: định kỳ rút ngẫu nhiên một loạt key từ các key đã đặt thời gian hết hạn, sau đó kiểm tra từng key xem đã hết hạn chưa, hết hạn thì xóa key. So với Lazy Deletion, Periodic Deletion thân thiện hơn với Memory, nhưng không thân thiện lắm với CPU.
+3. **Delayed Queue (hàng đợi trì hoãn)**: đưa các key đã đặt thời gian hết hạn vào một delayed queue, đến hạn thì xóa key. Cách này đảm bảo mỗi key hết hạn đều được xóa, nhưng duy trì delayed queue quá phiền phức, bản thân hàng đợi cũng chiếm tài nguyên.
+4. **Scheduled Deletion (xóa theo lịch)**: mỗi key đã đặt thời gian hết hạn sẽ bị xóa ngay khi đến thời điểm đã đặt. Phương pháp này đảm bảo trong Memory không có key hết hạn, nhưng áp lực lên CPU lớn nhất, vì cần đặt một timer cho mỗi key.
 
-**Redis 采用的是那种删除策略呢？**
+**Redis áp dụng chiến lược xóa nào?**
 
-Redis 采用的是 **定期删除+惰性/懒汉式删除** 结合的策略，这也是大部分缓存框架的选择。定期删除对内存更加友好，惰性删除对 CPU 更加友好。两者各有千秋，结合起来使用既能兼顾 CPU 友好，又能兼顾内存友好。
+Redis áp dụng chiến lược kết hợp **Periodic Deletion + Lazy Deletion**, đây cũng là lựa chọn của phần lớn các framework Cache. Periodic Deletion thân thiện hơn với Memory, Lazy Deletion thân thiện hơn với CPU. Mỗi loại có ưu điểm riêng, kết hợp sử dụng vừa đảm bảo thân thiện với CPU, vừa đảm bảo thân thiện với Memory.
 
-下面是我们详细介绍一下 Redis 中的定期删除具体是如何做的。
+Dưới đây chúng ta sẽ giới thiệu chi tiết xem Periodic Deletion trong Redis cụ thể được thực hiện như thế nào.
 
-Redis 的定期删除过程是随机的（周期性地随机从设置了过期时间的 key 中抽查一批），所以并不保证所有过期键都会被立即删除。这也就解释了为什么有的 key 过期了，并没有被删除。并且，Redis 底层会通过限制删除操作执行的时长和频率来减少删除操作对 CPU 时间的影响。
+Quá trình Periodic Deletion của Redis là ngẫu nhiên (định kỳ rút ngẫu nhiên một loạt key từ các key đã đặt thời gian hết hạn), nên không đảm bảo tất cả key hết hạn đều được xóa ngay lập tức. Điều này cũng giải thích tại sao có key đã hết hạn nhưng chưa bị xóa. Hơn nữa, bên dưới Redis sẽ giới hạn thời gian và tần suất thực hiện thao tác xóa để giảm ảnh hưởng của thao tác xóa lên thời gian CPU.
 
-另外，定期删除还会受到执行时间和过期 key 的比例的影响：
+Ngoài ra, Periodic Deletion còn chịu ảnh hưởng của thời gian thực thi và tỷ lệ key hết hạn:
 
-- 执行时间已经超过了阈值，那么就中断这一次定期删除循环，以避免使用过多的 CPU 时间。
-- 如果这一批过期的 key 比例超过一个比例，就会重复执行此删除流程，以更积极地清理过期 key。相应地，如果过期的 key 比例低于这个比例，就会中断这一次定期删除循环，避免做过多的工作而获得很少的内存回收。
+- Nếu thời gian thực thi đã vượt ngưỡng, thì ngắt vòng lặp Periodic Deletion lần này, để tránh dùng quá nhiều thời gian CPU.
+- Nếu tỷ lệ key hết hạn trong loạt này vượt quá một tỷ lệ nhất định, sẽ lặp lại quy trình xóa này, để dọn dẹp key hết hạn tích cực hơn. Tương ứng, nếu tỷ lệ key hết hạn thấp hơn tỷ lệ này, sẽ ngắt vòng lặp Periodic Deletion lần này, tránh làm quá nhiều việc mà thu hồi được rất ít Memory.
 
-Redis 7.2 版本的执行时间阈值是 **25ms**，过期 key 比例设定值是 **10%**。
+Ngưỡng thời gian thực thi của phiên bản Redis 7.2 là **25ms**, giá trị đặt cho tỷ lệ key hết hạn là **10%**.
 
 ```c
 #define ACTIVE_EXPIRE_CYCLE_FAST_DURATION 1000 /* Microseconds. */
@@ -666,67 +666,67 @@ Redis 7.2 版本的执行时间阈值是 **25ms**，过期 key 比例设定值�
                                                    we do extra efforts. */
 ```
 
-**每次随机抽查数量是多少？**
+**Số lượng rút ngẫu nhiên mỗi lần là bao nhiêu?**
 
-`expire.c` 中定义了每次随机抽查的数量，Redis 7.2 版本为 20，也就是说每次会随机选择 20 个设置了过期时间的 key 判断是否过期。
+Trong `expire.c` có định nghĩa số lượng rút ngẫu nhiên mỗi lần, phiên bản Redis 7.2 là 20, nghĩa là mỗi lần sẽ chọn ngẫu nhiên 20 key đã đặt thời gian hết hạn để phán đoán xem đã hết hạn chưa.
 
 ```c
 #define ACTIVE_EXPIRE_CYCLE_KEYS_PER_LOOP 20 /* Keys for each DB loop. */
 ```
 
-**如何控制定期删除的执行频率？**
+**Làm sao kiểm soát tần suất thực hiện Periodic Deletion?**
 
-在 Redis 中，定期删除的频率是由 **hz** 参数控制的。hz 默认为 10，代表每秒执行 10 次，也就是每秒钟进行 10 次尝试来查找并删除过期的 key。
+Trong Redis, tần suất Periodic Deletion được kiểm soát bởi tham số **hz**. hz mặc định là 10, nghĩa là thực thi 10 lần mỗi giây, tức mỗi giây thực hiện 10 lần thử để tìm và xóa key hết hạn.
 
-hz 的取值范围为 1~500。增大 hz 参数的值会提升定期删除的频率。如果你想要更频繁地执行定期删除任务，可以适当增加 hz 的值，但这会增加 CPU 的使用率。根据 Redis 官方建议，hz 的值不建议超过 100，对于大部分用户使用默认的 10 就足够了。
+Phạm vi giá trị của hz là 1~500. Tăng giá trị tham số hz sẽ nâng cao tần suất Periodic Deletion. Nếu bạn muốn thực thi Periodic Deletion thường xuyên hơn, có thể tăng giá trị hz cho phù hợp, nhưng điều này sẽ tăng mức sử dụng CPU. Theo khuyến nghị chính thức của Redis, giá trị hz không khuyến nghị vượt quá 100, với phần lớn người dùng thì giá trị mặc định 10 là đủ.
 
-下面是 hz 参数的官方注释，我翻译了其中的重要信息（Redis 7.2 版本）。
+Dưới đây là chú thích chính thức của tham số hz, tôi đã dịch các thông tin quan trọng trong đó (phiên bản Redis 7.2).
 
-![redis.conf 对于 hz 的注释](https://oss.javaguide.cn/github/javaguide/database/redis/redis.conf-hz.png)
+![Chú thích về hz trong redis.conf](https://oss.javaguide.cn/github/javaguide/database/redis/redis.conf-hz.png)
 
-类似的参数还有一个 **dynamic-hz**，这个参数开启之后 Redis 就会在 hz 的基础上动态计算一个值。Redis 提供并默认启用了使用自适应 hz 值的能力，
+Một tham số tương tự là **dynamic-hz**, khi tham số này được bật, Redis sẽ tính động một giá trị dựa trên hz. Redis cung cấp và mặc định bật khả năng sử dụng giá trị hz thích ứng (adaptive),
 
-这两个参数都在 Redis 配置文件 `redis.conf` 中：
+Hai tham số này đều nằm trong file cấu hình Redis `redis.conf`:
 
 ```properties
-# 默认为 10
+# mặc định là 10
 hz 10
-# 默认开启
+# mặc định bật
 dynamic-hz yes
 ```
 
-多提一嘴，除了定期删除过期 key 这个定期任务之外，还有一些其他定期任务例如关闭超时的客户端连接、更新统计信息，这些定期任务的执行频率也是通过 hz 参数决定。
+Nói thêm, ngoài tác vụ định kỳ xóa key hết hạn, còn có một số tác vụ định kỳ khác như đóng kết nối client đã timeout, cập nhật thông tin thống kê, tần suất thực thi của các tác vụ định kỳ này cũng được quyết định bởi tham số hz.
 
-**为什么定期删除不是把所有过期 key 都删除呢？**
+**Tại sao Periodic Deletion không xóa tất cả key hết hạn?**
 
-这样会对性能造成太大的影响。如果我们 key 数量非常庞大的话，挨个遍历检查是非常耗时的，会严重影响性能。Redis 设计这种策略的目的是为了平衡内存和性能。
+Như vậy sẽ ảnh hưởng quá lớn đến hiệu năng. Nếu số lượng key của chúng ta rất lớn, việc duyệt qua từng key để kiểm tra rất tốn thời gian, sẽ ảnh hưởng nghiêm trọng đến hiệu năng. Mục đích Redis thiết kế chiến lược này là để cân bằng giữa Memory và hiệu năng.
 
-**为什么 key 过期之后不立马把它删掉呢？这样不是会浪费很多内存空间吗？**
+**Tại sao sau khi key hết hạn không xóa nó ngay lập tức? Như vậy chẳng phải lãng phí rất nhiều không gian Memory sao?**
 
-因为不太好办到，或者说这种删除方式的成本太高了。假如我们使用延迟队列作为删除策略，这样存在下面这些问题：
+Vì khá khó thực hiện, hay nói cách khác chi phí của cách xóa này quá cao. Giả sử chúng ta dùng delayed queue làm chiến lược xóa, sẽ tồn tại những vấn đề dưới đây:
 
-1. 队列本身的开销可能很大：key 多的情况下，一个延迟队列可能无法容纳。
-2. 维护延迟队列太麻烦：修改 key 的过期时间就需要调整其在延迟队列中的位置，并且还需要引入并发控制。
+1. Chi phí của bản thân hàng đợi có thể rất lớn: khi key nhiều, một delayed queue có thể không chứa nổi.
+2. Duy trì delayed queue quá phiền phức: sửa thời gian hết hạn của key là cần điều chỉnh vị trí của nó trong delayed queue, và còn cần đưa thêm cơ chế kiểm soát đồng thời.
 
-### 大量 key 集中过期怎么办？
+### Làm gì khi lượng lớn key hết hạn cùng lúc?
 
-当 Redis 中存在大量 key 在同一时间点集中过期时，可能会导致以下问题：
+Khi trong Redis có lượng lớn key hết hạn cùng một thời điểm, có thể dẫn đến các vấn đề sau:
 
-- **请求延迟增加**：Redis 在处理过期 key 时需要消耗 CPU 资源，如果过期 key 数量庞大，会导致 Redis 实例的 CPU 占用率升高，进而影响其他请求的处理速度，造成延迟增加。
-- **内存占用过高**：过期的 key 虽然已经失效，但在 Redis 真正删除它们之前，仍然会占用内存空间。如果过期 key 没有及时清理，可能会导致内存占用过高，甚至引发内存溢出。
+- **Tăng độ trễ yêu cầu**: Redis khi xử lý key hết hạn cần tiêu hao tài nguyên CPU, nếu số lượng key hết hạn lớn, sẽ khiến mức chiếm dụng CPU của Redis instance tăng cao, từ đó ảnh hưởng tốc độ xử lý các yêu cầu khác, gây tăng độ trễ.
+- **Chiếm dụng Memory quá cao**: Key hết hạn tuy đã mất hiệu lực, nhưng trước khi Redis thực sự xóa chúng, vẫn chiếm không gian Memory. Nếu key hết hạn không được dọn kịp thời, có thể dẫn đến chiếm dụng Memory quá cao, thậm chí gây tràn Memory.
 
-为了避免这些问题，可以采取以下方案：
+Để tránh những vấn đề này, có thể áp dụng các giải pháp sau:
 
-1. **尽量避免 key 集中过期**：在设置键的过期时间时尽量随机一点。
-2. **开启 lazy free 机制**：修改 `redis.conf` 配置文件，将 `lazyfree-lazy-expire` 参数设置为 `yes`，即可开启 lazy free 机制。开启 lazy free 机制后，Redis 会在后台异步删除过期的 key，不会阻塞主线程的运行，从而降低对 Redis 性能的影响。
+1. **Cố gắng tránh key hết hạn cùng lúc**: khi đặt thời gian hết hạn cho key hãy đặt ngẫu nhiên một chút.
+2. **Bật cơ chế lazy free**: sửa file cấu hình `redis.conf`, đặt tham số `lazyfree-lazy-expire` thành `yes`, là có thể bật cơ chế lazy free. Sau khi bật cơ chế lazy free, Redis sẽ xóa key hết hạn bất đồng bộ ở background, không chặn main thread chạy, từ đó giảm ảnh hưởng lên hiệu năng của Redis.
 
-### Redis 内存淘汰策略了解么？
+### Bạn có biết về chiến lược Eviction Memory của Redis không?
 
-> 相关问题：MySQL 里有 2000w 数据，Redis 中只存 20w 的数据，如何保证 Redis 中的数据都是热点数据?
+> Câu hỏi liên quan: MySQL có 2000w dữ liệu, Redis chỉ lưu 20w dữ liệu, làm sao đảm bảo dữ liệu trong Redis đều là dữ liệu hot?
 
-Redis 的内存淘汰策略只有在运行内存达到了配置的最大内存阈值时才会触发，这个阈值是通过 `redis.conf` 的 `maxmemory` 参数来定义的。64 位操作系统下，`maxmemory` 默认为 0，表示不限制内存大小。32 位操作系统下，默认的最大内存值是 3GB。
+Chiến lược Eviction (loại bỏ) Memory của Redis chỉ được kích hoạt khi Memory đang chạy đạt đến ngưỡng Memory tối đa đã cấu hình, ngưỡng này được định nghĩa bởi tham số `maxmemory` trong `redis.conf`. Trên hệ điều hành 64 bit, `maxmemory` mặc định là 0, nghĩa là không giới hạn kích thước Memory. Trên hệ điều hành 32 bit, giá trị Memory tối đa mặc định là 3GB.
 
-你可以使用命令 `config get maxmemory` 来查看 `maxmemory` 的值。
+Bạn có thể dùng lệnh `config get maxmemory` để xem giá trị của `maxmemory`.
 
 ```bash
 > config get maxmemory
@@ -734,23 +734,23 @@ maxmemory
 0
 ```
 
-Redis 提供了 6 种内存淘汰策略：
+Redis cung cấp 6 chiến lược Eviction Memory:
 
-1. **volatile-lru（least recently used）**：从已设置过期时间的数据集（`server.db[i].expires`）中挑选最近最少使用的数据淘汰。
-2. **volatile-ttl**：从已设置过期时间的数据集（`server.db[i].expires`）中挑选将要过期的数据淘汰。
-3. **volatile-random**：从已设置过期时间的数据集（`server.db[i].expires`）中任意选择数据淘汰。
-4. **allkeys-lru（least recently used）**：从数据集（`server.db[i].dict`）中移除最近最少使用的数据淘汰。
-5. **allkeys-random**：从数据集（`server.db[i].dict`）中任意选择数据淘汰。
-6. **no-eviction**（默认内存淘汰策略）：禁止驱逐数据，当内存不足以容纳新写入数据时，新写入操作会报错。
+1. **volatile-lru (least recently used)**: chọn dữ liệu ít được sử dụng gần đây nhất từ tập dữ liệu đã đặt thời gian hết hạn (`server.db[i].expires`) để loại bỏ.
+2. **volatile-ttl**: chọn dữ liệu sắp hết hạn từ tập dữ liệu đã đặt thời gian hết hạn (`server.db[i].expires`) để loại bỏ.
+3. **volatile-random**: chọn dữ liệu bất kỳ từ tập dữ liệu đã đặt thời gian hết hạn (`server.db[i].expires`) để loại bỏ.
+4. **allkeys-lru (least recently used)**: loại bỏ dữ liệu ít được sử dụng gần đây nhất từ tập dữ liệu (`server.db[i].dict`).
+5. **allkeys-random**: chọn dữ liệu bất kỳ từ tập dữ liệu (`server.db[i].dict`) để loại bỏ.
+6. **no-eviction** (chiến lược Eviction Memory mặc định): cấm Eviction dữ liệu, khi Memory không đủ để chứa dữ liệu ghi mới, thao tác ghi mới sẽ báo lỗi.
 
-4.0 版本后增加以下两种：
+Từ phiên bản 4.0 trở đi thêm hai loại dưới đây:
 
-7. **volatile-lfu（least frequently used）**：从已设置过期时间的数据集（`server.db[i].expires`）中挑选最不经常使用的数据淘汰。
-8. **allkeys-lfu（least frequently used）**：从数据集（`server.db[i].dict`）中移除最不经常使用的数据淘汰。
+7. **volatile-lfu (least frequently used)**: chọn dữ liệu ít được sử dụng thường xuyên nhất từ tập dữ liệu đã đặt thời gian hết hạn (`server.db[i].expires`) để loại bỏ.
+8. **allkeys-lfu (least frequently used)**: loại bỏ dữ liệu ít được sử dụng thường xuyên nhất từ tập dữ liệu (`server.db[i].dict`).
 
-`allkeys-xxx` 表示从所有的键值中淘汰数据，而 `volatile-xxx` 表示从设置了过期时间的键值中淘汰数据。
+`allkeys-xxx` nghĩa là loại bỏ dữ liệu từ tất cả các cặp Key-Value, còn `volatile-xxx` nghĩa là loại bỏ dữ liệu từ các cặp Key-Value đã đặt thời gian hết hạn.
 
-`config.c` 中定义了内存淘汰策略的枚举数组：
+Trong `config.c` có định nghĩa mảng enum của các chiến lược Eviction Memory:
 
 ```c
 configEnum maxmemory_policy_enum[] = {
@@ -766,7 +766,7 @@ configEnum maxmemory_policy_enum[] = {
 };
 ```
 
-你可以使用 `config get maxmemory-policy` 命令来查看当前 Redis 的内存淘汰策略。
+Bạn có thể dùng lệnh `config get maxmemory-policy` để xem chiến lược Eviction Memory hiện tại của Redis.
 
 ```bash
 > config get maxmemory-policy
@@ -774,21 +774,21 @@ maxmemory-policy
 noeviction
 ```
 
-可以通过 `config set maxmemory-policy 内存淘汰策略` 命令修改内存淘汰策略，立即生效，但这种方式重启 Redis 之后就失效了。修改 `redis.conf` 中的 `maxmemory-policy` 参数不会因为重启而失效，不过，需要重启之后修改才能生效。
+Có thể dùng lệnh `config set maxmemory-policy chiến lược Eviction Memory` để sửa chiến lược Eviction Memory, có hiệu lực ngay, nhưng cách này sẽ mất hiệu lực sau khi khởi động lại Redis. Sửa tham số `maxmemory-policy` trong `redis.conf` sẽ không bị mất hiệu lực do khởi động lại, tuy nhiên, cần khởi động lại thì thay đổi mới có hiệu lực.
 
 ```properties
 maxmemory-policy noeviction
 ```
 
-关于淘汰策略的详细说明可以参考 Redis 官方文档：<https://redis.io/docs/reference/eviction/>。
+Về giải thích chi tiết các chiến lược Eviction, có thể tham khảo tài liệu chính thức của Redis: <https://redis.io/docs/reference/eviction/>.
 
-## 参考
+## Tham khảo
 
-- 《Redis 开发与运维》
-- 《Redis 设计与实现》
-- 《Redis 核心原理与实战》
-- Redis 命令手册：<https://www.redis.com.cn/commands.html>
-- RedisSearch 终极使用指南，你值得拥有！：<https://mp.weixin.qq.com/s/FA4XVAXJksTOHUXMsayy2g>
+- 《Redis 开发与运维》 (Phát triển và vận hành Redis)
+- 《Redis 设计与实现》 (Thiết kế và triển khai Redis)
+- 《Redis 核心原理与实战》 (Nguyên lý cốt lõi và thực chiến Redis)
+- Sổ tay lệnh Redis: <https://www.redis.com.cn/commands.html>
+- Hướng dẫn sử dụng RedisSearch cuối cùng, bạn xứng đáng sở hữu!: <https://mp.weixin.qq.com/s/FA4XVAXJksTOHUXMsayy2g>
 - WHY Redis choose single thread (vs multi threads): [https://medium.com/@jychen7/sharing-redis-single-thread-vs-multi-threads-5870bd44d153](https://medium.com/@jychen7/sharing-redis-single-thread-vs-multi-threads-5870bd44d153)
 
 <!-- @include: @article-footer.snippet.md -->

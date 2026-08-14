@@ -1,6 +1,6 @@
 ---
-title: 从校招入职腾讯的四年工作总结
-description: "从校招入职腾讯的四年工作总结：围绕技术知识与面试总结梳理关键概念、常见问题与实践要点，帮助你高效学习与备战面试。"
+title: Tổng kết bốn năm làm việc tại Tencent từ đợt tuyển dụng sinh viên mới
+description: "Tổng kết bốn năm làm việc tại Tencent từ đợt tuyển dụng sinh viên mới: hệ thống hóa các khái niệm then chốt, câu hỏi thường gặp và điểm mấu chốt thực hành xoay quanh kiến thức kỹ thuật và tổng kết phỏng vấn, giúp bạn học tập hiệu quả và chuẩn bị cho phỏng vấn."
 category: 技术文章精选集
 author: pioneeryi
 tag:
@@ -11,104 +11,104 @@ head:
       content: 腾讯工作经验,四年总结,绩效考核,EPC度量,嫡系文化,职业发展,技术成长,互联网职场
 ---
 
-程序员是一个流动性很大的职业，经常会有新面孔的到来，也经常会有老面孔的离开，有主动离开的，也有被动离职的。
+Lập trình viên là một nghề có độ biến động nhân sự rất lớn, thường xuyên có gương mặt mới đến, cũng thường xuyên có những gương mặt cũ rời đi, có người chủ động rời đi, cũng có người bị buộc phải nghỉ việc.
 
-再加上这几年卷得厉害，做的事更多了，拿到的却更少了，互联网好像也没有那么香了。
+Cộng thêm mấy năm nay cuộc đua nội cuộc (卷) ngày càng khốc liệt, làm nhiều việc hơn nhưng nhận được lại ít hơn, ngành internet dường như cũng không còn hấp dẫn như trước.
 
-人来人往，变动无常的状态，其实也早已习惯。
+Kẻ đến người đi, trạng thái biến đổi không lường, thực ra cũng đã sớm quen.
 
-打工人的唯一出路，无外乎精进自己的专业技能，提升自己的核心竞争力，这样无论有什么变动，走到哪里，都能有口饭吃。
+Con đường duy nhất của người đi làm, chẳng qua là trau dồi kỹ năng chuyên môn của mình, nâng cao năng lực cạnh tranh cốt lõi, như vậy dù có biến động gì, đi tới đâu, cũng đều có cơm ăn.
 
-今天分享一位博主，校招入职腾讯，工作四年后，离开的故事。
+Hôm nay chia sẻ câu chuyện của một blogger, vào Tencent qua đợt tuyển dụng sinh viên mới (校招), sau bốn năm làm việc thì rời đi.
 
-至于为什么离开，我也不清楚，可能是有其他更好的选择，或者是觉得当前的工作对自己的提升有限。
+Còn vì sao rời đi, tôi cũng không rõ, có thể là có lựa chọn tốt hơn khác, hoặc là cảm thấy công việc hiện tại giúp ích cho bản thân có hạn.
 
-**下文中的“我”，指这位作者本人。**
+**Trong bài viết dưới đây, "tôi" chính là bản thân tác giả này.**
 
-> 原文地址：<https://zhuanlan.zhihu.com/p/602517682>
+> Địa chỉ bài viết gốc：<https://zhuanlan.zhihu.com/p/602517682>
 
-研究生毕业后， 一直在腾讯工作，不知不觉就过了四年。个人本身没有刻意总结的习惯，以前只顾着往前奔跑了，忘了停下来思考总结。记得看过一个职业规划文档，说的三年一个阶段，五年一个阶段的说法，现在恰巧是四年，同时又从腾讯离开，该做一个总结了。
+Sau khi tốt nghiệp thạc sĩ, tôi làm việc liên tục tại Tencent, chẳng mấy chốc đã qua bốn năm. Bản thân vốn không có thói quen tổng kết, trước đây chỉ lo chạy về phía trước, quên dừng lại để suy nghĩ và tổng kết. Nhớ từng xem một tài liệu hoạch định sự nghiệp, nói rằng ba năm là một giai đoạn, năm năm là một giai đoạn, bây giờ vừa khéo được bốn năm, lại vừa rời khỏi Tencent, nên làm một lần tổng kết.
 
-先对自己这四年做一个简单的评价吧：个人认为，没有完全的浪费和辜负这四年的光阴。为何要这么说了？因为我发现和别人对比，好像意义不大，比我混的好的人很多；比我混的差的人也不少。说到底，我只是一个普普通通的人，才不惊人，技不压众，接受自己的平凡，然后看自己做的，是否让自己满意就好。
+Trước hết tự đánh giá sơ bộ bốn năm này: bản thân cho rằng, không hoàn toàn lãng phí và phụ bạc bốn năm thời gian này. Vì sao nói vậy? Bởi vì tôi phát hiện, so sánh với người khác dường như chẳng có ý nghĩa lớn; người sống tốt hơn tôi thì rất nhiều, người sống kém hơn tôi cũng không ít. Nói cho cùng, tôi chỉ là một người bình thường, tài không xuất chúng, kỹ năng không vượt trội, chấp nhận sự bình thường của mình, rồi nhìn xem những gì mình làm có khiến bản thân hài lòng hay không là được.
 
-下面具体谈几点吧，我主要想聊下工作，绩效，EPC，嫡系看法，最后再谈下收获。
+Dưới đây nói cụ thể vài điểm, tôi chủ yếu muốn nói về công việc, hiệu quả công việc, EPC, quan điểm về phái thân tín (嫡系), cuối cùng nói thêm về những gì thu nhận được.
 
-## 工作情况
+## Tình hình công việc
 
-我在腾讯内部没有转过岗，但是做过的项目也还是比较丰富的，包括：BUGLY、分布式调用链（Huskie)、众包系统（SOHO)，EPC 度量系统。其中一些是对外的，一些是内部系统，可能有些大家不知道。还是比较感谢这些项目经历，既有纯业务的系统，也有偏框架的系统，让我学到了不少知识。
+Ở Tencent tôi không chuyển vị trí, nhưng các dự án đã làm cũng khá phong phú, bao gồm: BUGLY, hệ thống theo dõi gọi chuỗi phân tán (Huskie), hệ thống crowdsourcing (SOHO), hệ thống đo lường EPC. Trong đó một số là hệ thống hướng ngoại, một số là hệ thống nội bộ, có thể một số bạn không biết. Tôi vẫn khá biết ơn những trải nghiệm dự án này, vừa có hệ thống thuần nghiệp vụ, vừa có hệ thống thiên về framework, giúp tôi học được không ít kiến thức.
 
-接下来，简单介绍一下每个项目吧，毕竟每一个项目都付出了很多心血的：
+Tiếp theo, xin giới thiệu sơ qua từng dự án, dù gì mỗi dự án đều đã đổ rất nhiều tâm huyết:
 
-BUGLY，这是一个终端 Crash 联网上报的系统，很多 APP 都接入了。Huskie，这是一个基于 zipkin 搭建的分布式调用链跟踪项目。SOHO，这是一个众包系统，主要是将数据标准和语音采集任务众包出去，让人家做。EPC 度量系统，这是研发效能度量系统，主要是度量研发效能情况的。这里我谈一下对于业务开发的理解和认识，很多人可能都跟我最开始一样，有一个疑惑，整天做业务开发如何成长？换句话说，就是说整天做 CRUD，如何成长？我开始也有这样的疑惑，后来我转变了观念。
+BUGLY, đây là hệ thống báo cáo crash (sự cố) đầu cuối qua mạng, rất nhiều APP đã tích hợp. Huskie, đây là dự án theo dõi gọi chuỗi phân tán được xây dựng dựa trên zipkin. SOHO, đây là hệ thống crowdsourcing, chủ yếu đưa các nhiệm vụ tiêu chuẩn hóa dữ liệu và thu thập giọng nói ra ngoài cho người khác làm. EPC, đây là hệ thống đo lường hiệu quả nghiên cứu-phát triển, chủ yếu đo lường tình hình hiệu quả nghiên cứu-phát triển. Ở đây tôi nói về sự hiểu biết của mình đối với phát triển nghiệp vụ, rất nhiều người có thể giống tôi lúc ban đầu, có một nghi hoặc, ngày ngày làm phát triển nghiệp vụ thì làm sao trưởng thành? Nói cách khác, ngày ngày làm CRUD thì làm sao trưởng thành? Ban đầu tôi cũng có nghi hoặc như vậy, sau đó tôi đã thay đổi quan niệm.
 
-我觉得对于系统的复杂度，可以粗略的分为技术复杂度和业务复杂度，对于业务系统，就是业务复杂度高一些，对于框架系统就是技术复杂度偏高一些。解决这两种复杂度，都具有很大的挑战。
+Tôi cho rằng độ phức tạp của hệ thống, có thể phân chia đại khái thành độ phức tạp kỹ thuật và độ phức tạp nghiệp vụ, đối với hệ thống nghiệp vụ thì độ phức tạp nghiệp vụ cao hơn, còn hệ thống framework thì độ phức tạp kỹ thuật cao hơn. Giải quyết hai loại độ phức tạp này đều là những thách thức rất lớn.
 
-此前做过的众包系统，就是各种业务逻辑，搞过去，搞过来，其实这就是业务复杂度高。为了解决这个问题，我们开始探索和实践领域驱动（DDD），确实带来了一些帮助，不至于系统那么混乱了。同时，我觉得这个过程中，自己对于 DDD 的感悟，对于我后来的项目系统划分和设计以及开发都带来了帮助。
+Hệ thống crowdsourcing từng làm trước đây, đủ loại logic nghiệp vụ, làm qua làm lại, thực ra đó chính là độ phức tạp nghiệp vụ cao. Để giải quyết vấn đề này, chúng tôi bắt đầu tìm hiểu và thực hành thiết kế hướng miền (DDD), quả thực mang lại một số trợ giúp, hệ thống không đến mức hỗn loạn như trước. Đồng thời, tôi cảm thấy trong quá trình này, sự cảm nhận về DDD của mình đã giúp ích cho việc phân chia, thiết kế và phát triển hệ thống của các dự án sau này.
 
-当然 DDD 不是银弹，我也不是吹嘘它有多好，只是了解了它后，有时候设计和开发时，能换一种思路。
+Tất nhiên DDD không phải viên đạn bạc, tôi cũng không thổi phồng nó tốt thế nào, chỉ là sau khi hiểu về nó, đôi khi thiết kế và phát triển có thể đổi một hướng suy nghĩ.
 
-可以发现，其实平时咱们做业务，想做好，其实也没那么容易，如果可以多探索多实践，将一些好的方法或思想或架构引入进来，与个人和业务都会有有帮助。
+Có thể thấy, thực ra ngày thường làm nghiệp vụ, muốn làm cho tốt cũng không dễ dàng gì, nếu có thể chủ động tìm hiểu và thực hành nhiều hơn, đưa một số phương pháp, tư tưởng hay kiến trúc tốt vào, sẽ có ích cho cả cá nhân và nghiệp vụ.
 
-## 绩效情况
+## Tình hình hiệu quả công việc
 
-我在腾讯工作四年，腾讯半年考核一次，一共考核八次，回想了下，四年来的绩效情况为:三星，三星，五星，三星，五星，四星，四星，三星。统计一下， 四五星占比刚好一半。
+Tôi làm việc tại Tencent bốn năm, Tencent đánh giá nửa năm một lần, tổng cộng tám lần, nhớ lại thì tình hình hiệu quả công việc bốn năm qua là: ba sao, ba sao, năm sao, ba sao, năm sao, bốn sao, bốn sao, ba sao. Thống kê lại, tỷ lệ bốn sao và năm sao vừa đúng một nửa.
 
 ![](https://oss.javaguide.cn/github/javaguide/high-quality-technical-articles/640.png)
 
-PS：还好以前有奖杯，不然一点念想都没了。(现在腾讯似乎不发了）
+PS: May mà trước đây có cúp, không thì chút lưu luyến cũng chẳng còn. (Giờ Tencent dường như không phát nữa)
 
-印象比较深的是两次五星获得经历。第一次五星是工作的第二年，那一年是在做众包项目，因为项目本身难度不大，因此我把一些精力投入到了团队的基础建设中，帮团队搭建了 java 以及 golang 的项目脚手架，又做了几次中心技术分享，最终 Leader 觉得我表现比较突出，因此给了我五星。看来，主动一些，与个人与团队都是有好处的，最终也能获得一些回报。
+Ấn tượng sâu sắc nhất là hai lần đạt năm sao. Lần năm sao đầu tiên là năm làm việc thứ hai, năm đó làm dự án crowdsourcing, vì độ khó của dự án không lớn, nên tôi dành một phần sức lực vào công tác xây dựng cơ sở hạ tầng của đội nhóm, giúp đội xây dựng khung dự án (project scaffold) cho java và golang, lại làm vài lần chia sẻ kỹ thuật trung tâm, cuối cùng Leader cảm thấy tôi thể hiện khá nổi bật nên cho tôi năm sao. Xem ra, chủ động một chút, có lợi cho cả cá nhân và đội nhóm, cuối cùng cũng sẽ nhận được chút đền đáp.
 
-第二次五星，就是与 EPC 有关了。说一个搞笑的事，我也是后来才知道的，项目初期，总监去汇报时，给老板演示系统，加载了很久指标才刷出来，总监很不好意思的说正在优化；过了一段时间，又去汇报演示，结果又很尴尬的刷了很久才出来，总监无赖表示还是在优化。没想到，自己曾经让总监这么丢脸，哈哈。好吧，说一下结果，最终，我自己写了一个查询引擎替换了 Mondrian，之后再也没有出现那种尴尬的情况了。随之而来，也给了好绩效鼓励。做 EPC 度量项目，我觉得自己成长很大，比如抗压能力，当你从零到一搭建一个系统时，会有一个先扛住再优化的过程，此外如果你的项目很重要，尤其是数据相关，那么任何一点问题，都可能让你神经紧绷，得想尽办法降低风险和故障。此外，另一个不同的感受就是，以前得项目，我大多是开发者，而这个系统，我是 Owner 负责人，当你 Owner 一个系统时，你得时刻负责，同时还需要思考系统的规划和方向，此外还需要分配好需求和把控进度，角色体验跟以前完全不一样。
+Lần năm sao thứ hai thì liên quan đến EPC. Kể một chuyện buồn cười, tôi cũng mãi sau này mới biết, thời kỳ đầu dự án, giám đốc đi báo cáo, trình diễn hệ thống cho sếp, tải rất lâu chỉ số mới hiện ra, giám đốc rất ngại ngùng nói đang tối ưu; qua một thời gian, lại đi báo cáo trình diễn, kết quả lại rất ngượng ngùng tải rất lâu mới hiện ra, giám đốc bất lực vẫn nói đang tối ưu. Không ngờ, mình lại từng khiến giám đốc mất mặt như vậy, haha. Thôi thì nói kết quả, cuối cùng tôi tự viết một query engine thay thế Mondrian, từ đó về sau không bao giờ xuất hiện tình huống ngượng ngùng như vậy nữa. Kéo theo đó, cũng được khích lệ bằng hiệu quả công việc tốt. Làm dự án đo lường EPC, tôi cảm thấy bản thân trưởng thành rất nhiều, ví dụ như khả năng chịu áp lực, khi bạn từ con số không dựng lên một hệ thống, sẽ có một quá trình chịu đựng trước rồi tối ưu sau, ngoài ra nếu dự án của bạn rất quan trọng, đặc biệt là liên quan đến dữ liệu, thì bất kỳ vấn đề nhỏ nào cũng có thể khiến bạn căng thẳng, phải nghĩ đủ mọi cách để giảm rủi ro và sự cố. Ngoài ra, một cảm giác khác biệt nữa là, các dự án trước đây tôi phần lớn là developer, còn hệ thống này tôi là Owner chịu trách nhiệm, khi bạn Owner một hệ thống, bạn phải chịu trách nhiệm mọi lúc, đồng thời phải suy nghĩ về quy hoạch và định hướng của hệ thống, ngoài ra còn phải phân bổ yêu cầu và kiểm soát tiến độ, vai trò trải nghiệm hoàn toàn khác trước đây.
 
-## 谈谈 EPC
+## Bàn về EPC
 
-很多人都骂 EPC，或者笑 EPC，作为度量平台核心开发者之一，我来谈谈客观的看法。
+Rất nhiều người chửi EPC, hoặc chê cười EPC, với tư cách là một trong những nhà phát triển cốt lõi của nền tảng đo lường, tôi xin nói quan điểm khách quan.
 
-其实 EPC 初衷是好的，希望通过全方位多维度的研效指标，来度量研发效能各环节的质量，进而反推业务，提升研发效能。然而，最终在实践的过程中，才发现，客观条件并不支持（工具还没建设好）；此外，一味的追求指标数据，使得下面的人想方设法让指标好看，最终违背了初衷。
+Thực ra mục đích ban đầu của EPC là tốt, hy vọng thông qua các chỉ số hiệu quả nghiên cứu-phát triển đa chiều toàn diện, để đo lường chất lượng từng khâu của hiệu quả nghiên cứu-phát triển, từ đó phản hồi ngược về nghiệp vụ, nâng cao hiệu quả nghiên cứu-phát triển. Tuy nhiên, cuối cùng trong quá trình thực hành mới phát hiện ra, điều kiện khách quan không hỗ trợ (công cụ vẫn chưa xây dựng xong); ngoài ra, một mực theo đuổi số liệu chỉ số, khiến người bên dưới nghĩ đủ mọi cách làm cho chỉ số đẹp, cuối cùng đi ngược lại mục đích ban đầu.
 
-为什么，说 EPC 好了，其实如果你仔细了解下 EPC，你就会发现，他是一套相当完善且比较先进的指标度量体系。覆盖了需求，代码，缺陷，测试，持续集成，运营部署各个环节。
+Vì sao nói EPC tốt? Thực ra nếu bạn tìm hiểu kỹ EPC, bạn sẽ phát hiện, nó là một bộ hệ thống đo lường chỉ số khá hoàn chỉnh và tương đối tiên tiến. Bao phủ các khâu yêu cầu, code, lỗi, kiểm thử, tích hợp liên tục, vận hành và triển khai.
 
-此外，这个过程中，虽然一些人和一些业务做弊，但绝大多数业务还是做出了改变的，比如微视那边的人反馈是，以前的代码写的跟屎一样，当有了 EPC 后，代码质量好了很多。虽然最后微视还是亡了，但是大厦将倾，EPC 是救不了的，亡了也更不能怪 EPC。
+Ngoài ra, trong quá trình này, tuy một số người và một số nghiệp vụ gian lận, nhưng tuyệt đại đa số nghiệp vụ vẫn có sự thay đổi, ví dụ như người bên Weishi phản hồi rằng, trước đây code viết như cứt, sau khi có EPC thì chất lượng code tốt hơn rất nhiều. Tuy cuối cùng Weishi vẫn sụp đổ, nhưng khi tòa nhà lớn sắp đổ, EPC không thể cứu được, mà đã sụp đổ thì càng không thể trách EPC.
 
-## 谈谈嫡系
+## Bàn về phái thân tín (嫡系)
 
-大家都说腾讯，嫡系文化盛行。但其实我觉得在那个公司都一样吧。这也符合事物的基本规律，人们只相信自己信任并熟悉的人。作为领导，你难道会把把重要的事情交给自己不熟悉的人吗？
+Mọi người đều nói Tencent, văn hóa phái thân tín (嫡系) thịnh hành. Nhưng tôi nghĩ ở công ty nào cũng như vậy thôi. Điều này cũng phù hợp với quy luật cơ bản của sự vật, con người chỉ tin tưởng những người họ tin cậy và quen thuộc. Là lãnh đạo, bạn có nỡ đem việc quan trọng giao cho người mình không quen thuộc không?
 
-其实我也不知道我算不算嫡系，脉脉上有人问过”怎么知道自己算不算嫡系”，下面有一个回答，我觉得很妙：如果你不知道你是不是嫡系，那你就不是。哈哈，这么说来，我可能不是。
+Thực ra tôi cũng không biết tôi có tính là phái thân tín hay không, trên Maimai (脉脉) có người hỏi "làm sao biết mình có phải là phái thân tín hay không", bên dưới có một câu trả lời, tôi thấy rất hay: nếu bạn không biết bạn có phải là phái thân tín hay không, thì bạn không phải. Haha, nói vậy thì có lẽ tôi không phải.
 
-但另一方面，后来我负责了团队内很重要的事情，应该是中心内都算很重要的事，我独自负责一个方向，直接向总监汇报，似乎又有点像。
+Nhưng mặt khác, sau này tôi phụ trách những việc rất quan trọng trong đội, hẳn là được xem là việc quan trọng trong cả trung tâm, tôi độc lập phụ trách một hướng, báo cáo trực tiếp cho giám đốc, nhìn lại có vẻ hơi giống.
 
-网上也有其他说法，一针见血，是不是嫡系，就看钱到不到位，这么说也有道理。我在 7 级时，就发了股票，自我感觉，还是不错的。我当时以为不出意外的话，我以后的钱途和发展是不是就会一帆风顺。不出意外就出了意外，第二年，EPC 不达预期，部门总经理和总监都被换了，中心来了一个新的总监。
+Trên mạng cũng có cách nói khác, đúng trọng tâm, có phải phái thân tín hay không, cứ xem tiền có rót tới hay không, nói vậy cũng có lý. Khi tôi ở cấp 7, đã được phát cổ phiếu, tự cảm thấy cũng khá ổn. Lúc đó tôi nghĩ nếu không có gì bất ngờ, thì con đường tiền đồ và phát triển sau này của tôi sẽ thuận buồm xuôi gió. Bất ngờ thì lại xảy ra, năm thứ hai, EPC không đạt kỳ vọng, tổng giám đốc bộ phận và giám đốc đều bị thay, trung tâm đến một giám đốc mới.
 
-好吧，又要重新建立信任了。再到后来，是不是嫡系已经不重要了，因为大环境不好，又加上裁员，大家主动的被动的差不多都走了。
+Thôi thì, lại phải xây dựng lại lòng tin. Đến sau này, việc có phải phái thân tín hay không cũng không còn quan trọng, vì môi trường lớn không tốt, lại thêm sa thải, mọi người kẻ chủ động người bị động gần như đều đi hết.
 
-总结一下，嫡系的存在，其实情有可原。怎么样成为嫡系了？其实我也不知道。不过，我觉得，与其思考怎么成为嫡系，不如思考怎么展现自己的价值和能力，当别人发现你的价值和能力了，那自然更多的机会就会给予你，有了机会，只要把握住了，那就有更多的福利了。
+Tổng kết lại, sự tồn tại của phái thân tín, thực ra cũng có thể hiểu được. Làm thế nào để trở thành phái thân tín? Thực ra tôi cũng không biết. Nhưng tôi nghĩ, thay vì suy nghĩ làm sao để trở thành phái thân tín, chi bằng suy nghĩ làm sao thể hiện giá trị và năng lực của mình, khi người khác phát hiện ra giá trị và năng lực của bạn, thì tự nhiên nhiều cơ hội hơn sẽ được trao cho bạn, có cơ hội, chỉ cần nắm bắt được, thì sẽ có nhiều phúc lợi hơn.
 
-## 再谈收获
+## Nói thêm về những gì thu nhận được
 
-收获，什么叫做收获了？个人觉得无论是外在的物质，技能，职级；还是内在的感悟，认识，都算收获。
+Thu nhận được, thế nào gọi là thu nhận được? Cá nhân tôi cho rằng, dù là vật chất, kỹ năng, cấp bậc bên ngoài; hay là cảm ngộ, nhận thức bên trong, đều tính là thu nhận được.
 
-先说一些可量化的吧，我觉得有:
+Nói trước vài điều có thể định lượng được, tôi thấy có:
 
-- 级别上，升上了九级，高级工程师。虽然大家都在说腾讯职级缩水，但是有没有高工的能力自己其实是知道的，我个人感觉，通过我这几年的努力，我算是达到了我当时认为的我需要在高工时达到的状态；
-- 绩效上，自我评价，个人不是一个特别卷的人，或者说不会为了卷而卷。但是，如果我认定我应该把它做好得，我的 Owner 意识，以及负责态度，我觉得还是可以的。最终在腾讯四年的绩效也还算过的去。再谈一些其他软技能方面:
+- Về cấp bậc, đã lên cấp 9, kỹ sư cao cấp. Tuy mọi người đều nói cấp bậc của Tencent bị giảm giá trị, nhưng bản thân mình có năng lực của kỹ sư cao cấp hay không thì mình biết rõ, theo cảm nhận của tôi, qua mấy năm nỗ lực, tôi coi như đã đạt được trạng thái mà lúc đó tôi cho rằng kỹ sư cao cấp cần đạt được;
+- Về hiệu quả công việc, tự đánh giá, bản thân không phải người đua tranh nội cuộc quá mức, hoặc nói đúng hơn là không vì tranh đua mà tranh đua. Nhưng nếu tôi đã xác định tôi nên làm tốt việc đó, thì ý thức Owner và thái độ chịu trách nhiệm của tôi, tôi thấy vẫn ổn. Cuối cùng bốn năm ở Tencent, hiệu quả công việc cũng tạm gọi là qua được. Nói thêm về vài mặt kỹ năng mềm khác:
 
-**1、文档能力**
+**1. Năng lực viết tài liệu**
 
-作为程序员，文档能力其实是一项很重要的能力。其实我也没觉得自己文档能力有多好，但是前后两任总监，都说我的文档不错，那看来，我可能在平均水准之上。
+Là lập trình viên, năng lực viết tài liệu thực ra là một năng lực rất quan trọng. Thực ra tôi cũng không thấy năng lực viết tài liệu của mình giỏi đến đâu, nhưng hai đời giám đốc đều nói tài liệu của tôi tốt, vậy xem ra, tôi có lẽ ở trên mức trung bình.
 
-**2、明确方向**
+**2. Xác định rõ hướng đi**
 
-最后，说一个更虚的，但是我觉得最有价值的收获: 我逐渐明确了，或者确定了以后的方向和路，那就是走数据开发。
+Cuối cùng, nói một điều trừu tượng hơn, nhưng là thu nhận tôi thấy có giá trị nhất: tôi dần dần xác định rõ, hay nói là khẳng định được hướng đi và con đường sau này, đó chính là theo hướng phát triển dữ liệu (data development).
 
-其实，找到并确定一个目标很难，身边有清晰目标和方向的人很少，大多数是迷茫的。
+Thực ra, tìm được và xác định một mục tiêu là rất khó, xung quanh có rất ít người có mục tiêu và hướng đi rõ ràng, đa số đều mơ hồ.
 
-前一段时间，跟人聊天，谈到职业规划，说是可以从两个角度思考：
+Một thời gian trước, trò chuyện với mọi người, nói đến hoạch định sự nghiệp, có người nói có thể suy nghĩ từ hai góc độ:
 
-- 选一个业务方向，比如电商，广告，不断地积累业务领域知识和业务相关技能，随着经验的不断积累，最终你就是这个领域的专家。
-- 深入一个技术方向，不断钻研底层技术知识，这样就有希望成为此技术专家。坦白来说，虽然我深入研究并实践过领域驱动设计，也用来建模和解决了一些复杂业务问题，但是发自内心的，我其实更喜欢钻研技术，同时，我又对大数据很感兴趣。因此，我决定了，以后的方向，就做数据相关的工作。
+- Chọn một hướng nghiệp vụ, ví dụ thương mại điện tử, quảng cáo, không ngừng tích lũy kiến thức lĩnh vực nghiệp vụ và kỹ năng liên quan nghiệp vụ, theo sự tích lũy kinh nghiệm không ngừng, cuối cùng bạn chính là chuyên gia trong lĩnh vực này.
+- Đào sâu một hướng kỹ thuật, không ngừng nghiên cứu kiến thức công nghệ nền tảng, như vậy có hy vọng trở thành chuyên gia kỹ thuật đó. Thành thật mà nói, tuy tôi đã nghiên cứu sâu và thực hành thiết kế hướng miền (DDD), cũng dùng để mô hình hóa và giải quyết một số vấn đề nghiệp vụ phức tạp, nhưng xuất phát từ nội tâm, tôi thực ra thích nghiên cứu kỹ thuật hơn, đồng thời, tôi lại rất hứng thú với dữ liệu lớn (big data). Vì vậy, tôi quyết định, hướng đi sau này, sẽ làm công việc liên quan đến dữ liệu.
 
-腾讯的四年，是我的第一份工作经历，认识了很多厉害的人，学到了很多。最后自己主动离开，也算走的体面（即使损失了大礼包），还是感谢腾讯。
+Bốn năm ở Tencent, là trải nghiệm công việc đầu tiên của tôi, quen biết rất nhiều người giỏi, học được rất nhiều. Cuối cùng bản thân chủ động rời đi, cũng coi như rời đi một cách đường hoàng (dù mất đi gói đãi ngộ lớn), vẫn cảm ơn Tencent.
 
 <!-- @include: @article-footer.snippet.md -->

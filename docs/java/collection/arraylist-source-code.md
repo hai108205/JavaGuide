@@ -1,6 +1,6 @@
 ---
-title: ArrayList 源码分析
-description: ArrayList源码深度解析：详解ArrayList底层数组结构、1.5倍扩容机制、RandomAccess快速随机访问、序列化实现及与Vector性能对比。
+title: Phân tích mã nguồn ArrayList
+description: "Phân tích chuyên sâu mã nguồn ArrayList: giải thích chi tiết cấu trúc mảng nền (array), cơ chế mở rộng dung lượng 1.5 lần, truy cập ngẫu nhiên nhanh (RandomAccess), triển khai tuần tự hóa (serialization) và so sánh hiệu năng với Vector."
 category: Java
 tag:
   - Java集合
@@ -10,11 +10,11 @@ head:
       content: ArrayList源码,ArrayList扩容机制,动态数组,RandomAccess,ArrayList序列化,ArrayList与Vector区别
 ---
 
-## ArrayList 简介
+## Giới thiệu về ArrayList
 
-`ArrayList` 的底层是数组队列，相当于动态数组。与 Java 中的数组相比，它的容量能动态增长。在添加大量元素前，应用程序可以使用 `ensureCapacity` 操作来增加 `ArrayList` 实例的容量。这可以减少递增式再分配的数量。
+Lớp nền của `ArrayList` là một **mảng (array)**, hoạt động như một mảng động (dynamic array). So với mảng thông thường trong Java, dung lượng của nó có thể tăng trưởng linh hoạt. Trước khi thêm một lượng lớn phần tử, ứng dụng có thể sử dụng thao tác `ensureCapacity` để tăng dung lượng của thể hiện `ArrayList`. Điều này giúp giảm số lần tái cấp phát tăng dần (incremental reallocation).
 
-`ArrayList` 继承于 `AbstractList`，实现了 `List`, `RandomAccess`, `Cloneable`, `java.io.Serializable` 这些接口。
+`ArrayList` kế thừa từ `AbstractList`, và triển khai các interface `List`, `RandomAccess`, `Cloneable`, `java.io.Serializable`.
 
 ```java
 
@@ -24,23 +24,23 @@ public class ArrayList<E> extends AbstractList<E>
   }
 ```
 
-- `List` : 表明它是一个列表，支持添加、删除、查找等操作，并且可以通过下标进行访问。
-- `RandomAccess`：这是一个标志接口，表明实现这个接口的 `List` 集合是支持 **快速随机访问** 的。在 `ArrayList` 中，我们就可以通过元素的序号快速获取元素对象，这就是快速随机访问。
-- `Cloneable`：表明它支持通过 `clone()` 方法进行拷贝，`ArrayList#clone()` 返回的是浅拷贝。
-- `Serializable` : 表明它可以进行序列化操作，也就是可以将对象转换为字节流进行持久化存储或网络传输，非常方便。
+- `List`: chỉ ra rằng đây là một danh sách (list), hỗ trợ các thao tác thêm, xóa, tìm kiếm và có thể truy cập thông qua chỉ số (index).
+- `RandomAccess`: đây là một **marker interface**, chỉ ra rằng tập hợp `List` triển khai interface này hỗ trợ **truy cập ngẫu nhiên nhanh (fast random access)**. Trong `ArrayList`, chúng ta có thể nhanh chóng lấy đối tượng phần tử thông qua số thứ tự của phần tử, đây chính là truy cập ngẫu nhiên nhanh.
+- `Cloneable`: chỉ ra rằng nó hỗ trợ sao chép thông qua phương thức `clone()`, `ArrayList#clone()` trả về bản sao nông (shallow copy).
+- `Serializable`: chỉ ra rằng nó có thể thực hiện thao tác tuần tự hóa (serialization), tức là có thể chuyển đổi đối tượng thành luồng byte để lưu trữ bền vững (persistent storage) hoặc truyền qua mạng, rất thuận tiện.
 
 ![ArrayList 类图](https://oss.javaguide.cn/github/javaguide/java/collection/arraylist-class-diagram.png)
 
-### ArrayList 和 Vector 的区别?（了解即可）
+### Sự khác biệt giữa ArrayList và Vector? (chỉ cần hiểu là được)
 
-- `ArrayList` 是 `List` 的主要实现类，底层使用 `Object[]` 存储，适用于频繁的查找工作，线程不安全。
-- `Vector` 是 `List` 的古老实现类，底层使用 `Object[]` 存储，线程安全。
+- `ArrayList` là lớp triển khai chính của `List`, lớp nền sử dụng `Object[]` để lưu trữ, phù hợp cho các công việc tìm kiếm thường xuyên, không an toàn luồng (thread-safe).
+- `Vector` là lớp triển khai cũ của `List`, lớp nền sử dụng `Object[]` để lưu trữ, an toàn luồng.
 
-### ArrayList 可以添加 null 值吗？
+### ArrayList có thể thêm giá trị null không?
 
-`ArrayList` 中可以存储任何类型的对象，包括 `null` 值。不过，不建议向 `ArrayList` 中添加 `null` 值， `null` 值无意义，会让代码难以维护比如忘记做判空处理就会导致空指针异常。
+`ArrayList` có thể lưu trữ bất kỳ loại đối tượng nào, bao gồm cả giá trị `null`. Tuy nhiên, không khuyến khích thêm giá trị `null` vào `ArrayList`, giá trị `null` không có ý nghĩa, khiến code khó bảo trì, ví dụ như quên kiểm tra null sẽ dẫn đến ngoại lệ con trỏ null (NullPointerException).
 
-示例代码：
+Code ví dụ:
 
 ```java
 ArrayList<String> listOfStrings = new ArrayList<>();
@@ -49,25 +49,25 @@ listOfStrings.add("java");
 System.out.println(listOfStrings);
 ```
 
-输出：
+Kết quả:
 
 ```plain
 [null, java]
 ```
 
-### Arraylist 与 LinkedList 区别？
+### Sự khác biệt giữa ArrayList và LinkedList?
 
-- **是否保证线程安全：** `ArrayList` 和 `LinkedList` 都是不同步的，也就是不保证线程安全；
-- **底层数据结构：** `ArrayList` 底层使用的是 **`Object` 数组**；`LinkedList` 底层使用的是 **双向链表** 数据结构（JDK1.6 之前为循环链表，JDK1.7 取消了循环。注意双向链表和双向循环链表的区别，下面有介绍到！）
-- **插入和删除是否受元素位置的影响：**
-  - `ArrayList` 采用数组存储，所以插入和删除元素的时间复杂度受元素位置的影响。 比如：执行 `add(E e)` 方法的时候， `ArrayList` 会默认在将指定的元素追加到此列表的末尾，这种情况时间复杂度就是 O(1)。但是如果要在指定位置 i 插入和删除元素的话（`add(int index, E element)`），时间复杂度就为 O(n)。因为在进行上述操作的时候集合中第 i 和第 i 个元素之后的(n-i)个元素都要执行向后位/向前移一位的操作。
-  - `LinkedList` 采用链表存储，所以在头尾插入或者删除元素不受元素位置的影响（`add(E e)`、`addFirst(E e)`、`addLast(E e)`、`removeFirst()`、 `removeLast()`），时间复杂度为 O(1)，如果是要在指定位置 `i` 插入和删除元素的话（`add(int index, E element)`，`remove(Object o)`,`remove(int index)`）， 时间复杂度为 O(n)，因为需要先移动到指定位置再插入和删除。
-- **是否支持快速随机访问：** `LinkedList` 不支持高效的随机元素访问，而 `ArrayList`（实现了 `RandomAccess` 接口） 支持。快速随机访问就是通过元素的序号快速获取元素对象(对应于 `get(int index)` 方法)。
-- **内存空间占用：** `ArrayList` 的空间浪费主要体现在在 list 列表的结尾会预留一定的容量空间，而 LinkedList 的空间花费则体现在它的每一个元素都需要消耗比 ArrayList 更多的空间（因为要存放直接后继和直接前驱以及数据）。
+- **Có đảm bảo an toàn luồng không:** `ArrayList` và `LinkedList` đều không đồng bộ (unsynchronized), tức là không đảm bảo an toàn luồng;
+- **Cấu trúc dữ liệu nền:** `ArrayList` sử dụng **mảng `Object`** ở lớp nền; `LinkedList` sử dụng cấu trúc dữ liệu **danh sách liên kết đôi (doubly linked list)** ở lớp nền (trước JDK1.6 là danh sách liên kết vòng (circular linked list), JDK1.7 đã bỏ vòng. Lưu ý sự khác biệt giữa danh sách liên kết đôi và danh sách liên kết đôi vòng, sẽ được giới thiệu bên dưới!)
+- **Việc chèn và xóa có bị ảnh hưởng bởi vị trí phần tử không:**
+  - `ArrayList` sử dụng mảng để lưu trữ, nên độ phức tạp thời gian (time complexity) của việc chèn và xóa phần tử bị ảnh hưởng bởi vị trí phần tử. Ví dụ: khi thực thi phương thức `add(E e)`, `ArrayList` sẽ mặc định thêm phần tử được chỉ định vào cuối danh sách này, trong trường hợp này độ phức tạp thời gian là O(1). Nhưng nếu muốn chèn và xóa phần tử tại vị trí i được chỉ định (`add(int index, E element)`), độ phức tạp thời gian là O(n). Bởi vì khi thực hiện thao tác trên, phần tử thứ i và (n-i) phần tử sau phần tử thứ i trong tập hợp đều phải thực hiện thao tác dịch chuyển về phía sau / về phía trước một vị trí.
+  - `LinkedList` sử dụng danh sách liên kết để lưu trữ, nên việc chèn hoặc xóa ở đầu hoặc cuối không bị ảnh hưởng bởi vị trí phần tử (`add(E e)`, `addFirst(E e)`, `addLast(E e)`, `removeFirst()`, `removeLast()`), độ phức tạp thời gian là O(1), nếu muốn chèn và xóa phần tử tại vị trí `i` được chỉ định (`add(int index, E element)`, `remove(Object o)`, `remove(int index)`), độ phức tạp thời gian là O(n), bởi vì cần phải di chuyển đến vị trí được chỉ định trước rồi mới chèn và xóa.
+- **Có hỗ trợ truy cập ngẫu nhiên nhanh không:** `LinkedList` không hỗ trợ truy cập ngẫu nhiên phần tử hiệu quả, trong khi `ArrayList` (triển khai interface `RandomAccess`) thì có hỗ trợ. Truy cập ngẫu nhiên nhanh là việc nhanh chóng lấy đối tượng phần tử thông qua số thứ tự của phần tử (tương ứng với phương thức `get(int index)`).
+- **Chiếm dụng không gian bộ nhớ:** Sự lãng phí không gian của `ArrayList` chủ yếu thể hiện ở việc sẽ dự trữ một lượng dung lượng nhất định ở cuối danh sách, trong khi chi phí không gian của `LinkedList` thể hiện ở việc mỗi phần tử của nó đều cần tiêu tốn nhiều không gian hơn `ArrayList` (vì phải lưu trữ con trỏ kế tiếp (next) và con trỏ trước đó (previous) cùng với dữ liệu).
 
-## ArrayList 核心源码解读
+## Phân tích mã nguồn lõi của ArrayList
 
-这里以 JDK1.8 为例，分析一下 `ArrayList` 的底层源码。
+Ở đây lấy JDK1.8 làm ví dụ, phân tích mã nguồn lớp nền của `ArrayList`.
 
 ```java
 public class ArrayList<E> extends AbstractList<E>
@@ -311,7 +311,7 @@ public class ArrayList<E> extends AbstractList<E>
 
     /**
      * 以正确的顺序（从第一个到最后一个元素）返回一个包含此列表中所有元素的数组。
-     * 返回的数组将是“安全的”，因为该列表不保留对它的引用。
+     * 返回的数组将是"安全的"，因为该列表不保留对它的引用。
      * （换句话说，这个方法必须分配一个新的数组）。
      * 因此，调用者可以自由地修改返回的数组结构。
      * 注意：如果元素是引用类型，修改元素的内容会影响到原列表中的对象。
@@ -579,11 +579,11 @@ public class ArrayList<E> extends AbstractList<E>
     }
 ```
 
-## ArrayList 扩容机制分析
+## Phân tích cơ chế mở rộng dung lượng (扩容机制) của ArrayList
 
-### 先从 ArrayList 的构造函数说起
+### Bắt đầu từ hàm khởi tạo (constructor) của ArrayList
 
-ArrayList 有三种方式来初始化，构造方法源码如下（JDK8）：
+ArrayList có ba cách để khởi tạo, mã nguồn hàm khởi tạo như sau (JDK8):
 
 ```java
 /**
@@ -633,15 +633,15 @@ public ArrayList(Collection<? extends E> c) {
 }
 ```
 
-细心的同学一定会发现：**以无参数构造方法创建 `ArrayList` 时，实际上初始化赋值的是一个空数组。当真正对数组进行添加元素操作时，才真正分配容量。即向数组中添加第一个元素时，数组容量扩为 10。** 下面在我们分析 `ArrayList` 扩容时会讲到这一点内容！
+Những bạn tinh ý chắc chắn sẽ phát hiện ra: **Khi tạo `ArrayList` bằng hàm khởi tạo không tham số, thực tế giá trị khởi tạo được gán là một mảng rỗng. Khi thực sự thực hiện thao tác thêm phần tử vào mảng, dung lượng mới thực sự được cấp phát. Tức là khi thêm phần tử đầu tiên vào mảng, dung lượng mảng được mở rộng thành 10.** Dưới đây khi chúng ta phân tích cơ chế mở rộng dung lượng của `ArrayList` sẽ đề cập đến điểm này!
 
-> 补充：JDK6 new 无参构造的 `ArrayList` 对象时，直接创建了长度是 10 的 `Object[]` 数组 `elementData`。
+> Bổ sung: JDK6 khi new `ArrayList` bằng hàm khởi tạo không tham số, trực tiếp tạo mảng `Object[]` `elementData` có độ dài là 10.
 
-### 一步一步分析 ArrayList 扩容机制
+### Phân tích từng bước cơ chế mở rộng dung lượng của ArrayList
 
-这里以无参构造函数创建的 `ArrayList` 为例分析。
+Ở đây lấy `ArrayList` được tạo bởi hàm khởi tạo không tham số làm ví dụ để phân tích.
 
-#### add 方法
+#### Phương thức add
 
 ```java
 /**
@@ -656,9 +656,9 @@ public boolean add(E e) {
 }
 ```
 
-**注意**：JDK11 移除了 `ensureCapacityInternal()` 和 `ensureExplicitCapacity()` 方法
+**Lưu ý**: JDK11 đã loại bỏ các phương thức `ensureCapacityInternal()` và `ensureExplicitCapacity()`
 
-`ensureCapacityInternal` 方法的源码如下：
+Mã nguồn của phương thức `ensureCapacityInternal` như sau:
 
 ```java
 // 根据给定的最小容量和当前数组元素来计算所需容量。
@@ -677,7 +677,7 @@ private void ensureCapacityInternal(int minCapacity) {
 }
 ```
 
-`ensureCapacityInternal` 方法非常简单，内部直接调用了 `ensureExplicitCapacity` 方法：
+Phương thức `ensureCapacityInternal` rất đơn giản, bên trong trực tiếp gọi phương thức `ensureExplicitCapacity`:
 
 ```java
 //判断是否需要扩容
@@ -690,15 +690,15 @@ private void ensureExplicitCapacity(int minCapacity) {
 }
 ```
 
-我们来仔细分析一下：
+Chúng ta hãy cùng phân tích kỹ:
 
-- 当我们要 `add` 进第 1 个元素到 `ArrayList` 时，`elementData.length` 为 0（因为还是一个空的 list），因为执行了 `ensureCapacityInternal()` 方法，所以 `minCapacity` 此时为 10。此时，`minCapacity - elementData.length > 0` 成立，所以会进入 `grow(minCapacity)` 方法。
-- 当 `add` 第 2 个元素时，`minCapacity` 为 2，此时 `elementData.length`（容量）在添加第一个元素后扩容成 `10` 了。此时，`minCapacity - elementData.length > 0` 不成立，所以不会进入（执行）`grow(minCapacity)` 方法。
-- 添加第 3、4···到第 10 个元素时，依然不会执行 grow 方法，数组容量都为 10。
+- Khi chúng ta muốn `add` phần tử thứ 1 vào `ArrayList`, `elementData.length` là 0 (vì vẫn là một list rỗng), bởi vì đã thực thi phương thức `ensureCapacityInternal()`, nên `minCapacity` lúc này là 10. Lúc này, `minCapacity - elementData.length > 0` thỏa mãn, nên sẽ đi vào phương thức `grow(minCapacity)`.
+- Khi `add` phần tử thứ 2, `minCapacity` là 2, lúc này `elementData.length` (dung lượng) sau khi thêm phần tử đầu tiên đã mở rộng thành `10` rồi. Lúc này, `minCapacity - elementData.length > 0` không thỏa mãn, nên sẽ không đi vào (thực thi) phương thức `grow(minCapacity)`.
+- Khi thêm phần tử thứ 3, 4... đến phần tử thứ 10, vẫn sẽ không thực thi phương thức grow, dung lượng mảng đều là 10.
 
-直到添加第 11 个元素，`minCapacity`（为 11）比 `elementData.length`（为 10）要大。进入 `grow` 方法进行扩容。
+Cho đến khi thêm phần tử thứ 11, `minCapacity` (là 11) lớn hơn `elementData.length` (là 10). Đi vào phương thức `grow` để mở rộng dung lượng.
 
-#### grow 方法
+#### Phương thức grow
 
 ```java
 /**
@@ -730,25 +730,25 @@ private void grow(int minCapacity) {
 }
 ```
 
-**`int newCapacity = oldCapacity + (oldCapacity >> 1)`,所以 ArrayList 每次扩容之后容量都会变为原来的 1.5 倍左右（oldCapacity 为偶数就是 1.5 倍，否则是 1.5 倍左右）！** 奇偶不同，比如：10+10/2 = 15, 33+33/2=49。如果是奇数的话会丢掉小数.
+**`int newCapacity = oldCapacity + (oldCapacity >> 1)`, vì vậy sau mỗi lần mở rộng dung lượng, dung lượng của ArrayList sẽ trở thành khoảng 1.5 lần so với ban đầu (oldCapacity là số chẵn thì là 1.5 lần chính xác, ngược lại là khoảng 1.5 lần)!** Khác nhau giữa chẵn lẻ, ví dụ: 10+10/2 = 15, 33+33/2=49. Nếu là số lẻ thì sẽ mất phần thập phân.
 
-> ">>"（移位运算符）：>>1 右移一位相当于除 2，右移 n 位相当于除以 2 的 n 次方。这里 oldCapacity 明显右移了 1 位所以相当于 oldCapacity /2。对于大数据的 2 进制运算，位移运算符比那些普通运算符的运算要快很多，因为程序仅仅移动一下而已，不去计算，这样提高了效率，节省了资源
+> ">>" (toán tử dịch bit): >>1 dịch phải một bit tương đương với chia 2, dịch phải n bit tương đương với chia cho 2 mũ n. Ở đây oldCapacity rõ ràng đã dịch phải 1 bit nên tương đương với oldCapacity /2. Đối với các phép tính nhị phân trên dữ liệu lớn, toán tử dịch bit nhanh hơn rất nhiều so với các toán tử thông thường, bởi vì chương trình chỉ đơn thuần dịch chuyển, không cần tính toán, điều này nâng cao hiệu quả và tiết kiệm tài nguyên.
 
-**我们再来通过例子探究一下 `grow()` 方法：**
+**Chúng ta hãy cùng khám phá phương thức `grow()` thông qua ví dụ:**
 
-- 当 `add` 第 1 个元素时，`oldCapacity` 为 0，经比较后第一个 if 判断成立，`newCapacity = minCapacity`（为 10）。但是第二个 if 判断不会成立，即 `newCapacity` 不比 `MAX_ARRAY_SIZE` 大，则不会进入 `hugeCapacity` 方法。数组容量为 10，`add` 方法中 return true,size 增为 1。
-- 当 `add` 第 11 个元素进入 `grow` 方法时，`newCapacity` 为 15，比 `minCapacity`（为 11）大，第一个 if 判断不成立。新容量没有大于数组最大 size，不会进入 `hugeCapacity` 方法。数组容量扩为 15，add 方法中 return true,size 增为 11。
-- 以此类推······
+- Khi `add` phần tử thứ 1, `oldCapacity` là 0, sau khi so sánh, điều kiện if đầu tiên thỏa mãn, `newCapacity = minCapacity` (là 10). Nhưng điều kiện if thứ hai không thỏa mãn, tức là `newCapacity` không lớn hơn `MAX_ARRAY_SIZE`, nên sẽ không đi vào phương thức `hugeCapacity`. Dung lượng mảng là 10, trong phương thức `add` return true, size tăng lên 1.
+- Khi `add` phần tử thứ 11 đi vào phương thức `grow`, `newCapacity` là 15, lớn hơn `minCapacity` (là 11), điều kiện if đầu tiên không thỏa mãn. Dung lượng mới không lớn hơn kích thước mảng tối đa, sẽ không đi vào phương thức `hugeCapacity`. Dung lượng mảng mở rộng thành 15, trong phương thức add return true, size tăng lên 11.
+- Và cứ tiếp tục như vậy······
 
-**这里补充一点比较重要，但是容易被忽视掉的知识点：**
+**Ở đây bổ sung một điểm kiến thức khá quan trọng, nhưng dễ bị bỏ qua:**
 
-- Java 中的 `length` 属性是针对数组说的，比如说你声明了一个数组，想知道这个数组的长度则用到了 length 这个属性.
-- Java 中的 `length()` 方法是针对字符串说的，如果想看这个字符串的长度则用到 `length()` 这个方法.
-- Java 中的 `size()` 方法是针对泛型集合说的，如果想看这个泛型有多少个元素，就调用此方法来查看！
+- Thuộc tính `length` trong Java là dành cho mảng (array), ví dụ bạn khai báo một mảng, muốn biết độ dài của mảng này thì dùng thuộc tính length.
+- Phương thức `length()` trong Java là dành cho chuỗi (String), nếu muốn xem độ dài của chuỗi này thì dùng phương thức `length()`.
+- Phương thức `size()` trong Java là dành cho tập hợp generic (generic collection), nếu muốn xem tập hợp generic này có bao nhiêu phần tử, thì gọi phương thức này để kiểm tra!
 
-#### hugeCapacity() 方法
+#### Phương thức hugeCapacity()
 
-从上面 `grow()` 方法源码我们知道：如果新容量大于 `MAX_ARRAY_SIZE`,进入（执行） `hugeCapacity()` 方法来比较 `minCapacity` 和 `MAX_ARRAY_SIZE`，如果 `minCapacity` 大于最大容量，则新容量则为 `Integer.MAX_VALUE`，否则，新容量大小则为 `MAX_ARRAY_SIZE` 即为 `Integer.MAX_VALUE - 8`。
+Từ mã nguồn phương thức `grow()` ở trên chúng ta biết: nếu dung lượng mới lớn hơn `MAX_ARRAY_SIZE`, sẽ đi vào (thực thi) phương thức `hugeCapacity()` để so sánh `minCapacity` và `MAX_ARRAY_SIZE`, nếu `minCapacity` lớn hơn dung lượng tối đa, thì dung lượng mới sẽ là `Integer.MAX_VALUE`, ngược lại, dung lượng mới sẽ là `MAX_ARRAY_SIZE` tức là `Integer.MAX_VALUE - 8`.
 
 ```java
 private static int hugeCapacity(int minCapacity) {
@@ -764,13 +764,13 @@ private static int hugeCapacity(int minCapacity) {
 }
 ```
 
-### `System.arraycopy()` 和 `Arrays.copyOf()` 方法
+### Phương thức `System.arraycopy()` và `Arrays.copyOf()`
 
-阅读源码的话，我们就会发现 `ArrayList` 中大量调用了这两个方法。比如：我们上面讲的扩容操作以及 `add(int index, E element)`、`toArray()` 等方法中都用到了该方法！
+Khi đọc mã nguồn, chúng ta sẽ phát hiện `ArrayList` gọi rất nhiều hai phương thức này. Ví dụ: thao tác mở rộng dung lượng chúng ta đã nói ở trên cũng như các phương thức `add(int index, E element)`, `toArray()` đều sử dụng phương thức này!
 
-#### `System.arraycopy()` 方法
+#### Phương thức `System.arraycopy()`
 
-源码：
+Mã nguồn:
 
 ```java
     // 我们发现 arraycopy 是一个 native 方法,接下来我们解释一下各个参数的具体意义
@@ -787,7 +787,7 @@ private static int hugeCapacity(int minCapacity) {
                                         int length);
 ```
 
-场景：
+Ngữ cảnh sử dụng:
 
 ```java
     /**
@@ -807,7 +807,7 @@ private static int hugeCapacity(int minCapacity) {
     }
 ```
 
-我们写一个简单的方法测试以下：
+Chúng ta viết một phương thức đơn giản để kiểm thử:
 
 ```java
 public class ArraycopyTest {
@@ -829,15 +829,15 @@ public class ArraycopyTest {
 }
 ```
 
-结果：
+Kết quả:
 
 ```plain
 0 1 99 2 3 0 0 0 0 0
 ```
 
-#### `Arrays.copyOf()` 方法
+#### Phương thức `Arrays.copyOf()`
 
-源码：
+Mã nguồn:
 
 ```java
     public static int[] copyOf(int[] original, int newLength) {
@@ -850,7 +850,7 @@ public class ArraycopyTest {
     }
 ```
 
-场景：
+Ngữ cảnh sử dụng:
 
 ```java
    /**
@@ -862,7 +862,7 @@ public class ArraycopyTest {
     }
 ```
 
-个人觉得使用 `Arrays.copyOf()` 方法主要是为了给原有数组扩容，测试代码如下：
+Cá nhân tôi cho rằng sử dụng phương thức `Arrays.copyOf()` chủ yếu là để mở rộng dung lượng cho mảng gốc, code kiểm thử như sau:
 
 ```java
 public class ArrayscopyOfTest {
@@ -878,25 +878,25 @@ public class ArrayscopyOfTest {
 }
 ```
 
-结果：
+Kết quả:
 
 ```plain
 10
 ```
 
-#### 两者联系和区别
+#### Mối liên hệ và sự khác biệt giữa hai phương thức
 
-**联系：**
+**Mối liên hệ:**
 
-看两者源代码可以发现 `copyOf()` 内部实际调用了 `System.arraycopy()` 方法
+Nhìn vào mã nguồn của cả hai có thể phát hiện `copyOf()` thực tế bên trong gọi phương thức `System.arraycopy()`
 
-**区别：**
+**Sự khác biệt:**
 
-`arraycopy()` 需要目标数组，将原数组拷贝到你自己定义的数组里或者原数组，而且可以选择拷贝的起点和长度以及放入新数组中的位置 `copyOf()` 是系统自动在内部新建一个数组，并返回该数组。
+`arraycopy()` cần mảng đích, sao chép mảng gốc vào mảng do bạn tự định nghĩa hoặc chính mảng gốc, và có thể chọn điểm bắt đầu, độ dài sao chép cũng như vị trí đặt vào mảng mới. `copyOf()` là hệ thống tự động tạo một mảng mới bên trong và trả về mảng đó.
 
-### `ensureCapacity` 方法
+### Phương thức `ensureCapacity`
 
-`ArrayList` 源码中有一个 `ensureCapacity` 方法不知道大家注意到没有，这个方法 `ArrayList` 内部没有被调用过，所以很显然是提供给用户调用的，那么这个方法有什么作用呢？
+Trong mã nguồn `ArrayList` có một phương thức `ensureCapacity` không biết mọi người có để ý không, phương thức này không được gọi bên trong `ArrayList`, vì vậy rõ ràng là được cung cấp cho người dùng gọi, vậy phương thức này có tác dụng gì?
 
 ```java
     /**
@@ -919,9 +919,9 @@ public class ArrayscopyOfTest {
 
 ```
 
-理论上来说，最好在向 `ArrayList` 添加大量元素之前用 `ensureCapacity` 方法，以减少增量重新分配的次数
+Về mặt lý thuyết, tốt nhất nên sử dụng phương thức `ensureCapacity` trước khi thêm một lượng lớn phần tử vào `ArrayList`, để giảm số lần tái cấp phát tăng dần (incremental reallocation).
 
-我们通过下面的代码实际测试以下这个方法的效果：
+Chúng ta kiểm thử thực tế hiệu quả của phương thức này thông qua đoạn code dưới đây:
 
 ```java
 public class EnsureCapacityTest {
@@ -939,7 +939,7 @@ public class EnsureCapacityTest {
 }
 ```
 
-运行结果：
+Kết quả chạy:
 
 ```plain
 使用ensureCapacity方法前：2158
@@ -961,12 +961,12 @@ public class EnsureCapacityTest {
 }
 ```
 
-运行结果：
+Kết quả chạy:
 
 ```plain
 使用ensureCapacity方法后：1773
 ```
 
-通过运行结果，我们可以看出向 `ArrayList` 添加大量元素之前使用 `ensureCapacity` 方法可以提升性能。不过，这个性能差距几乎可以忽略不计。而且，实际项目根本也不可能往 `ArrayList` 里面添加这么多元素。
+Thông qua kết quả chạy, chúng ta có thể thấy việc sử dụng phương thức `ensureCapacity` trước khi thêm một lượng lớn phần tử vào `ArrayList` có thể nâng cao hiệu năng. Tuy nhiên, khoảng cách hiệu năng này gần như có thể bỏ qua. Hơn nữa, trong dự án thực tế căn bản cũng không thể thêm nhiều phần tử như vậy vào `ArrayList`.
 
 <!-- @include: @article-footer.snippet.md -->

@@ -1,28 +1,24 @@
 ---
-title: Java 必读源码系列 | Dubbo + Netty + Spring Boot 源码解析
-description: Java 主流框架源码解析专栏，涵盖 Dubbo、Netty、Spring Boot 等框架的源码深入解读，助力后端开发者理解底层原理与设计思想。
-category: 知识星球
+title: Series Java bắt buộc phải đọc Source Code | Phân tích Source Code Dubbo + Netty + Spring Boot
+description: Chuyên mục phân tích Source Code các Java Framework phổ biến, bao gồm Dubbo, Netty, Spring Boot và các framework khác. Nội dung đi sâu vào source code, giúp Backend Developer hiểu rõ hơn về nguyên lý hoạt động bên dưới và tư duy thiết kế của framework.
+category: Knowledge Planet
 star: true
 head:
   - - meta
     - name: keywords
-      content: Java源码,源码解析,Dubbo源码,Netty源码,Spring Boot源码,框架源码,源码阅读,Java源码学习,开源框架源码
+      content: Java Source Code,Phân tích Source Code,Dubbo Source Code,Netty Source Code,Spring Boot Source Code,Framework Source Code,Source Code Reading,Học Java Source Code,Open Source Framework Source Code
 ---
 
-## 介绍
+## Giới thiệu
 
-**《Java 必读源码系列》** 是我的[知识星球](../about-the-author/zhishixingqiu-two-years.md)的一个内部小册，目前已经整理了 Dubbo 2.6.x、Netty 4.x、Spring Boot 2.1 等框架/中间件的源码。后续还会整理更多值得阅读的优质源码，持续完善中。
+**"Series Java bắt buộc phải đọc Source Code"** là một **nội san** thuộc [Knowledge Planet](../about-the-author/zhishixingqiu-two-years.md) của tôi. Hiện tại, nội dung đã tổng hợp và phân tích Source Code của nhiều **Framework/Middleware** như **Dubbo 2.6.x, Netty 4.x và Spring Boot 2.1**. Trong thời gian tới, tôi sẽ tiếp tục bổ sung thêm nhiều Source Code chất lượng đáng để đọc và không ngừng hoàn thiện nội dung.
 
-结构清晰，内容详细，非常适合想要深入学习框架/中间件源码的同学阅读。
+Nội dung được tổ chức với **cấu trúc rõ ràng và phân tích chi tiết**, đặc biệt phù hợp với những bạn muốn tìm hiểu chuyên sâu về **Source Code của Framework và Middleware**.
 
-## 内容概览
+## Tổng quan nội dung
 
-![](https://oss.javaguide.cn/xingqiu/image-20220621091832348.png)
+## Các chuyên mục khác
 
-<!-- @include: @planet2.snippet.md -->
+Bên cạnh **"Series Java bắt buộc phải đọc Source Code"**, Knowledge Planet của tôi còn có nhiều chuyên mục khác như [**"Định hướng phỏng vấn Java"**](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247536358&idx=2&sn=a6098093107d596d3c426c9e71e871b8&chksm=cea1012df9d6883b95aab61fd815a238c703b2d4b36d78901553097a4939504e3e6d73f2b14b&token=710779655&lang=zh_CN#rd), [**"System Design & Scenario Questions Backend thường gặp trong phỏng vấn"**](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247536451&idx=1&sn=5eae2525ac3d79591dd86c6051522c0b&chksm=cea10088f9d6899e0aee4146de162a6de6ece71ba4c80c23f04d12b1fd48c087a31bc7d413f4&token=710779655&lang=zh_CN#rd), [**"Tự xây dựng Framework RPC"**](./handwritten-rpc-framework.md) và nhiều chuyên mục khác.
 
-## 更多专栏
-
-除了《Java 必读源码系列》之外，我的知识星球还有 [《Java 面试指北》](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247536358&idx=2&sn=a6098093107d596d3c426c9e71e871b8&chksm=cea1012df9d6883b95aab61fd815a238c703b2d4b36d78901553097a4939504e3e6d73f2b14b&token=710779655&lang=zh_CN#rd)、[《后端面试高频系统设计&场景题》](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247536451&idx=1&sn=5eae2525ac3d79591dd86c6051522c0b&chksm=cea10088f9d6899e0aee4146de162a6de6ece71ba4c80c23f04d12b1fd48c087a31bc7d413f4&token=710779655&lang=zh_CN#rd)、[《手写 RPC 框架》](./handwritten-rpc-framework.md)等多个专栏。进入星球之后，统统都可以免费阅读。
-
-![](https://oss.javaguide.cn/xingqiu/image-20220211231206733.png)
+Sau khi tham gia **Knowledge Planet**, bạn có thể **đọc miễn phí toàn bộ các chuyên mục này**.

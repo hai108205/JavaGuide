@@ -1,6 +1,6 @@
 ---
-title: Java 9 新特性概览
-description: 解析 Java 9 的模块化系统与 jlink 等更新，理解对运行时镜像与库使用的影响。
+title: Tổng quan các tính năng mới Java 9
+description: Phân tích hệ thống module hóa của Java 9 và các cập nhật như jlink, hiểu tác động đối với runtime image và cách sử dụng thư viện.
 category: Java
 tag:
   - Java新特性
@@ -10,102 +10,102 @@ head:
       content: Java 9,JDK9,模块化,JPMS,jlink,集合工厂方法,新 API
 ---
 
-**Java 9** 发布于 2017 年 9 月 21 日。作为 Java 8 之后 3 年半才发布的新版本，Java 9 带来了很多重大的变化其中最重要的改动是 Java 平台模块系统的引入，其他还有诸如集合、`Stream` 流……
+**Java 9** được phát hành vào ngày 21 tháng 9 năm 2017. Là phiên bản mới ra đời sau Java 8 tới 3 năm rưỡi, Java 9 mang đến rất nhiều thay đổi lớn, trong đó thay đổi quan trọng nhất là sự ra đời của Java Platform Module System, ngoài ra còn có các tính năng như collection, `Stream`...
 
-JDK 9 不是 LTS（长期支持版）。Oracle 当前列出的 LTS 版本包括 JDK 8、JDK 11、JDK 17、JDK 21 和 JDK 25。
+JDK 9 không phải là LTS (Long-Term Support). Các phiên bản LTS hiện tại mà Oracle liệt kê bao gồm JDK 8, JDK 11, JDK 17, JDK 21 và JDK 25.
 
-这篇文章会挑选其中较为重要的一些新特性进行详细介绍：
+Bài viết này sẽ chọn ra một số tính năng mới quan trọng hơn để giới thiệu chi tiết:
 
 - [JEP 222: Java Shell Tool (JShell)](https://openjdk.org/jeps/222)
-- [JEP 261: Module System (模块化系统)](https://openjdk.org/jeps/261)
-- [JEP 248: G1 Becomes the Default Garbage Collector (G1 成为默认垃圾回收器)](https://openjdk.org/jeps/248)
-- [JEP 254: Compact Strings (紧凑字符串)](https://openjdk.org/jeps/254)
-- [JEP 193: Variable Handles (变量句柄)](https://openjdk.org/jeps/193)
+- [JEP 261: Module System (hệ thống module hóa)](https://openjdk.org/jeps/261)
+- [JEP 248: G1 Becomes the Default Garbage Collector (G1 trở thành bộ thu gom rác mặc định)](https://openjdk.org/jeps/248)
+- [JEP 254: Compact Strings (chuỗi compact)](https://openjdk.org/jeps/254)
+- [JEP 193: Variable Handles (variable handle)](https://openjdk.org/jeps/193)
 
-下图是从 JDK 8 到 JDK 25 每个版本的更新带来的新特性数量和更新时间：
+Hình dưới đây là số lượng tính năng mới và thời điểm phát hành của từng phiên bản từ JDK 8 đến JDK 25:
 
 ![](https://oss.javaguide.cn/github/javaguide/java/new-features/jdk8~jdk24.png)
 
 ## JEP 222: Java Shell Tool (JShell)
 
-JShell 是 Java 9 新增的一个实用工具。为 Java 提供了类似于 Python 的实时命令行交互工具。
+JShell là một công cụ tiện ích mới được bổ sung trong Java 9. Cung cấp cho Java công cụ tương tác dòng lệnh thời gian thực tương tự như Python.
 
-在 JShell 中可以直接输入表达式并查看其执行结果。
+Trong JShell, bạn có thể trực tiếp nhập biểu thức và xem kết quả thực thi của nó.
 
 ![](https://oss.javaguide.cn/java-guide-blog/image-20210816083417616.png)
 
-**JShell 为我们带来了哪些好处呢？**
+**JShell mang lại cho chúng ta những lợi ích gì?**
 
-1. 降低了输出第一行 Java 版"Hello World！"的门槛，能够提高新手的学习热情。
-2. 在处理简单的小逻辑，验证简单的小问题时，比 IDE 更有效率（并不是为了取代 IDE，对于复杂逻辑的验证，IDE 更合适，两者互补）。
+1. Giảm rào cản để viết ra dòng "Hello World!" Java đầu tiên, có thể nâng cao hứng thú học tập của người mới.
+2. Khi xử lý các logic nhỏ đơn giản, xác minh các vấn đề nhỏ đơn giản, hiệu quả hơn so với IDE (không phải để thay thế IDE, đối với việc xác minh logic phức tạp, IDE phù hợp hơn, hai bên bổ trợ cho nhau).
 3. ……
 
-**JShell 的代码和普通的可编译代码，有什么不一样？**
+**Code của JShell và code biên dịch được thông thường, khác nhau ở điểm gì?**
 
-1. 一旦语句输入完成，JShell 会在后台编译并执行代码，然后立即返回结果，无需用户手动运行 `javac` 和 `java`。
-2. JShell 支持变量的重复声明，后面声明的会覆盖前面声明的。
-3. JShell 支持独立的表达式比如普通的加法运算 `1 + 1`。
+1. Một khi câu lệnh được nhập xong, JShell sẽ biên dịch và thực thi code ở nền, sau đó trả về kết quả ngay lập tức, không cần người dùng thủ công chạy `javac` và `java`.
+2. JShell hỗ trợ khai báo lại biến, biến khai báo sau sẽ ghi đè biến khai báo trước.
+3. JShell hỗ trợ các biểu thức độc lập như phép cộng thông thường `1 + 1`.
 4. ……
 
-## JEP 261: Module System（模块化系统）
+## JEP 261: Module System (hệ thống module hóa)
 
-模块系统是[Jigsaw Project](https://openjdk.java.net/projects/jigsaw/)的一部分，把模块化开发实践引入到了 Java 平台中，可以让我们的代码可重用性更好！
+Hệ thống module hóa là một phần của [Jigsaw Project](https://openjdk.java.net/projects/jigsaw/), đưa thực hành phát triển module hóa vào nền tảng Java, giúp code của chúng ta có tính tái sử dụng tốt hơn!
 
-**什么是模块系统？** 官方的定义是：
+**Hệ thống module hóa là gì?** Định nghĩa chính thức là:
 
-> A uniquely named, reusable group of related packages, as well as resources (such as images and XML files) and a module descriptor。
+> A uniquely named, reusable group of related packages, as well as resources (such as images and XML files) and a module descriptor.
 
-简单来说，你可以将一个模块看作是一组唯一命名、可重用的包、资源和模块描述文件（`module-info.java`）。
+Nói một cách đơn giản, bạn có thể coi một module là một nhóm các package, tài nguyên và tệp mô tả module (`module-info.java`) được đặt tên duy nhất và có thể tái sử dụng.
 
-任意一个 jar 文件，只要加上一个模块描述文件（`module-info.java`），就可以升级为一个模块。
+Bất kỳ tệp jar nào, chỉ cần thêm một tệp mô tả module (`module-info.java`), là có thể nâng cấp trở thành một module.
 
 ![](https://oss.javaguide.cn/java-guide-blog/module-structure.png)
 
-在引入了模块系统之后，JDK 被重新组织成 94 个模块。Java 应用可以通过新增的 **[jlink](http://openjdk.java.net/jeps/282) 工具**（Jlink 是随 Java 9 一起发布的新命令行工具。它允许开发人员为基于模块的 Java 应用程序创建自己的轻量级、定制的 JRE），创建出只包含所依赖的 JDK 模块的自定义运行时镜像。这样可以极大的减少 Java 运行时环境的大小。
+Sau khi giới thiệu hệ thống module hóa, JDK được tổ chức lại thành 94 module. Ứng dụng Java có thể thông qua công cụ **[jlink](http://openjdk.java.net/jeps/282) mới** (Jlink là công cụ dòng lệnh mới được phát hành cùng Java 9. Nó cho phép developer tạo ra JRE nhẹ, tùy chỉnh riêng cho ứng dụng Java dựa trên module), tạo ra runtime image tùy chỉnh chỉ chứa các module JDK mà ứng dụng phụ thuộc. Điều này có thể giảm thiểu rất nhiều kích thước của môi trường chạy Java.
 
-我们可以通过 `exports` 关键字控制哪些包可以对外开放使用，以及这些包可以开放给哪些模块。
+Chúng ta có thể dùng từ khóa `exports` để kiểm soát những package nào được phép mở cho bên ngoài sử dụng, và những package đó có thể mở cho những module nào.
 
 ```java
 module my.module {
-    //exports 公开指定包的所有公共成员
+    //exports công khai tất cả thành viên public của package được chỉ định
     exports com.my.package.name;
 }
 
 module my.module {
-    // exports ... to 将指定包定向导出给指定模块
+    // exports ... to xuất theo định hướng package được chỉ định cho module được chỉ định
     exports com.my.package.name to com.specific.module;
 }
 ```
 
-想要深入了解 Java 9 的模块化，可以参考下面这几篇文章：
+Muốn tìm hiểu sâu về module hóa trong Java 9, có thể tham khảo các bài viết dưới đây:
 
 - [《Project Jigsaw: Module System Quick-Start Guide》](https://openjdk.java.net/projects/jigsaw/quick-start)
 - [《Java 9 Modules: part 1》](https://stacktraceguru.com/java9/module-introduction)
 - [Java 9 揭秘（2. 模块化系统）](http://www.cnblogs.com/IcanFixIt/p/6947763.html)
 
-## JEP 248: G1 Becomes the Default Garbage Collector（G1 成为默认垃圾回收器）
+## JEP 248: G1 Becomes the Default Garbage Collector (G1 trở thành bộ thu gom rác mặc định)
 
-在 Java 8 的时候，默认垃圾回收器是 Parallel Scavenge（新生代）+Parallel Old（老年代）。到了 Java 9, CMS 垃圾回收器被废弃了，**G1（Garbage-First Garbage Collector）** 成为了默认垃圾回收器。
+Trong Java 8, bộ thu gom rác mặc định là Parallel Scavenge (new generation) + Parallel Old (old generation). Đến Java 9, CMS garbage collector bị loại bỏ, **G1 (Garbage-First Garbage Collector)** trở thành bộ thu gom rác mặc định.
 
-G1 还是在 Java 7 中被引入的，经过两个版本优异的表现成为默认垃圾回收器。
+G1 được giới thiệu từ Java 7, sau hai phiên bản hoạt động xuất sắc đã trở thành bộ thu gom rác mặc định.
 
-## JEP 193: Variable Handles（变量句柄）
+## JEP 193: Variable Handles (variable handle)
 
-变量句柄是一个变量或一组变量的引用，包括静态域，非静态域，数组元素和堆外数据结构中的组成部分等。
+Variable handle là một tham chiếu tới một biến hoặc một nhóm biến, bao gồm static field, non-static field, phần tử mảng và thành phần trong cấu trúc dữ liệu ngoài heap, v.v.
 
-变量句柄的含义类似于已有的方法句柄 `MethodHandle`，由 Java 类 `java.lang.invoke.VarHandle` 来表示，可以使用 `java.lang.invoke.MethodHandles.Lookup` 实例的查找方法等方式创建 `VarHandle` 对象。
+Ý nghĩa của variable handle tương tự như method handle `MethodHandle` hiện có, được biểu diễn bởi class Java `java.lang.invoke.VarHandle`, có thể sử dụng các phương pháp như phương thức tìm kiếm của instance `java.lang.invoke.MethodHandles.Lookup` để tạo đối tượng `VarHandle`.
 
-`VarHandle` 的出现替代了 `java.util.concurrent.atomic` 和 `sun.misc.Unsafe` 的部分操作。并且提供了一系列标准的内存屏障操作，用于更加细粒度的控制内存排序。在安全性、可用性、性能上都要优于现有的 API。
+Sự xuất hiện của `VarHandle` thay thế một phần thao tác của `java.util.concurrent.atomic` và `sun.misc.Unsafe`. Và cung cấp một loạt thao tác memory barrier chuẩn, dùng để kiểm soát memory ordering một cách chi tiết hơn. Về độ an toàn, tính khả dụng, hiệu suất đều tốt hơn API hiện có.
 
-## API 增强
+## Cải tiến API
 
-并不是所有的 API 改动都会通过 JEP（Java Enhancement Proposal）来发布。
+Không phải tất cả các thay đổi API đều được phát hành thông qua JEP (Java Enhancement Proposal).
 
-在 JDK 的开发流程中：**JEP** 通常用于重大的改变，例如引入新的语言特性、新的 JVM 机制或者大规模的库重构。像 `List.of()` 这种在现有类中增加几个工厂方法的操作，通常被视为常规的库维护。它们由 JDK 开发者直接通过 **JBS (JDK Bug System)** 的工单（Ticket）进行提交和评审，然后随版本直接发布。
+Trong quy trình phát triển của JDK: **JEP** thường dùng cho những thay đổi lớn, ví dụ giới thiệu tính năng ngôn ngữ mới, cơ chế JVM mới hoặc tái cấu trúc thư viện ở quy mô lớn. Các thao tác thêm vài factory method vào các class hiện có như `List.of()` thường được xem là bảo trì thư viện thông thường. Chúng được các nhà phát triển JDK trực tiếp gửi và đánh giá thông qua ticket (phiếu) của **JBS (JDK Bug System)**, sau đó được phát hành trực tiếp cùng phiên bản.
 
-### 集合增强
+### Cải tiến collection
 
-增加了 `List.of()`、`Set.of()`、`Map.of()` 和 `Map.ofEntries()` 等工厂方法来创建不可变集合（有点参考 Guava 的味道）：
+Bổ sung các factory method như `List.of()`, `Set.of()`, `Map.of()` và `Map.ofEntries()` để tạo immutable collection (có phần tham khảo guava):
 
 ```java
 List.of("Java", "C++");
@@ -113,13 +113,13 @@ Set.of("Java", "C++");
 Map.of("Java", 1, "C++", 2);
 ```
 
-使用 `of()` 创建的集合为不可变集合，不能进行添加、删除、替换、 排序等操作，不然会报 `java.lang.UnsupportedOperationException` 异常。
+Collection được tạo bằng `of()` là immutable collection, không thể thực hiện các thao tác thêm, xóa, thay thế, sắp xếp..., nếu không sẽ báo lỗi `java.lang.UnsupportedOperationException`.
 
-### Stream 增强
+### Cải tiến Stream
 
-`Stream` 中增加了新的方法 `ofNullable()`、`dropWhile()`、`takeWhile()` 以及 `iterate()` 方法的重载方法。
+`Stream` bổ sung các method mới `ofNullable()`, `dropWhile()`, `takeWhile()` cũng như method overload của `iterate()`.
 
-Java 9 中的 `ofNullable()` 方法可以根据一个可能为 `null` 的值创建单元素或空 `Stream`。Java 8 已经可以通过 `Stream.empty()` 创建空流，但没有这个将可空值直接转换为流的便捷方法。
+Trong Java 9, method `ofNullable()` có thể dựa theo một giá trị có thể là `null` để tạo `Stream` một phần tử hoặc rỗng. Java 8 đã có thể tạo stream rỗng thông qua `Stream.empty()`, nhưng không có method tiện lợi chuyển trực tiếp giá trị nullable thành stream này.
 
 ```java
 Stream<String> stringStream = Stream.ofNullable("Java");
@@ -128,45 +128,45 @@ Stream<String> nullStream = Stream.ofNullable(null);
 System.out.println(nullStream.count());//0
 ```
 
-`takeWhile()` 方法可以从 `Stream` 中依次获取满足条件的元素，直到不满足条件为止结束获取。
+Method `takeWhile()` có thể từ `Stream` lần lượt lấy các phần tử thỏa mãn điều kiện, kết thúc việc lấy khi không thỏa mãn điều kiện nữa.
 
 ```java
 List<Integer> integerList = List.of(11, 33, 66, 8, 9, 13);
 integerList.stream().takeWhile(x -> x < 50).forEach(System.out::println);// 11 33
 ```
 
-`dropWhile()` 方法的效果和 `takeWhile()` 相反。
+Hiệu quả của method `dropWhile()` ngược lại với `takeWhile()`.
 
 ```java
 List<Integer> integerList2 = List.of(11, 33, 66, 8, 9, 13);
 integerList2.stream().dropWhile(x -> x < 50).forEach(System.out::println);// 66 8 9 13
 ```
 
-`iterate()` 方法的新重载方法提供了一个 `Predicate` 参数（判断条件）来决定什么时候结束迭代
+Method overload mới của `iterate()` cung cấp một tham số `Predicate` (điều kiện phán đoán) để quyết định khi nào kết thúc vòng lặp.
 
 ```java
 public static<T> Stream<T> iterate(final T seed, final UnaryOperator<T> f) {
 }
-// 新增加的重载方法
+// Method overload mới được bổ sung
 public static<T> Stream<T> iterate(T seed, Predicate<? super T> hasNext, UnaryOperator<T> next) {
 
 }
 ```
 
-两者的使用对比如下，新的 `iterate()` 重载方法更加灵活一些。
+So sánh cách sử dụng của hai bên như sau, method overload mới của `iterate()` linh hoạt hơn một chút.
 
 ```java
-// 使用原始 iterate() 方法输出数字 1~10
+// Dùng method iterate() gốc để xuất ra số 1~10
 Stream.iterate(1, i -> i + 1).limit(10).forEach(System.out::println);
-// 使用新的 iterate() 重载方法输出数字 1~10
+// Dùng method overload mới của iterate() để xuất ra số 1~10
 Stream.iterate(1, i -> i <= 10, i -> i + 1).forEach(System.out::println);
 ```
 
-### Optional 增强
+### Cải tiến Optional
 
-`Optional` 类中新增了 `ifPresentOrElse()`、`or()` 和 `stream()` 等方法
+Class `Optional` bổ sung các method như `ifPresentOrElse()`, `or()` và `stream()`.
 
-`ifPresentOrElse()` 方法接受两个参数 `Consumer` 和 `Runnable`，如果 `Optional` 不为空调用 `Consumer` 参数，为空则调用 `Runnable` 参数。
+Method `ifPresentOrElse()` nhận hai tham số `Consumer` và `Runnable`, nếu `Optional` không rỗng thì gọi tham số `Consumer`, rỗng thì gọi tham số `Runnable`.
 
 ```java
 public void ifPresentOrElse(Consumer<? super T> action, Runnable emptyAction)
@@ -175,7 +175,7 @@ Optional<Object> objectOptional = Optional.empty();
 objectOptional.ifPresentOrElse(System.out::println, () -> System.out.println("Empty!!!"));// Empty!!!
 ```
 
-`or()` 方法接受一个 `Supplier` 参数，如果 `Optional` 为空则返回 `Supplier` 参数指定的 `Optional` 值。
+Method `or()` nhận một tham số `Supplier`, nếu `Optional` rỗng thì trả về giá trị `Optional` do tham số `Supplier` chỉ định.
 
 ```java
 public Optional<T> or(Supplier<? extends Optional<? extends T>> supplier)
@@ -184,21 +184,21 @@ Optional<Object> objectOptional = Optional.empty();
 objectOptional.or(() -> Optional.of("java")).ifPresent(System.out::println);//java
 ```
 
-### String 增强
+### Cải tiến String
 
-Java 8 及之前的版本，`String` 一直是用 `char[]` 存储。在 Java 9 之后，`String` 的实现改用 `byte[]` 数组存储字符串，节省了空间。
+Trong Java 8 và các phiên bản trước, `String` luôn được lưu trữ bằng `char[]`. Sau Java 9, implementation của `String` đổi sang dùng mảng `byte[]` để lưu trữ chuỗi, tiết kiệm không gian.
 
 ```java
 public final class String implements java.io.Serializable,Comparable<String>, CharSequence {
-    // @Stable 注解表示变量最多被修改一次，称为"稳定的"。
+    // Chú thích @Stable biểu thị biến được sửa đổi nhiều nhất một lần, gọi là "ổn định" (stable).
     @Stable
     private final byte[] value;
 }
 ```
 
-### 接口增强
+### Cải tiến interface
 
-Java 9 允许在接口中使用私有方法。这样的话，接口的使用就更加灵活了，有点像是一个简化版的抽象类。
+Java 9 cho phép sử dụng private method trong interface. Nhờ vậy, cách sử dụng interface linh hoạt hơn, hơi giống một abstract class phiên bản đơn giản hóa.
 
 ```java
 public interface MyInterface {
@@ -207,9 +207,9 @@ public interface MyInterface {
 }
 ```
 
-### IO 增强
+### Cải tiến IO
 
-在 Java 9 之前，我们只能在 `try-with-resources` 块中声明变量：
+Trước Java 9, chúng ta chỉ có thể khai báo biến trong khối `try-with-resources`:
 
 ```java
 try (Scanner scanner = new Scanner(new File("testRead.txt"));
@@ -218,7 +218,7 @@ try (Scanner scanner = new Scanner(new File("testRead.txt"));
 }
 ```
 
-在 Java 9 之后，在 `try-with-resources` 语句中可以使用 effectively-final 变量。
+Sau Java 9, trong câu lệnh `try-with-resources` có thể sử dụng biến effectively-final.
 
 ```java
 final Scanner scanner = new Scanner(new File("testRead.txt"));
@@ -228,48 +228,48 @@ try (scanner; writer) {
 }
 ```
 
-**什么是 effectively-final 变量？** 简单来说就是没有被 `final` 修饰但是值在初始化后从未更改的变量。
+**Biến effectively-final là gì?** Nói một cách đơn giản là biến không được sửa bởi `final` nhưng giá trị sau khi khởi tạo chưa từng thay đổi.
 
-正如上面的代码所演示的那样，即使 `writer` 变量没有被显示声明为 `final`，但它在第一次被赋值后就不会改变了，因此，它就是 effectively-final 变量。
+Như code phía trên đã minh họa, ngay cả khi biến `writer` không được khai báo tường minh là `final`, nhưng sau khi được gán giá trị lần đầu thì nó sẽ không thay đổi nữa, do đó, nó chính là biến effectively-final.
 
-### 进程 API
+### Process API
 
-Java 9 增加了 `java.lang.ProcessHandle` 接口来实现对原生进程进行管理，尤其适合于管理长时间运行的进程。
+Java 9 bổ sung interface `java.lang.ProcessHandle` để quản lý process gốc, đặc biệt phù hợp để quản lý các process chạy lâu dài.
 
 ```java
-// 获取当前正在运行的 JVM 的进程
+// Lấy process của JVM đang chạy hiện tại
 ProcessHandle currentProcess = ProcessHandle.current();
-// 输出进程的 id
+// Xuất ra id của process
 System.out.println(currentProcess.pid());
-// 输出进程的信息
+// Xuất ra thông tin của process
 System.out.println(currentProcess.info());
 ```
 
-`ProcessHandle` 接口概览：
+Tổng quan interface `ProcessHandle`:
 
 ![](https://oss.javaguide.cn/java-guide-blog/image-20210816104614414.png)
 
-### 其他 API 增强
+### Các cải tiến API khác
 
-**响应式流（Reactive Streams）**
+**Reactive Streams**
 
-在 Java 9 中的 `java.util.concurrent.Flow` 类中新增了反应式流规范的核心接口。
+Trong Java 9, class `java.util.concurrent.Flow` bổ sung các interface cốt lõi của spec reactive stream.
 
-`Flow` 中包含了 `Flow.Publisher`、`Flow.Subscriber`、`Flow.Subscription` 和 `Flow.Processor` 等 4 个核心接口。Java 9 还提供了 `SubmissionPublisher` 作为 `Flow.Publisher` 的一个实现。
+`Flow` bao gồm 4 interface cốt lõi như `Flow.Publisher`, `Flow.Subscriber`, `Flow.Subscription` và `Flow.Processor`. Java 9 còn cung cấp `SubmissionPublisher` như một implementation của `Flow.Publisher`.
 
-关于 Java 9 响应式流更详细的解读，推荐你看 [Java 9 揭秘（17. Reactive Streams ）- 林本托](https://www.cnblogs.com/IcanFixIt/p/7245377.html) 这篇文章。
+Để tìm hiểu chi tiết hơn về reactive stream trong Java 9, bạn nên xem bài viết [Java 9 揭秘（17. Reactive Streams ）- 林本托](https://www.cnblogs.com/IcanFixIt/p/7245377.html).
 
-## 其它
+## Khác
 
-- **平台日志 API 改进**：Java 9 允许为 JDK 和应用配置同样的日志实现。新增了 `System.LoggerFinder` 用来管理 JDK 使 用的日志记录器实现。JVM 在运行时只有一个系统范围的 `LoggerFinder` 实例。我们可以通过添加自己的 `System.LoggerFinder` 实现来让 JDK 和应用使用 SLF4J 等其他日志记录框架。
-- **`CompletableFuture` 类增强**：新增了几个新的方法（`completeAsync`，`orTimeout` 等）。
-- **Nashorn 引擎的增强**：Nashorn 是从 Java8 开始引入的 JavaScript 引擎，Java9 对 Nashorn 做了些增强，实现了一些 ES6 的新特性（Java 11 中已经被弃用）。
-- **I/O 流的新特性**：增加了新的方法来读取和复制 `InputStream` 中包含的数据。
-- **改进应用的安全性能**：Java 9 新增了 4 个 SHA- 3 哈希算法，SHA3-224、SHA3-256、SHA3-384 和 SHA3-512。
-- **改进方法句柄（Method Handle）**：方法句柄从 Java7 开始引入，Java9 在类 `java.lang.invoke.MethodHandles` 中新增了更多的静态方法来创建不同类型的方法句柄。
+- **Cải tiến platform logging API**: Java 9 cho phép cấu hình cùng một implementation log cho JDK và ứng dụng. Bổ sung `System.LoggerFinder` để quản lý implementation logger mà JDK sử dụng. Khi chạy, JVM chỉ có một instance `LoggerFinder` ở phạm vi hệ thống. Chúng ta có thể thêm implementation `System.LoggerFinder` của riêng mình để JDK và ứng dụng sử dụng các framework logging khác như SLF4J.
+- **Cải tiến class `CompletableFuture`**: Bổ sung vài method mới (`completeAsync`, `orTimeout`, v.v.).
+- **Cải tiến engine Nashorn**: Nashorn là engine JavaScript được giới thiệu từ Java 8, Java 9 thực hiện một số cải tiến cho Nashorn, triển khai một số tính năng mới của ES6 (đã bị không dùng nữa trong Java 11).
+- **Tính năng mới của I/O stream**: Bổ sung method mới để đọc và sao chép dữ liệu chứa trong `InputStream`.
+- **Cải thiện hiệu năng bảo mật của ứng dụng**: Java 9 bổ sung 4 thuật toán băm SHA-3 là SHA3-224, SHA3-256, SHA3-384 và SHA3-512.
+- **Cải tiến method handle**: Method handle được giới thiệu từ Java 7, Java 9 bổ sung thêm nhiều static method trong class `java.lang.invoke.MethodHandles` để tạo các loại method handle khác nhau.
 - ……
 
-## 参考
+## Tham khảo
 
 - Java version history：<https://en.wikipedia.org/wiki/Java_version_history>
 - Release Notes for JDK 9 and JDK 9 Update Releases : <https://www.oracle.com/java/technologies/javase/9-all-relnotes.html>

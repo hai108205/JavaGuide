@@ -1,6 +1,6 @@
 ---
-title: 认证授权与数据安全专题：JWT、SSO、权限系统、加密、脱敏与数据校验
-description: 认证授权与数据安全面试学习路线，涵盖 Session、Token、OAuth2、JWT、SSO、RBAC、加密算法、数据脱敏、数据校验和密码安全。
+title: "Chuyên đề Xác thực - Ủy quyền và Bảo mật Dữ liệu: JWT, SSO, Hệ thống Phân quyền, Mã hóa, Che giấu và Kiểm tra Dữ liệu"
+description: Lộ trình học phỏng vấn về Xác thực - Ủy quyền và Bảo mật Dữ liệu, bao gồm Session, Token, OAuth2, JWT, SSO, RBAC, thuật toán mã hóa, che giấu dữ liệu, kiểm tra dữ liệu và bảo mật mật khẩu.
 category: 系统设计
 tag:
   - 认证授权
@@ -15,74 +15,74 @@ head:
       content: 认证授权,Authentication,Authorization,Session,Token,OAuth2,JWT,SSO,RBAC,权限系统,加密算法,敏感词过滤,数据脱敏,数据校验,密码安全,后端面试
 ---
 
-认证授权与数据安全专题关注后端系统里非常基础、但出错成本很高的一条链路：用户如何登录、身份如何传递、权限如何判断、敏感数据如何保护、输入数据如何校验。
+Chuyên đề Xác thực - Ủy quyền và Bảo mật Dữ liệu tập trung vào một chuỗi liên kết rất cơ bản nhưng chi phí sai sót rất cao trong hệ thống backend: người dùng đăng nhập như thế nào, danh tính được truyền đi ra sao, quyền hạn được phán đoán thế nào, dữ liệu nhạy cảm được bảo vệ ra sao, dữ liệu đầu vào được kiểm tra như thế nào.
 
-安全不是某一个框架或某一个注解能兜住的事情。它需要从认证、授权、传输、存储、展示、输入校验和审计等多个环节一起设计。
+Bảo mật không phải là việc mà một framework hay một annotation nào đó có thể bao quát hết. Nó cần được thiết kế đồng thời từ nhiều khâu: xác thực, ủy quyền, truyền tải, lưu trữ, hiển thị, kiểm tra đầu vào và kiểm toán.
 
-## 适合谁看
+## Đối tượng phù hợp
 
-- 正在学习登录鉴权、权限系统和数据安全的后端开发者。
-- 准备认证授权、JWT、SSO、RBAC、数据脱敏相关面试题的同学。
-- 项目中需要设计后台权限、用户体系、敏感数据展示或数据校验方案的工程师。
-- 已经用过 Spring Security、Sa-Token、Shiro 等框架，但想补齐底层概念的读者。
+- Backend developer đang tìm hiểu về đăng nhập - xác thực, hệ thống phân quyền và bảo mật dữ liệu.
+- Các bạn đang chuẩn bị cho câu hỏi phỏng vấn về xác thực - ủy quyền, JWT, SSO, RBAC, che giấu dữ liệu.
+- Kỹ sư cần thiết kế phương án phân quyền backend, hệ thống người dùng, hiển thị dữ liệu nhạy cảm hoặc kiểm tra dữ liệu trong dự án.
+- Độc giả đã từng sử dụng các framework như Spring Security, Sa-Token, Shiro nhưng muốn bổ sung kiến thức nền tảng.
 
-## 学习重点
+## Trọng tâm học tập
 
-- 认证解决“你是谁”，授权解决“你能做什么”，两者不能混为一谈。
-- Session、Token、JWT、OAuth2、SSO 适合的场景不同，不能只用“无状态”判断优劣。
-- JWT 的优势和问题都很明显，重点在失效控制、续期、泄露风险和服务端治理。
-- 权限系统通常要从用户、角色、权限、资源、组织、数据范围等维度建模。
-- 数据安全既包括加密存储，也包括脱敏展示、输入校验、敏感词过滤和密码安全。
-- 安全方案必须考虑落地成本、用户体验、可审计性和事故处置能力。
+- Xác thực (Authentication) giải quyết câu hỏi "Bạn là ai", Ủy quyền (Authorization) giải quyết câu hỏi "Bạn có thể làm gì", hai khái niệm này không thể đánh đồng.
+- Session, Token, JWT, OAuth2, SSO phù hợp với các tình huống khác nhau, không thể chỉ dùng tiêu chí "stateless (phi trạng thái)" để đánh giá ưu nhược điểm.
+- Ưu điểm và vấn đề của JWT đều rất rõ ràng, trọng tâm nằm ở kiểm soát hiệu lực, gia hạn, rủi ro rò rỉ và quản trị phía server.
+- Hệ thống phân quyền thường cần được mô hình hóa từ các chiều: người dùng, vai trò, quyền, tài nguyên, tổ chức, phạm vi dữ liệu.
+- Bảo mật dữ liệu bao gồm cả lưu trữ mã hóa, hiển thị che giấu, kiểm tra đầu vào, lọc từ nhạy cảm và bảo mật mật khẩu.
+- Phương án bảo mật phải cân nhắc đến chi phí triển khai, trải nghiệm người dùng, khả năng kiểm toán và năng lực xử lý sự cố.
 
-## 建议阅读顺序
+## Thứ tự đọc đề xuất
 
-1. [认证授权基础概念详解](./basis-of-authority-certification.md)：先区分认证、授权、Session、Token、OAuth2 等概念。
-2. [JWT 基础概念详解](./jwt-intro.md) 和 [JWT 身份认证优缺点分析](./advantages-and-disadvantages-of-jwt.md)：理解 JWT 的工作方式、优势和局限。
-3. [SSO 单点登录详解](./sso-intro.md)：理解统一认证中心、跨系统登录和登录态同步。
-4. [权限系统设计详解](./design-of-authority-system.md)：把认证授权落到 RBAC 权限系统设计。
-5. [常见加密算法总结](./encryption-algorithms.md)、[数据脱敏方案总结](./data-desensitization.md)、[为什么前后端都要做数据校验？](./data-validation.md)：补齐数据安全基础。
-6. 再根据业务场景阅读 [敏感词过滤方案总结](./sentive-words-filter.md) 和 [为什么忘记密码时只能重置，不能告诉你原密码？](./why-password-reset-instead-of-retrieval.md)。
+1. [Giải thích chi tiết khái niệm cơ bản về Xác thực - Ủy quyền](./basis-of-authority-certification_VN.md): Phân biệt trước các khái niệm Authentication, Authorization, Session, Token, OAuth2.
+2. [Giải thích chi tiết khái niệm cơ bản về JWT](./jwt-intro_VN.md) và [Phân tích ưu nhược điểm của JWT](./advantages-and-disadvantages-of-jwt.md): Hiểu cách hoạt động, ưu điểm và hạn chế của JWT.
+3. [Giải thích chi tiết về SSO](./sso-intro.md): Hiểu về trung tâm xác thực thống nhất, đăng nhập xuyên hệ thống và đồng bộ trạng thái đăng nhập.
+4. [Giải thích chi tiết thiết kế hệ thống phân quyền](./design-of-authority-system.md): Áp dụng xác thực - ủy quyền vào thiết kế hệ thống phân quyền RBAC.
+5. [Tổng hợp các thuật toán mã hóa phổ biến](./encryption-algorithms.md), [Tổng hợp phương án che giấu dữ liệu](./data-desensitization.md), [Tại sao cả frontend và backend đều cần kiểm tra dữ liệu?](./data-validation.md): Bổ sung kiến thức nền tảng về bảo mật dữ liệu.
+6. Sau đó đọc tiếp [Tổng hợp phương án lọc từ nhạy cảm](./sentive-words-filter.md) và [Tại sao khi quên mật khẩu chỉ có thể đặt lại, không thể cho bạn biết mật khẩu cũ?](./why-password-reset-instead-of-retrieval.md) tùy theo tình huống nghiệp vụ.
 
-## 核心文章
+## Bài viết cốt lõi
 
-### 认证授权
+### Xác thực - Ủy quyền
 
-- [认证授权基础概念详解](./basis-of-authority-certification.md)：讲解 Authentication、Authorization、Session、Token、OAuth2 等核心知识。
-- [JWT 基础概念详解](./jwt-intro.md)：讲解 JSON Web Token 的组成结构、签名算法、工作原理及登录鉴权应用。
-- [JWT 身份认证优缺点分析](./advantages-and-disadvantages-of-jwt.md)：分析 JWT 无法主动失效、Token 续期等问题及解决方案。
-- [SSO 单点登录详解](./sso-intro.md)：讲解统一认证中心、CAS 协议、跨域登录实现及登录态同步机制。
-- [权限系统设计详解](./design-of-authority-system.md)：基于 RBAC 讲解权限系统建模、访问控制和后台管理设计。
+- [Giải thích chi tiết khái niệm cơ bản về Xác thực - Ủy quyền](./basis-of-authority-certification_VN.md): Giải thích các kiến thức cốt lõi về Authentication, Authorization, Session, Token, OAuth2.
+- [Giải thích chi tiết khái niệm cơ bản về JWT](./jwt-intro_VN.md): Giải thích cấu trúc thành phần, thuật toán chữ ký, nguyên lý hoạt động và ứng dụng đăng nhập - xác thực của JSON Web Token.
+- [Phân tích ưu nhược điểm của JWT](./advantages-and-disadvantages-of-jwt.md): Phân tích các vấn đề như JWT không thể chủ động vô hiệu hóa, gia hạn Token và giải pháp.
+- [Giải thích chi tiết về SSO](./sso-intro.md): Giải thích về trung tâm xác thực thống nhất, giao thức CAS, hiện thực đăng nhập cross-domain và cơ chế đồng bộ trạng thái đăng nhập.
+- [Giải thích chi tiết thiết kế hệ thống phân quyền](./design-of-authority-system.md): Dựa trên RBAC, giải thích mô hình hóa hệ thống phân quyền, kiểm soát truy cập và thiết kế quản lý backend.
 
-### 数据安全
+### Bảo mật Dữ liệu
 
-- [常见加密算法总结](./encryption-algorithms.md)：梳理 AES、RSA、MD5、SHA 等算法的原理与应用场景。
-- [敏感词过滤方案总结](./sentive-words-filter.md)：从暴力匹配到 Trie 树、AC 自动机，讲解敏感词过滤算法演进和工程实践。
-- [数据脱敏方案总结](./data-desensitization.md)：讲解手机号、身份证、银行卡等敏感数据脱敏规则和实现方法。
-- [为什么前后端都要做数据校验？](./data-validation.md)：解释参数校验、权限校验的重要性，以及如何防止绕过前端校验。
-- [为什么忘记密码时只能重置，不能告诉你原密码？](./why-password-reset-instead-of-retrieval.md)：解释密码哈希、加盐、Bcrypt 和密码传输安全。
+- [Tổng hợp các thuật toán mã hóa phổ biến](./encryption-algorithms.md): Hệ thống hóa nguyên lý và tình huống ứng dụng của các thuật toán như AES, RSA, MD5, SHA.
+- [Tổng hợp phương án lọc từ nhạy cảm](./sentive-words-filter.md): Từ so khớp thô (brute-force) đến Trie Tree, AC Automaton, giải thích tiến hóa thuật toán lọc từ nhạy cảm và thực tiễn kỹ thuật.
+- [Tổng hợp phương án che giấu dữ liệu](./data-desensitization.md): Giải thích quy tắc và phương pháp hiện thực che giấu dữ liệu nhạy cảm như số điện thoại, CMND, thẻ ngân hàng.
+- [Tại sao cả frontend và backend đều cần kiểm tra dữ liệu?](./data-validation.md): Giải thích tầm quan trọng của kiểm tra tham số, kiểm tra quyền, và cách ngăn chặn vượt qua kiểm tra frontend.
+- [Tại sao khi quên mật khẩu chỉ có thể đặt lại, không thể cho bạn biết mật khẩu cũ?](./why-password-reset-instead-of-retrieval.md): Giải thích về hash mật khẩu, salt, Bcrypt và bảo mật truyền tải mật khẩu.
 
-## 高频问题
+## Câu hỏi thường gặp
 
-- 认证和授权有什么区别？
-- Session 和 Token 有什么区别？
-- JWT 由哪几部分组成？签名解决了什么问题？
-- JWT 为什么无法天然主动失效？有哪些解决方案？
-- OAuth2 和 JWT 是什么关系？
-- SSO 单点登录的核心流程是什么？
-- RBAC 权限模型如何设计？用户、角色、权限、资源之间是什么关系？
-- 对称加密、非对称加密和哈希算法分别适合什么场景？
-- 为什么密码不能明文存储？为什么忘记密码只能重置？
-- 数据脱敏应该在存储层、服务层还是展示层做？
-- 为什么后端必须做数据校验？
-- 敏感词过滤有哪些常见实现方案？
+- Xác thực (Authentication) và Ủy quyền (Authorization) khác nhau thế nào?
+- Session và Token khác nhau thế nào?
+- JWT gồm những phần nào? Chữ ký giải quyết vấn đề gì?
+- Tại sao JWT không thể tự nhiên chủ động vô hiệu hóa? Có những giải pháp nào?
+- OAuth2 và JWT có mối quan hệ gì?
+- Quy trình cốt lõi của SSO là gì?
+- Mô hình phân quyền RBAC thiết kế như thế nào? Mối quan hệ giữa người dùng, vai trò, quyền, tài nguyên là gì?
+- Mã hóa đối xứng, mã hóa bất đối xứng và thuật toán hash lần lượt phù hợp với tình huống nào?
+- Tại sao mật khẩu không được lưu dạng plain text? Tại sao quên mật khẩu chỉ có thể đặt lại?
+- Che giấu dữ liệu nên thực hiện ở tầng lưu trữ, tầng dịch vụ hay tầng hiển thị?
+- Tại sao backend nhất định phải kiểm tra dữ liệu?
+- Có những phương án hiện thực lọc từ nhạy cảm phổ biến nào?
 
-## 相关专题
+## Chuyên đề liên quan
 
-- [系统设计知识体系](../)
-- [系统设计基础专题](../basis/)
-- [Spring & Spring Boot 专题](../framework/spring/)
-- [高可用系统知识体系](../../high-availability/)
-- [计算机网络安全](../../cs-basics/network/network-attack-means.md)
+- [Hệ thống kiến thức Thiết kế Hệ thống](../)
+- [Chuyên đề cơ bản về Thiết kế Hệ thống](../basis/)
+- [Chuyên đề Spring & Spring Boot](../framework/spring/)
+- [Hệ thống kiến thức High Availability](../../high-availability/)
+- [An ninh mạng máy tính](../../cs-basics/network/network-attack-means.md)
 
 <!-- @include: @article-footer.snippet.md -->

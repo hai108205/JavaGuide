@@ -1,66 +1,66 @@
 ---
-title: Maven 专题：POM、坐标、仓库、依赖管理、生命周期、插件与多模块项目
-description: Maven 面试与项目构建学习路线，涵盖 POM、坐标、仓库、依赖范围、生命周期、插件、多模块项目、Maven Wrapper 和最佳实践，适合 Java 后端开发者。
-category: 开发工具
+title: "Chuyên đề Maven: POM, tọa độ, repository, quản lý dependency, lifecycle, plugin và dự án đa module"
+description: Lộ trình học Maven phục vụ phỏng vấn và xây dựng dự án, bao gồm POM, tọa độ, repository, phạm vi dependency, lifecycle, plugin, dự án đa module, Maven Wrapper và các best practice, phù hợp với lập trình viên Java backend.
+category: Công cụ phát triển
 tag:
   - Maven
-  - 项目构建
-  - 依赖管理
+  - Xây dựng dự án
+  - Quản lý dependency
 sitemap:
   changefreq: weekly
   priority: 0.85
 head:
   - - meta
     - name: keywords
-      content: Maven,POM,Maven坐标,Maven仓库,依赖管理,依赖范围,Maven生命周期,Maven插件,多模块项目,Java项目构建
+      content: Maven,POM,tọa độ Maven,repository Maven,quản lý dependency,phạm vi dependency,lifecycle Maven,plugin Maven,dự án đa module,xây dựng dự án Java
 ---
 
-Maven 是 Java 后端项目中最常见的构建和依赖管理工具。学习 Maven 时，不要只会复制 `pom.xml`，还要理解坐标、仓库、依赖传递、生命周期、插件和多模块管理这些基础概念。
+Maven là công cụ build và quản lý dependency phổ biến nhất trong các dự án Java backend. Khi học Maven, đừng chỉ biết copy `pom.xml`, mà còn phải hiểu các khái niệm nền tảng như tọa độ, repository, dependency bắc cầu (transitive dependency), lifecycle, plugin và quản lý đa module.
 
-## 适合谁看
+## Phù hợp với ai
 
-- 正在学习 Java 项目构建和依赖管理的同学。
-- 使用 Maven 写项目，但遇到依赖冲突、版本不统一、多模块管理、CI 构建时容易卡住的开发者。
-- 准备面试，需要讲清 Maven 核心概念和最佳实践的读者。
-- 需要维护 Spring Boot、微服务或多模块 Java 项目的工程师。
+- Những bạn đang học cách build dự án Java và quản lý dependency.
+- Lập trình viên đang dùng Maven để viết dự án, nhưng hay gặp vướng mắc khi xử lý xung đột dependency, phiên bản không thống nhất, quản lý đa module hoặc build trên CI.
+- Người đang chuẩn bị phỏng vấn, cần trình bày rõ ràng các khái niệm cốt lõi và best practice của Maven.
+- Kỹ sư cần bảo trì các dự án Spring Boot, microservice hoặc dự án Java đa module.
 
-## 学习重点
+## Trọng tâm học tập
 
-- POM 是 Maven 项目的核心配置，坐标用于唯一标识一个构件。
-- Maven 仓库分为本地仓库、私服仓库和中央仓库，依赖解析会按一定顺序查找。
-- 依赖范围、依赖传递、依赖排除和版本管理决定项目最终使用哪些 Jar 包。
-- 生命周期定义构建阶段，插件负责真正执行编译、测试、打包等任务。
-- Maven Wrapper 能固定项目使用的 Maven 版本，适合团队协作和 CI 环境。
-- 多模块项目要重点关注父 POM、`dependencyManagement`、`pluginManagement` 和模块边界。
+- POM là cấu hình cốt lõi của dự án Maven, còn tọa độ (coordinates) dùng để định danh duy nhất một artifact.
+- Repository của Maven gồm local repository, private repository (nexus/artifactory) và central repository; quá trình phân giải dependency sẽ tìm kiếm theo một thứ tự nhất định.
+- Phạm vi dependency (scope), dependency bắc cầu, loại trừ dependency (exclusion) và quản lý phiên bản quyết định dự án cuối cùng sẽ dùng những file Jar nào.
+- Lifecycle định nghĩa các giai đoạn build, còn plugin chịu trách nhiệm thực thi các tác vụ thực sự như compile, test, đóng gói.
+- Maven Wrapper giúp cố định phiên bản Maven mà dự án sử dụng, phù hợp với làm việc nhóm và môi trường CI.
+- Với dự án đa module, cần đặc biệt chú ý đến POM cha, `dependencyManagement`, `pluginManagement` và ranh giới giữa các module.
 
-## 建议阅读顺序
+## Thứ tự đọc gợi ý
 
-1. [Maven 核心概念总结](./maven-core-concepts.md)：先理解 POM、坐标、仓库、依赖、生命周期、插件和多模块项目。
-2. [Maven 最佳实践](./maven-best-practices.md)：再学习标准目录结构、编译版本、BOM、依赖版本管理、Maven Wrapper、CI 和常见实践。
-3. 结合一个 Spring Boot 项目查看 `pom.xml`：重点看父工程、依赖范围、插件配置和最终依赖树。
+1. [Tổng hợp khái niệm cốt lõi của Maven](./maven-core-concepts.md): trước tiên hãy hiểu POM, tọa độ, repository, dependency, lifecycle, plugin và dự án đa module.
+2. [Best practice với Maven](./maven-best-practices.md): sau đó học về cấu trúc thư mục chuẩn, phiên bản compile, BOM, quản lý phiên bản dependency, Maven Wrapper, CI và các thực hành phổ biến.
+3. Kết hợp xem `pom.xml` trong một dự án Spring Boot: tập trung vào project cha, phạm vi dependency, cấu hình plugin và dependency tree cuối cùng.
 
-## 核心文章
+## Bài viết chính
 
-- [Maven 核心概念总结](./maven-core-concepts.md)：系统介绍 Maven 的定位、POM、坐标、仓库、依赖、生命周期、插件和多模块项目。
-- [Maven 最佳实践](./maven-best-practices.md)：整理标准目录结构、编译版本、依赖版本统一、Maven Wrapper、CI 和日常使用建议。
+- [Tổng hợp khái niệm cốt lõi của Maven](./maven-core-concepts.md): giới thiệu có hệ thống về vai trò của Maven, POM, tọa độ, repository, dependency, lifecycle, plugin và dự án đa module.
+- [Best practice với Maven](./maven-best-practices.md): tổng hợp cấu trúc thư mục chuẩn, phiên bản compile, thống nhất phiên bản dependency, Maven Wrapper, CI và các khuyến nghị sử dụng hằng ngày.
 
-## 高频问题
+## Câu hỏi thường gặp
 
-- Maven 是什么？它主要解决哪些问题？
-- POM、groupId、artifactId、version 分别是什么？
-- 本地仓库、私服仓库、中央仓库有什么区别？
-- Maven 依赖传递是什么？依赖冲突如何排查？
-- `dependencyManagement` 和 `dependencies` 有什么区别？
-- Maven 生命周期和插件是什么关系？
-- 为什么团队项目建议提交 Maven Wrapper？
-- `compile`、`provided`、`runtime`、`test` 等依赖范围有什么区别？
-- 多模块项目为什么通常需要父 POM？
+- Maven là gì? Nó chủ yếu giải quyết những vấn đề nào?
+- POM, groupId, artifactId, version lần lượt là gì?
+- Local repository, private repository và central repository khác nhau như thế nào?
+- Dependency bắc cầu (transitive dependency) trong Maven là gì? Làm sao để xác định và xử lý xung đột dependency?
+- `dependencyManagement` và `dependencies` khác nhau ở điểm nào?
+- Lifecycle và plugin trong Maven có mối quan hệ gì?
+- Vì sao dự án nhóm nên commit Maven Wrapper?
+- Các phạm vi dependency như `compile`, `provided`, `runtime`, `test` khác nhau ra sao?
+- Vì sao dự án đa module thường cần một POM cha?
 
-## 相关专题
+## Chuyên đề liên quan
 
-- [开发工具知识体系](../)
-- [Gradle 核心概念总结](../gradle/gradle-core-concepts.md)
-- [Git 专题](../git/)
-- [Java 基础](../../java/basis/java-basic-questions-01.md)
+- [Hệ thống kiến thức công cụ phát triển](../)
+- [Tổng hợp khái niệm cốt lõi của Gradle](../gradle/gradle-core-concepts.md)
+- [Chuyên đề Git](../git/)
+- [Java cơ bản](../../java/basis/java-basic-questions-01.md)
 
 <!-- @include: @article-footer.snippet.md -->

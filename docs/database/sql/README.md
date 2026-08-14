@@ -1,72 +1,72 @@
 ---
-title: SQL 专题：语法基础、查询、聚合、连接、子查询与常见面试题
-description: SQL 面试与数据库基础学习路线，涵盖 SQL 查询、过滤、排序、聚合、分组、连接、子查询、增删改、约束、事务和常见 SQL 面试题。
-category: 数据库
+title: "Chuyên đề SQL: Nền tảng cú pháp, truy vấn, tổng hợp, kết nối, truy vấn con và câu hỏi phỏng vấn thường gặp"
+description: Lộ trình học SQL và nền tảng Cơ sở dữ liệu cho phỏng vấn, bao gồm truy vấn SQL, lọc, sắp xếp, tổng hợp, nhóm, kết nối, truy vấn con, thêm/xóa/sửa dữ liệu, ràng buộc, Transaction và các câu hỏi phỏng vấn SQL thường gặp.
+category: Cơ sở dữ liệu
 tag:
   - SQL
-  - 数据库
-  - 后端面试
+  - Cơ sở dữ liệu
+  - Phỏng vấn Backend
 sitemap:
   changefreq: weekly
   priority: 0.9
 head:
   - - meta
     - name: keywords
-      content: SQL,SQL面试题,SQL语法,SQL查询,SQL聚合,SQL连接,SQL子查询,数据库基础,后端面试
+      content: SQL,Câu hỏi phỏng vấn SQL,Cú pháp SQL,Truy vấn SQL,Tổng hợp SQL,Kết nối SQL,Truy vấn con SQL,Cơ sở dữ liệu cơ bản,Phỏng vấn Backend
 ---
 
-SQL 是后端开发绕不开的数据库基本功。无论后续学习 MySQL 索引、执行计划，还是做慢 SQL 优化，都需要先把查询、过滤、聚合、连接、子查询和数据修改这些基础语义掌握扎实。
+SQL là kỹ năng nền tảng về Cơ sở dữ liệu không thể thiếu trong phát triển Backend. Dù sau này bạn học MySQL Index, Execution Plan hay tối ưu SQL chậm, trước tiên bạn cần nắm thật chắc các ngữ nghĩa cơ bản như truy vấn, lọc, tổng hợp, kết nối, truy vấn con và chỉnh sửa dữ liệu.
 
-## 适合谁看
+## Phù hợp với ai?
 
-- 正在学习数据库基础和 SQL 语法的后端开发者。
-- 准备 SQL 基础、SQL 查询题、数据库 CRUD 相关面试题的同学。
-- 写过简单 SQL，但对 JOIN、GROUP BY、HAVING、子查询和执行顺序不够熟的读者。
-- 想在学习 MySQL 索引和 SQL 优化前补齐 SQL 基本功的工程师。
+- Lập trình viên Backend đang học nền tảng Cơ sở dữ liệu và cú pháp SQL.
+- Các bạn đang chuẩn bị cho câu hỏi phỏng vấn về SQL cơ bản, bài tập truy vấn SQL và CRUD Cơ sở dữ liệu.
+- Người đọc đã viết SQL đơn giản nhưng chưa thật sự quen với JOIN, GROUP BY, HAVING, truy vấn con và thứ tự thực thi.
+- Kỹ sư muốn bổ sung nền tảng SQL trước khi học MySQL Index và tối ưu SQL.
 
-## 学习重点
+## Trọng tâm học tập
 
-- SELECT、WHERE、ORDER BY、LIMIT、GROUP BY、HAVING 的职责和执行顺序如何理解？
-- INNER JOIN、LEFT JOIN、RIGHT JOIN、UNION、子查询分别适合哪些场景？
-- 聚合函数、分组统计和条件过滤如何组合使用？
-- INSERT、UPDATE、DELETE 写法中有哪些容易忽略的边界？
-- 面试中的 SQL 题应该如何从表关系、过滤条件、聚合维度和排序分页拆解？
+- Vai trò và thứ tự thực thi của SELECT, WHERE, ORDER BY, LIMIT, GROUP BY, HAVING được hiểu như thế nào?
+- INNER JOIN, LEFT JOIN, RIGHT JOIN, UNION, truy vấn con (Subquery) lần lượt phù hợp với những kịch bản nào?
+- Hàm tổng hợp (Aggregate Function), thống kê theo nhóm và lọc theo điều kiện được kết hợp sử dụng như thế nào?
+- Trong cách viết INSERT, UPDATE, DELETE có những trường hợp biên nào dễ bị bỏ qua?
+- Câu hỏi SQL trong phỏng vấn nên được phân tích như thế nào từ quan hệ giữa các bảng, điều kiện lọc, chiều tổng hợp và sắp xếp, phân trang?
 
-## 建议阅读顺序
+## Thứ tự đọc được khuyến nghị
 
-1. [SQL 语法基础知识总结](./sql-syntax-summary.md)：先系统掌握 SQL 的基本语法和常见操作。
-2. [SQL 常见面试题总结（1）](./sql-questions-01.md)、[SQL 常见面试题总结（2）](./sql-questions-02.md)：练习基础查询、排序、聚合和常见函数。
-3. [SQL 常见面试题总结（3）](./sql-questions-03.md)：继续补充连接、子查询和复杂查询思路。
-4. [SQL 常见面试题总结（4）](./sql-questions-04.md)、[SQL 常见面试题总结（5）](./sql-questions-05.md)：通过更多题目巩固查询拆解能力。
-5. 学完 SQL 基础后，建议继续阅读 [MySQL 专题](../mysql/)，把 SQL 写法和索引、执行计划结合起来。
+1. [Tổng hợp kiến thức nền tảng về cú pháp SQL](./sql-syntax-summary.md): Trước tiên, nắm một cách hệ thống cú pháp cơ bản và các thao tác thường gặp trong SQL.
+2. [Tổng hợp câu hỏi phỏng vấn SQL thường gặp (Phần 1)](./sql-questions-01.md), [Tổng hợp câu hỏi phỏng vấn SQL thường gặp (Phần 2)](./sql-questions-02.md): Luyện tập truy vấn cơ bản, sắp xếp, tổng hợp và các hàm thường gặp.
+3. [Tổng hợp câu hỏi phỏng vấn SQL thường gặp (Phần 3)](./sql-questions-03.md): Tiếp tục bổ sung kiến thức về kết nối, truy vấn con và hướng tiếp cận truy vấn phức tạp.
+4. [Tổng hợp câu hỏi phỏng vấn SQL thường gặp (Phần 4)](./sql-questions-04.md), [Tổng hợp câu hỏi phỏng vấn SQL thường gặp (Phần 5)](./sql-questions-05.md): Củng cố khả năng phân tích truy vấn thông qua nhiều bài tập hơn.
+5. Sau khi học xong SQL cơ bản, nên đọc tiếp [Chuyên đề MySQL](../mysql/) để kết hợp cách viết SQL với Index và Execution Plan.
 
-## 核心文章
+## Bài viết cốt lõi
 
-- [SQL 语法基础知识总结](./sql-syntax-summary.md)：覆盖查询、过滤、排序、聚合、分组、连接、子查询、插入、更新、删除和约束等基础语法。
-- [SQL 常见面试题总结（1）](./sql-questions-01.md)：通过基础题目熟悉查询、排序和简单过滤。
-- [SQL 常见面试题总结（2）](./sql-questions-02.md)：继续练习函数、字符串处理、日期处理和常见查询写法。
-- [SQL 常见面试题总结（3）](./sql-questions-03.md)：适合用来训练多表查询、分组统计和子查询拆解。
-- [SQL 常见面试题总结（4）](./sql-questions-04.md)：补充更多常见 SQL 面试题和解题思路。
-- [SQL 常见面试题总结（5）](./sql-questions-05.md)：进一步巩固 SQL 查询题的综合应用能力。
+- [Tổng hợp kiến thức nền tảng về cú pháp SQL](./sql-syntax-summary.md): Bao gồm các cú pháp cơ bản như truy vấn, lọc, sắp xếp, tổng hợp, nhóm, kết nối, truy vấn con, chèn, cập nhật, xóa và ràng buộc.
+- [Tổng hợp câu hỏi phỏng vấn SQL thường gặp (Phần 1)](./sql-questions-01.md): Làm quen với truy vấn, sắp xếp và lọc đơn giản thông qua các bài tập cơ bản.
+- [Tổng hợp câu hỏi phỏng vấn SQL thường gặp (Phần 2)](./sql-questions-02.md): Tiếp tục luyện tập hàm, xử lý chuỗi, xử lý ngày tháng và các cách viết truy vấn thường gặp.
+- [Tổng hợp câu hỏi phỏng vấn SQL thường gặp (Phần 3)](./sql-questions-03.md): Phù hợp để rèn luyện truy vấn nhiều bảng, thống kê theo nhóm và phân tích truy vấn con.
+- [Tổng hợp câu hỏi phỏng vấn SQL thường gặp (Phần 4)](./sql-questions-04.md): Bổ sung thêm các câu hỏi phỏng vấn SQL thường gặp và hướng giải.
+- [Tổng hợp câu hỏi phỏng vấn SQL thường gặp (Phần 5)](./sql-questions-05.md): Tiếp tục củng cố khả năng vận dụng tổng hợp trong các bài tập truy vấn SQL.
 
-## 高频问题
+## Câu hỏi xuất hiện nhiều
 
-- SQL 查询语句的逻辑执行顺序是什么？
-- WHERE 和 HAVING 有什么区别？
-- INNER JOIN 和 LEFT JOIN 有什么区别？
-- UNION 和 UNION ALL 有什么区别？
-- COUNT(\*)、COUNT(1)、COUNT(列名) 有什么区别？
-- 子查询和 JOIN 应该如何选择？
-- GROUP BY 后为什么只能选择分组列或聚合结果？
-- 分页查询有哪些常见写法？
-- UPDATE 和 DELETE 为什么一定要谨慎带过滤条件？
-- SQL 题应该如何根据表关系拆解？
+- Thứ tự thực thi logic của câu lệnh truy vấn SQL là gì?
+- WHERE và HAVING khác nhau như thế nào?
+- INNER JOIN và LEFT JOIN khác nhau như thế nào?
+- UNION và UNION ALL khác nhau như thế nào?
+- COUNT(\*), COUNT(1), COUNT(tên cột) khác nhau như thế nào?
+- Nên lựa chọn giữa truy vấn con và JOIN như thế nào?
+- Vì sao sau GROUP BY chỉ có thể chọn cột trong nhóm hoặc kết quả tổng hợp?
+- Truy vấn phân trang có những cách viết thường gặp nào?
+- Vì sao UPDATE và DELETE nhất định phải thận trọng khi kèm điều kiện lọc?
+- Nên phân tích câu hỏi SQL như thế nào dựa trên quan hệ giữa các bảng?
 
-## 相关专题
+## Chuyên đề liên quan
 
-- [数据库知识体系](../)
-- [MySQL 专题](../mysql/)
-- [高性能系统知识体系](../../high-performance/)
-- [常见 SQL 优化手段总结](../../high-performance/sql-optimization.md)
+- [Hệ thống kiến thức Cơ sở dữ liệu](../)
+- [Chuyên đề MySQL](../mysql/)
+- [Hệ thống kiến thức Hệ thống hiệu năng cao](../../high-performance/)
+- [Tổng hợp các phương pháp tối ưu SQL thường gặp](../../high-performance/sql-optimization.md)
 
 <!-- @include: @article-footer.snippet.md -->

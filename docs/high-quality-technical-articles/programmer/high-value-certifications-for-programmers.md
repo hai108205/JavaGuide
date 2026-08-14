@@ -1,6 +1,6 @@
 ---
-title: 程序员最该拿的几种高含金量证书
-description: "程序员最该拿的几种高含金量证书：围绕技术知识与面试总结梳理关键概念、常见问题与实践要点，帮助你高效学习与备战面试。"
+title: Một số chứng chỉ hàm lượng vàng cao nhất mà lập trình viên nên lấy
+description: "Một số chứng chỉ hàm lượng vàng cao nhất mà lập trình viên nên lấy: xoay quanh kiến thức kỹ thuật và tổng kết phỏng vấn, hệ thống hóa các khái niệm then chốt, câu hỏi thường gặp và điểm mấu chốt thực hành, giúp bạn học tập hiệu quả và chuẩn bị cho phỏng vấn."
 category: 技术文章精选集
 tag:
   - 程序员
@@ -10,110 +10,110 @@ head:
       content: 程序员证书,软考,PMP认证,AWS认证,阿里云认证,华为认证,OCP认证,Kubernetes认证,职业资格证书
 ---
 
-证书是能有效证明自己能力的好东西，它就是你实力的象征。在短短的面试时间内，证书可以为你加不少分。通过考证来提升自己，是一种性价比很高的办法。不过，相比金融、建筑、医疗等行业，IT 行业的职业资格证书并没有那么多。
+Chứng chỉ là thứ tốt có thể chứng minh năng lực của bạn một cách hiệu quả, nó chính là tượng trưng cho thực lực của bạn. Trong khoảng thời gian phỏng vấn ngắn ngủi, chứng chỉ có thể giúp bạn ghi điểm không ít. Nâng cao bản thân thông qua việc thi chứng chỉ là một cách có tỷ lệ chi phí - hiệu quả rất cao. Tuy nhiên, so với các ngành tài chính, xây dựng, y tế, thì chứng chỉ tư cách nghề nghiệp trong ngành IT không nhiều đến vậy.
 
-下面我总结了一下程序员可以考的一些常见证书。
+Dưới đây tôi đã tổng hợp một số chứng chỉ phổ biến mà lập trình viên có thể thi.
 
-## 软考
+## Kỳ thi kỹ sư mềm (软考)
 
-全国计算机技术与软件专业技术资格（水平）考试，简称“软考”，是国内认可度较高的一项计算机技术资格认证。尽管一些人吐槽其实际价值，但在特定领域和情况下，它还是非常有用的，例如软考证书在国企和事业单位中具有较高的认可度、在某些城市软考证书可以用于积分落户、可用于个税补贴。
+Kỳ thi toàn quốc về tư cách chuyên môn kỹ thuật máy tính và phần mềm, gọi tắt là "软考" (Ruankao), là một chứng nhận tư cách kỹ thuật máy tính được công nhận khá cao trong nước. Dù một số người than phiền về giá trị thực tế của nó, nhưng trong những lĩnh vực và tình huống nhất định, nó vẫn rất hữu ích, ví dụ như chứng chỉ 软考 được công nhận khá cao trong các doanh nghiệp nhà nước và đơn vị sự nghiệp, ở một số thành phố chứng chỉ 软考 có thể dùng để tích điểm nhập hộ khẩu, và có thể dùng để giảm trừ thuế thu nhập cá nhân.
 
-软考有初、中、高三个级别，建议直接考高级。相比于 PMP（项目管理专业人士认证），软考高项的难度更大，特别是论文部分，绝大部分人都挂在了论文部分。过了软考高项，在一些单位可以内部挂证，每个月多拿几百。
+软考 có ba cấp độ: sơ cấp, trung cấp và cao cấp, khuyên bạn nên thi thẳng cấp cao cấp. So với PMP (chứng nhận chuyên gia quản lý dự án), cấp cao của 软考 khó hơn, đặc biệt là phần bài luận, phần lớn mọi người đều trượt ở phần bài luận. Vượt qua cấp cao của 软考, ở một số đơn vị có thể treo chứng chỉ nội bộ, mỗi tháng nhận thêm vài trăm.
 
-![软考高级证书](https://oss.javaguide.cn/github/javaguide/programmer-life/programmer-certification/ruankao-advanced-certification%20.jpg)
+![Chứng chỉ cấp cao 软考](https://oss.javaguide.cn/github/javaguide/programmer-life/programmer-certification/ruankao-advanced-certification%20.jpg)
 
-官网地址：<https://www.ruankao.org.cn/>。
+Địa chỉ website chính thức: <https://www.ruankao.org.cn/>.
 
-备考建议：[2024 年上半年，一次通过软考高级架构师考试的备考秘诀 - 阿里云开发者](https://mp.weixin.qq.com/s/9aUXHJ7dXgrHuT19jRhCnw)
+Gợi ý ôn thi: [Bí quyết ôn thi để một lần vượt qua kỳ thi kiến trúc sư cấp cao 软考 nửa đầu năm 2024 - Alibaba Cloud Developer](https://mp.weixin.qq.com/s/9aUXHJ7dXgrHuT19jRhCnw)
 
 ## PAT
 
-攀拓计算机能力测评（PAT）是一个专注于考察算法能力的测评体系，由浙江大学主办。该测评分为四个级别：基础级、乙级、甲级和顶级。
+Hệ thống đánh giá năng lực máy tính Panto (PAT) là một hệ thống đánh giá tập trung kiểm tra năng lực thuật toán, do Đại học Chiết Giang (Zhejiang University) chủ trì. Hệ thống đánh giá này được chia thành bốn cấp độ: cấp cơ bản, cấp Ất (乙级), cấp Giáp (甲级) và cấp đỉnh cao.
 
-通过 PAT 测评并达到联盟企业规定的相应评级和分数，可以跳过学历门槛，免除筛选简历和笔试环节，直接获得面试机会。具体有哪些公司可以去官网看看：<https://www.patest.cn/company> 。
+Vượt qua bài đánh giá PAT và đạt được xếp hạng, điểm số tương ứng theo quy định của các doanh nghiệp liên minh, bạn có thể bỏ qua rào cản về bằng cấp, không phải qua khâu sàng lọc hồ sơ và thi viết, trực tiếp có được cơ hội phỏng vấn. Cụ thể có những công ty nào, bạn có thể xem trên website chính thức: <https://www.patest.cn/company>.
 
-对于考研浙江大学的同学来说，PAT（甲级）成绩在一年内可以作为硕士研究生招生考试上机复试成绩。
+Đối với các bạn thi lên cao học tại Đại học Chiết Giang, điểm PAT (cấp Giáp/甲级) trong vòng một năm có thể dùng làm điểm thi thực hành trên máy tính của vòng phúc khảo kỳ thi tuyển sinh thạc sĩ.
 
-![PAT（甲级）成绩作用](https://oss.javaguide.cn/github/javaguide/programmer-life/programmer-certification/pat-enterprise-alliance.png)
+![Tác dụng của điểm PAT (cấp Giáp)](https://oss.javaguide.cn/github/javaguide/programmer-life/programmer-certification/pat-enterprise-alliance.png)
 
 ## PMP
 
-PMP（Project Management Professional）认证由美国项目管理协会（PMI）提供，是全球范围内认可度最高的项目管理专业人士资格认证。PMP 认证旨在提升项目管理专业人士的知识和技能，确保项目顺利完成。
+Chứng nhận PMP (Project Management Professional) do Viện Quản lý Dự án Hoa Kỳ (PMI) cung cấp, là chứng nhận tư cách chuyên gia quản lý dự án được công nhận cao nhất trên phạm vi toàn cầu. Chứng nhận PMP nhằm nâng cao kiến thức và kỹ năng của các chuyên gia quản lý dự án, đảm bảo dự án hoàn thành suôn sẻ.
 
-![PMP 证书](https://oss.javaguide.cn/github/javaguide/programmer-life/programmer-certification/pmp-certification.png)
+![Chứng chỉ PMP](https://oss.javaguide.cn/github/javaguide/programmer-life/programmer-certification/pmp-certification.png)
 
-PMP 是“一证在手，全球通用”的资格认证，对项目管理人士来说，PMP 证书含金量还是比较高的。放眼全球，很多成功企业都会将 PMP 认证作为项目经理的入职标准。
+PMP là chứng nhận kiểu "một chứng chỉ trong tay, dùng được trên toàn cầu", đối với người làm quản lý dự án, hàm lượng vàng (giá trị) của chứng chỉ PMP khá cao. Nhìn ra toàn cầu, nhiều doanh nghiệp thành công đều coi chứng nhận PMP là tiêu chuẩn tuyển dụng vị trí quản lý dự án.
 
-但是！真正有价值的不是 PMP 证书，而是《PMBOK》 那套项目管理体系，在《PMBOK》（PMP 考试指定用书）中也包含了非常多商业活动、实业项目、组织规划、建筑行业等各个领域的项目案例。
+Nhưng! Thứ thực sự có giá trị không phải là chứng chỉ PMP, mà là hệ thống quản lý dự án trong cuốn 《PMBOK》. Trong 《PMBOK》(cuốn sách được chỉ định dùng cho kỳ thi PMP) cũng chứa rất nhiều case study (tình huống) dự án thuộc nhiều lĩnh vực như hoạt động kinh doanh, dự án công nghiệp, quy hoạch tổ chức, ngành xây dựng, v.v.
 
-另外，PMP 证书不是一个高大上的证书，而是一个基础的证书。
+Ngoài ra, chứng chỉ PMP không phải là một chứng chỉ cao cấp, mà là một chứng chỉ cơ bản.
 
 ## ACP
 
-ACP（Agile Certified Practitioner）认证同样由美国项目管理协会（PMI）提供，是项目管理领域的另一个重要认证。与 PMP（Project Management Professional）注重传统的瀑布方法论不同，ACP 专注于敏捷项目管理方法论，如 Scrum、Kanban、Lean、Extreme Programming（XP）等。
+Chứng nhận ACP (Agile Certified Practitioner) cũng do Viện Quản lý Dự án Hoa Kỳ (PMI) cung cấp, là một chứng nhận quan trọng khác trong lĩnh vực quản lý dự án. Khác với PMP (Project Management Professional) chú trọng phương pháp luận thác nước (waterfall) truyền thống, ACP tập trung vào phương pháp luận quản lý dự án Agile như Scrum, Kanban, Lean, Extreme Programming (XP), v.v.
 
 ## OCP
 
-Oracle Certified Professional（OCP）是 Oracle 公司提供的一项专业认证，专注于 Oracle 数据库及相关技术。这个认证旨在验证和认证个人在使用和管理 Oracle 数据库方面的专业知识和技能。
+Oracle Certified Professional (OCP) là một chứng nhận chuyên nghiệp do công ty Oracle cung cấp, tập trung vào cơ sở dữ liệu Oracle và các công nghệ liên quan. Chứng nhận này nhằm xác minh và chứng nhận kiến thức, kỹ năng chuyên môn của cá nhân trong việc sử dụng và quản lý cơ sở dữ liệu Oracle.
 
-下图展示了 Oracle 认证的不同路径和相应的认证级别，分别是核心路径（Core Track）和专业路径（Speciality Track）。
+Hình dưới đây mô tả các lộ trình khác nhau của chứng nhận Oracle và các cấp độ chứng nhận tương ứng, lần lượt là lộ trình cốt lõi (Core Track) và lộ trình chuyên sâu (Speciality Track).
 
-![OCP 认证路径](https://oss.javaguide.cn/github/javaguide/programmer-life/programmer-certification/oracle-certified-professional.jpg)
+![Lộ trình chứng nhận OCP](https://oss.javaguide.cn/github/javaguide/programmer-life/programmer-certification/oracle-certified-professional.jpg)
 
-## 阿里云认证
+## Chứng nhận Alibaba Cloud
 
-阿里云（Alibaba Cloud）提供的专业认证，认证方向包括云计算、大数据、人工智能、Devops 等。职业认证分为 ACA、ACP、ACE 三个等级，除了职业认证之外，还有一个开发者 Clouder 认证，这是专门为开发者设立的专项技能认证。
+Là chứng nhận chuyên nghiệp do Alibaba Cloud cung cấp, các hướng chứng nhận bao gồm điện toán đám mây (cloud computing), dữ liệu lớn (big data), trí tuệ nhân tạo (AI), DevOps, v.v. Chứng nhận nghề nghiệp được chia thành ba cấp độ ACA, ACP, ACE. Ngoài chứng nhận nghề nghiệp, còn có chứng nhận Clouder dành cho nhà phát triển, đây là chứng nhận kỹ năng chuyên biệt được thiết lập riêng cho các nhà phát triển.
 
 ![](https://oss.javaguide.cn/github/javaguide/programmer-life/programmer-certification/aliyun-professional-certification.png)
 
-官网地址：<https://edu.aliyun.com/certification/>。
+Địa chỉ website chính thức: <https://edu.aliyun.com/certification/>.
 
-## 华为认证
+## Chứng nhận Huawei
 
-华为认证是由华为技术有限公司提供的面向 ICT（信息与通信技术）领域的专业认证，认证方向包括网络、存储、云计算、大数据、人工智能等，非常庞大的认证体系。
+Chứng nhận Huawei là chứng nhận chuyên nghiệp hướng tới lĩnh vực ICT (công nghệ thông tin và truyền thông) do Công ty TNHH Công nghệ Huawei cung cấp, các hướng chứng nhận bao gồm mạng, lưu trữ, điện toán đám mây, dữ liệu lớn, trí tuệ nhân tạo, v.v., là một hệ thống chứng nhận rất lớn.
 
 ![](https://oss.javaguide.cn/github/javaguide/programmer-life/programmer-certification/huawei-professional-certification.png)
 
-## AWS 认证
+## Chứng nhận AWS
 
-AWS 云认证考试是 AWS 云计算服务的官方认证考试，旨在验证 IT 专业人士在设计、部署和管理 AWS 基础架构方面的技能。
+Kỳ thi chứng nhận cloud AWS là kỳ thi chứng nhận chính thức của dịch vụ điện toán đám mây AWS, nhằm xác minh kỹ năng của các chuyên gia IT trong việc thiết kế, triển khai và quản lý hạ tầng AWS.
 
-AWS 认证分为多个级别，包括基础级、从业者级、助理级、专业级和专家级（Specialty），涵盖多个角色和技能：
+Chứng nhận AWS được chia thành nhiều cấp độ, bao gồm cấp cơ bản, cấp thực hành viên (practitioner), cấp trợ lý (associate), cấp chuyên nghiệp (professional) và cấp chuyên gia (Specialty), bao trùm nhiều vai trò và kỹ năng:
 
-- **基础级别**：AWS Certified Cloud Practitioner，适合初学者，验证对 AWS 基础知识的理解，是最简单的入门认证。
-- **助理级别**：包括 AWS Certified Solutions Architect – Associate、AWS Certified Developer – Associate 和 AWS Certified SysOps Administrator – Associate，适合中级专业人士，验证其设计、开发和管理 AWS 应用的能力。
-- **专业级别**：包括 AWS Certified Solutions Architect – Professional 和 AWS Certified DevOps Engineer – Professional，适合高级专业人士，验证其在复杂和大规模 AWS 环境中的能力。
-- **专家级别**：包括 AWS Certified Advanced Networking – Specialty、AWS Certified Big Data – Specialty 等，专注于特定技术领域的深度知识和技能。
+- **Cấp độ cơ bản**: AWS Certified Cloud Practitioner, phù hợp với người mới bắt đầu, xác minh hiểu biết về kiến thức nền tảng AWS, là chứng nhận nhập môn đơn giản nhất.
+- **Cấp độ trợ lý**: bao gồm AWS Certified Solutions Architect – Associate, AWS Certified Developer – Associate và AWS Certified SysOps Administrator – Associate, phù hợp với chuyên gia cấp trung, xác minh năng lực thiết kế, phát triển và quản lý ứng dụng AWS.
+- **Cấp độ chuyên nghiệp**: bao gồm AWS Certified Solutions Architect – Professional và AWS Certified DevOps Engineer – Professional, phù hợp với chuyên gia cấp cao, xác minh năng lực của họ trong môi trường AWS phức tạp và quy mô lớn.
+- **Cấp độ chuyên gia**: bao gồm AWS Certified Advanced Networking – Specialty, AWS Certified Big Data – Specialty, v.v., tập trung vào kiến thức và kỹ năng chuyên sâu trong các lĩnh vực kỹ thuật cụ thể.
 
-备考建议：[小白入门云计算的最佳方式，是去考一张 AWS 的证书（附备考经验）](https://mp.weixin.qq.com/s/xAqNOnfZ05GDRuUbAiMHIA)
+Gợi ý ôn thi: [Cách tốt nhất để người mới bắt đầu vào điện toán đám mây, đó là đi thi một chứng chỉ AWS (kèm kinh nghiệm ôn thi)](https://mp.weixin.qq.com/s/xAqNOnfZ05GDRuUbAiMHIA)
 
-## Google Cloud 认证
+## Chứng nhận Google Cloud
 
-与 AWS 认证不同，Google Cloud 认证只有一门助理级认证（Associate Cloud Engineer），其他大部分为专业级（专家级）认证。
+Khác với chứng nhận AWS, chứng nhận Google Cloud chỉ có một chứng nhận cấp trợ lý (Associate Cloud Engineer), còn lại phần lớn là chứng nhận cấp chuyên nghiệp (cấp chuyên gia).
 
-备考建议：[如何备考谷歌云认证](https://mp.weixin.qq.com/s/Vw5LGPI_akA7TQl1FMygWw)
+Gợi ý ôn thi: [Cách ôn thi chứng chỉ Google Cloud](https://mp.weixin.qq.com/s/Vw5LGPI_akA7TQl1FMygWw)
 
-官网地址：<https://cloud.google.com/certification>
+Địa chỉ website chính thức: <https://cloud.google.com/certification>
 
-## 微软认证
+## Chứng nhận Microsoft
 
-微软的认证体系主要针对其 Azure 云平台，分为基础级别、助理级别和专家级别，认证方向包括云计算、数据管理、开发、生产力工具等。
+Hệ thống chứng nhận của Microsoft chủ yếu hướng tới nền tảng đám mây Azure của họ, được chia thành cấp độ cơ bản, cấp độ trợ lý và cấp độ chuyên gia, các hướng chứng nhận bao gồm điện toán đám mây, quản lý dữ liệu, phát triển, công cụ năng suất (productivity tools), v.v.
 
 ![](https://oss.javaguide.cn/github/javaguide/programmer-life/programmer-certification/microsoft-certification.png)
 
-## Elastic 认证
+## Chứng nhận Elastic
 
-Elastic 认证是由 Elastic 公司提供的一系列专业认证，旨在验证个人在使用 Elastic Stack（包括 Elasticsearch、Logstash、Kibana 、Beats 等）方面的技能和知识。
+Chứng nhận Elastic là một chuỗi các chứng nhận chuyên nghiệp do công ty Elastic cung cấp, nhằm xác minh kỹ năng và kiến thức của cá nhân trong việc sử dụng Elastic Stack (bao gồm Elasticsearch, Logstash, Kibana, Beats, v.v.).
 
-如果你在日常开发核心工作是负责 ElasticSearch 相关业务的话，还是比较建议考的，含金量挺高。
+Nếu công việc cốt lõi trong phát triển hằng ngày của bạn là phụ trách các nghiệp vụ liên quan đến ElasticSearch, thì vẫn khá nên thi, hàm lượng vàng (giá trị) khá cao.
 
-目前 Elastic 认证证书分为四类：Elastic Certified Engineer、Elastic Certified Analyst、Elastic Certified Observability Engineer、Elastic Certified SIEM Specialist。
+Hiện tại chứng chỉ Elastic được chia thành bốn loại: Elastic Certified Engineer, Elastic Certified Analyst, Elastic Certified Observability Engineer, Elastic Certified SIEM Specialist.
 
-比较建议考 **Elastic Certified Engineer**，这个是 Elastic Stack 的基础认证，考察安装、配置、管理和维护 Elasticsearch 集群等核心技能。
+Khá nên thi **Elastic Certified Engineer**, đây là chứng nhận cơ bản của Elastic Stack, kiểm tra các kỹ năng cốt lõi như cài đặt, cấu hình, quản lý và bảo trì cụm Elasticsearch.
 
 ![](https://oss.javaguide.cn/github/javaguide/programmer-life/programmer-certification/elastic-certified-engineer-certification.png)
 
-## 其他
+## Khác
 
-- PostgreSQL 认证：国内的 PostgreSQL 认证分为专员级（PCA）、专家级（PCP）和大师级（PCM），主要考查 PostgreSQL 数据库管理和优化，价格略贵，不是很推荐。
-- Kubernetes 认证：Cloud Native Computing Foundation (CNCF) 提供了几个官方认证，例如 Certified Kubernetes Administrator (CKA)、Certified Kubernetes Application Developer (CKAD)，主要考察 Kubernetes 方面的技能和知识。
+- Chứng nhận PostgreSQL: chứng nhận PostgreSQL trong nước được chia thành cấp chuyên viên (PCA), cấp chuyên gia (PCP) và cấp đại sư (PCM), chủ yếu kiểm tra quản trị và tối ưu hóa cơ sở dữ liệu PostgreSQL, giá hơi đắt, không khuyến khích lắm.
+- Chứng nhận Kubernetes: Cloud Native Computing Foundation (CNCF) cung cấp một số chứng nhận chính thức, ví dụ như Certified Kubernetes Administrator (CKA), Certified Kubernetes Application Developer (CKAD), chủ yếu kiểm tra kỹ năng và kiến thức về Kubernetes.

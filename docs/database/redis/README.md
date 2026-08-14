@@ -1,87 +1,87 @@
 ---
-title: Redis 专题：缓存、数据结构、持久化、集群、阻塞与工程实践
-description: Redis 面试与缓存学习路线，涵盖缓存穿透、缓存击穿、缓存雪崩、读写策略、Redis 数据结构、持久化、阻塞问题、延时任务和集群。
-category: 数据库
+title: "Chuyên đề Redis: Cache, Cấu trúc dữ liệu, Persistence, Cluster, Blocking và Thực hành kỹ thuật"
+description: Lộ trình học Redis và Cache cho phỏng vấn, bao gồm Cache Penetration, Cache Breakdown, Cache Avalanche, chiến lược đọc/ghi, cấu trúc dữ liệu Redis, Persistence, vấn đề Blocking, Delayed Task và Cluster.
+category: Cơ sở dữ liệu
 tag:
   - Redis
-  - 缓存
-  - 后端面试
+  - Cache
+  - Phỏng vấn Backend
 sitemap:
   changefreq: weekly
   priority: 0.9
 head:
   - - meta
     - name: keywords
-      content: Redis,Redis面试题,缓存,缓存穿透,缓存击穿,缓存雪崩,Redis数据结构,Redis持久化,Redis集群,Redis阻塞,Redis跳表,Redis延时任务,Redis消息队列,后端面试
+      content: Redis,Câu hỏi phỏng vấn Redis,Cache,Cache Penetration,Cache Breakdown,Cache Avalanche,Cấu trúc dữ liệu Redis,Redis Persistence,Redis Cluster,Redis Blocking,Redis Skip List,Redis Delayed Task,Redis Message Queue,Phỏng vấn Backend
 ---
 
-Redis 是后端开发最常用的缓存和高性能内存数据存储之一。学习 Redis 时，不能只停留在命令和数据类型上，还要理解缓存读写策略、底层数据结构、持久化、阻塞原因、内存管理、复制与集群等工程问题。
+Redis là một trong những Cache và kho dữ liệu trong bộ nhớ hiệu năng cao được sử dụng phổ biến nhất trong phát triển Backend. Khi học Redis, không thể chỉ dừng lại ở các lệnh và kiểu dữ liệu, mà còn phải hiểu các chiến lược đọc/ghi Cache, cấu trúc dữ liệu bên dưới, Persistence, nguyên nhân Blocking, quản lý bộ nhớ, Replication và Cluster cùng các vấn đề kỹ thuật khác.
 
-## 适合谁看
+## Phù hợp với ai?
 
-- 想系统学习 Redis 原理、缓存设计和工程实践的后端开发者。
-- 准备 Redis 数据结构、持久化、集群、高可用、缓存一致性相关面试题的同学。
-- 已经在项目中使用 Redis，但对缓存异常、阻塞、内存碎片和集群机制不够熟的读者。
-- 需要基于 Redis 实现延时任务、消息队列、排行榜、购物车等能力的工程师。
+- Lập trình viên Backend muốn học một cách hệ thống về nguyên lý Redis, thiết kế Cache và thực hành kỹ thuật.
+- Các bạn đang chuẩn bị cho các câu hỏi phỏng vấn về cấu trúc dữ liệu Redis, Persistence, Cluster, sẵn sàng cao và Cache Consistency.
+- Những độc giả đã sử dụng Redis trong dự án nhưng chưa đủ quen thuộc với các vấn đề bất thường của Cache, Blocking, Memory Fragmentation và cơ chế Cluster.
+- Kỹ sư cần triển khai Delayed Task, Message Queue, bảng xếp hạng, giỏ hàng và các năng lực khác dựa trên Redis.
 
-## 学习重点
+## Trọng tâm học tập
 
-- Redis 常用数据结构分别适合哪些业务场景，底层编码如何影响性能？
-- 缓存穿透、击穿、雪崩和缓存一致性问题应该如何设计方案？
-- Redis 持久化中 RDB、AOF、AOF 重写和混合持久化有什么区别？
-- Redis 为什么可能阻塞，如何定位慢命令、大 Key、热 Key 和持久化影响？
-- 主从复制、哨兵和 Cluster 分别解决什么问题，故障转移有哪些关键流程？
-- 基于 Redis 做延时任务、消息队列时有哪些能力边界和可靠性风险？
+- Các cấu trúc dữ liệu thường dùng của Redis lần lượt phù hợp với những kịch bản nghiệp vụ nào, encoding bên dưới ảnh hưởng đến hiệu năng ra sao?
+- Các vấn đề Cache Penetration, Cache Breakdown, Cache Avalanche và Cache Consistency nên thiết kế giải pháp như thế nào?
+- Trong Persistence của Redis, RDB, AOF, AOF Rewrite và Hybrid Persistence khác nhau như thế nào?
+- Vì sao Redis có thể bị Blocking, làm thế nào để xác định lệnh chậm, Big Key, Hot Key và ảnh hưởng của Persistence?
+- Replication (master-slave), Sentinel và Cluster lần lượt giải quyết vấn đề gì, Failover có những quy trình then chốt nào?
+- Khi triển khai Delayed Task, Message Queue dựa trên Redis có những giới hạn năng lực và rủi ro độ tin cậy nào?
 
-## 建议阅读顺序
+## Thứ tự đọc được khuyến nghị
 
-1. [缓存基础常见面试题总结](./cache-basics.md)：先理解缓存使用场景、缓存异常和一致性问题。
-2. [Redis 常见面试题总结（上）](./redis-questions-01.md)、[Redis 常见面试题总结（下）](./redis-questions-02.md)：建立 Redis 高频问题清单。
-3. [Redis 5 种基本数据类型详解](./redis-data-structures-01.md)、[Redis 3 种特殊数据类型详解](./redis-data-structures-02.md)：系统掌握数据结构和应用场景。
-4. [3 种常用的缓存读写策略详解](./3-commonly-used-cache-read-and-write-strategies.md)、[Redis 持久化机制详解](./redis-persistence.md)：补齐缓存一致性和数据恢复能力。
-5. [Redis 常见阻塞原因总结](./redis-common-blocking-problems-summary.md)、[Redis 集群详解](./redis-cluster.md)：把 Redis 放到生产环境里理解。
+1. [Tổng hợp các câu hỏi phỏng vấn thường gặp về kiến thức nền tảng Cache](./cache-basics.md): Trước tiên hiểu các kịch bản sử dụng Cache, các vấn đề bất thường của Cache và vấn đề tính nhất quán.
+2. [Tổng hợp câu hỏi phỏng vấn Redis thường gặp (Phần 1)](./redis-questions-01.md), [Tổng hợp câu hỏi phỏng vấn Redis thường gặp (Phần 2)](./redis-questions-02.md): Xây dựng danh sách các vấn đề Redis tần suất cao.
+3. [Giải thích chi tiết 5 kiểu dữ liệu cơ bản của Redis](./redis-data-structures-01.md), [Giải thích chi tiết 3 kiểu dữ liệu đặc biệt của Redis](./redis-data-structures-02.md): Nắm vững một cách hệ thống cấu trúc dữ liệu và kịch bản ứng dụng.
+4. [Giải thích chi tiết 3 chiến lược đọc/ghi Cache thường dùng](./3-commonly-used-cache-read-and-write-strategies.md), [Giải thích chi tiết cơ chế Persistence của Redis](./redis-persistence.md): Bổ sung năng lực Cache Consistency và khôi phục dữ liệu.
+5. [Tổng hợp các nguyên nhân gây Blocking thường gặp trong Redis](./redis-common-blocking-problems-summary.md), [Giải thích chi tiết Redis Cluster](./redis-cluster.md): Đặt Redis vào môi trường production để hiểu.
 
-## 核心文章
+## Bài viết cốt lõi
 
-### 缓存基础与读写策略
+### Kiến thức nền tảng Cache và chiến lược đọc/ghi
 
-- [缓存基础常见面试题总结](./cache-basics.md)：讲解缓存应用场景、缓存穿透、缓存击穿、缓存雪崩、缓存一致性和缓存淘汰。
-- [3 种常用的缓存读写策略详解](./3-commonly-used-cache-read-and-write-strategies.md)：对比 Cache Aside、Read/Write Through、Write Behind 等常见策略。
-- [Redis 常见面试题总结（上）](./redis-questions-01.md) 和 [Redis 常见面试题总结（下）](./redis-questions-02.md)：串联 Redis 基础、线程模型、数据结构、持久化、集群和生产问题。
+- [Tổng hợp các câu hỏi phỏng vấn thường gặp về kiến thức nền tảng Cache](./cache-basics.md): Giải thích các kịch bản ứng dụng Cache, Cache Penetration, Cache Breakdown, Cache Avalanche, Cache Consistency và loại bỏ Cache.
+- [Giải thích chi tiết 3 chiến lược đọc/ghi Cache thường dùng](./3-commonly-used-cache-read-and-write-strategies.md): So sánh các chiến lược phổ biến như Cache Aside, Read/Write Through, Write Behind.
+- [Tổng hợp câu hỏi phỏng vấn Redis thường gặp (Phần 1)](./redis-questions-01.md) và [Tổng hợp câu hỏi phỏng vấn Redis thường gặp (Phần 2)](./redis-questions-02.md): Xâu chuỗi Redis cơ bản, thread model, cấu trúc dữ liệu, Persistence, Cluster và các vấn đề production.
 
-### 数据结构与典型应用
+### Cấu trúc dữ liệu và ứng dụng điển hình
 
-- [Redis 5 种基本数据类型详解](./redis-data-structures-01.md)：理解 String、List、Hash、Set、Sorted Set 的底层结构和业务场景。
-- [Redis 3 种特殊数据类型详解](./redis-data-structures-02.md)：理解 Bitmap、HyperLogLog、Geospatial 的用法和适用场景。
-- [Redis 为什么用跳表实现有序集合](./redis-skiplist.md)：理解跳表结构、查询复杂度和 Sorted Set 的实现选择。
-- [如何基于 Redis 实现延时任务？](./redis-delayed-task.md)：对比过期事件、Sorted Set、Stream 等实现方式。
-- [如何基于 Redis 实现消息队列？](./redis-stream-mq.md)：理解 List、Pub/Sub、Stream 做消息队列的差异。
+- [Giải thích chi tiết 5 kiểu dữ liệu cơ bản của Redis](./redis-data-structures-01.md): Hiểu cấu trúc bên dưới và kịch bản nghiệp vụ của String, List, Hash, Set, Sorted Set.
+- [Giải thích chi tiết 3 kiểu dữ liệu đặc biệt của Redis](./redis-data-structures-02.md): Hiểu cách dùng và kịch bản phù hợp của Bitmap, HyperLogLog, Geospatial.
+- [Tại sao Redis dùng Skip List để triển khai Sorted Set](./redis-skiplist.md): Hiểu cấu trúc Skip List, độ phức tạp truy vấn và lựa chọn triển khai của Sorted Set.
+- [Làm thế nào để triển khai Delayed Task dựa trên Redis?](./redis-delayed-task.md): So sánh các cách triển khai như Expiration Event, Sorted Set, Stream.
+- [Làm thế nào để triển khai Message Queue dựa trên Redis?](./redis-stream-mq.md): Hiểu sự khác biệt giữa List, Pub/Sub, Stream khi làm Message Queue.
 
-### 持久化、内存与集群
+### Persistence, bộ nhớ và Cluster
 
-- [Redis 持久化机制详解](./redis-persistence.md)：系统讲解 RDB、AOF、AOF 重写和混合持久化。
-- [Redis 内存碎片详解](./redis-memory-fragmentation.md)：理解内存碎片产生原因、指标观察和清理策略。
-- [Redis 常见阻塞原因总结](./redis-common-blocking-problems-summary.md)：整理慢命令、大 Key、持久化、主从同步、CPU 和网络等阻塞来源。
-- [Redis 集群详解](./redis-cluster.md)：理解主从复制、哨兵、Cluster、槽位迁移和故障转移。
+- [Giải thích chi tiết cơ chế Persistence của Redis](./redis-persistence.md): Giải thích hệ thống về RDB, AOF, AOF Rewrite và Hybrid Persistence.
+- [Giải thích chi tiết Memory Fragmentation của Redis](./redis-memory-fragmentation.md): Hiểu nguyên nhân phát sinh Memory Fragmentation, quan sát chỉ số và chiến lược dọn dẹp.
+- [Tổng hợp các nguyên nhân gây Blocking thường gặp trong Redis](./redis-common-blocking-problems-summary.md): Tổng hợp các nguồn gây Blocking như lệnh chậm, Big Key, Persistence, đồng bộ master-slave, CPU và mạng.
+- [Giải thích chi tiết Redis Cluster](./redis-cluster.md): Hiểu Replication (master-slave), Sentinel, Cluster, di chuyển Slot và Failover.
 
-## 高频问题
+## Câu hỏi tần suất cao
 
-- Redis 为什么快？单线程为什么还能支撑高并发？
-- Redis 常见数据类型分别适合哪些业务场景？
-- Sorted Set 为什么使用跳表？
-- 缓存穿透、击穿、雪崩有什么区别，如何处理？
-- 缓存和数据库如何保证一致性？
-- RDB 和 AOF 有什么区别？AOF 重写解决什么问题？
-- Redis 常见阻塞原因有哪些？如何排查大 Key 和慢命令？
-- Redis 主从复制、哨兵和 Cluster 有什么区别？
-- Redis 如何实现延时任务？可靠性风险在哪里？
-- Redis Stream 和传统消息队列相比有哪些边界？
+- Vì sao Redis nhanh? Đơn luồng mà vẫn hỗ trợ được concurrency cao là vì sao?
+- Các kiểu dữ liệu thường gặp của Redis lần lượt phù hợp với những kịch bản nghiệp vụ nào?
+- Vì sao Sorted Set sử dụng Skip List?
+- Cache Penetration, Cache Breakdown, Cache Avalanche khác nhau như thế nào, xử lý ra sao?
+- Làm thế nào để đảm bảo tính nhất quán giữa Cache và cơ sở dữ liệu?
+- RDB và AOF khác nhau như thế nào? AOF Rewrite giải quyết vấn đề gì?
+- Các nguyên nhân gây Blocking thường gặp trong Redis là gì? Làm thế nào để chẩn đoán Big Key và lệnh chậm?
+- Replication (master-slave), Sentinel và Cluster của Redis khác nhau như thế nào?
+- Redis triển khai Delayed Task như thế nào? Rủi ro độ tin cậy nằm ở đâu?
+- Redis Stream so với Message Queue truyền thống có những giới hạn nào?
 
-## 相关专题
+## Chuyên đề liên quan
 
-- [数据库知识体系](../)
-- [高性能系统知识体系](../../high-performance/)
-- [高可用系统知识体系](../../high-availability/)
-- [消息队列专题](../../high-performance/message-queue/)
+- [Hệ thống kiến thức Cơ sở dữ liệu](../)
+- [Hệ thống kiến thức Hệ thống hiệu năng cao](../../high-performance/)
+- [Hệ thống kiến thức Hệ thống sẵn sàng cao](../../high-availability/)
+- [Chuyên đề Message Queue](../../high-performance/message-queue/)
 
 <!-- @include: @article-footer.snippet.md -->

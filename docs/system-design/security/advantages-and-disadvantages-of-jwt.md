@@ -1,6 +1,6 @@
 ---
-title: JWT 身份认证优缺点分析
-description: JWT身份认证优缺点深度分析，讲解JWT无法主动失效、Token续期等问题及对应的解决方案。
+title: Phân tích ưu nhược điểm của xác thực JWT
+description: Phân tích chuyên sâu ưu nhược điểm của xác thực JWT, giải thích các vấn đề như JWT không thể chủ động vô hiệu hóa, gia hạn Token và các giải pháp tương ứng.
 category: 系统设计
 tag:
   - 安全
@@ -10,157 +10,157 @@ head:
       content: JWT,Token认证,无状态认证,JWT缺点,刷新令牌,注销失效,安全风险,替代方案
 ---
 
-校招面试中，遇到大部分的候选者认证登录这块用的都是 JWT。提问 JWT 的概念性问题以及使用 JWT 的原因，基本都能回答一些，但当问到 JWT 存在的一些问题和解决方案时，只有一小部分候选者回答的还可以。
+Trong các buổi phỏng vấn tuyển dụng, phần lớn ứng viên tôi gặp đều sử dụng JWT cho phần xác thực đăng nhập. Khi hỏi về các câu hỏi khái niệm JWT và lý do sử dụng JWT, hầu hết đều trả lời được ít nhiều. Nhưng khi hỏi đến các vấn đề tồn tại của JWT và giải pháp, chỉ một số ít ứng viên trả lời tốt.
 
-JWT 不是银弹，也有很多缺陷，很多时候并不是最优的选择。这篇文章，我们一起探讨一下 JWT 身份认证的优缺点以及常见问题的解决办法，来看看为什么很多人不再推荐使用 JWT 了。
+JWT không phải là viên đạn bạc, nó có nhiều khiếm khuyết, và trong nhiều trường hợp không phải là lựa chọn tối ưu. Trong bài viết này, chúng ta cùng tìm hiểu ưu nhược điểm của xác thực JWT và cách giải quyết các vấn đề thường gặp, để hiểu tại sao nhiều người không còn khuyến nghị sử dụng JWT nữa.
 
-关于 JWT 的基本概念介绍请看我写的这篇文章： [JWT 基本概念详解](https://javaguide.cn/system-design/security/jwt-intro.html)。
+Về khái niệm cơ bản của JWT, vui lòng xem bài viết tôi đã viết: [JWT 基本概念详解](https://javaguide.cn/system-design/security/jwt-intro.html).
 
-## JWT 的优势
+## Ưu điểm của JWT
 
-相比于 Session 认证的方式来说，使用 JWT 进行身份认证主要有下面 4 个优势。
+So với phương thức xác thực Session, sử dụng JWT để xác thực có 4 ưu điểm chính sau đây.
 
-### 无状态
+### Không trạng thái (Stateless)
 
-JWT 自身包含了身份验证所需要的所有信息，因此，我们的服务器不需要存储 JWT 信息。这显然增加了系统的可用性和伸缩性，大大减轻了服务端的压力。
+JWT tự chứa tất cả thông tin cần thiết cho việc xác thực, do đó, server của chúng ta không cần lưu trữ thông tin JWT. Điều này rõ ràng làm tăng tính khả dụng và khả năng mở rộng của hệ thống, giảm đáng kể áp lực lên phía server.
 
-不过，也正是由于 JWT 的无状态，也导致了它最大的缺点：**不可控！**
+Tuy nhiên, chính vì tính không trạng thái của JWT, nó cũng dẫn đến nhược điểm lớn nhất: **Không thể kiểm soát!**
 
-就比如说，我们想要在 JWT 有效期内废弃一个 JWT 或者更改它的权限的话，并不会立即生效，通常需要等到有效期过后才可以。再比如说，当用户 Logout 的话，JWT 也还有效。除非，我们在后端增加额外的处理逻辑比如将失效的 JWT 存储起来，后端先验证 JWT 是否有效再进行处理。具体的解决办法，我们会在后面的内容中详细介绍到，这里只是简单提一下。
+Ví dụ, nếu chúng ta muốn hủy bỏ một JWT trong thời hạn hiệu lực của nó hoặc thay đổi quyền của nó, thì sẽ không có hiệu lực ngay lập tức, thường phải đợi đến khi hết hạn mới được. Một ví dụ khác, khi người dùng Logout, JWT vẫn còn hiệu lực. Trừ khi chúng ta thêm logic xử lý bổ sung ở backend, chẳng hạn như lưu trữ các JWT đã hết hiệu lực, backend kiểm tra JWT có hợp lệ trước rồi mới xử lý. Các giải pháp cụ thể sẽ được giới thiệu chi tiết ở phần sau, ở đây chỉ đề cập sơ qua.
 
-### 使用 Authorization Header 可降低传统 CSRF 风险
+### Sử dụng Authorization Header giúp giảm rủi ro CSRF truyền thống
 
-**CSRF（Cross Site Request Forgery）** 一般被翻译为 **跨站请求伪造**，属于网络攻击领域范围。相比于 SQL 脚本注入、XSS 等安全攻击方式，CSRF 的知名度并没有它们高。但是，它的确是我们开发系统时必须要考虑的安全隐患。就连业内技术标杆 Google 的产品 Gmail 也曾在 2007 年的时候爆出过 CSRF 漏洞，这给 Gmail 的用户造成了很大的损失。
+**CSRF（Cross Site Request Forgery）** thường được dịch là **giả mạo yêu cầu跨站 (Cross Site Request Forgery)**, thuộc lĩnh vực tấn công mạng. So với các phương thức tấn công bảo mật như SQL injection, XSS, CSRF ít được biết đến hơn. Nhưng nó thực sự là một rủi ro bảo mật mà chúng ta phải cân nhắc khi phát triển hệ thống. Ngay cả sản phẩm Gmail của Google, một hình mẫu kỹ thuật trong ngành, cũng từng bị phát hiện lỗ hổng CSRF vào năm 2007, gây tổn thất lớn cho người dùng Gmail.
 
-**那么究竟什么是跨站请求伪造呢？** 简单来说就是用你的身份去做一些不好的事情（发送一些对你不友好的请求比如恶意转账）。
+**Vậy chính xác giả mạo yêu cầu跨站 là gì?** Nói đơn giản là sử dụng danh tính của bạn để làm những việc xấu (gửi các yêu cầu không thân thiện với bạn, chẳng hạn như chuyển tiền trái phép).
 
-举个简单的例子：小壮登录了某网上银行，他来到了网上银行的帖子区，看到一个帖子下面有一个链接写着“科学理财，年盈利率过万”，小壮好奇的点开了这个链接，结果发现自己的账户少了 10000 元。这是这么回事呢？原来黑客在链接中藏了一个请求，这个请求直接利用小壮的身份给银行发送了一个转账请求，也就是通过你的 Cookie 向银行发出请求。
+Ví dụ đơn giản: Tiểu Tráng đăng nhập vào một ngân hàng trực tuyến, anh ấy vào khu vực bài đăng của ngân hàng, thấy một bài đăng có liên kết ghi "Quản lý tài chính khoa học, lợi nhuận hàng năm trên vạn", Tiểu Tráng tò mò nhấp vào liên kết này, kết quả phát hiện tài khoản của mình bị mất 10000 tệ. Chuyện gì đã xảy ra? Hóa ra hacker đã giấu một yêu cầu trong liên kết, yêu cầu này trực tiếp lợi dụng danh tính của Tiểu Tráng để gửi yêu cầu chuyển tiền đến ngân hàng, tức là thông qua Cookie của bạn để gửi yêu cầu đến ngân hàng.
 
 ```html
 <a href="http://www.mybank.com/Transfer?bankId=11&money=10000"
-  >科学理财，年盈利率过万</a
+  >Quản lý tài chính khoa học, lợi nhuận hàng năm trên vạn</a
 >
 ```
 
-传统 CSRF 攻击利用的是浏览器会自动附带身份凭据这一特性，最常见的凭据就是 Cookie 中的 `SessionID`。即使攻击者无法读取 `SessionID`，也可能诱导浏览器携带它向目标站点发出请求。
+Tấn công CSRF truyền thống lợi dụng đặc điểm trình duyệt tự động đính kèm thông tin xác thực, thông tin xác thực phổ biến nhất là `SessionID` trong Cookie. Ngay cả khi kẻ tấn công không thể đọc `SessionID`, chúng vẫn có thể dụ trình duyệt mang nó đi gửi yêu cầu đến trang đích.
 
-另外，并不是必须点击链接才可以达到攻击效果，很多时候，只要你打开了某个页面，CSRF 攻击就会发生。
+Ngoài ra, không nhất thiết phải nhấp vào liên kết mới đạt được hiệu quả tấn công, trong nhiều trường hợp, chỉ cần bạn mở một trang, tấn công CSRF đã có thể xảy ra.
 
 ```html
 <img src="http://www.mybank.com/Transfer?bankId=11&money=10000" />
 ```
 
-**那为什么使用 JWT 时经常说 CSRF 风险更低呢？**
+**Vậy tại sao khi sử dụng JWT thường nói rủi ro CSRF thấp hơn?**
 
-如果客户端将 JWT 作为 Bearer Token，显式放入 HTTP `Authorization` Header，浏览器不会像 Cookie 那样自动把它附带到跨站请求中，因此可以降低这类传统 CSRF 风险。这里起作用的是凭据的传输方式，而不是 JWT 这种数据格式本身。
+Nếu client đặt JWT làm Bearer Token, đưa nó vào HTTP `Authorization` Header một cách rõ ràng, trình duyệt sẽ không tự động đính kèm nó vào các yêu cầu跨站 như Cookie, do đó có thể giảm loại rủi ro CSRF truyền thống này. Điều phát huy tác dụng ở đây là phương thức truyền tải thông tin xác thực, chứ không phải bản thân định dạng dữ liệu JWT.
 
-不过，不能因此默认把 JWT 存进 `localStorage`。同源页面中的任意恶意脚本都可以读取 Web Storage，一处 XSS 漏洞就可能导致 access token 或 refresh token 被直接窃取。浏览器应用需要结合威胁模型选择方案，例如使用 `HttpOnly`、`Secure`、合适 `SameSite` 属性的 Cookie，或者使用 Backend For Frontend（BFF）把令牌保留在服务端。
+Tuy nhiên, không thể vì thế mà mặc định lưu JWT vào `localStorage`. Bất kỳ script độc hại nào trong cùng một trang nguồn gốc đều có thể đọc Web Storage, một lỗ hổng XSS có thể dẫn đến access token hoặc refresh token bị đánh cắp trực tiếp. Ứng dụng web cần kết hợp với mô hình mối đe dọa để chọn giải pháp, ví dụ sử dụng Cookie có thuộc tính `HttpOnly`, `Secure`, `SameSite` phù hợp, hoặc sử dụng Backend For Frontend（BFF）để giữ token ở phía server.
 
-如果使用 Cookie 保存登录凭据，就要同时做好 CSRF 防护，例如 CSRF Token、`Origin`/`Referer` 校验和 `SameSite` Cookie。`SameSite` 通常应作为纵深防御，不能在所有部署中单独替代 CSRF Token。
+Nếu sử dụng Cookie để lưu thông tin đăng nhập, thì phải đồng thời làm tốt phòng chống CSRF, ví dụ như CSRF Token, kiểm tra `Origin`/`Referer` và `SameSite` Cookie. `SameSite` thường nên được sử dụng như một lớp phòng thủ theo chiều sâu, không thể thay thế CSRF Token một cách độc lập trong tất cả các triển khai.
 
-防范 XSS 不能依赖一个通用的“可疑字符串过滤器”。更可靠的做法是在数据输出到 HTML、属性、JavaScript、CSS、URL 等不同上下文时分别进行正确编码；确实允许用户提交 HTML 时，使用持续更新的成熟 HTML 净化库；再通过 CSP 等机制提供纵深防御。
+Phòng chống XSS không thể dựa vào một "bộ lọc chuỗi đáng ngờ" chung chung. Cách làm đáng tin cậy hơn là mã hóa chính xác dữ liệu khi xuất ra các ngữ cảnh khác nhau như HTML, thuộc tính, JavaScript, CSS, URL; khi thực sự cho phép người dùng gửi HTML, sử dụng thư viện lọc HTML trưởng thành được cập nhật liên tục; sau đó cung cấp phòng thủ theo chiều sâu thông qua các cơ chế như CSP.
 
-### 适合移动端应用
+### Phù hợp với ứng dụng di động
 
-使用 Session 进行身份认证的话，需要保存一份信息在服务器端，而且这种方式会依赖到 Cookie（需要 Cookie 保存 `SessionId`），所以不适合移动端。
+Sử dụng Session để xác thực cần lưu một phần thông tin ở phía server, và phương thức này phụ thuộc vào Cookie (cần Cookie để lưu `SessionId`), nên không phù hợp với ứng dụng di động.
 
-但是，使用 JWT 进行身份认证就不会存在这种问题，因为只要 JWT 可以被客户端存储就能够使用，而且 JWT 还可以跨语言使用。
+Tuy nhiên, sử dụng JWT để xác thực sẽ không gặp vấn đề này, vì chỉ cần JWT có thể được lưu trữ ở client là có thể sử dụng, hơn nữa JWT còn có thể sử dụng跨语言.
 
-> 为什么使用 Session 进行身份认证的话不适合移动端 ？
+> Tại sao sử dụng Session để xác thực không phù hợp với ứng dụng di động?
 >
-> 1. 状态管理: Session 基于服务器端的状态管理，而移动端应用通常是无状态的。移动设备的连接可能不稳定或中断，因此难以维护长期的会话状态。如果使用 Session 进行身份认证，移动应用需要频繁地与服务器进行会话维护，增加了网络开销和复杂性;
-> 2. 兼容性: 移动端应用通常会面向多个平台，如 iOS、Android 和 Web。每个平台对于 Session 的管理和存储方式可能不同，可能导致跨平台兼容性的问题;
-> 3. 安全性: 移动设备通常处于不受信任的网络环境，存在数据泄露和攻击的风险。将敏感的会话信息存储在移动设备上增加了被攻击的潜在风险。
+> 1. Quản lý trạng thái: Session dựa trên quản lý trạng thái phía server, trong khi ứng dụng di động thường là không trạng thái. Kết nối của thiết bị di động có thể không ổn định hoặc bị gián đoạn, do đó khó duy trì trạng thái phiên dài hạn. Nếu sử dụng Session để xác thực, ứng dụng di động cần thường xuyên duy trì phiên với server, tăng chi phí mạng và độ phức tạp;
+> 2. Tính tương thích: Ứng dụng di động thường hướng đến nhiều nền tảng, như iOS, Android và Web. Mỗi nền tảng có thể có cách quản lý và lưu trữ Session khác nhau, có thể dẫn đến vấn đề tương thích跨平台;
+> 3. Bảo mật: Thiết bị di động thường ở trong môi trường mạng không đáng tin cậy, tồn tại rủi ro rò rỉ dữ liệu và tấn công. Lưu trữ thông tin phiên nhạy cảm trên thiết bị di động làm tăng rủi ro bị tấn công tiềm ẩn.
 
-### 单点登录友好
+### Thân thiện với Single Sign-On (SSO)
 
-使用 Session 进行身份认证的话，实现单点登录，需要我们把用户的 Session 信息保存在一台电脑上，并且还会遇到常见的 Cookie 跨域的问题。但是，使用 JWT 进行认证的话， JWT 被保存在客户端，不会存在这些问题。
+Sử dụng Session để xác thực, khi triển khai SSO, cần phải lưu thông tin Session của người dùng trên một máy tính, và còn gặp phải vấn đề Cookie跨域 phổ biến. Nhưng sử dụng JWT để xác thực, JWT được lưu ở client, sẽ không tồn tại những vấn đề này.
 
-## JWT 身份认证常见问题及解决办法
+## Các vấn đề thường gặp của xác thực JWT và giải pháp
 
-### 注销登录等场景下 JWT 还有效
+### JWT vẫn còn hiệu lực trong các tình huống như đăng xuất
 
-与之类似的具体相关场景有：
+Các tình huống cụ thể tương tự bao gồm:
 
-- 退出登录;
-- 修改密码;
-- 服务端修改了某个用户具有的权限或者角色；
-- 用户的帐户被封禁/删除；
-- 用户被服务端强制注销；
-- 用户被踢下线；
+- Đăng xuất (Logout);
+- Thay đổi mật khẩu;
+- Server thay đổi quyền hoặc vai trò của người dùng;
+- Tài khoản người dùng bị khóa/xóa;
+- Người dùng bị server cưỡng chế đăng xuất;
+- Người dùng bị đá khỏi hệ thống;
 - ……
 
-这个问题不存在于 Session 认证方式中，因为在 Session 认证方式中，遇到这种情况的话服务端删除对应的 Session 记录即可。但是，使用 JWT 认证的方式就不好解决了。我们也说过了，JWT 一旦派发出去，如果后端不增加其他逻辑的话，它在失效之前都是有效的。
+Vấn đề này không tồn tại trong phương thức xác thực Session, vì trong xác thực Session, khi gặp tình huống này, server chỉ cần xóa bản ghi Session tương ứng là được. Nhưng sử dụng phương thức xác thực JWT thì không dễ giải quyết. Chúng ta cũng đã nói, JWT một khi đã được phát hành, nếu backend không thêm logic khác, nó sẽ vẫn có hiệu lực cho đến khi hết hạn.
 
-那我们如何解决这个问题呢？查阅了很多资料，我简单总结了下面 4 种方案：
+Vậy làm thế nào để giải quyết vấn đề này? Sau khi tham khảo nhiều tài liệu, tôi tóm tắt 4 giải pháp sau:
 
-**1、将 JWT 存入数据库**
+**1. Lưu JWT vào cơ sở dữ liệu**
 
-将有效的 JWT 存入数据库中，更建议使用内存数据库比如 Redis。如果需要让某个 JWT 失效就直接从 Redis 中删除这个 JWT 即可。但是，这样会导致每次使用 JWT 都要先从 Redis 中查询 JWT 是否存在的步骤，而且违背了 JWT 的无状态原则。
+Lưu các JWT hợp lệ vào cơ sở dữ liệu, khuyến nghị sử dụng cơ sở dữ liệu bộ nhớ như Redis. Nếu cần làm cho một JWT hết hiệu lực, chỉ cần xóa JWT đó khỏi Redis. Tuy nhiên, cách này dẫn đến mỗi lần sử dụng JWT đều phải truy vấn Redis xem JWT có tồn tại hay không, và vi phạm nguyên tắc không trạng thái của JWT.
 
-**2、黑名单机制**
+**2. Cơ chế danh sách đen (Blacklist)**
 
-和上面的方式类似，使用内存数据库比如 Redis 维护一个黑名单，如果想让某个 JWT 失效的话就直接将这个 JWT 加入到 **黑名单** 即可。然后，每次使用 JWT 进行请求的话都会先判断这个 JWT 是否存在于黑名单中。
+Tương tự như cách trên, sử dụng cơ sở dữ liệu bộ nhớ như Redis để duy trì một danh sách đen, nếu muốn làm cho một JWT hết hiệu lực thì thêm JWT đó vào **danh sách đen** là được. Sau đó, mỗi lần sử dụng JWT để gửi yêu cầu sẽ kiểm tra xem JWT này có tồn tại trong danh sách đen trước.
 
-前两种方案的核心在于将有效的 JWT 存储起来或者将指定的 JWT 拉入黑名单。
+Hai giải pháp đầu có cốt lõi là lưu trữ các JWT hợp lệ hoặc đưa JWT được chỉ định vào danh sách đen.
 
-虽然这两种方案都违背了 JWT 的无状态原则，但是一般实际项目中我们通常还是会使用这两种方案。
+Mặc dù cả hai giải pháp này đều vi phạm nguyên tắc không trạng thái của JWT, nhưng trong các dự án thực tế chúng ta thường vẫn sử dụng chúng.
 
-**3、修改密钥 (Secret)** :
+**3. Sửa đổi khóa bí mật (Secret):**
 
-我们为每个用户都创建一个专属密钥，如果我们想让某个 JWT 失效，我们直接修改对应用户的密钥即可。但是，这样相比于前两种引入内存数据库带来了危害更大：
+Chúng ta tạo một khóa bí mật riêng cho mỗi người dùng, nếu muốn làm cho một JWT hết hiệu lực, chúng ta chỉ cần sửa đổi khóa bí mật của người dùng tương ứng. Tuy nhiên, cách này so với hai cách dùng cơ sở dữ liệu bộ nhớ ở trên mang lại tác hại lớn hơn:
 
-- 如果服务是分布式的，则每次发出新的 JWT 时都必须在多台机器同步密钥。为此，你需要将密钥存储在数据库或其他外部服务中，这样和 Session 认证就没太大区别了。
-- 如果用户同时在两个浏览器打开系统，或者在手机端也打开了系统，如果它从一个地方将账号退出，那么其他地方都要重新进行登录，这是不可取的。
+- Nếu dịch vụ là phân tán, thì mỗi lần phát hành JWT mới đều phải đồng bộ khóa bí mật trên nhiều máy. Vì vậy, bạn cần lưu khóa bí mật trong cơ sở dữ liệu hoặc dịch vụ bên ngoài khác, như vậy thì không khác gì mấy so với xác thực Session.
+- Nếu người dùng đồng thời mở hệ thống trên hai trình duyệt, hoặc cũng mở trên điện thoại, nếu họ đăng xuất từ một nơi, thì những nơi khác đều phải đăng nhập lại, điều này là không thể chấp nhận được.
 
-**4、保持令牌的有效期限短并经常轮换**
+**4. Giữ thời hạn token ngắn và thường xuyên luân chuyển**
 
-很简单的一种方式。但是，会导致用户登录状态不会被持久记录，而且需要用户经常登录。
+Một cách rất đơn giản. Tuy nhiên, sẽ dẫn đến trạng thái đăng nhập của người dùng không được ghi nhận lâu dài, và cần người dùng thường xuyên đăng nhập.
 
-另外，对于修改密码后 JWT 还有效问题的解决还是比较容易的。说一种我觉得比较好的方式：**使用用户的密码的哈希值对 JWT 进行签名。因此，如果密码更改，则任何先前的令牌将自动无法验证。**
+Ngoài ra, việc giải quyết vấn đề JWT vẫn còn hiệu lực sau khi đổi mật khẩu thì tương đối dễ dàng. Một cách mà tôi cho là tốt: **Sử dụng giá trị hash của mật khẩu người dùng để ký JWT. Do đó, nếu mật khẩu thay đổi, bất kỳ token nào trước đó sẽ tự động không thể xác minh.**
 
-### JWT 的续签问题
+### Vấn đề gia hạn JWT
 
-JWT 有效期一般都建议设置的不太长，那么 JWT 过期后如何认证，如何实现动态刷新 JWT，避免用户经常需要重新登录？
+Thời hạn hiệu lực của JWT thường được khuyến nghị đặt không quá dài, vậy sau khi JWT hết hạn thì xác thực như thế nào, làm sao để triển khai làm mới JWT động, tránh việc người dùng phải thường xuyên đăng nhập lại?
 
-我们先来看看在 Session 认证中一般的做法：**假如 Session 的有效期 30 分钟，如果 30 分钟内用户有访问，就把 Session 有效期延长 30 分钟。**
+Trước tiên hãy xem cách làm thông thường trong xác thực Session: **Giả sử thời hạn Session là 30 phút, nếu trong 30 phút người dùng có truy cập, thì kéo dài thời hạn Session thêm 30 phút.**
 
-JWT 认证的话，我们应该如何解决续签问题呢？查阅了很多资料，我简单总结了下面 4 种方案：
+Với xác thực JWT, chúng ta nên giải quyết vấn đề gia hạn như thế nào? Sau khi tham khảo nhiều tài liệu, tôi tóm tắt 4 giải pháp sau:
 
-**1、类似于 Session 认证中的做法（不推荐）**
+**1. Tương tự như cách làm trong xác thực Session (không khuyến nghị)**
 
-这种方案满足于大部分场景。假设服务端给的 JWT 有效期设置为 30 分钟，服务端每次进行校验时，如果发现 JWT 的有效期马上快过期了，服务端就重新生成 JWT 给客户端。客户端每次请求都检查新旧 JWT，如果不一致，则更新本地的 JWT。这种做法的问题是仅仅在快过期的时候请求才会更新 JWT ，对客户端不是很友好。
+Giải pháp này phù hợp với phần lớn tình huống. Giả sử server đặt thời hạn JWT là 30 phút, mỗi lần server kiểm tra, nếu phát hiện thời hạn JWT sắp hết, server sẽ tạo lại JWT mới cho client. Client mỗi lần gửi yêu cầu đều kiểm tra JWT cũ và mới, nếu không khớp thì cập nhật JWT cục bộ. Vấn đề của cách này là chỉ khi sắp hết hạn mới cập nhật JWT, không thân thiện với client.
 
-**2、每次请求都返回新 JWT（不推荐）**
+**2. Mỗi lần gửi yêu cầu đều trả về JWT mới (không khuyến nghị)**
 
-这种方案的思路很简单，但是，开销会比较大，尤其是在服务端要存储维护 JWT 的情况下。
+Ý tưởng của giải pháp này rất đơn giản, nhưng chi phí sẽ khá lớn, đặc biệt là khi server phải lưu trữ và duy trì JWT.
 
-**3、JWT 有效期设置到半夜（不推荐）**
+**3. Đặt thời hạn JWT đến nửa đêm (không khuyến nghị)**
 
-这种方案是一种折衷的方案，保证了大部分用户白天可以正常登录，适用于对安全性要求不高的系统。
+Giải pháp này là một cách thỏa hiệp, đảm bảo phần lớn người dùng ban ngày có thể đăng nhập bình thường, phù hợp với các hệ thống có yêu cầu bảo mật không cao.
 
-**4、使用短期访问令牌和长期刷新令牌（推荐）**
+**4. Sử dụng Access Token ngắn hạn và Refresh Token dài hạn (khuyến nghị)**
 
-第一个是短期的 access token，例如半个小时后过期；另一个是生命周期更长的 refresh token，只用于获取新的 access token。两者不一定都要使用 JWT 格式。refresh token 权限高、存活时间长，是攻击者重点窃取的凭据，不能因为它使用频率低就认为“不容易泄露”。
+Thứ nhất là access token ngắn hạn, ví dụ hết hạn sau nửa giờ; thứ hai là refresh token có vòng đời dài hơn, chỉ dùng để lấy access token mới. Cả hai không nhất thiết phải sử dụng định dạng JWT. Refresh token có quyền cao, thời gian tồn tại dài, là thông tin xác thực mà kẻ tấn công nhắm đến để đánh cắp, không thể vì tần suất sử dụng thấp mà cho rằng "khó bị rò rỉ".
 
-客户端登录后，每次访问携带 access token。access token 过期后，客户端通过受保护的 refresh token 换取新的 access token。浏览器应用不应默认把 refresh token 放进 `localStorage`，可以通过 BFF 或受保护的 Cookie 降低令牌被脚本直接读取的风险。
+Sau khi client đăng nhập, mỗi lần truy cập mang theo access token. Khi access token hết hạn, client thông qua refresh token được bảo vệ để đổi lấy access token mới. Ứng dụng trình duyệt không nên mặc định đặt refresh token vào `localStorage`, có thể thông qua BFF hoặc Cookie được bảo vệ để giảm rủi ro token bị script đọc trực tiếp.
 
-这种方案的不足是：
+Nhược điểm của giải pháp này là:
 
-- 需要客户端来配合；
-- 用户注销、修改密码或发生其他安全事件时，需要撤销相应的刷新授权；
-- 重新请求获取 JWT 的过程中会有短暂 JWT 不可用的情况（可以通过在客户端设置定时器，当 accessJWT 快过期的时候，提前去通过 refreshJWT 获取新的 accessJWT）;
-- 对公共客户端，授权服务器需要使用刷新令牌轮换并检测旧令牌重放，或者使用发送者约束的刷新令牌。刷新令牌还应绑定客户端、授权范围和资源服务器，并设置闲置过期时间。
+- Cần client phối hợp;
+- Khi người dùng đăng xuất, đổi mật khẩu hoặc xảy ra các sự kiện bảo mật khác, cần thu hồi ủy quyền làm mới tương ứng;
+- Trong quá trình yêu cầu lại JWT sẽ có khoảng thời gian ngắn JWT không khả dụng (có thể giải quyết bằng cách đặt bộ hẹn giờ ở client, khi access JWT sắp hết hạn, chủ động dùng refresh JWT để lấy access JWT mới trước);
+- Đối với public client, authorization server cần sử dụng luân chuyển refresh token và phát hiện replay token cũ, hoặc sử dụng refresh token ràng buộc người gửi (sender-constrained). Refresh token cũng nên được ràng buộc với client, phạm vi ủy quyền và resource server, đồng thời đặt thời gian hết hạn không hoạt động (idle expiration).
 
-### JWT 体积太大
+### Kích thước JWT quá lớn
 
-JWT 结构复杂（Header、Payload 和 Signature），包含了更多额外的信息，还需要进行 Base64Url 编码，这会使得 JWT 体积较大，增加了网络传输的开销。
+JWT có cấu trúc phức tạp (Header, Payload và Signature), chứa nhiều thông tin bổ sung hơn, còn phải mã hóa Base64Url, điều này làm cho JWT có kích thước lớn, tăng chi phí truyền tải mạng.
 
-JWT 组成:
+Cấu trúc JWT:
 
 ![JWT 组成](https://oss.javaguide.cn/javaguide/system-design/jwt/jwt-composition.png)
 
-JWT 示例：
+Ví dụ JWT：
 
 ```plain
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
@@ -168,21 +168,21 @@ eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
 SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
 ```
 
-解决办法：
+Giải pháp:
 
-- 尽量减少 JWT Payload（载荷）中的信息，只保留必要的用户和权限信息。
-- 在传输 JWT 之前，使用压缩算法（如 GZIP）对 JWT 进行压缩以减少体积。
-- 在某些情况下，使用传统的 Token 可能更合适。传统的 Token 通常只是一个唯一标识符，对应的信息（例如用户 ID、Token 过期时间、权限信息）存储在服务端，通常会通过 Redis 保存。
+- Giảm thiểu thông tin trong JWT Payload, chỉ giữ lại thông tin người dùng và quyền cần thiết.
+- Trước khi truyền JWT, sử dụng thuật toán nén (như GZIP) để nén JWT nhằm giảm kích thước.
+- Trong một số trường hợp, sử dụng Token truyền thống có thể phù hợp hơn. Token truyền thống thường chỉ là một định danh duy nhất, thông tin tương ứng (ví dụ User ID, thời gian hết hạn Token, thông tin quyền) được lưu ở phía server, thường lưu qua Redis.
 
-## 总结
+## Tổng kết
 
-JWT 其中一个很重要的优势是无状态，但实际上，我们想要在实际项目中合理使用 JWT 做认证登录的话，也还是需要保存 JWT 信息。
+Một ưu điểm rất quan trọng của JWT là không trạng thái, nhưng trên thực tế, nếu chúng ta muốn sử dụng JWT hợp lý trong dự án thực tế để làm xác thực đăng nhập, thì vẫn cần lưu trữ thông tin JWT.
 
-JWT 也不是银弹，也有很多缺陷，具体是选择 JWT 还是 Session 方案还是要看项目的具体需求。万万不可尬吹 JWT，而看不起其他身份认证方案。
+JWT cũng không phải là viên đạn bạc, có nhiều khiếm khuyết, việc chọn JWT hay Session cụ thể còn phải xem nhu cầu thực tế của dự án. Tuyệt đối không nên thổi phồng JWT mà coi thường các giải pháp xác thực khác.
 
-另外，不用 JWT 直接使用普通的 Token(随机生成的 ID，不包含具体的信息) 结合 Redis 来做身份认证也是可以的。
+Ngoài ra, không dùng JWT mà sử dụng trực tiếp Token thông thường (ID được tạo ngẫu nhiên, không chứa thông tin cụ thể) kết hợp với Redis để làm xác thực cũng là một lựa chọn khả thi.
 
-## 参考
+## Tham khảo
 
 - RFC 9700 - Best Current Practice for OAuth 2.0 Security：<https://www.rfc-editor.org/rfc/rfc9700.html>
 - OWASP Session Management Cheat Sheet：<https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html>

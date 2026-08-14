@@ -1,6 +1,6 @@
 ---
-title: 如何高效准备Java面试？
-description: 如何高效准备Java面试：从求职导向学习、技能清单制定到简历优化与面试冲刺，提供系统化备战方法，帮助你少走弯路、提高面试通过率。
+title: Làm thế nào để chuẩn bị phỏng vấn Java hiệu quả?
+description: "Làm thế nào để chuẩn bị phỏng vấn Java hiệu quả: từ học tập theo định hướng tìm việc, xây dựng danh sách kỹ năng đến tối ưu CV và nước rút phỏng vấn, cung cấp phương pháp chuẩn bị có hệ thống, giúp bạn đi đường tắt ít hơn và nâng cao tỷ lệ vượt qua phỏng vấn."
 category: 知识星球
 icon: "mdi:map-marker-path"
 head:
@@ -9,204 +9,204 @@ head:
       content: Java面试准备,高效备战面试,求职导向学习,面试冲刺,简历优化,项目准备,校招,Java后端
 ---
 
-::: tip 友情提示
-本文节选自 **[《Java 面试指北》](../zhuanlan/java-mian-shi-zhi-bei.md)**。这是一份教你如何更高效地准备面试的专栏，内容和 JavaGuide 互补，涵盖常见八股文（系统设计、常见框架、分布式、高并发 ……）、优质面经等内容。
+::: tip Gợi ý thân thiện
+Bài viết này được trích từ **[《Java Interview Guide》](../zhuanlan/java-mian-shi-zhi-bei.md)**. Đây là một chuyên mục hướng dẫn bạn cách chuẩn bị phỏng vấn hiệu quả hơn, nội dung bổ trợ cho JavaGuide, bao gồm các câu hỏi phỏng vấn phổ biến (system design, các framework thường dùng, hệ thống phân tán, high concurrency...), kinh nghiệm phỏng vấn chất lượng và nhiều nội dung khác.
 :::
 
-你身边是否有这样的朋友：编程能力比你强，求职结果却不如你？其实**技术好≠面试能过** —— 如今的面试早已不是 “会写代码就行”，不做准备就去面，大概率是 “撞枪口”。
+Xung quanh bạn có người bạn nào như thế này không: năng lực lập trình tốt hơn bạn, nhưng kết quả tìm việc lại không bằng bạn? Thực ra **giỏi kỹ thuật không đồng nghĩa với vượt qua phỏng vấn** — phỏng vấn ngày nay không còn là "biết viết code là được", không chuẩn bị mà đi phỏng vấn, khả năng cao là "đâm đầu vào họng súng".
 
-我们大多是普通开发者，没有顶会论文或竞赛大奖加持，面对 “面试造火箭，工作拧螺丝钉” 的常态，只能靠扎实准备突围。但准备面试不等于耍小聪明或者死记硬背面试题。 **一定不要对面试抱有侥幸心理。打铁还需自身硬！** 千万不要觉得自己看几篇面经，看几篇面试题解析就能通过面试了。一定要静下心来深入学习！
+Chúng ta phần lớn là những lập trình viên bình thường, không có bài báo hội nghị top hay giải thưởng cuộc thi lớn làm điểm cộng, đối mặt với thực tế "phỏng vấn thì chế tạo tên lửa, đi làm thì vặn ốc vít", chỉ có thể dựa vào sự chuẩn bị vững chắc để đột phá. Nhưng chuẩn bị phỏng vấn không có nghĩa là chơi khôn hay học thuộc lòng đáp án phỏng vấn. **Nhất định đừng có tâm lý may rủi với phỏng vấn. Rèn sắt phải khi còn nóng!** Tuyệt đối đừng nghĩ rằng xem vài bài kinh nghiệm phỏng vấn, vài bài phân tích câu hỏi phỏng vấn là có thể vượt qua phỏng vấn. Phải thực sự tĩnh tâm học sâu!
 
-这篇文章就从宏观视角，带你搞懂程序员该如何系统准备面试：从求职导向学习，到简历优化、面试冲刺，帮你少走弯路，高效拿下心仪 offer。
+Bài viết này sẽ từ góc nhìn vĩ mô, giúp bạn hiểu rõ lập trình viên nên chuẩn bị phỏng vấn có hệ thống như thế nào: từ học tập theo định hướng tìm việc, đến tối ưu CV, nước rút phỏng vấn, giúp bạn đi đường tắt ít hơn, hiệu quả giành lấy offer mong muốn.
 
-## 尽早以求职为导向来学习
+## Học tập theo định hướng tìm việc càng sớm càng tốt
 
-我是比较建议还在学校的同学尽可能早一点以求职为导向来学习的。
+Mình khá khuyên các bạn còn đang đi học nên bắt đầu học tập theo định hướng tìm việc càng sớm càng tốt.
 
-**这样更有针对性，并且可以大概率减少自己处在迷茫的时间，很大程度上还可以让自己少走很多弯路。**
+**Làm như vậy sẽ có tính mục tiêu cao hơn, đồng thời có thể giảm đáng kể thời gian mơ hồ không biết làm gì, ở mức độ lớn còn giúp bạn tránh được nhiều đường vòng.**
 
-但是！不要把“以求职为导向学习”理解为“我就不用学课堂上那些计算机基础课程了”！
+Nhưng mà! Đừng hiểu "học tập theo định hướng tìm việc" thành "vậy thì mình không cần học mấy môn cơ bản máy tính trên lớp nữa"!
 
-我在之前的很多次分享中都强调过：**一定要用心学习计算机基础知识！操作系统、计算机组成原理、计算机网络真的不是没有实际用处的学科！！！**
+Trong rất nhiều lần chia sẻ trước đây mình đều nhấn mạnh: **Nhất định phải học thật chăm chỉ kiến thức cơ bản máy tính! Hệ điều hành, Nguyên lý tổ chức máy tính, Mạng máy tính thực sự không phải là những môn học vô ích!!!**
 
-你会发现大厂面试你会用到，以后工作之后你也会用到。我分别列举 2 个例子吧！
+Bạn sẽ thấy phỏng vấn ở công ty lớn sẽ dùng đến, sau này đi làm cũng sẽ dùng đến. Mình liệt kê 2 ví dụ nhé!
 
-- **面试中**：像字节、腾讯这些大厂的技术面试以及几乎所有公司的笔试都会考操作系统相关的问题。
-- **工作中**：在实际使用缓存的时候，软件层次而言的缓存思想，则是源自数据库速度、Redis（内存中间件）速度、本地内存速度之间的不匹配；而在计算机存储层次结构设计中，我们也能发现同样的问题及缓存思想的使用：内存用于解决磁盘访问速度过慢的问题，CPU 用三级缓存缓解寄存器和内存之间的速度差异。它们面临的都是同一个问题（速度不匹配）和同一个思想，那么计算机先驱者在存储层次结构设计上对缓存性能的优化措施，同样也适用于软件层次缓存的性能优化。
+- **Trong phỏng vấn**: Những công ty lớn như ByteDance, Tencent trong phỏng vấn kỹ thuật và hầu như tất cả các bài kiểm tra viết của các công ty đều có câu hỏi liên quan đến hệ điều hành.
+- **Trong công việc**: Khi thực tế sử dụng cache, tư tưởng cache ở cấp độ phần mềm thực chất bắt nguồn từ sự không khớp tốc độ giữa database, Redis (middleware in-memory) và bộ nhớ cục bộ; còn trong thiết kế phân cấp lưu trữ máy tính, chúng ta cũng có thể phát hiện cùng một vấn đề và tư tưởng cache: bộ nhớ được dùng để giải quyết vấn đề tốc độ truy cập đĩa quá chậm, CPU dùng ba cấp cache để giảm sự chênh lệch tốc độ giữa thanh ghi và bộ nhớ. Chúng đều đối mặt với cùng một vấn đề (không khớp tốc độ) và cùng một tư tưởng, vậy thì những biện pháp tối ưu hiệu năng cache mà các nhà tiên phong máy tính đã áp dụng trong thiết kế phân cấp lưu trữ, cũng có thể áp dụng cho tối ưu hiệu năng cache ở cấp độ phần mềm.
 
-**如何求职为导向学习呢？** 简答来说就是：根据招聘要求整理一份目标岗位的技能清单，然后按照技能清单去学习和提升。
+**Học tập theo định hướng tìm việc là như thế nào?** Nói ngắn gọn là: dựa trên yêu cầu tuyển dụng để tổng hợp một danh sách kỹ năng cho vị trí mục tiêu, sau đó học tập và nâng cao theo danh sách kỹ năng đó.
 
-1. 你首先搞清楚自己要找什么工作
-2. 然后根据招聘岗位的要求梳理一份技能清单
-3. 根据技能清单写好最终的简历
-4. 最后再按照简历的要求去学习和提升。
+1. Trước tiên bạn phải làm rõ mình muốn tìm công việc gì
+2. Sau đó dựa trên yêu cầu của vị trí tuyển dụng để tổng hợp một danh sách kỹ năng
+3. Dựa trên danh sách kỹ năng để viết CV cuối cùng
+4. Cuối cùng lại dựa theo yêu cầu của CV để học tập và nâng cao.
 
-这其实也是 **以终为始** 思想的运用。
+Đây thực chất cũng chính là ứng dụng của tư tưởng **bắt đầu từ kết quả cuối cùng (Begin with the End in Mind)**.
 
-**何为以终为始？** 简单来说，以终为始就是我们可以站在结果来考虑问题，从结果出发，根据结果来确定自己要做的事情。
+**Begin with the End in Mind là gì?** Nói đơn giản, Begin with the End in Mind nghĩa là chúng ta có thể đứng từ kết quả để suy nghĩ vấn đề, xuất phát từ kết quả, dựa trên kết quả để xác định những việc mình cần làm.
 
-你会发现，其实几乎任何领域都可以用到 **以终为始** 的思想。
+Bạn sẽ phát hiện ra, thực ra hầu như bất kỳ lĩnh vực nào cũng có thể áp dụng tư tưởng **Begin with the End in Mind**.
 
-## 了解投递简历的黄金时间
+## Hiểu rõ thời điểm vàng để gửi CV
 
-面试之前，你肯定是先要搞清楚春招和秋招的具体时间的。
+Trước khi phỏng vấn, bạn chắc chắn phải nắm rõ thời gian cụ thể của đợt tuyển dụng mùa xuân và mùa thu.
 
-正所谓金三银四，金九银十，错过了这个时间，很多公司都没有 HC 了。
+Người ta thường nói "tháng 3 tháng 4 vàng, tháng 9 tháng 10 bạc", bỏ lỡ khoảng thời gian này, nhiều công ty sẽ không còn headcount (HC) nữa.
 
-**秋招一般 7 月份就开始了，大概一直持续到 9 月底。**
+**Đợt tuyển dụng mùa thu thường bắt đầu từ tháng 7, kéo dài đến khoảng cuối tháng 9.**
 
-**春招一般 3 月份就开始了，大概一直持续到 4 月底。**
+**Đợt tuyển dụng mùa xuân thường bắt đầu từ tháng 3, kéo dài đến khoảng cuối tháng 4.**
 
-很多公司（尤其大厂）到了 9 月中旬(秋招)/3 月中旬（春招），很可能就会没有 HC 了。面试的话一般都是至少是 3 轮起步，一些大厂比如阿里、字节可能会有 5 轮面试。**面试失败话的不要紧，某一面表现差的话也不要紧，调整好心态。又不是单一选择对吧？你能投这么多企业呢! 调整心态。** 今年面试的话，因为疫情原因，有些公司还是可能会还是集中在线上进行面试。然后，还是因为疫情的影响，可能会比往年更难找工作（对大厂影响较小）。
+Rất nhiều công ty (đặc biệt là công ty lớn) đến giữa tháng 9 (tuyển dụng mùa thu) / giữa tháng 3 (tuyển dụng mùa xuân), rất có thể sẽ không còn HC nữa. Phỏng vấn thường ít nhất là 3 vòng trở lên, một số công ty lớn như Alibaba, ByteDance có thể có tới 5 vòng phỏng vấn. **Đừng lo nếu phỏng vấn trượt, cũng đừng lo nếu thể hiện không tốt ở một vòng nào đó, hãy điều chỉnh tâm lý cho tốt. Có phải chỉ có một lựa chọn duy nhất đâu đúng không? Bạn có thể ứng tuyển bao nhiêu công ty cơ mà! Điều chỉnh tâm lý đi.** Năm nay phỏng vấn, do ảnh hưởng của dịch bệnh, một số công ty vẫn có thể tập trung phỏng vấn trực tuyến. Và cũng do ảnh hưởng của dịch bệnh, có thể sẽ khó tìm việc hơn các năm trước (ảnh hưởng đến các công ty lớn ít hơn).
 
-## 知道如何获取招聘信息
+## Biết cách lấy thông tin tuyển dụng
 
-下面是常见的获取招聘信息的渠道：
+Dưới đây là các kênh phổ biến để lấy thông tin tuyển dụng:
 
-- **目标企业的官网/公众号**：最及时最权威的获取招聘信息的途径。
-- **招聘网站**：[BOSS 直聘](https://www.zhipin.com/)、[智联招聘](https://www.zhaopin.com/)、[拉勾招聘](https://www.lagou.com/)……。
-- **牛客网**：每年秋招/春招，都会有大批量的公司会到牛客网发布招聘信息，并且还会有大量的公司员工来到这里发内推的帖子。地址：<https://www.nowcoder.com/jobs/recommend/campus> 。
-- **超级简历**：超级简历目前整合了各大企业的校园招聘入口，地址：<https://www.wondercv.com/jobs/。如果你是校招的话，点击“校招网申”就可以直接跳转到各大企业的校园招聘入口的整合页面了。>
-- **认识的朋友**：如果你有认识的朋友在目标企业工作的话，你也可以找他们了解招聘信息，并且可以让他们帮你内推。
-- **宣讲会**：宣讲会也是一个不错的途径，不过，好的企业通常只会去比较好的学校，可以留意一下意向公司的宣讲会安排或者直接去到一所比较好的学校参加宣讲会。像我当时校招就去参加了几场宣讲会。不过，我是在荆州上学，那边没什么比较好的学校，一般没有公司去开宣讲会。所以，我当时是直接跑到武汉来了，参加了武汉理工大学以及华中科技大学的几场宣讲会。总体感觉还是很不错的！
-- **其他**：校园就业信息网、学校论坛、班级 or 年级 QQ 群。
+- **Website/Official Account chính thức của công ty mục tiêu**: Con đường lấy thông tin tuyển dụng kịp thời và uy tín nhất.
+- **Website tuyển dụng**: [BOSS直聘](https://www.zhipin.com/), [智联招聘](https://www.zhaopin.com/), [拉勾招聘](https://www.lagou.com/)...
+- **Nowcoder (牛客网)**: Mỗi đợt tuyển dụng mùa thu/mùa xuân, đều có rất nhiều công ty đăng thông tin tuyển dụng lên Nowcoder, và còn có rất nhiều nhân viên công ty lên đây đăng bài giới thiệu nội bộ (internal referral). Địa chỉ: <https://www.nowcoder.com/jobs/recommend/campus> .
+- **WonderCV (超级简历)**: WonderCV hiện đã tổng hợp cổng tuyển dụng campus của các doanh nghiệp lớn, địa chỉ: <https://www.wondercv.com/jobs/>. Nếu bạn là tuyển dụng campus, nhấp vào "校招网申" (Ứng tuyển trực tuyến campus) là có thể chuyển trực tiếp đến trang tổng hợp cổng tuyển dụng campus của các doanh nghiệp lớn.
+- **Bạn bè quen biết**: Nếu bạn có bạn bè quen biết đang làm việc tại công ty mục tiêu, bạn cũng có thể nhờ họ tìm hiểu thông tin tuyển dụng và nhờ họ giới thiệu nội bộ cho bạn.
+- **Buổi giới thiệu tuyển dụng (宣讲会)**: Buổi giới thiệu tuyển dụng cũng là một kênh khá tốt, tuy nhiên, các công ty tốt thường chỉ đến các trường tốt, bạn có thể để ý lịch trình buổi giới thiệu của công ty mình quan tâm hoặc trực tiếp đến một trường tốt để tham dự. Như hồi đó mình đi tuyển dụng campus cũng đã tham gia mấy buổi giới thiệu. Có điều, lúc đó mình học ở Kinh Châu, ở đó không có trường nào tốt lắm, thường không có công ty đến mở buổi giới thiệu. Vì vậy, lúc đó mình đã trực tiếp chạy lên Vũ Hán, tham gia mấy buổi giới thiệu ở Đại học Công nghệ Vũ Hán và Đại học Khoa học Công nghệ Hoa Trung. Cảm giác tổng thể vẫn rất tốt!
+- **Khác**: Website thông tin việc làm của trường, diễn đàn trường, nhóm QQ lớp hoặc khóa.
 
-校招的话，建议以官网为准，有宣讲会的话更好。社招的话，可以多留意一下各大招聘网站比如 BOSS 直聘、拉勾上的职位信息。
+Tuyển dụng campus thì nên lấy website chính thức làm chuẩn, có buổi giới thiệu tuyển dụng thì càng tốt. Tuyển dụng social recruitment thì có thể để ý nhiều hơn đến các website tuyển dụng lớn như BOSS直聘, 拉勾.
 
-不论校招和社招，如果能找到比较靠谱的内推机会的话，获得面试的机会的概率还是非常大的。而且，你可以让内推你的人定向地给你一些建议。找内推的方式有很多，首选比较熟悉的朋友、同学，还可以留意技术交流社区和公众号上的内推信息。
+Dù là tuyển dụng campus hay social recruitment, nếu tìm được cơ hội internal referral đáng tin cậy, xác suất có được cơ hội phỏng vấn là rất lớn. Hơn nữa, bạn có thể nhờ người giới thiệu đưa ra những lời khuyên định hướng cho bạn. Có nhiều cách tìm internal referral, ưu tiên hàng đầu là bạn bè, bạn học quen biết, ngoài ra còn có thể để ý thông tin internal referral trên các cộng đồng trao đổi kỹ thuật và official account.
 
-一般是只能投递一个岗位，不过，也有极少数投递不同部门两个岗位的情况，这个应该不会有影响，但你的前一次面试情况可能会被记录，也就是说就算你投递成功两个岗位，第一个岗位面试失败的话，对第二个岗位也会有影响，很可能直接就被 pass。
+Thông thường chỉ được ứng tuyển một vị trí, tuy nhiên, cũng có rất ít trường hợp ứng tuyển hai vị trí ở các bộ phận khác nhau, việc này có lẽ không ảnh hưởng gì, nhưng tình hình phỏng vấn lần trước của bạn có thể sẽ bị ghi lại, nghĩa là dù bạn ứng tuyển thành công hai vị trí, nếu vị trí đầu tiên phỏng vấn trượt, thì cũng sẽ ảnh hưởng đến vị trí thứ hai, rất có thể trực tiếp bị loại luôn.
 
-## 多花点时间完善简历
+## Dành nhiều thời gian hơn để hoàn thiện CV
 
-一定一定一定要重视简历啊！朋友们！至少要花 2~3 天时间来专门完善自己的简历。
+Nhất định nhất định nhất định phải coi trọng CV đấy nhé các bạn! Ít nhất phải dành ra 2~3 ngày để chuyên tâm hoàn thiện CV của mình.
 
-最近看了很多份简历，满意的很少，我简单拿出一份来说分析一下（欢迎在评论区补充）。
+Gần đây mình đã xem rất nhiều CV, rất ít CV làm mình hài lòng, mình lấy một bản ra phân tích đơn giản nhé (hoan nghênh bổ sung trong phần bình luận).
 
-**1.个人介绍没太多实用的信息。**
+**1. Phần giới thiệu cá nhân không có nhiều thông tin hữu ích.**
 
 ![](https://oss.javaguide.cn/github/javaguide/interview-preparation/format,png.png)
 
-技术博客、GitHub 以及在校获奖经历的话，能写就尽量写在这里。 你可以参考下面 👇 的模板进行修改：
+Blog kỹ thuật, GitHub và thành tích đạt giải ở trường, nếu có thì nên viết hết vào đây. Bạn có thể tham khảo mẫu dưới đây 👇 để chỉnh sửa:
 
 ![](https://oss.javaguide.cn/github/javaguide/interview-preparation/format,png-20230309224235808.png)
 
-**2.项目经历过于简单，完全没有质量可言**
+**2. Kinh nghiệm dự án quá sơ sài, hoàn toàn không có chất lượng**
 
 ![](https://oss.javaguide.cn/github/javaguide/interview-preparation/format,png-20230309224240305.png)
 
-每一个项目经历真的就一两句话可以描述了么？还是自己不想写？还是说不是自己做的，不敢多写。
+Mỗi kinh nghiệm dự án thực sự chỉ có thể mô tả bằng một hai câu sao? Hay là bản thân không muốn viết? Hay là không phải do mình làm, không dám viết nhiều.
 
-如果有项目的话，技术面试第一步，面试官一般都是让你自己介绍一下你的项目。你可以从下面几个方向来考虑：
+Nếu có dự án, bước đầu tiên trong phỏng vấn kỹ thuật, người phỏng vấn thường sẽ để bạn tự giới thiệu về dự án của mình. Bạn có thể suy nghĩ từ các hướng sau:
 
-1. 你对项目整体设计的一个感受（面试官可能会让你画系统的架构图）
-2. 你在这个项目中你负责了什么、做了什么、担任了什么角色。
-3. 从这个项目中你学会了那些东西，使用到了那些技术，学会了那些新技术的使用。
-4. 你在这个项目中是否解决过什么问题？怎么解决的？收获了什么？
-5. 你的项目用到了哪些技术？这些技术你吃透了没有？举个例子，你的项目经历使用了 Seata 来做分布式事务，那 Seata 相关的问题你要提前准备一下吧，比如说 Seata 支持哪些配置中心、Seata 的事务分组是怎么做的、Seata 支持哪些事务模式，怎么选择？
-6. 你在这个项目中犯过的错误，最后是怎么弥补的？
+1. Cảm nhận của bạn về thiết kế tổng thể của dự án (người phỏng vấn có thể yêu cầu bạn vẽ sơ đồ kiến trúc hệ thống)
+2. Trong dự án này bạn đã phụ trách những gì, đã làm những gì, đảm nhiệm vai trò gì.
+3. Từ dự án này bạn đã học được những gì, đã sử dụng những công nghệ gì, đã học được cách sử dụng những công nghệ mới nào.
+4. Trong dự án này bạn đã từng giải quyết vấn đề gì chưa? Giải quyết như thế nào? Thu hoạch được gì?
+5. Dự án của bạn đã sử dụng những công nghệ gì? Bạn đã nắm vững những công nghệ này chưa? Ví dụ, dự án của bạn sử dụng Seata để làm distributed transaction, vậy thì bạn nên chuẩn bị trước các câu hỏi liên quan đến Seata, ví dụ như Seata hỗ trợ những configuration center nào, transaction grouping của Seata hoạt động như thế nào, Seata hỗ trợ những transaction mode nào, lựa chọn ra sao?
+6. Những sai lầm bạn đã mắc phải trong dự án này, cuối cùng đã khắc phục như thế nào?
 
-**3.计算机二级这个证书对于计算机专业完全不用写了，没有含金量的。**
+**3. Chứng chỉ Computer Level 2 (计算机二级) đối với ngành Khoa học Máy tính thì hoàn toàn không cần viết, không có giá trị gì hết.**
 
 ![](https://oss.javaguide.cn/github/javaguide/interview-preparation/format,png-20230309224247261.png)
 
-**4.技能介绍问题太大。**
+**4. Vấn đề về phần giới thiệu kỹ năng khá lớn.**
 
 ![](https://oss.javaguide.cn/github/javaguide/interview-preparation/93da1096fb02e19071ba13b4f6a7471c.png)
 
-- 技术名词最好规范大小写比较好，比如 java->Java ，spring boot -> Spring Boot 。这个虽然有些面试官不会介意，但是很多面试官都会在意这个细节的。
-- 技能介绍太杂，没有亮点。不需要全才，某个领域做得好就行了！
-- 对 Java 后台开发的部分技能比如 Spring Boot 的熟悉度仅仅为了解，无法满足企业的要求。
+- Tên công nghệ tốt nhất nên viết đúng quy tắc chữ hoa chữ thường, ví dụ java->Java, spring boot -> Spring Boot. Điều này tuy một số người phỏng vấn không để ý, nhưng rất nhiều người phỏng vấn sẽ để ý đến chi tiết này.
+- Phần giới thiệu kỹ năng quá tạp nham, không có điểm nổi bật. Không cần phải là người toàn tài, chỉ cần làm tốt một lĩnh vực nào đó là được!
+- Mức độ thành thạo đối với một số kỹ năng phát triển Java Backend như Spring Boot chỉ ở mức "biết sơ", không đáp ứng được yêu cầu của doanh nghiệp.
 
-详细的程序员简历编写指南请参考：[程序员简历到底该怎么写？](https://javaguide.cn/interview-preparation/resume-guide.html)。
+Hướng dẫn chi tiết về cách viết CV cho lập trình viên vui lòng tham khảo: [Rốt cuộc CV lập trình viên nên viết như thế nào?](https://javaguide.cn/interview-preparation/resume-guide.html).
 
-## 岗位匹配度很重要
+## Mức độ phù hợp với vị trí rất quan trọng
 
-校招通常会对你的项目经历的研究方向比较宽容，即使你的项目经历和对应公司的具体业务没有关系，影响其实也并不大。
+Tuyển dụng campus thường khá khoan dung với hướng nghiên cứu trong kinh nghiệm dự án của bạn, ngay cả khi kinh nghiệm dự án của bạn không liên quan đến nghiệp vụ cụ thể của công ty, ảnh hưởng thực ra cũng không lớn.
 
-社招的话就不一样了，毕竟公司是要招聘可以直接来干活的人，你有相关的经验，公司会比较省事。社招通常会比较重视你的过往工作经历以及项目经历，HR 在筛选简历的时候会根据这两方面信息来判断你是否满足他们的招聘要求。就比如说你投递电商公司，而你之前的并没有和电商相关的工作经历以及项目经历，那 HR 在筛简历的时候很可能会直接把你 Pass 掉。
+Tuyển dụng social recruitment thì khác, dù sao công ty cũng muốn tuyển người có thể vào làm việc ngay, bạn có kinh nghiệm liên quan thì công ty sẽ đỡ vất vả hơn. Social recruitment thường coi trọng hơn kinh nghiệm làm việc trước đây và kinh nghiệm dự án của bạn, HR khi sàng lọc CV sẽ dựa trên hai mặt thông tin này để phán đoán bạn có đáp ứng yêu cầu tuyển dụng của họ hay không. Ví dụ bạn ứng tuyển vào công ty thương mại điện tử, mà trước đây bạn không có kinh nghiệm làm việc và kinh nghiệm dự án liên quan đến thương mại điện tử, vậy thì HR khi sàng lọc CV rất có thể sẽ trực tiếp loại bạn.
 
-不过，这个也并不绝对，也有一些公司在招聘的时候更看重的是你的过往经历，较少地关注岗位匹配度，优秀公司的工作经历以及有亮点的项目经验都是加分项。这类公司相信你既然在某个领域（比如电商、支付）已经做的不错了，那应该也可以在另外一个领域（比如流媒体平台、社交软件）很快成为专家。这个领域指的不是技术领域，更多的是业务方向。横跨技术领域（比如后端转算法、后端转大数据）找工作，你又没有相关的经验，几乎是没办法找到的。即使找到了，也大概率会面临 HR 压薪资的问题。
+Tuy nhiên, điều này cũng không tuyệt đối, cũng có một số công ty khi tuyển dụng coi trọng hơn kinh nghiệm trong quá khứ của bạn, ít quan tâm đến mức độ phù hợp vị trí, kinh nghiệm làm việc ở công ty xuất sắc và kinh nghiệm dự án có điểm nổi bật đều là điểm cộng. Những công ty kiểu này tin rằng bạn đã làm tốt ở một lĩnh vực nào đó (ví dụ thương mại điện tử, thanh toán), vậy thì cũng có thể nhanh chóng trở thành chuyên gia ở một lĩnh vực khác (ví dụ nền tảng streaming, mạng xã hội). Lĩnh vực ở đây không phải là lĩnh vực kỹ thuật, mà là hướng nghiệp vụ. Nhảy ngang lĩnh vực kỹ thuật (ví dụ Backend chuyển sang Algorithm, Backend chuyển sang Big Data) mà tìm việc, bạn lại không có kinh nghiệm liên quan, thì gần như không thể tìm được. Ngay cả khi tìm được, cũng rất có thể sẽ đối mặt với vấn đề HR ép lương.
 
-## 提前准备技术面试
+## Chuẩn bị trước cho phỏng vấn kỹ thuật
 
-面试之前一定要提前准备一下常见的面试题也就是八股文：
+Trước khi phỏng vấn nhất định phải chuẩn bị trước các câu hỏi phỏng vấn thường gặp, tức là "bát cổ văn" (八股文 - câu hỏi lý thuyết):
 
-- 自己面试中可能涉及哪些知识点、那些知识点是重点。
-- 面试中哪些问题会被经常问到、面试中自己该如何回答。(强烈不推荐死记硬背，第一：通过背这种方式你能记住多少？能记住多久？第二：背题的方式的学习很难坚持下去！)
+- Trong phỏng vấn của mình có thể liên quan đến những điểm kiến thức nào, những điểm kiến thức nào là trọng tâm.
+- Trong phỏng vấn những câu hỏi nào thường xuyên được hỏi, trong phỏng vấn mình nên trả lời như thế nào. (Cực kỳ không khuyến khích học thuộc lòng, thứ nhất: bằng cách học thuộc bạn có thể nhớ được bao nhiêu? Nhớ được bao lâu? Thứ hai: cách học thuộc đáp án rất khó kiên trì!)
 
-Java 后端面试复习的重点请看这篇文章：[Java 面试重点总结(重要)](https://javaguide.cn/interview-preparation/key-points-of-interview.html)。
+Trọng tâm ôn tập phỏng vấn Java Backend mời xem bài viết này: [Tổng kết trọng tâm phỏng vấn Java (Quan trọng)](https://javaguide.cn/interview-preparation/key-points-of-interview.html).
 
-不同类型的公司对于技能的要求侧重点是不同的比如腾讯、字节可能更重视计算机基础比如网络、操作系统这方面的内容。阿里、美团这种可能更重视你的项目经历、实战能力。
+Các loại công ty khác nhau có trọng tâm yêu cầu kỹ năng khác nhau, ví dụ Tencent, ByteDance có thể coi trọng hơn kiến thức cơ bản máy tính như mạng máy tính, hệ điều hành. Alibaba, Meituan thì có thể coi trọng hơn kinh nghiệm dự án và năng lực thực chiến của bạn.
 
-一定不要抱着一种思想，觉得八股文或者基础问题的考查意义不大。如果你抱着这种思想复习的话，那效果可能不会太好。实际上，个人认为还是很有意义的，八股文或者基础性的知识在日常开发中也会需要经常用到。例如，线程池这块的拒绝策略、核心参数配置什么的，如果你不了解，实际项目中使用线程池可能就用的不是很明白，容易出现问题。而且，其实这种基础性的问题是最容易准备的，像各种底层原理、系统设计、场景题以及深挖你的项目这类才是最难的！
+Nhất định đừng ôm tư tưởng cho rằng việc kiểm tra bát cổ văn hay câu hỏi kiến thức cơ bản là không có nhiều ý nghĩa. Nếu bạn ôm tư tưởng này mà ôn tập, thì hiệu quả có lẽ sẽ không tốt lắm. Thực tế, cá nhân mình cho rằng vẫn rất có ý nghĩa, bát cổ văn hay kiến thức cơ bản trong phát triển hàng ngày cũng thường xuyên cần dùng đến. Ví dụ, các rejection policy, cấu hình core parameter của thread pool, nếu bạn không hiểu, thì trong dự án thực tế sử dụng thread pool có thể sẽ không dùng đúng cách, dễ phát sinh vấn đề. Hơn nữa, thực ra những câu hỏi kiến thức cơ bản loại này là dễ chuẩn bị nhất, còn các loại câu hỏi như nguyên lý tầng dưới, system design, câu hỏi tình huống (scenario-based) và đào sâu dự án của bạn mới là khó nhất!
 
-八股文资料首推我的 [《Java 面试指北》](https://javaguide.cn/zhuanlan/java-mian-shi-zhi-bei.html) (配合 JavaGuide 使用，会根据每一年的面试情况对内容进行更新完善)和 [JavaGuide](https://javaguide.cn/) 。里面不仅仅是原创八股文，还有很多对实际开发有帮助的干货。除了我的资料之外，你还可以去网上找一些其他的优质的文章、视频来看。
+Tài liệu bát cổ văn mình khuyên dùng hàng đầu là [《Java Interview Guide》](https://javaguide.cn/zhuanlan/java-mian-shi-zhi-bei.html) (sử dụng kết hợp với JavaGuide, sẽ cập nhật hoàn thiện nội dung dựa trên tình hình phỏng vấn mỗi năm) và [JavaGuide](https://javaguide.cn/). Bên trong không chỉ có bát cổ văn gốc, mà còn có rất nhiều kiến thức thực tế hữu ích cho phát triển thực chiến. Ngoài tài liệu của mình ra, bạn còn có thể lên mạng tìm một số bài viết, video chất lượng khác để xem.
 
-![《Java 面试指北》内容概览](https://oss.javaguide.cn/javamianshizhibei/javamianshizhibei-content-overview.png)
+![《Java Interview Guide》Tổng quan nội dung](https://oss.javaguide.cn/javamianshizhibei/javamianshizhibei-content-overview.png)
 
-## 提前准备手撕算法
+## Chuẩn bị trước cho phần thuật toán (Viết code tay)
 
-很明显，国内现在的校招面试开始越来越重视算法了，尤其是像字节跳动、腾讯这类大公司。绝大部分公司的校招笔试是有算法题的，如果 AC 率比较低的话，基本就挂掉了。
+Rõ ràng, phỏng vấn tuyển dụng campus ở trong nước hiện nay ngày càng coi trọng thuật toán, đặc biệt là những công ty lớn như ByteDance, Tencent. Phần lớn bài kiểm tra viết tuyển dụng campus của các công ty đều có câu hỏi thuật toán, nếu tỷ lệ AC (Accepted) thấp, thì cơ bản là trượt rồi.
 
-社招的话，算法面试同样会有。不过，面试官可能会更看重你的工程能力，你的项目经历。如果你的其他方面都很优秀，但是算法很菜的话，不一定会挂掉。不过，还是建议刷下算法题，避免让其成为自己在面试中的短板。
+Social recruitment thì phỏng vấn thuật toán cũng sẽ có. Tuy nhiên, người phỏng vấn có thể sẽ coi trọng hơn năng lực engineering (kỹ thuật xây dựng hệ thống) và kinh nghiệm dự án của bạn. Nếu các mặt khác của bạn đều rất xuất sắc, nhưng thuật toán lại kém, thì chưa chắc đã trượt. Dù sao thì cũng vẫn nên luyện bài tập thuật toán, tránh để nó trở thành điểm yếu của mình trong phỏng vấn.
 
-社招往往是在技术面试的最后，面试官给你一个算法题目让你做。
+Social recruitment thường là ở cuối buổi phỏng vấn kỹ thuật, người phỏng vấn sẽ đưa cho bạn một bài toán thuật toán để làm.
 
-关于如何准备算法面试[《Java 面试指北》](https://javaguide.cn/zhuanlan/java-mian-shi-zhi-bei.html) 的面试准备篇有详细介绍到。
+Về cách chuẩn bị phỏng vấn thuật toán, phần Chuẩn bị phỏng vấn trong [《Java Interview Guide》](https://javaguide.cn/zhuanlan/java-mian-shi-zhi-bei.html) có giới thiệu chi tiết.
 
-![《Java 面试指北》面试准备篇](https://oss.javaguide.cn/javamianshizhibei/preparation-for-interview.png)
+![《Java Interview Guide》Phần Chuẩn bị phỏng vấn](https://oss.javaguide.cn/javamianshizhibei/preparation-for-interview.png)
 
-## 提前准备自我介绍
+## Chuẩn bị trước phần tự giới thiệu
 
-自我介绍一般是你和面试官的第一次面对面正式交流，换位思考一下，假如你是面试官的话，你想听到被你面试的人如何介绍自己呢？一定不是客套地说说自己喜欢编程、平时花了很多时间来学习、自己的兴趣爱好是打球吧？
+Tự giới thiệu thường là lần giao tiếp chính thức mặt đối mặt đầu tiên giữa bạn và người phỏng vấn, thử đặt mình vào vị trí người phỏng vấn mà xem, giả sử bạn là người phỏng vấn, bạn muốn nghe người mà bạn đang phỏng vấn tự giới thiệu bản thân như thế nào? Chắc chắn không phải là khách sáo nói rằng mình thích lập trình, bình thường dành nhiều thời gian để học, sở thích cá nhân là chơi bóng chứ?
 
-我觉得一个好的自我介绍至少应该包含这几点要素：
+Mình nghĩ một phần tự giới thiệu tốt ít nhất nên bao gồm những yếu tố sau:
 
-- 用简洁的话说清楚自己主要的技术栈于擅长的领域；
-- 把重点放在自己在行的地方以及自己的优势之处；
-- 重点突出自己的能力比如自己的定位的 bug 的能力特别厉害；
+- Dùng lời ngắn gọn nói rõ technology stack chính và lĩnh vực sở trường của mình;
+- Đặt trọng tâm vào những thứ mình giỏi và những điểm mạnh của mình;
+- Làm nổi bật năng lực của mình, ví dụ như năng lực phát hiện bug của mình đặc biệt xuất sắc;
 
-简单来说就是用简洁的语言突出自己的亮点，也就是推销自己嘛！
+Nói đơn giản là dùng ngôn ngữ súc tích để làm nổi bật điểm sáng của mình, chính là tiếp thị bản thân thôi mà!
 
-- 如果你去过大公司实习，那对应的实习经历就是你的亮点。
-- 如果你参加过技术竞赛，那竞赛经历就是你的亮点。
-- 如果你大学就接触过企业级项目的开发，实战经验比较多，那这些项目经历就是你的亮点。
-- ……
+- Nếu bạn từng thực tập ở công ty lớn, thì kinh nghiệm thực tập tương ứng chính là điểm sáng của bạn.
+- Nếu bạn từng tham gia cuộc thi kỹ thuật, thì kinh nghiệm thi đấu chính là điểm sáng của bạn.
+- Nếu bạn từ đại học đã tiếp xúc với phát triển dự án cấp doanh nghiệp, kinh nghiệm thực chiến nhiều, thì những kinh nghiệm dự án đó chính là điểm sáng của bạn.
+- ...
 
-从社招和校招两个角度来举例子吧！我下面的两个例子仅供参考，自我介绍并不需要死记硬背，记住要说的要点，面试的时候根据公司的情况临场发挥也是没问题的。另外，网上一般建议的是准备好两份自我介绍：一份对 hr 说的，主要讲能突出自己的经历，会的编程技术一语带过；另一份对技术面试官说的，主要讲自己会的技术细节和项目经验。
+Lấy ví dụ từ hai góc độ social recruitment và tuyển dụng campus nhé! Hai ví dụ dưới đây của mình chỉ mang tính tham khảo, tự giới thiệu không cần phải học thuộc lòng, nhớ những điểm chính cần nói, khi phỏng vấn tùy theo tình hình công ty mà ứng biến cũng không vấn đề gì. Ngoài ra, trên mạng thường khuyên nên chuẩn bị sẵn hai bản tự giới thiệu: một bản cho HR, chủ yếu nói về những trải nghiệm nổi bật của mình, công nghệ lập trình thì nói lướt qua; một bản khác cho người phỏng vấn kỹ thuật, chủ yếu nói về chi tiết kỹ thuật và kinh nghiệm dự án của mình.
 
-**社招：**
+**Social Recruitment:**
 
-> 面试官，您好！我叫独秀儿。我目前有 1 年半的工作经验，熟练使用 Spring、MyBatis 等框架、了解 Java 底层原理比如 JVM 调优并且有着丰富的分布式开发经验。离开上一家公司是因为我想在技术上得到更多的锻炼。在上一个公司我参与了一个分布式电子交易系统的开发，负责搭建了整个项目的基础架构并且通过分库分表解决了原始数据库以及一些相关表过于庞大的问题，目前这个网站最高支持 10 万人同时访问。工作之余，我利用自己的业余时间写了一个简单的 RPC 框架，这个框架用到了 Netty 进行网络通信， 目前我已经将这个项目开源，在 GitHub 上收获了 2k 的 Star! 说到业余爱好的话，我比较喜欢通过博客整理分享自己所学知识，现在已经是多个博客平台的认证作者。 生活中我是一个比较积极乐观的人，一般会通过运动打球的方式来放松。我一直都非常想加入贵公司，我觉得贵公司的文化和技术氛围我都非常喜欢，期待能与你共事！
+> Chào anh/chị phỏng vấn! Em tên là Độc Tú Nhi. Em hiện có 1 năm rưỡi kinh nghiệm làm việc, thành thạo sử dụng các framework như Spring, MyBatis, hiểu biết về nguyên lý tầng dưới của Java như JVM tuning và có kinh nghiệm phong phú về phát triển hệ thống phân tán. Em rời công ty cũ là vì muốn được rèn luyện thêm về mặt kỹ thuật. Ở công ty cũ em đã tham gia phát triển một hệ thống giao dịch điện tử phân tán, phụ trách xây dựng kiến trúc nền tảng cho toàn bộ dự án và thông qua sharding database và table đã giải quyết được vấn đề database gốc và một số bảng liên quan quá lớn, hiện tại website này hỗ trợ tối đa 10 vạn người truy cập đồng thời. Ngoài giờ làm việc, em đã tận dụng thời gian rảnh để viết một RPC framework đơn giản, framework này sử dụng Netty để giao tiếp mạng, hiện tại em đã open source dự án này, trên GitHub đã nhận được 2k Star! Về sở thích cá nhân, em thích chia sẻ kiến thức mình học được thông qua blog, hiện đã là tác giả được chứng nhận trên nhiều nền tảng blog. Trong cuộc sống em là người khá tích cực lạc quan, thường thư giãn bằng cách chơi thể thao. Em đã luôn rất mong muốn được gia nhập công ty mình, em cảm thấy văn hóa và bầu không khí kỹ thuật của công ty mình đều rất phù hợp với em, mong được làm việc cùng anh/chị!
 
-**校招：**
+**Tuyển dụng Campus:**
 
-> 面试官，您好！我叫秀儿。大学时间我主要利用课外时间学习了 Java 以及 Spring、MyBatis 等框架 。在校期间参与过一个考试系统的开发，这个系统的主要用了 Spring、MyBatis 和 shiro 这三种框架。我在其中主要担任后端开发，主要负责了权限管理功能模块的搭建。另外，我在大学的时候参加过一次软件编程大赛，我和我的团队做的在线订餐系统成功获得了第二名的成绩。我还利用自己的业余时间写了一个简单的 RPC 框架，这个框架用到了 Netty 进行网络通信， 目前我已经将这个项目开源，在 GitHub 上收获了 2k 的 Star! 说到业余爱好的话，我比较喜欢通过博客整理分享自己所学知识，现在已经是多个博客平台的认证作者。 生活中我是一个比较积极乐观的人，一般会通过运动打球的方式来放松。我一直都非常想加入贵公司，我觉得贵公司的文化和技术氛围我都非常喜欢，期待能与你共事！
+> Chào anh/chị phỏng vấn! Em tên là Tú Nhi. Thời gian đại học em chủ yếu tận dụng thời gian ngoại khóa để học Java và các framework như Spring, MyBatis. Trong thời gian học em đã tham gia phát triển một hệ thống thi trực tuyến, hệ thống này chủ yếu sử dụng ba framework là Spring, MyBatis và Shiro. Trong đó em chủ yếu đảm nhiệm Backend Developer, phụ trách chính việc xây dựng module quản lý phân quyền. Ngoài ra, hồi đại học em đã từng tham gia một cuộc thi lập trình phần mềm, hệ thống đặt đồ ăn trực tuyến của em và nhóm đã giành được giải Nhì. Em còn tận dụng thời gian rảnh để viết một RPC framework đơn giản, framework này sử dụng Netty để giao tiếp mạng, hiện tại em đã open source dự án này, trên GitHub đã nhận được 2k Star! Về sở thích cá nhân, em thích chia sẻ kiến thức mình học được thông qua blog, hiện đã là tác giả được chứng nhận trên nhiều nền tảng blog. Trong cuộc sống em là người khá tích cực lạc quan, thường thư giãn bằng cách chơi thể thao. Em đã luôn rất mong muốn được gia nhập công ty mình, em cảm thấy văn hóa và bầu không khí kỹ thuật của công ty mình đều rất phù hợp với em, mong được làm việc cùng anh/chị!
 
-## 减少抱怨
+## Giảm bớt than phiền
 
-就像现在的技术面试一样，大家都说内卷了，抱怨现在的面试真特么难。然而，单纯抱怨有用么？你对其他求职者说：“大家都不要刷 Leetcode 了啊！都不要再准备高并发、高可用的面试题了啊！现在都这么卷了！”
+Cũng giống như phỏng vấn kỹ thuật hiện nay, ai cũng nói là nội quyển (内卷 - involution) rồi, than phiền rằng phỏng vấn bây giờ khó kinh khủng. Nhưng mà, than phiền suông thì có ích gì? Bạn nói với những người tìm việc khác rằng: "Mọi người đừng có luyện Leetcode nữa nhé! Đừng có chuẩn bị mấy câu hỏi phỏng vấn high concurrency, high availability nữa nhé! Bây giờ nội quyển lắm rồi!"
 
-会有人听你的么？**你不准备面试，但是其他人会准备面试啊！那你是不是傻啊？还是真的厉害到不需要准备面试呢？**
+Có ai nghe bạn không? **Bạn không chuẩn bị phỏng vấn, nhưng người khác sẽ chuẩn bị phỏng vấn đấy! Vậy bạn có ngốc không? Hay là bạn thực sự giỏi đến mức không cần chuẩn bị phỏng vấn?**
 
-因此，准备 Java 面试的第一步，我们一定要尽量减少抱怨。抱怨的声音多了之后，会十分影响自己，会让自己变得十分焦虑。
+Vì vậy, bước đầu tiên để chuẩn bị phỏng vấn Java, chúng ta nhất định phải giảm thiểu than phiền. Khi tiếng than phiền nhiều lên, sẽ ảnh hưởng rất lớn đến bản thân, khiến mình trở nên vô cùng lo lắng.
 
-## 面试之后及时复盘
+## Kịp thời复盘 (phản tỉnh) sau phỏng vấn
 
-如果失败，不要灰心；如果通过，切勿狂喜。面试和工作实际上是两回事，可能很多面试未通过的人，工作能力比你强的多，反之亦然。
+Nếu thất bại, đừng nản lòng; nếu vượt qua, đừng vội mừng quá. Phỏng vấn và công việc thực tế là hai chuyện khác nhau, có thể rất nhiều người không vượt qua phỏng vấn, nhưng năng lực làm việc lại mạnh hơn bạn rất nhiều, và ngược lại.
 
-面试就像是一场全新的征程，失败和胜利都是平常之事。所以，劝各位不要因为面试失败而灰心、丧失斗志。也不要因为面试通过而沾沾自喜，等待你的将是更美好的未来，继续加油！
+Phỏng vấn giống như một hành trình hoàn toàn mới, thất bại và thành công đều là chuyện bình thường. Vì vậy, khuyên các bạn đừng vì trượt phỏng vấn mà nản lòng, mất đi ý chí chiến đấu. Cũng đừng vì vượt qua phỏng vấn mà đắc chí, điều đang chờ đón bạn sẽ là một tương lai tươi đẹp hơn, tiếp tục cố gắng nhé!
 
-## 总结
+## Tổng kết
 
-这篇文章内容有点多，如果这篇文章只能让你记住 7 句话，那请记住下面这 7 句：
+Bài viết này nội dung hơi nhiều, nếu bài viết này chỉ có thể giúp bạn nhớ được 7 câu, thì hãy nhớ 7 câu dưới đây:
 
-1. 一定要提前准备面试！技术面试不同于编程，编程厉害不代表技术面试就一定能过。
-2. 一定不要对面试抱有侥幸心理。打铁还需自身硬！千万不要觉得自己看几篇面经，看几篇面试题解析就能通过面试了。一定要静下心来深入学习！尤其是目标是大厂的同学，那更要深挖原理！
-3. 建议大学生尽可能早一点以求职为导向来学习的。这样更有针对性，并且可以大概率减少自己处在迷茫的时间，很大程度上还可以让自己少走很多弯路。 但是，不要把“以求职为导向学习”理解为“我就不用学课堂上那些计算机基础课程了”！
-4. 一定不要抱着一种思想，觉得八股文或者基础问题的考查意义不大。如果你抱着这种思想复习的话，那效果可能不会太好。实际上，个人认为还是很有意义的，八股文或者基础性的知识在日常开发中也会需要经常用到。例如，线程池这块的拒绝策略、核心参数配置什么的，如果你不了解，实际项目中使用线程池可能就用的不是很明白，容易出现问题。
-5. 手撕算法是当下技术面试的标配，尽早准备！
-6. 岗位匹配度很重要。校招通常会对你的项目经历的研究方向比较宽容，即使你的项目经历和对应公司的具体业务没有关系，影响其实也并不大。社招的话就不一样了，毕竟公司是要招聘可以直接来干活的人，你有相关的经验，公司会比较省事。
+1. Nhất định phải chuẩn bị trước cho phỏng vấn! Phỏng vấn kỹ thuật khác với lập trình, lập trình giỏi không có nghĩa là phỏng vấn kỹ thuật nhất định sẽ qua.
+2. Nhất định đừng ôm tâm lý may rủi với phỏng vấn. Rèn sắt phải khi còn nóng! Tuyệt đối đừng nghĩ rằng xem vài bài kinh nghiệm phỏng vấn, vài bài phân tích câu hỏi phỏng vấn là có thể vượt qua phỏng vấn. Phải thực sự tĩnh tâm học sâu! Đặc biệt là các bạn có mục tiêu vào công ty lớn, càng phải đào sâu nguyên lý!
+3. Khuyên các bạn sinh viên nên bắt đầu học tập theo định hướng tìm việc càng sớm càng tốt. Như vậy sẽ có tính mục tiêu cao hơn, đồng thời có thể giảm đáng kể thời gian mơ hồ không biết làm gì, ở mức độ lớn còn giúp bạn tránh được nhiều đường vòng. Nhưng mà, đừng hiểu "học tập theo định hướng tìm việc" thành "vậy thì mình không cần học mấy môn cơ bản máy tính trên lớp nữa"!
+4. Nhất định đừng ôm tư tưởng cho rằng việc kiểm tra bát cổ văn hay câu hỏi kiến thức cơ bản là không có nhiều ý nghĩa. Nếu bạn ôm tư tưởng này mà ôn tập, thì hiệu quả có lẽ sẽ không tốt lắm. Thực tế, cá nhân mình cho rằng vẫn rất có ý nghĩa, bát cổ văn hay kiến thức cơ bản trong phát triển hàng ngày cũng thường xuyên cần dùng đến. Ví dụ, các rejection policy, cấu hình core parameter của thread pool, nếu bạn không hiểu, thì trong dự án thực tế sử dụng thread pool có thể sẽ không dùng đúng cách, dễ phát sinh vấn đề.
+5. Viết code tay thuật toán là tiêu chuẩn của phỏng vấn kỹ thuật hiện nay, hãy chuẩn bị sớm!
+6. Mức độ phù hợp với vị trí rất quan trọng. Tuyển dụng campus thường khá khoan dung với hướng nghiên cứu trong kinh nghiệm dự án của bạn, ngay cả khi kinh nghiệm dự án của bạn không liên quan đến nghiệp vụ cụ thể của công ty, ảnh hưởng thực ra cũng không lớn. Tuyển dụng social recruitment thì khác, dù sao công ty cũng muốn tuyển người có thể vào làm việc ngay, bạn có kinh nghiệm liên quan thì công ty sẽ đỡ vất vả hơn.
 
-7. 面试之后及时复盘。面试就像是一场全新的征程，失败和胜利都是平常之事。所以，劝各位不要因为面试失败而灰心、丧失斗志。也不要因为面试通过而沾沾自喜，等待你的将是更美好的未来，继续加油！
+7. Kịp thời phản tỉnh sau phỏng vấn. Phỏng vấn giống như một hành trình hoàn toàn mới, thất bại và thành công đều là chuyện bình thường. Vì vậy, khuyên các bạn đừng vì trượt phỏng vấn mà nản lòng, mất đi ý chí chiến đấu. Cũng đừng vì vượt qua phỏng vấn mà đắc chí, điều đang chờ đón bạn sẽ là một tương lai tươi đẹp hơn, tiếp tục cố gắng nhé!

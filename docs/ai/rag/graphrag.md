@@ -1,552 +1,552 @@
 ---
-title: 万字详解 GraphRAG：为什么只靠向量检索撑不起复杂知识问答
-description: 深入解析 GraphRAG 核心概念，讲清楚知识图谱、实体、关系、社区发现、全局检索、局部检索，以及 GraphRAG 与传统向量 RAG 的本质区别和工程落地成本。
-category: AI 应用开发
+title: "Giải thích chi tiết GraphRAG: Vì sao chỉ dựa vào vector retrieval không đỡ nổi hỏi đáp tri thức phức tạp"
+description: Phân tích sâu các khái niệm cốt lõi của GraphRAG, làm rõ knowledge graph, entity, relation, community detection, global search, local search, cùng khác biệt bản chất giữa GraphRAG và vector RAG truyền thống và chi phí triển khai công nghệ.
+category: Phát triển ứng dụng AI
 head:
   - - meta
     - name: keywords
-      content: GraphRAG,RAG,知识图谱,向量检索,全局检索,局部检索,Neo4j GraphRAG,LangChain,LlamaIndex,FalkorDB,社区发现
+      content: GraphRAG,RAG,Knowledge Graph,Vector Retrieval,Global Search,Local Search,Neo4j GraphRAG,LangChain,LlamaIndex,FalkorDB,Community Detection
 ---
 
-第一次做企业知识库问答时，通常会经历一个很相似的阶段：文档切块、Embedding、向量库、Top-K 检索、把片段塞给大模型。
+Lần đầu làm hỏi đáp trên knowledge base doanh nghiệp, thường sẽ trải qua một giai đoạn rất giống nhau: chia khối tài liệu, Embedding, vector store, truy vấn Top-K, nhét đoạn vào LLM.
 
-Demo 很顺，领导问几个制度类问题也能回答。然后业务同事突然问：
+Demo rất suôn sẻ, lãnh đạo hỏi vài câu về quy chế cũng trả lời được. Rồi đồng nghiệp nghiệp vụ đột nhiên hỏi:
 
-> “这几个部门过去半年反复提到的风险点是什么？它们之间有什么关联？”
+> "Nhiều bộ phận này trong nửa năm qua liên tục nhắc tới những điểm rủi ro gì? Chúng có liên quan gì với nhau?"
 
-向量 RAG 就开始力不从心了。
+Vector RAG bắt đầu hết hơi.
 
-它可能找到几个相似片段，却很难把“部门”“风险”“项目”“供应商”“时间线”这些对象串成一张关系网。更麻烦的是，答案往往来自多份文档的组合推理，而不是某一个 Chunk 里现成的一句话。
+Nó có thể tìm thấy vài đoạn tương tự, nhưng rất khó nối các đối tượng "bộ phận" "rủi ro" "dự án" "nhà cung cấp" "dòng thời gian" thành một mạng quan hệ. Phiền phức hơn, câu trả lời thường đến từ suy luận tổ hợp của nhiều tài liệu, chứ không phải một câu có sẵn trong một Chunk nào đó.
 
-这就是 GraphRAG 要解决的问题。
+Đây là vấn đề GraphRAG cần giải quyết.
 
-下面小 G 会把 GraphRAG 的核心概念和工程实践拆开讲清楚，重点放在它和传统向量 RAG 到底差在哪、什么时候该上、什么时候别碰。
+Dưới đây Tiểu G sẽ phân rõ các khái niệm cốt lõi và thực hành công nghệ của GraphRAG, trọng điểm đặt ở việc nó và vector RAG truyền thống khác gì, khi nào nên dùng, khi nào đừng đụng vào.
 
-全文接近 1w 字，建议先收藏。主要覆盖：
+Toàn văn gần 1w chữ, khuyên nên lưu lại trước. Bao phủ chính:
 
-1. RAG 和 GraphRAG 的区别；
-2. 知识图谱里的实体关系和社区发现；
-3. 全局检索和局部检索各适合什么问题；
-4. GraphRAG 的工程落地路线和成本、以及它真正难落地的地方。
+1. Khác biệt giữa RAG và GraphRAG;
+2. Quan hệ entity trong knowledge graph và community detection;
+3. Global search và local search mỗi loại phù hợp với vấn đề gì;
+4. Lộ trình và chi phí triển khai GraphRAG, cùng chỗ thật sự khó triển khai.
 
-## 什么是 RAG？
+## RAG là gì?
 
-![什么是 RAG？](https://oss.javaguide.cn/github/javaguide/ai/rag/rag-simplified-architecture-diagram.jpeg)
+![RAG là gì?](https://oss.javaguide.cn/github/javaguide/ai/rag/rag-simplified-architecture-diagram.jpeg)
 
-RAG（Retrieval-Augmented Generation，检索增强生成）就是把信息检索和生成式大语言模型结合起来的框架。
+RAG (Retrieval-Augmented Generation, sinh tăng cường truy vấn) là framework kết hợp truy vấn thông tin và LLM sinh.
 
-它的核心思想是：在让 LLM 回答问题或生成文本之前，先从数据库、文档集合、企业知识库等外部知识源中检索相关上下文，再把“原始问题 + 检索上下文”一起交给 LLM。这样可以让模型回答得更准确、更及时，也更符合特定领域知识。
+Tư tưởng cốt lõi của nó: trước khi để LLM trả lời câu hỏi hoặc sinh văn bản, trước tiên truy vấn context liên quan từ các nguồn tri thức bên ngoài như database, tập tài liệu, knowledge base doanh nghiệp, rồi đưa "câu hỏi gốc + context truy vấn" cùng giao cho LLM. Như vậy model trả lời chính xác hơn, kịp thời hơn, và phù hợp hơn với tri thức lĩnh vực cụ thể.
 
-传统 RAG 的检索对象通常是 Chunk，也就是一个个文本片段。它很适合回答“答案就在某几个片段里”的问题，比如制度问答、API 文档问答、知识库局部事实查询。
+Đối tượng truy vấn của RAG truyền thống thường là Chunk, tức từng đoạn văn bản. Nó rất thích hợp để trả lời các câu hỏi kiểu "câu trả lời nằm trong mấy đoạn nào đó", như hỏi đáp quy chế, hỏi đáp tài liệu API, tra cứu sự kiện cục bộ trong knowledge base.
 
-## 什么是 GraphRAG？
+## GraphRAG là gì?
 
-![什么是 GraphRAG？](https://oss.javaguide.cn/github/javaguide/ai/rag/graphrag-simplified-architecture-diagram.png)
+![GraphRAG là gì?](https://oss.javaguide.cn/github/javaguide/ai/rag/graphrag-simplified-architecture-diagram.png)
 
-GraphRAG（Graph-based Retrieval-Augmented Generation）可以理解为：**在传统向量检索之外引入知识图谱，把文档中的实体、关系和结构化上下文显式建模。检索时除了召回相似片段，还会沿着图关系收集证据，再交给大模型生成答案。**
+GraphRAG (Graph-based Retrieval-Augmented Generation) có thể hiểu là: **bên ngoài vector retrieval truyền thống, đưa vào knowledge graph, mô hình hóa tường minh entity, quan hệ và context có cấu trúc trong tài liệu. Khi truy vấn, ngoài recall đoạn tương tự, còn dọc theo quan hệ của graph thu thập bằng chứng, rồi giao LLM sinh câu trả lời.**
 
-注意，GraphRAG 的重点不是“用了图数据库”，而是**检索对象变了**。
+Lưu ý, trọng điểm của GraphRAG không phải "dùng graph database", mà là **đối tượng truy vấn đã thay đổi**.
 
-传统向量 RAG 检索的是 Chunk，也就是一个个文本片段。GraphRAG 检索的是一张“知识关系网”里的节点、边、路径、社区摘要，再结合原始文本证据回答问题。
+Vector RAG truyền thống truy vấn Chunk, tức từng đoạn văn bản. GraphRAG truy vấn node, edge, path, tóm tắt cộng đồng trong một "mạng quan hệ tri thức", kết hợp bằng chứng văn bản gốc để trả lời câu hỏi.
 
-打个比方：
+Lấy ví dụ so sánh:
 
-- **向量 RAG** 像在图书馆里按语义找几页相似内容。
-- **GraphRAG** 像先整理出人物关系图、事件时间线和主题目录，再沿着关系线索找证据。
+- **Vector RAG** giống như trong thư viện theo ngữ nghĩa tìm vài trang nội dung tương tự.
+- **GraphRAG** giống như trước tiên sắp xếp bản đồ quan hệ nhân vật, dòng thời gian sự kiện và mục lục chủ đề, rồi dọc theo manh mối quan hệ tìm bằng chứng.
 
-向量 RAG 擅长判断“这段话和我的问题像不像”，GraphRAG 更擅长理解“这些对象之间到底怎么连起来”。
+Vector RAG giỏi phán đoán "đoạn này có giống câu hỏi của tôi không", GraphRAG giỏi hiểu "các đối tượng này thực sự kết nối với nhau thế nào".
 
-## 传统向量 RAG 有什么局限性？
+## Vector RAG truyền thống có hạn chế gì?
 
-![传统向量 RAG 的局限性](https://oss.javaguide.cn/github/javaguide/ai/rag/graphrag-vector-rag-limitation.png)
+![Hạn chế của vector RAG truyền thống](https://oss.javaguide.cn/github/javaguide/ai/rag/graphrag-vector-rag-limitation.png)
 
-向量 RAG 的底层逻辑很直接：
+Logic tầng dưới của vector RAG rất trực tiếp:
 
-1. 把文档切成 Chunk。
-2. 用 Embedding 模型把 Chunk 转成向量。
-3. 用户提问时，把问题也转成向量。
-4. 按相似度召回 Top-K Chunk。
-5. 把 Chunk 塞给 LLM 生成答案。
+1. Cắt tài liệu thành Chunk.
+2. Dùng model Embedding chuyển Chunk thành vector.
+3. Khi người dùng hỏi, chuyển câu hỏi thành vector.
+4. Theo độ tương tự recall Top-K Chunk.
+5. Nhét Chunk cho LLM sinh câu trả lời.
 
-这套方案在“局部事实问答”里很好用。比如：
+Bộ giải pháp này rất hữu dụng trong "hỏi đáp sự kiện cục bộ". Ví dụ:
 
-- “退款流程是什么？”
-- “某个 API 的限流规则是多少？”
-- “Spring AI 里怎么配置向量数据库？”
+- "Quy trình hoàn tiền là gì?"
+- "Quy tắc rate-limit của một API là bao nhiêu?"
+- "Trong Spring AI cấu hình vector database như thế nào?"
 
-因为答案大概率藏在某几个局部片段里，只要召回足够准，模型就能整理出结果。
+Vì câu trả lời phần lớn ẩn trong một vài đoạn cục bộ nào đó, chỉ cần recall đủ chính xác, model là sắp xếp được kết quả.
 
-但复杂知识问答的问题是：**答案往往不在一个片段里，而在片段之间的关系里。**
+Nhưng vấn đề của hỏi đáp tri thức phức tạp là: **câu trả lời thường không nằm trong một đoạn, mà nằm trong quan hệ giữa các đoạn.**
 
-### 1. Chunk 是信息孤岛
+### 1. Chunk là đảo thông tin
 
-切块是向量 RAG 的必要工程手段，但它天然会打断上下文。
+Chia khối là biện pháp công nghệ tất yếu của vector RAG, nhưng nó tự nhiên sẽ cắt đứt context.
 
-一份文档里，第一章定义了某个系统，第三章写了负责人，第五章提到它依赖的数据库，第七章记录了最近一次事故。切成 Chunk 之后，这些信息分散在不同文本块里。
+Trong một tài liệu, chương một định nghĩa một hệ thống nào đó, chương ba viết người phụ trách, chương năm nhắc đến database nó phụ thuộc, chương bảy ghi lại sự cố gần nhất. Sau khi cắt thành Chunk, những thông tin này nằm rải rác ở các khối văn bản khác nhau.
 
-向量检索只能判断“哪个文本块和问题最像”，却不知道这些文本块在业务上属于同一个对象。
+Vector retrieval chỉ phán đoán được "khối văn bản nào giống câu hỏi nhất", nhưng không biết các khối văn bản này về mặt nghiệp vụ thuộc cùng một đối tượng.
 
-这就是向量 RAG 的典型盲点：**语义相似不等于关系完整。**
+Đây là điểm mù điển hình của vector RAG: **tương đồng ngữ nghĩa không bằng mối quan hệ đầy đủ.**
 
-### 2. 向量相似度不擅长多跳推理
+### 2. Độ tương đồng vector không giỏi suy luận nhiều chặng
 
-假设用户问：
+Giả sử người dùng hỏi:
 
-> “A 系统的负责人最近参与过哪些和支付链路相关的故障复盘？”
+> "Người phụ trách của hệ thống A gần đây từng tham gia những lần review sự cố nào liên quan đến chuỗi thanh toán?"
 
-这个问题至少包含几层跳转：
+Câu hỏi này ít nhất gồm nhiều tầng chuyển tiếp:
 
-1. 找到 A 系统。
-2. 找到 A 系统负责人。
-3. 找到这个负责人参与过的故障复盘。
-4. 过滤出和支付链路相关的复盘。
+1. Tìm hệ thống A.
+2. Tìm người phụ trách hệ thống A.
+3. Tìm các buổi review sự cố người này tham gia.
+4. Lọc ra các review liên quan đến chuỗi thanh toán.
 
-向量 RAG 可能召回“A 系统说明”或“支付故障复盘”，但它不天然具备沿着“系统 -> 负责人 -> 复盘 -> 链路”这条关系链路扩展证据的能力。
+Vector RAG có thể recall "mô tả hệ thống A" hoặc "review sự cố thanh toán", nhưng nó không tự nhiên có năng lực dọc theo chuỗi quan hệ "hệ thống -> người phụ trách -> review -> chuỗi" để mở rộng bằng chứng.
 
-### 3. 全局性问题很难靠 Top-K 片段回答
+### 3. Vấn đề toàn cục rất khó trả lời bằng đoạn Top-K
 
-还有一类问题更麻烦：
+Còn một loại câu hỏi phiền toái hơn:
 
-- “这批客户投诉主要集中在哪几类问题？”
-- “过去一年公司知识库里反复出现的架构风险是什么？”
-- “这几份报告背后共同指向的战略主题是什么？”
+- "Khiếu nại của nhóm khách hàng này tập trung chủ yếu vào mấy loại vấn đề?"
+- "Một năm qua các rủi ro kiến trúc lặp đi lặp lại trong knowledge base công ty là gì?"
+- "Chủ đề chiến lược mà mấy báo cáo này cùng hướng tới phía sau là gì?"
 
-这类问题不是找“最相似的几段话”，而是要对整个语料做聚合、归纳和主题分析。Top-K 检索只能看到局部窗口，容易出现两种失败：
+Loại câu hỏi này không phải tìm "mấy đoạn giống nhất", mà phải tổng hợp, quy nạp và phân tích chủ đề trên toàn bộ corpus. Truy vấn Top-K chỉ thấy được cửa sổ cục bộ, dễ xuất hiện hai kiểu thất bại:
 
-- 召回片段太少，看不到整体模式。
-- 召回片段太多，Token 成本和噪声一起爆炸。
+- Recall quá ít đoạn, không thấy được mô hình tổng thể.
+- Recall quá nhiều đoạn, chi phí Token và nhiễu cùng bùng nổ.
 
-很多人这时会把 Top-K 从 5 调到 20，再加 rerank，再加查询改写。短期能缓解，但底层问题还在：**你仍然在用片段相似度解决结构推理问题。**
+Nhiều người lúc này sẽ chỉnh Top-K từ 5 lên 20, thêm rerank, thêm query rewrite. Ngắn hạn có thể giảm bớt, nhưng vấn đề tầng dưới vẫn còn: **bạn vẫn đang dùng độ tương đồng đoạn để giải quyết vấn đề suy luận cấu trúc.**
 
-## GraphRAG 和传统向量 RAG 的本质区别
+## Khác biệt bản chất giữa GraphRAG và vector RAG truyền thống
 
-![GraphRAG 和传统向量 RAG 的本质区别](https://oss.javaguide.cn/github/javaguide/ai/rag/graphrag-vs-rag.png)
+![Khác biệt bản chất giữa GraphRAG và vector RAG truyền thống](https://oss.javaguide.cn/github/javaguide/ai/rag/graphrag-vs-rag.png)
 
-| 维度     | 传统向量 RAG                 | GraphRAG                               |
-| -------- | ---------------------------- | -------------------------------------- |
-| 检索对象 | 文本 Chunk                   | 实体、关系、路径、社区摘要、原文片段   |
-| 核心能力 | 语义相似度召回               | 关系推理、图遍历、全局主题聚合         |
-| 数据结构 | 向量索引为主                 | 知识图谱 + 向量索引 + 全文索引         |
-| 适合问题 | 局部事实问答、文档片段解释   | 多跳关系问答、跨文档归纳、复杂业务分析 |
-| 可解释性 | 主要依赖引用片段             | 可以展示节点、关系、路径和来源         |
-| 构建成本 | 中等，重点是切块和 Embedding | 高，重点是抽取、消歧、建模、评测       |
-| 查询延迟 | 通常较低                     | 取决于图遍历、社区摘要和 LLM 调用次数  |
-| 维护成本 | 更新 Chunk 和向量即可        | 还要维护实体、关系、社区和摘要         |
-| 最大风险 | 召回片段不完整               | 图谱构建错误导致系统性误导             |
+| Chiều               | Vector RAG truyền thống                          | GraphRAG                                                                           |
+| ------------------- | ------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| Đối tượng truy vấn  | Chunk văn bản                                    | Entity, quan hệ, path, tóm tắt cộng đồng, đoạn văn gốc                             |
+| Năng lực cốt lõi    | Recall tương đồng ngữ nghĩa                      | Suy luận quan hệ, duyệt graph, tổng hợp chủ đề toàn cục                            |
+| Cấu trúc dữ liệu    | Chủ yếu chỉ mục vector                           | Knowledge graph + chỉ mục vector + chỉ mục toàn văn                                |
+| Bài toán phù hợp    | Hỏi đáp sự kiện cục bộ, giải thích đoạn tài liệu | Hỏi đáp quan hệ nhiều chặng, tổng hợp xuyên tài liệu, phân tích nghiệp vụ phức tạp |
+| Khả năng giải thích | Chủ yếu dựa vào đoạn trích dẫn                   | Có thể hiển thị node, quan hệ, path và nguồn                                       |
+| Chi phí xây dựng    | Trung bình, trọng điểm là chia khối và Embedding | Cao, trọng điểm là trích xuất, khử trùng, mô hình hóa, đánh giá                    |
+| Độ trễ truy vấn     | Thường thấp                                      | Phụ thuộc vào duyệt graph, tóm tắt cộng đồng và số lần gọi LLM                     |
+| Chi phí bảo trì     | Chỉ cần cập nhật Chunk và vector                 | Còn phải bảo trì entity, quan hệ, cộng đồng và tóm tắt                             |
+| Rủi ro lớn nhất     | Recall đoạn không đầy đủ                         | Lỗi xây dựng graph gây hiểu sai mang tính hệ thống                                 |
 
-小 G 的实战建议是：**不要为了追新技术一上来就 GraphRAG。先用向量 RAG 做基线，把失败案例收集出来；只有当失败集中在关系、多跳、全局归纳这些问题上时，再引入图结构。**
+Lời khuyên thực chiến của Tiểu G: **đừng vì đuổi theo công nghệ mới mà vừa lên đã dùng GraphRAG. Trước tiên dùng vector RAG làm baseline, thu gom các trường hợp thất bại; chỉ khi thất bại tập trung ở quan hệ, nhiều chặng, quy nạp toàn cục, mới đưa cấu trúc graph vào.**
 
-补充一张数量级参考（实际数值与语料规模、实体密度、配置强相关）：
+Bổ sung một bảng tham chiếu bậc độ lớn (giá trị thực tế có quan hệ chặt với quy mô corpus, mật độ entity, cấu hình):
 
-| 成本维度            | 向量 RAG       | GraphRAG（参考值）                                          |
-| ------------------- | -------------- | ----------------------------------------------------------- |
-| **索引 Token 消耗** | Embedding 为主 | 约为向量 RAG 的 **5-20 倍**（与社区层级数、实体密度强相关） |
-| **存储开销**        | 向量索引       | Vector + Graph + Full-text 三套索引，约 **1.5-3 倍**        |
-| **查询延迟**        | 通常较低       | 局部图检索 ×1.2-2；全局检索（社区摘要聚合）可达 **5-10 倍** |
-| **维护频率**        | 可近实时更新   | 图谱增量更新通常每日/每周批处理                             |
+| Chiều chi phí              | Vector RAG                         | GraphRAG (giá trị tham khảo)                                                                         |
+| -------------------------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| **Tiêu hao Token chỉ mục** | Chủ yếu Embedding                  | Khoảng **5-20 lần** vector RAG (liên quan chặt với số tầng cộng đồng, mật độ entity)                 |
+| **Chi phí lưu trữ**        | Chỉ mục vector                     | Vector + Graph + Full-text ba bộ chỉ mục, khoảng **1.5-3 lần**                                       |
+| **Độ trễ truy vấn**        | Thường thấp                        | Truy vấn graph cục bộ ×1.2-2; truy vấn toàn cục (tổng hợp tóm tắt cộng đồng) có thể đạt **5-10 lần** |
+| **Tần suất bảo trì**       | Có thể cập nhật gần thời gian thực | Cập nhật gia tăng graph thường là batch theo ngày/tuần                                               |
 
-如果面试官问“GraphRAG 和普通 RAG 有什么区别”，可以这样答：
+Nếu interviewer hỏi "GraphRAG và RAG thông thường khác gì", có thể trả lời như vậy:
 
-> 普通向量 RAG 主要检索文本 Chunk，适合局部事实问答；GraphRAG 会把文档中的实体、关系和主题结构显式建模成知识图谱，查询时不仅可以按语义找片段，还可以沿着图关系做多跳检索，或者利用社区摘要回答全局问题。它的优势是关系推理、全局归纳和可解释性更好，代价是构建成本、实体消歧、关系抽取、增量更新和权限控制都更复杂。
+> Vector RAG thông thường chủ yếu truy vấn Chunk văn bản, phù hợp hỏi đáp sự kiện cục bộ; GraphRAG sẽ mô hình hóa tường minh entity, quan hệ và cấu trúc chủ đề trong tài liệu thành knowledge graph, khi truy vấn không chỉ tìm đoạn theo ngữ nghĩa, mà còn có thể dọc theo quan hệ graph làm truy vấn nhiều chặng, hoặc dùng tóm tắt cộng đồng trả lời vấn đề toàn cục. Ưu điểm của nó là suy luận quan hệ, quy nạp toàn cục và khả năng giải thích tốt hơn, cái giá là chi phí xây dựng, khử trùng entity, trích xuất quan hệ, cập nhật gia tăng và kiểm soát quyền đều phức tạp hơn.
 
-如果继续追问“什么时候不用 GraphRAG”，可以补一句：
+Nếu interviewer tiếp tục hỏi "khi nào không dùng GraphRAG", có thể bổ sung một câu:
 
-> 如果问题主要是简单文档问答，或者数据量小、关系不复杂，向量 RAG 加混合检索和 rerank 往往更划算。GraphRAG 应该用在向量 RAG 的 badcase 已经明确指向多跳关系、跨文档归纳和结构化约束的场景。
+> Nếu vấn đề chủ yếu là hỏi đáp tài liệu đơn giản, hoặc dữ liệu nhỏ, quan hệ không phức tạp, vector RAG cộng hybrid retrieval và rerank thường kinh tế hơn. GraphRAG nên dùng trong kịch bản mà badcase của vector RAG đã chỉ rõ hướng tới quan hệ nhiều chặng, quy nạp xuyên tài liệu và ràng buộc có cấu trúc.
 
-## GraphRAG 的核心概念
+## Các khái niệm cốt lõi của GraphRAG
 
-理解 GraphRAG，先把几个关键词拆开。
+Muốn hiểu GraphRAG, trước tiên tách mấy từ khóa ra.
 
-![GraphRAG 的核心概念](https://oss.javaguide.cn/github/javaguide/ai/rag/graphrag-core-concept.png)
+![Các khái niệm cốt lõi của GraphRAG](https://oss.javaguide.cn/github/javaguide/ai/rag/graphrag-core-concept.png)
 
-### 知识图谱：把知识变成可遍历的关系网
+### Knowledge graph: biến tri thức thành mạng quan hệ có thể duyệt
 
-**知识图谱（Knowledge Graph）** 本质上是一种用“节点 + 边”表达知识的结构。
+**Knowledge Graph (đồ thị tri thức)** về bản chất là một cấu trúc dùng "node + edge" để biểu đạt tri thức.
 
-- **节点（Node）**：表示实体或概念，比如用户、系统、订单、故障、供应商、政策条款。
-- **边（Edge）**：表示实体之间的关系，比如负责、依赖、影响、属于、导致、引用。
-- **属性（Property）**：挂在节点或边上的补充信息，比如时间、版本、置信度、来源文档。
+- **Node (nút)**: biểu thị entity hoặc khái niệm, như người dùng, hệ thống, đơn hàng, sự cố, nhà cung cấp, điều khoản chính sách.
+- **Edge (cạnh)**: biểu thị quan hệ giữa các entity, như phụ trách, phụ thuộc, ảnh hưởng, thuộc về, gây ra, trích dẫn.
+- **Property (thuộc tính)**: thông tin bổ sung gắn trên node hoặc edge, như thời gian, phiên bản, độ tin cậy, tài liệu nguồn.
 
-举个例子：
+Lấy ví dụ:
 
 ```text
-用户服务 --依赖--> Redis 集群
-Redis 集群 --发生过--> 连接池耗尽事故
-连接池耗尽事故 --影响--> 下单接口
-张三 --负责--> 用户服务
+User service --phụ thuộc--> Redis cluster
+Redis cluster --từng xảy ra--> sự cố cạn kiệt connection pool
+Sự cố cạn kiệt connection pool --ảnh hưởng--> interface đặt hàng
+Trương Tam --phụ trách--> User service
 ```
 
-这几行关系放在图里之后，系统就能回答：
+Mấy dòng quan hệ này đưa vào graph sau, hệ thống có thể trả lời:
 
-> “张三负责的系统最近有哪些影响下单链路的风险？”
+> "Hệ thống mà Trương Tam phụ trách gần đây có những rủi ro nào ảnh hưởng đến chuỗi đặt hàng?"
 
-向量 RAG 看到的是几段文字；知识图谱看到的是对象与对象之间的连接。
+Vector RAG nhìn thấy là mấy đoạn văn bản; knowledge graph nhìn thấy là kết nối giữa đối tượng và đối tượng.
 
-### 实体：GraphRAG 的最小业务对象
+### Entity: đối tượng nghiệp vụ nhỏ nhất của GraphRAG
 
-**实体（Entity）** 是图谱里的核心节点。
+**Entity (thực thể)** là node cốt lõi trong graph.
 
-在 GraphRAG 里，实体不一定是传统知识图谱里非常严格的“人名、地点、组织”。它也可以是：
+Trong GraphRAG, entity không nhất thiết là "tên người, địa điểm, tổ chức" rất nghiêm ngặt như knowledge graph truyền thống. Nó cũng có thể là:
 
-- 一个业务系统，比如“订单中心”
-- 一个技术组件，比如“Kafka 消费组”
-- 一个规范条款，比如“数据脱敏要求”
-- 一个风险主题，比如“权限绕过”
-- 一个项目事件，比如“支付链路压测”
+- Một hệ thống nghiệp vụ, như "trung tâm đơn hàng"
+- Một thành phần kỹ thuật, như "Kafka consumer group"
+- Một điều khoản quy chuẩn, như "yêu cầu khử nhạy cảm dữ liệu"
+- Một chủ đề rủi ro, như "vượt quyền"
+- Một sự kiện dự án, như "stress test chuỗi thanh toán"
 
-实体抽取得好不好，直接决定 GraphRAG 的上限。抽得太粗，图谱没有细节；抽得太碎，图谱里到处都是重复节点和噪声。
+Việc trích xuất entity tốt hay không, trực tiếp quyết định trần của GraphRAG. Trích quá thô, graph không có chi tiết; trích quá vụn, graph đầy node trùng lặp và nhiễu.
 
-这一步很像做领域建模。工程实践中的几个要点：
+Bước này rất giống làm domain modeling. Vài điểm mấu chốt trong thực hành công nghệ:
 
-- **用 JSON Schema 强约束抽取格式**：避免自由文本解析，降低后处理成本。
-- **Few-shot 示例要覆盖正例、反例和边界例**：告诉 LLM 什么不该抽。
-- **设置最大实体数上限**：防止 LLM 在长文本中过度抽取。
-- **每个实体强制要求 `source_text_span` 字段**：用于溯源和人工校验。
+- **Dùng JSON Schema ràng buộc chặt format trích xuất**: tránh phân tích văn bản tự do, giảm chi phí hậu xử lý.
+- **Few-shot examples phải bao phủ ví dụ đúng, ví dụ sai và ví dụ biên**: cho LLM biết cái gì không nên trích.
+- **Đặt giới hạn tối đa số entity**: phòng LLM trích xuất quá mức trong văn bản dài.
+- **Mỗi entity bắt buộc có trường `source_text_span`**: dùng để truy nguồn và kiểm tra thủ công.
 
-### 关系：GraphRAG 真正比向量 RAG 多出来的东西
+### Quan hệ: thứ GraphRAG thật sự có thêm so với vector RAG
 
-**关系（Relationship）** 是 GraphRAG 的灵魂。
+**Relationship (quan hệ)** là linh hồn của GraphRAG.
 
-向量 RAG 可以告诉你“订单中心”和“支付故障”在语义上相近，但它不会天然告诉你二者之间是“依赖”“影响”“导致”还是“只是同时出现”。
+Vector RAG có thể bảo bạn "trung tâm đơn hàng" và "sự cố thanh toán" về ngữ nghĩa gần nhau, nhưng nó không tự nhiên bảo bạn giữa hai thứ là "phụ thuộc" "ảnh hưởng" "gây ra" hay "chỉ là xuất hiện cùng lúc".
 
-GraphRAG 会尝试把关系显式化：
+GraphRAG sẽ cố gắng tường minh hóa quan hệ:
 
 ```text
-订单中心 --调用--> 支付网关
-支付网关 --依赖--> 风控服务
-风控服务 --导致过--> 交易超时
+Trung tâm đơn hàng --gọi--> Cổng thanh toán
+Cổng thanh toán --phụ thuộc--> Dịch vụ kiểm soát rủi ro
+Dịch vụ kiểm soát rủi ro --từng gây ra--> Timeout giao dịch
 ```
 
-有了关系，检索就不只是“相似度排序”，而是可以沿着路径扩展：
+Có quan hệ, retrieval không chỉ là "sắp xếp theo độ tương đồng", mà có thể dọc theo path mở rộng:
 
-- 从一个实体找邻居。
-- 从一类关系找上下游。
-- 从一个事故找影响范围。
-- 从一个主题找相关社区。
+- Từ một entity tìm hàng xóm.
+- Từ một loại quan hệ tìm thượng nguồn hạ nguồn.
+- Từ một sự cố tìm phạm vi ảnh hưởng.
+- Từ một chủ đề tìm cộng đồng liên quan.
 
-这也是 GraphRAG 能处理多跳问题的关键。
+Đây cũng là chìa khóa để GraphRAG xử lý được vấn đề nhiều chặng.
 
-### 社区发现：从一堆节点里找主题群
+### Community detection: từ một đống node tìm ra nhóm chủ đề
 
-**社区发现（Community Detection）** 是图算法里的常见任务，目标是把图里连接更紧密的一组节点聚成一个社区。
+**Community Detection (phát hiện cộng đồng)** là nhiệm vụ phổ biến trong thuật toán graph, mục tiêu là gộp một nhóm node kết nối chặt hơn trong graph thành một cộng đồng.
 
-在 GraphRAG 里，社区可以理解为“语料中自然形成的主题群”。比如一批文档里反复出现这些节点：
+Trong GraphRAG, cộng đồng có thể hiểu là "nhóm chủ đề tự nhiên hình thành trong corpus". Ví dụ trong một loạt tài liệu lặp đi lặp lại xuất hiện các node này:
 
 ```text
-支付网关、风控服务、交易超时、限流策略、灰度发布、告警升级
+Cổng thanh toán, dịch vụ kiểm soát rủi ro, timeout giao dịch, chiến lược rate-limit, gray release, nâng cấp cảnh báo
 ```
 
-它们之间关系密集，很可能构成“支付稳定性”社区。
+Giữa chúng quan hệ dày đặc, rất có khả năng tạo thành cộng đồng "tính ổn định thanh toán".
 
-一种常见 GraphRAG 做法是：先从文本中抽取实体、关系和关键声明，再用 Leiden 等**社区发现（Community Detection）**算法构建层级社区，最后为每个社区生成摘要。常见算法包括 Leiden、Louvain 等。这样查询全局问题时，不必把所有原始文档都塞给 LLM，而是先看更高层的社区摘要。
+Một cách làm GraphRAG phổ biến: trước tiên từ văn bản trích xuất entity, quan hệ và tuyên bố then chốt, rồi dùng thuật toán **Community Detection** như Leiden để xây dựng cộng đồng phân cấp, cuối cùng sinh tóm tắt cho mỗi cộng đồng. Thuật toán thường gặp gồm Leiden, Louvain... Như vậy khi truy vấn vấn đề toàn cục, không cần nhét toàn bộ tài liệu gốc cho LLM, mà trước tiên xem tóm tắt cộng đồng ở tầng cao hơn.
 
-### 全局检索和局部检索
+### Global search và local search
 
-GraphRAG 里经常会看到两个词：**全局检索（Global Search）** 和 **局部检索（Local Search）**。
+Trong GraphRAG thường thấy hai từ: **Global Search (truy vấn toàn cục)** và **Local Search (truy vấn cục bộ)**.
 
-它们对应两类完全不同的问题。
+Chúng tương ứng với hai loại vấn đề hoàn toàn khác nhau.
 
-**局部检索** 适合回答围绕具体实体的问题：
+**Local search** thích hợp trả lời câu hỏi xoay quanh entity cụ thể:
 
-- “订单中心依赖哪些服务？”
-- “某个供应商影响了哪些项目？”
-- “某个故障的上下游链路是什么？”
+- "Trung tâm đơn hàng phụ thuộc những dịch vụ nào?"
+- "Một nhà cung cấp ảnh hưởng đến những dự án nào?"
+- "Chuỗi thượng nguồn hạ nguồn của một sự cố là gì?"
 
-它的典型流程是：先定位实体，再沿着实体邻居、关系路径、相关原文片段扩展上下文。
+Luồng điển hình của nó: trước tiên định vị entity, rồi dọc theo hàng xóm entity, path quan hệ, đoạn văn gốc liên quan mở rộng context.
 
-**全局检索** 适合回答跨语料的整体性问题：
+**Global search** thích hợp trả lời vấn đề tổng thể xuyên corpus:
 
-- “这批报告里反复出现的风险主题是什么？”
-- “客服投诉主要聚成哪几类？”
-- “研发文档里最常见的架构瓶颈是什么？”
+- "Chủ đề rủi ro lặp đi lặp lại trong loạt báo cáo này là gì?"
+- "Khiếu nại của CSKH chủ yếu gom thành mấy loại?"
+- "Nút thắt kiến trúc phổ biến nhất trong tài liệu phát triển là gì?"
 
-它的典型流程是：先利用社区摘要或主题摘要做聚合，再让 LLM 进行归纳和排序。
+Luồng điển hình của nó: trước tiên dùng tóm tắt cộng đồng hoặc tóm tắt chủ đề làm tổng hợp, rồi cho LLM quy nạp và sắp xếp.
 
-一句话区分：
+Một câu để phân biệt:
 
-- **局部检索是从一个点往外扩。**
-- **全局检索是先看整张图的主题结构。**
+- **Local search là từ một điểm mở rộng ra ngoài.**
+- **Global search là trước tiên xem cấu trúc chủ đề của toàn bộ graph.**
 
-**DRIFT Search**：局部检索的增强版，从实体邻居扩展时同时引入社区摘要作为附加上下文，平衡精确性和全局视野。当你的问题既有实体焦点又需要跨社区关联时，DRIFT 比纯局部检索更有优势。
+**DRIFT Search**: phiên bản tăng cường của local search, khi mở rộng từ hàng xóm entity đồng thời đưa tóm tắt cộng đồng làm context phụ trợ, cân bằng độ chính xác và tầm nhìn toàn cục. Khi câu hỏi của bạn vừa có trọng tâm entity vừa cần liên kết xuyên cộng đồng, DRIFT có ưu thế hơn local search thuần.
 
-| 检索模式      | 适用场景              | 核心机制                  |
-| ------------- | --------------------- | ------------------------- |
-| Basic Search  | 普通事实查询          | 标准 Top-K 向量检索       |
-| Local Search  | 围绕特定实体的问答    | 从实体邻居和关联概念扩展  |
-| DRIFT Search  | 实体焦点 + 跨社区关联 | 局部扩展 + 社区摘要上下文 |
-| Global Search | 全局主题归纳          | 社区摘要 Map-Reduce       |
+| Chế độ truy vấn | Kịch bản phù hợp                            | Cơ chế cốt lõi                                    |
+| --------------- | ------------------------------------------- | ------------------------------------------------- |
+| Basic Search    | Tra cứu sự kiện thông thường                | Truy vấn vector Top-K chuẩn                       |
+| Local Search    | Hỏi đáp xoay quanh entity cụ thể            | Mở rộng từ hàng xóm entity và khái niệm liên quan |
+| DRIFT Search    | Trọng tâm entity + liên kết xuyên cộng đồng | Mở rộng cục bộ + context tóm tắt cộng đồng        |
+| Global Search   | Quy nạp chủ đề toàn cục                     | Map-Reduce tóm tắt cộng đồng                      |
 
-## GraphRAG 的构建和查询流程
+## Quy trình xây dựng và truy vấn của GraphRAG
 
-### 构建阶段：从文档到图谱
+### Giai đoạn xây dựng: từ tài liệu đến graph
 
-下面这张图展示 GraphRAG 的核心链路：
+Hình dưới đây minh họa chuỗi cốt lõi của GraphRAG:
 
-![GraphRAG 构建阶段：从文档到图谱](https://oss.javaguide.cn/github/javaguide/ai/rag/graphrag-build-process.png)
+![Giai đoạn xây dựng GraphRAG: từ tài liệu đến graph](https://oss.javaguide.cn/github/javaguide/ai/rag/graphrag-build-process.png)
 
-GraphRAG 的构建阶段通常包含这些步骤：
+Giai đoạn xây dựng của GraphRAG thường gồm các bước:
 
-| 步骤     | 做什么                                       | 关键风险                                 |
-| -------- | -------------------------------------------- | ---------------------------------------- |
-| 文档解析 | 从 PDF、网页、Markdown、数据库记录中提取文本 | OCR 错误、表格丢结构、文档版本混乱       |
-| 文本切分 | 把长文档切成 TextUnit 或 Chunk               | 切分太碎会丢关系，切分太大会增加抽取成本 |
-| 实体抽取 | 识别文档里的系统、人、组织、概念、事件       | 同名实体、别名、缩写、噪声实体           |
-| 关系抽取 | 识别实体之间的依赖、包含、影响、因果等关系   | 关系方向错、关系类型泛化、置信度不足     |
-| 图谱归一 | 合并重复实体，补充属性和来源                 | 实体消歧成本高，需要人工规则和评测       |
-| 社区发现 | 找出连接密集的主题群                         | 图太稀或太脏时社区质量会下降             |
-| 摘要生成 | 为社区、实体、关系生成摘要                   | LLM 摘要可能丢约束或引入幻觉             |
-| 索引入库 | 写入图数据库、向量库、全文索引               | 增量更新和权限过滤复杂                   |
+| Bước                | Làm gì                                                                | Rủi ro then chốt                                                   |
+| ------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Phân giải tài liệu  | Từ PDF, trang web, Markdown, bản ghi database trích văn bản           | Lỗi OCR, bảng mất cấu trúc, lộn xộn phiên bản tài liệu             |
+| Tách văn bản        | Cắt tài liệu dài thành TextUnit hoặc Chunk                            | Chia quá vụn mất quan hệ, chia quá to tăng chi phí trích xuất      |
+| Trích xuất entity   | Nhận diện hệ thống, người, tổ chức, khái niệm, sự kiện trong tài liệu | Entity trùng tên, biệt hiệu, viết tắt, entity nhiễu                |
+| Trích xuất quan hệ  | Nhận diện quan hệ phụ thuộc, bao gồm, ảnh hưởng, nhân quả giữa entity | Hướng quan hệ sai, loại quan hệ quá khái quát, độ tin cậy không đủ |
+| Chuẩn hóa graph     | Gộp entity trùng lặp, bổ sung thuộc tính và nguồn                     | Chi phí khử trùng entity cao, cần quy tắc thủ công và đánh giá     |
+| Community detection | Tìm nhóm chủ đề kết nối dày đặc                                       | Graph quá thưa hoặc quá bẩn thì chất lượng cộng đồng giảm          |
+| Sinh tóm tắt        | Sinh tóm tắt cho cộng đồng, entity, quan hệ                           | Tóm tắt LLM có thể mất ràng buộc hoặc đưa hallucination            |
+| Index vào kho       | Ghi vào graph database, vector store, full-text index                 | Cập nhật gia tăng và lọc quyền phức tạp                            |
 
-这也是 GraphRAG 落地成本高的根本原因：它把“检索前处理”从简单的文本切块，升级成了一个知识建模和数据治理工程。
+Đây cũng là nguyên nhân gốc khiến chi phí triển khai GraphRAG cao: nó nâng "tiền xử lý retrieval" từ việc chia khối văn bản đơn giản lên thành một công trình mô hình hóa tri thức và quản trị dữ liệu.
 
-### 查询阶段：先判断问题类型
+### Giai đoạn truy vấn: trước tiên phán đoán loại câu hỏi
 
-GraphRAG 的查询阶段最关键的一步是**查询路由**。
+Bước quan trọng nhất trong giai đoạn truy vấn của GraphRAG là **query routing (định tuyến truy vấn)**.
 
-用户问的问题不同，检索方式也不同：
+Câu hỏi của người dùng khác nhau, cách truy vấn cũng khác:
 
-| 问题类型 | 更适合的检索方式     | 示例                                     |
-| -------- | -------------------- | ---------------------------------------- |
-| 局部事实 | 向量检索或局部图检索 | “某个接口的超时时间是多少？”             |
-| 实体关系 | 局部图检索           | “订单中心依赖哪些服务？”                 |
-| 多跳推理 | 图遍历 + 向量补证据  | “某负责人参与过哪些影响支付链路的事故？” |
-| 全局归纳 | 社区摘要 + 全局检索  | “这批报告的主要风险主题是什么？”         |
-| 精确过滤 | 图查询或结构化查询   | “2025 年 Q4 哪些项目依赖供应商 A？”      |
+| Loại câu hỏi         | Cách truy vấn phù hợp hơn                   | Ví dụ                                                                    |
+| -------------------- | ------------------------------------------- | ------------------------------------------------------------------------ |
+| Sự kiện cục bộ       | Vector retrieval hoặc truy vấn graph cục bộ | "Thời gian timeout của một interface là bao nhiêu?"                      |
+| Quan hệ entity       | Truy vấn graph cục bộ                       | "Trung tâm đơn hàng phụ thuộc những dịch vụ nào?"                        |
+| Suy luận nhiều chặng | Duyệt graph + bổ sung bằng chứng vector     | "Người phụ trách X tham gia những sự cố nào ảnh hưởng chuỗi thanh toán?" |
+| Quy nạp toàn cục     | Tóm tắt cộng đồng + truy vấn toàn cục       | "Chủ đề rủi ro chính của loạt báo cáo này là gì?"                        |
+| Lọc chính xác        | Truy vấn graph hoặc truy vấn có cấu trúc    | "Quý 4 2025 những dự án nào phụ thuộc nhà cung cấp A?"                   |
 
-下面这张图展示问题类型到检索模式的映射：
+Hình dưới đây minh họa ánh xạ từ loại câu hỏi đến chế độ truy vấn:
 
-![GraphRAG 查询阶段：先判断问题类型](https://oss.javaguide.cn/github/javaguide/ai/rag/graphrag-query-routing.png)
+![Giai đoạn truy vấn GraphRAG: trước tiên phán đoán loại câu hỏi](https://oss.javaguide.cn/github/javaguide/ai/rag/graphrag-query-routing.png)
 
-一个成熟系统不会把所有问题都扔给 GraphRAG。很多简单问题，用向量检索更便宜、更快、更稳。
+Một hệ thống trưởng thành sẽ không ném tất cả câu hỏi cho GraphRAG. Nhiều câu hỏi đơn giản, dùng vector retrieval rẻ hơn, nhanh hơn, ổn định hơn.
 
-## GraphRAG 适合什么场景？不适合什么场景？
+## GraphRAG phù hợp với kịch bản nào? Không phù hợp với kịch bản nào?
 
-GraphRAG 最适合“关系比文本相似度更重要”的场景。
+GraphRAG phù hợp nhất với kịch bản "quan hệ quan trọng hơn độ tương đồng văn bản".
 
-它不是向量 RAG 的默认升级包，而是一套更重的数据治理和检索架构。判断要不要上 GraphRAG，核心不是“技术新不新”，而是看问题失败的原因是不是集中在关系、路径、全局主题和跨文档归纳上。
+Nó không phải gói nâng cấp mặc định của vector RAG, mà là một kiến trúc truy vấn và quản trị dữ liệu nặng hơn. Phán đoán có nên dùng GraphRAG hay không, cốt lõi không phải "công nghệ mới hay không", mà xem nguyên nhân thất bại của vấn đề có tập trung ở quan hệ, path, chủ đề toàn cục và quy nạp xuyên tài liệu.
 
-适合上 GraphRAG 的典型场景有这些：
+Kịch bản điển hình phù hợp dùng GraphRAG:
 
-- **企业知识库的复杂问答**：问题需要跨部门、跨制度、跨项目复盘串联信息，比如“这个流程涉及哪些部门？每个部门承担什么职责？”“某条制度和哪些历史制度冲突？”。
-- **IT 架构和故障影响分析**：服务、接口、数据库、消息队列、负责人、告警、事故之间天然有依赖关系，比如“Redis 集群异常会影响哪些核心接口？”“哪些系统同时依赖一个高风险组件？”。
-- **金融、风控、合规、供应链**：这些领域更关心对象之间的关系，而不是文本片段是否相似，比如客户和账户、企业和实控人、供应商和项目、合同条款和监管规则之间的关系。
-- **跨文档主题归纳**：当你要分析访谈记录、调研报告、客服工单、事故复盘的整体模式时，社区摘要可以先把语料聚成主题群，再让 LLM 做全局归纳。
+- **Hỏi đáp phức tạp trên knowledge base doanh nghiệp**: câu hỏi cần xuyên bộ phận, xuyên quy chế, xuyên dự án nối thông tin, ví dụ "quy trình này liên quan đến những bộ phận nào? mỗi bộ phận đảm nhận trách nhiệm gì?" "một quy chế nào đó xung đột với những quy chế lịch sử nào?".
+- **Phân tích kiến trúc IT và ảnh hưởng sự cố**: giữa service, interface, database, message queue, người phụ trách, cảnh báo, sự cố tự nhiên có quan hệ phụ thuộc, ví dụ "Redis cluster bất thường ảnh hưởng đến những interface cốt lõi nào?" "những hệ thống nào đồng thời phụ thuộc một thành phần rủi ro cao?".
+- **Tài chính, kiểm soát rủi ro, tuân thủ, chuỗi cung ứng**: những lĩnh vực này quan tâm hơn đến quan hệ giữa đối tượng, thay vì đoạn văn bản có tương tự, ví dụ quan hệ giữa khách hàng với tài khoản, doanh nghiệp với người kiểm soát thực tế, nhà cung cấp với dự án, điều khoản hợp đồng với quy tắc giám sát.
+- **Quy nạp chủ đề xuyên tài liệu**: khi bạn muốn phân tích mô hình tổng thể của biên bản phỏng vấn, báo cáo nghiên cứu, ticket CSKH, review sự cố, tóm tắt cộng đồng có thể trước tiên gom corpus thành nhóm chủ đề, rồi cho LLM quy nạp toàn cục.
 
-不适合上 GraphRAG 的情况也很明确：
+Trường hợp không phù hợp dùng GraphRAG cũng rất rõ:
 
-- **数据量小、问题简单**：如果知识库只有几十篇文档，问题基本都是“某个规则是什么”，向量 RAG 加混合检索和 rerank 往往更划算。
-- **文档质量太差**：如果源文档主语缺失、版本混乱、术语不统一、表格解析错误严重，抽出来的图谱也会很脏。向量 RAG 的错误通常是“找错几段文本”，GraphRAG 的错误可能是“整张关系网方向错了”。
-- **实时性要求极高**：实体关系抽取、社区发现、摘要生成都会增加更新成本。如果数据必须秒级可见，就要谨慎评估增量图更新和摘要刷新成本。
-- **团队缺少图建模和评测能力**：GraphRAG 需要持续回答“哪些实体值得建模、关系类型怎么设计、实体如何消歧、图谱错误怎么评测、权限过滤放在哪里”等问题。如果没人负责这些问题，它很容易变成昂贵但不可控的黑盒。
+- **Dữ liệu nhỏ, câu hỏi đơn giản**: nếu knowledge base chỉ có vài chục tài liệu, câu hỏi hầu như là "một quy tắc nào đó là gì", vector RAG cộng hybrid retrieval và rerank thường kinh tế hơn.
+- **Chất lượng tài liệu quá kém**: nếu tài liệu nguồn thiếu chủ ngữ, lộn xộn phiên bản, thuật ngữ không thống nhất, lỗi phân giải bảng nghiêm trọng, graph trích ra cũng rất bẩn. Lỗi của vector RAG thường là "tìm nhầm vài đoạn văn bản", lỗi của GraphRAG có thể là "cả mạng quan hệ đi sai hướng".
+- **Yêu cầu thời gian thực cực cao**: trích xuất quan hệ entity, community detection, sinh tóm tắt đều làm tăng chi phí cập nhật. Nếu dữ liệu phải hiển thị trong thời gian giây, phải thận trọng đánh giá chi phí cập nhật graph gia tăng và làm mới tóm tắt.
+- **Team thiếu năng lực mô hình hóa graph và đánh giá**: GraphRAG cần liên tục trả lời "những entity nào đáng mô hình, loại quan hệ thiết kế thế nào, entity khử trùng ra sao, lỗi graph đánh giá thế nào, lọc quyền đặt ở đâu". Nếu không ai phụ trách những vấn đề này, nó rất dễ thành hộp đen đắt tiền nhưng không kiểm soát được.
 
-一句话总结：如果失败原因只是“没搜到那段话”，先优化检索；如果失败原因是“搜到了很多话，但系统不理解它们之间的关系”，再考虑 GraphRAG。
+Tóm một câu: nếu nguyên nhân thất bại chỉ là "không tìm thấy đoạn văn đó", trước tiên tối ưu retrieval; nếu nguyên nhân thất bại là "tìm thấy nhiều đoạn, nhưng hệ thống không hiểu quan hệ giữa chúng", mới cân nhắc GraphRAG.
 
-## Neo4j GraphRAG 适合解决什么问题？
+## Neo4j GraphRAG phù hợp giải quyết vấn đề gì?
 
-GraphRAG 不是只有一种实现方式。更准确地说，它是一类“把图结构引入检索增强”的工程路线。相比离线生成一套大而全的图谱摘要，Neo4j GraphRAG 更偏“以图数据库为中心的在线检索架构”，适合把 LLM 接到企业已有关系网络上。
+GraphRAG không chỉ có một cách triển khai. Nói chính xác hơn, nó là một loại "đưa cấu trúc graph vào tăng cường retrieval" theo hướng công nghệ. So với việc tạo ra một bộ tóm tắt graph lớn và đầy đủ offline, Neo4j GraphRAG thiên về "kiến trúc truy vấn trực tuyến lấy graph database làm trung tâm", phù hợp nối LLM vào mạng quan hệ doanh nghiệp đã có.
 
-它的核心思路是：把知识图谱放在 Neo4j 这样的图数据库里，同时结合向量索引、全文索引和 Cypher 查询。查询时可以先通过向量检索找到起点节点，再沿着图关系扩展邻居、路径和上下游证据。
+Tư tưởng cốt lõi của nó: đặt knowledge graph trong graph database như Neo4j, đồng thời kết hợp vector index, full-text index và truy vấn Cypher. Khi truy vấn có thể trước tiên qua vector retrieval tìm node khởi điểm, rồi dọc theo quan hệ graph mở rộng hàng xóm, path và bằng chứng thượng nguồn hạ nguồn.
 
-典型模式是：
+Mô hình điển hình:
 
-1. 用户问题先做 Embedding 或关键词检索。
-2. 在图中找到相关实体或文档节点作为起点。
-3. 用 Cypher 沿着关系遍历，找到邻居节点、路径和属性。
-4. 把路径、节点属性、原文片段组装成上下文。
-5. 让 LLM 基于这些结构化证据回答。
+1. Câu hỏi người dùng trước tiên làm Embedding hoặc keyword retrieval.
+2. Trong graph tìm entity hoặc node tài liệu liên quan làm khởi điểm.
+3. Dùng Cypher dọc theo quan hệ duyệt, tìm node hàng xóm, path và thuộc tính.
+4. Lắp ráp path, thuộc tính node, đoạn văn gốc thành context.
+5. Cho LLM dựa trên bằng chứng có cấu trúc này trả lời.
 
-Neo4j 官方提供了 `neo4j-graphrag` Python 包，包含知识图谱构建、向量索引、GraphRAG 生成流程和多种 retriever。它不是只能做“向量召回 + 图遍历”，而是可以按问题类型选择不同检索模式。
+Neo4j chính thức cung cấp gói Python `neo4j-graphrag`, gồm xây dựng knowledge graph, vector index, luồng sinh GraphRAG và nhiều loại retriever. Nó không chỉ làm được "vector recall + duyệt graph", mà có thể theo loại câu hỏi chọn chế độ truy vấn khác nhau.
 
-| 检索模式                                    | 做法                                                              | 适合问题                                           |
-| ------------------------------------------- | ----------------------------------------------------------------- | -------------------------------------------------- |
-| **VectorRetriever**                         | 基于 Neo4j 向量索引做相似度检索，返回匹配节点和分数               | 普通语义检索、找候选实体                           |
-| **VectorCypherRetriever**                   | 先向量检索命中节点，再执行 Cypher 查询扩展上下文                  | “找到相似文档后，把相关实体、路径、属性一起带回来” |
-| **HybridRetriever / HybridCypherRetriever** | 结合向量索引和全文索引，必要时再用 Cypher 补图上下文              | 关键词和语义都重要的企业知识库                     |
-| **Text2Cypher**                             | LLM 根据图 Schema 生成 Cypher，查询结果再交给 LLM 组织答案        | 精确结构化过滤、多条件查询、报表类问答             |
-| **ToolsRetriever**                          | 把多个 retriever 包装成工具，让 LLM 按问题意图选择                | 复杂问题路由、多检索器组合                         |
-| **外部向量库 + Neo4j**                      | 向量存在 Weaviate、Pinecone、Qdrant 等系统里，再映射回 Neo4j 节点 | 已有向量基础设施，不想把全部向量迁入 Neo4j         |
+| Chế độ truy vấn                             | Cách làm                                                                                 | Câu hỏi phù hợp                                                                    |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **VectorRetriever**                         | Dựa trên vector index của Neo4j làm truy vấn độ tương đồng, trả về node và điểm khớp     | Truy vấn ngữ nghĩa thông thường, tìm entity ứng viên                               |
+| **VectorCypherRetriever**                   | Trước tiên vector retrieval trúng node, rồi thực thi truy vấn Cypher mở rộng context     | "Sau khi tìm được tài liệu tương tự, mang theo entity, path, thuộc tính liên quan" |
+| **HybridRetriever / HybridCypherRetriever** | Kết hợp vector index và full-text index, khi cần thiết dùng Cypher bổ sung context graph | Knowledge base doanh nghiệp mà từ khóa và ngữ nghĩa đều quan trọng                 |
+| **Text2Cypher**                             | LLM theo graph Schema sinh Cypher, kết quả truy vấn rồi giao LLM tổ chức câu trả lời     | Lọc có cấu trúc chính xác, truy vấn nhiều điều kiện, hỏi đáp dạng báo cáo          |
+| **ToolsRetriever**                          | Bọc nhiều retriever thành tool, cho LLM theo ý định câu hỏi chọn                         | Định tuyến câu hỏi phức tạp, tổ hợp nhiều retriever                                |
+| **Vector store ngoài + Neo4j**              | Vector lưu trong Weaviate, Pinecone, Qdrant... rồi ánh xạ về node Neo4j                  | Đã có hạ tầng vector, không muốn chuyển toàn bộ vector vào Neo4j                   |
 
-其中最有工程价值的是 **VectorCypherRetriever** 和 **Text2Cypher**。
+Trong đó có giá trị công nghệ nhất là **VectorCypherRetriever** và **Text2Cypher**.
 
-VectorCypherRetriever 的优势是稳：向量检索只负责找起点，真正的上下文由可控的 Cypher 查询补齐。比如命中“支付网关”节点后，再沿着 `[:DEPENDS_ON]`、`[:AFFECTS]`、`[:OWNER]` 这些关系取上下游、影响范围和负责人，结果更容易解释。
+Ưu thế của VectorCypherRetriever là ổn định: vector retrieval chỉ chịu trách nhiệm tìm khởi điểm, context thật sự do truy vấn Cypher kiểm soát được bổ sung. Ví dụ trúng node "cổng thanh toán" rồi, dọc theo các quan hệ `[:DEPENDS_ON]`, `[:AFFECTS]`, `[:OWNER]` lấy thượng nguồn hạ nguồn, phạm vi ảnh hưởng và người phụ trách, kết quả dễ giải thích hơn.
 
-Text2Cypher 的优势是准：它可以把“2025 年 Q4 哪些高优先级项目依赖供应商 A？”这类问题转成结构化查询。但这类模式一定要控制边界，至少要做 Schema 白名单、查询校验、只读权限、结果数量限制和超时控制。高风险场景里，更推荐先用查询模板或语义层工具，而不是完全放开 LLM 自由写 Cypher。
+Ưu thế của Text2Cypher là chính xác: nó có thể chuyển câu hỏi như "Quý 4 2025 những dự án ưu tiên cao nào phụ thuộc nhà cung cấp A?" thành truy vấn có cấu trúc. Nhưng loại mô hình này nhất định phải kiểm soát ranh giới, ít nhất phải làm Schema whitelist, kiểm tra truy vấn, quyền chỉ đọc, giới hạn số lượng kết quả và kiểm soát timeout. Trong kịch bản rủi ro cao, khuyến nghị dùng query template hoặc công cụ semantic layer trước, thay vì thả lỏng hoàn toàn cho LLM tự do viết Cypher.
 
-比如金融风控、供应链、IT 资产管理、权限治理、故障影响分析，这些领域里的对象关系本来就很重要。Neo4j GraphRAG 的优势是：**让 LLM 接入已有业务关系，而不是每次都从文本里临时猜关系。**
+Ví dụ kiểm soát rủi ro tài chính, chuỗi cung ứng, quản lý tài sản IT, quản trị quyền, phân tích ảnh hưởng sự cố, quan hệ đối tượng trong những lĩnh vực này vốn rất quan trọng. Ưu thế của Neo4j GraphRAG là: **cho LLM kết nối quan hệ nghiệp vụ đã có, thay vì mỗi lần đoán quan hệ tạm bợ từ văn bản.**
 
-## 还有哪些 GraphRAG 相关实现？
+## Còn những triển khai GraphRAG nào khác?
 
-除了 Neo4j，还有几条常见路线值得了解。
+Ngoài Neo4j, còn vài hướng phổ biến đáng tìm hiểu.
 
-| 实现路线                          | 核心思路                                                                                                | 适合情况                                                                 |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| **LangChain + Neo4j**             | 用 `Neo4jGraph` 连接 Neo4j，用 `GraphCypherQAChain` 等组件把自然语言转成 Cypher，再基于查询结果生成答案 | 已经在用 LangChain / LangGraph，希望快速把图数据库接入 Agent 或 RAG 链路 |
-| **LlamaIndex PropertyGraphIndex** | 通过 `kg_extractors` 从文档 Chunk 中抽取实体和关系，构建可查询的属性图索引                              | 文档 ingestion、索引和查询本来就在 LlamaIndex 体系里                     |
-| **FalkorDB GraphRAG SDK**         | 基于支持 OpenCypher、全文索引、向量相似度和范围索引的图数据库做 GraphRAG                                | 想尝试 Neo4j 之外的图数据库，或者更关注低延迟、多租户图查询              |
-| **轻量自研图谱 + 向量库**         | 用业务表或边表保存少量核心实体关系，向量库只负责召回候选文本，再用关系表补上下文                        | 第一版验证 GraphRAG 是否有价值，不想一开始就引入完整图数据库             |
+| Hướng triển khai                    | Tư tưởng cốt lõi                                                                                                                                                    | Trường hợp phù hợp                                                                                 |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| **LangChain + Neo4j**               | Dùng `Neo4jGraph` kết nối Neo4j, dùng các component như `GraphCypherQAChain` chuyển ngôn ngữ tự nhiên thành Cypher, rồi dựa trên kết quả truy vấn sinh câu trả lời  | Đã dùng LangChain / LangGraph, muốn nhanh chóng kết nối graph database vào chuỗi Agent hoặc RAG    |
+| **LlamaIndex PropertyGraphIndex**   | Thông qua `kg_extractors` từ Chunk tài liệu trích xuất entity và quan hệ, xây dựng chỉ mục property graph có thể truy vấn                                           | Việc ingestion, chỉ mục và truy vấn tài liệu vốn đã trong hệ sinh thái LlamaIndex                  |
+| **FalkorDB GraphRAG SDK**           | Dựa trên graph database hỗ trợ OpenCypher, full-text index, vector similarity và range index làm GraphRAG                                                           | Muốn thử graph database ngoài Neo4j, hoặc quan tâm hơn đến truy vấn graph độ trễ thấp, đa tenant   |
+| **Graph nhẹ tự xây + vector store** | Dùng bảng nghiệp vụ hoặc bảng edge lưu vài quan hệ entity cốt lõi, vector store chỉ chịu trách nhiệm recall văn bản ứng viên, rồi dùng bảng quan hệ bổ sung context | Xác minh phiên bản đầu GraphRAG có giá trị không, không muốn ngay từ đầu đưa graph database đầy đủ |
 
-这些路线的差异不在“谁更高级”，而在你要把复杂度放在哪里。
+Khác biệt của những hướng này không nằm ở "ai cấp cao hơn", mà ở chỗ bạn muốn đặt mức phức tạp vào đâu.
 
-如果你已经有稳定的业务图谱、明确的实体关系和较强的结构化查询需求，Neo4j GraphRAG 是最自然的主线。如果你的工程栈已经押在 LangChain 或 LlamaIndex 上，优先复用它们的图检索组件会更省集成成本。如果只是想验证“关系扩展是否能改善答案”，轻量自研图谱反而更适合第一版。
+Nếu bạn đã có graph nghiệp vụ ổn định, quan hệ entity rõ ràng và nhu cầu truy vấn có cấu trúc mạnh, Neo4j GraphRAG là tuyến chính tự nhiên nhất. Nếu engineering stack của bạn đã đặt cược vào LangChain hoặc LlamaIndex, ưu tiên tái sử dụng component truy vấn graph của chúng sẽ tiết kiệm chi phí tích hợp hơn. Nếu chỉ muốn xác minh "mở rộng quan hệ có cải thiện câu trả lời không", graph nhẹ tự xây ngược lại phù hợp hơn cho phiên bản đầu.
 
-## GraphRAG 真正难落地在哪里？
+## GraphRAG thật sự khó triển khai ở đâu?
 
-GraphRAG 最容易被低估的地方，不是图数据库本身，而是“把一堆文本变成可用关系网”之后，还要长期维护它。
+Thứ GraphRAG dễ bị đánh giá thấp nhất, không phải bản thân graph database, mà là sau khi "biến một đống văn bản thành mạng quan hệ dùng được", còn phải bảo trì nó lâu dài.
 
-普通向量 RAG 的核心工作是解析文档、切 Chunk、写向量、做召回。GraphRAG 多出来的是一整套关系工程：实体要抽得准，关系方向不能错，图谱要能更新，权限不能泄露，效果还要能评测。
+Công việc cốt lõi của vector RAG thông thường là phân giải tài liệu, cắt Chunk, ghi vector, làm recall. GraphRAG có thêm cả một bộ công trình quan hệ: entity phải trích chính xác, hướng quan hệ không được sai, graph phải cập nhật được, quyền không được rò rỉ, hiệu quả còn phải đánh giá được.
 
-### 1. 实体容易抽重、抽错、抽太碎
+### 1. Entity dễ trích trùng, trích sai, trích quá vụn
 
-同一个实体可能有多个名字：
+Cùng một entity có thể có nhiều tên:
 
 ```text
-订单中心、订单服务、order-service、OMS
+Trung tâm đơn hàng, dịch vụ đơn hàng, order-service, OMS
 ```
 
-它们到底是不是同一个实体？什么时候合并，什么时候拆开？
+Chúng rốt cuộc có phải cùng một entity không? Khi nào gộp, khi nào tách?
 
-这件事不能全靠 LLM 猜。生产里通常要配：
+Việc này không thể hoàn toàn dựa vào LLM đoán. Trong production thường phải trang bị:
 
-- 术语词典
-- 别名表
-- 规则匹配
-- 人工校验
-- 置信度阈值
-- 评测集
+- Từ điển thuật ngữ
+- Bảng biệt hiệu
+- Khớp quy tắc
+- Kiểm tra thủ công
+- Ngưỡng độ tin cậy
+- Tập đánh giá
 
-实体消歧做不好，图谱会变成一堆重复节点，检索路径也会断。
+Khử trùng entity làm không tốt, graph sẽ thành một đống node trùng lặp, path truy vấn cũng đứt.
 
-### 2. 关系方向一错，答案就会系统性跑偏
+### 2. Hướng quan hệ sai một cái, câu trả lời lệch mang tính hệ thống
 
-关系比实体更容易出错。
+Quan hệ còn dễ sai hơn entity.
 
-“A 依赖 B”和“B 依赖 A”只差一个方向，但工程含义完全相反。因果关系、影响关系、包含关系也很容易被 LLM 抽错。
+"A phụ thuộc B" và "B phụ thuộc A" chỉ khác một hướng, nhưng ý nghĩa công trình hoàn toàn ngược nhau. Quan hệ nhân quả, quan hệ ảnh hưởng, quan hệ bao gồm cũng rất dễ bị LLM trích sai.
 
-生产环境里，建议给关系加上这些字段：
+Trong môi trường production, khuyến nghị thêm các trường này cho quan hệ:
 
-| 字段                       | 作用                            |
-| -------------------------- | ------------------------------- |
-| `source_doc_id`            | 追溯来源文档                    |
-| `source_span`              | 追溯原文位置                    |
-| `confidence`               | 记录抽取置信度                  |
-| `relation_type`            | 控制关系类型                    |
-| `updated_at`               | 支持增量更新                    |
-| `extraction_model_version` | LLM 升级后做差量重抽和 A/B 对比 |
+| Trường                     | Vai trò                                                      |
+| -------------------------- | ------------------------------------------------------------ |
+| `source_doc_id`            | Truy nguồn tài liệu                                          |
+| `source_span`              | Truy nguồn vị trí văn bản gốc                                |
+| `confidence`               | Ghi độ tin cậy trích xuất                                    |
+| `relation_type`            | Kiểm soát loại quan hệ                                       |
+| `updated_at`               | Hỗ trợ cập nhật gia tăng                                     |
+| `extraction_model_version` | Sau khi LLM nâng cấp làm trích lại chênh lệch và so sánh A/B |
 
-没有来源追溯的图谱，不建议直接用于高风险问答。
+Graph không có nguồn truy nguồn, không nên dùng trực tiếp cho hỏi đáp rủi ro cao.
 
-### 3. 社区摘要不是免费的
+### 3. Tóm tắt cộng đồng không miễn phí
 
-以社区摘要为核心的 GraphRAG 方案，强项是全局归纳，但摘要不是免费的。
+Giải pháp GraphRAG lấy tóm tắt cộng đồng làm cốt lõi, điểm mạnh là quy nạp toàn cục, nhưng tóm tắt không miễn phí.
 
-构建阶段需要 LLM 调用：
+Giai đoạn xây dựng cần gọi LLM:
 
-- 抽取实体和关系。
-- 生成实体描述。
-- 生成社区摘要。
-- 后续版本更新时刷新相关摘要。
+- Trích xuất entity và quan hệ.
+- Sinh mô tả entity.
+- Sinh tóm tắt cộng đồng.
+- Khi cập nhật phiên bản sau làm mới tóm tắt liên quan.
 
-如果语料很大，索引成本可能明显高于普通向量 RAG。建议先用小语料验证收益，再决定是否引入多层社区摘要和全局检索。
+Nếu corpus lớn, chi phí chỉ mục có thể cao hơn rõ rệt so với vector RAG thông thường. Khuyến nghị trước tiên dùng corpus nhỏ xác minh lợi ích, rồi mới quyết định có đưa tóm tắt cộng đồng đa tầng và truy vấn toàn cục không.
 
-### 4. 更新一篇文档，可能牵动一片图
+### 4. Cập nhật một tài liệu, có thể khuấy động cả một vùng graph
 
-普通向量 RAG 更新一篇文档，通常是删除旧 Chunk，再写入新 Chunk 和向量。
+Vector RAG thông thường cập nhật một tài liệu, thường là xóa Chunk cũ, rồi ghi Chunk và vector mới.
 
-GraphRAG 更新一篇文档，可能影响：
+GraphRAG cập nhật một tài liệu, có thể ảnh hưởng:
 
-- 实体节点
-- 关系边
-- 社区划分
-- 社区摘要
-- 实体摘要
-- 向量索引
-- 权限索引
+- Node entity
+- Edge quan hệ
+- Phân chia cộng đồng
+- Tóm tắt cộng đồng
+- Tóm tắt entity
+- Chỉ mục vector
+- Chỉ mục quyền
 
-如果每次都全量重建，成本高；如果做增量更新，工程复杂度高。
+Nếu mỗi lần đều rebuild toàn bộ, chi phí cao; nếu làm cập nhật gia tăng, độ phức tạp công trình cao.
 
-这也是 GraphRAG 比普通 RAG 更像数据工程的地方：它不是只维护索引，而是在维护一个会持续变化的知识结构。
+Đây cũng là chỗ GraphRAG giống data engineering hơn RAG thông thường: nó không chỉ bảo trì chỉ mục, mà đang bảo trì một cấu trúc tri thức thay đổi liên tục.
 
-### 5. 权限过滤不能只看文档级别
+### 5. Lọc quyền không thể chỉ nhìn cấp tài liệu
 
-企业知识库绕不开权限。
+Knowledge base doanh nghiệp không tránh được chuyện quyền.
 
-向量 RAG 里，常见做法是在检索前或检索时做元数据过滤。GraphRAG 里还要考虑：
+Trong vector RAG, cách làm phổ biến là trước hoặc trong khi truy vấn làm lọc metadata. Trong GraphRAG còn phải xem xét:
 
-- 用户能看某个节点，但能不能看它的邻居？
-- 用户能看某条边，但能不能看边连接的另一个实体？
-- 社区摘要里是否混入了无权限文档的信息？
-- 全局摘要会不会泄露敏感主题？
+- Người dùng xem được một node, nhưng có xem được hàng xóm của nó không?
+- Người dùng xem được một edge, nhưng có xem được entity khác mà edge kết nối không?
+- Tóm tắt cộng đồng có lẫn thông tin của tài liệu không có quyền không?
+- Tóm tắt toàn cục có rò rỉ chủ đề nhạy cảm không?
 
-特别是社区摘要，它可能由多份文档共同生成。如果其中一部分文档对当前用户不可见，摘要就可能变成隐性泄露点。应对策略：
+Đặc biệt là tóm tắt cộng đồng, nó có thể do nhiều tài liệu cùng sinh ra. Nếu một phần tài liệu không hiển thị với người dùng hiện tại, tóm tắt có thể thành điểm rò rỉ ngầm. Chiến lược ứng phó:
 
-- **社区摘要按权限分组生成**：每个权限组独立生成摘要，查询时只返回用户有权限的社区摘要。
-- **摘要溯源字段保留所有源文档 ID**：查询时校验用户权限与源文档 ID 的交集，过滤无权限的证据。
-- **高敏感语料不参与社区聚合**：单独走局部检索通道，避免跨文档泄露。
+- **Tóm tắt cộng đồng sinh theo nhóm quyền**: mỗi nhóm quyền sinh tóm tắt độc lập, khi truy vấn chỉ trả về tóm tắt cộng đồng mà người dùng có quyền.
+- **Trường truy nguồn tóm tắt giữ tất cả ID tài liệu nguồn**: khi truy vấn kiểm tra giao của quyền người dùng với ID tài liệu nguồn, lọc bỏ bằng chứng không có quyền.
+- **Corpus nhạy cảm cao không tham gia tổng hợp cộng đồng**: đi riêng kênh truy vấn cục bộ, tránh rò rỉ xuyên tài liệu.
 
-## 你会如何在项目中落地 GraphRAG?
+## Bạn sẽ triển khai GraphRAG vào project như thế nào?
 
-小 G 不建议一开始就上完整 GraphRAG。更稳的路径是分阶段演进。
+Tiểu G không khuyến nghị ngay từ đầu dùng GraphRAG hoàn chỉnh. Đường an toàn hơn là tiến hóa theo từng giai đoạn.
 
-### 阶段一：先做好向量 RAG 基线
+### Giai đoạn một: trước tiên làm tốt baseline vector RAG
 
-先把基础能力做扎实：
+Trước tiên làm chắc năng lực cơ bản:
 
-- 文档解析稳定。
-- Chunk 策略可评测。
-- 向量检索 + BM25 混合检索。
-- rerank 可插拔。
-- 引用来源可追溯。
-- 权限过滤可靠。
+- Phân giải tài liệu ổn định.
+- Chiến lược Chunk đánh giá được.
+- Vector retrieval + BM25 hybrid retrieval.
+- Rerank có thể cắm thay.
+- Nguồn trích dẫn truy nguồn được.
+- Lọc quyền đáng tin.
 
-如果这些都没做好，上 GraphRAG 只会把问题复杂化。
+Nếu những thứ này chưa làm tốt, dùng GraphRAG chỉ làm phức tạp thêm vấn đề.
 
-### 阶段二：收集关系型失败案例
+### Giai đoạn hai: thu gom trường hợp thất bại dạng quan hệ
 
-不要凭感觉判断是否需要 GraphRAG。建议把 RAG 的 Badcase 分类：
+Đừng theo cảm giác phán đoán có cần GraphRAG không. Khuyến nghị phân loại Badcase của RAG:
 
-| Badcase 类型           | 是否适合 GraphRAG            |
-| ---------------------- | ---------------------------- |
-| 单纯没召回关键词       | 先优化 BM25 和 query rewrite |
-| Chunk 切分不合理       | 先优化 Chunking              |
-| 需要跨实体关系推理     | 适合引入图结构               |
-| 需要全局主题归纳       | 适合引入社区摘要             |
-| 需要精确过滤和权限约束 | 适合结合结构化查询           |
+| Loại Badcase                         | Có phù hợp GraphRAG không               |
+| ------------------------------------ | --------------------------------------- |
+| Đơn thuần không recall được từ khóa  | Trước tiên tối ưu BM25 và query rewrite |
+| Chunk chia không hợp lý              | Trước tiên tối ưu Chunking              |
+| Cần suy luận quan hệ xuyên entity    | Phù hợp đưa cấu trúc graph vào          |
+| Cần quy nạp chủ đề toàn cục          | Phù hợp đưa tóm tắt cộng đồng vào       |
+| Cần lọc chính xác và ràng buộc quyền | Phù hợp kết hợp truy vấn có cấu trúc    |
 
-只有当 badcase 明确集中在关系和全局归纳上，GraphRAG 才有性价比。
+Chỉ khi badcase tập trung rõ vào quan hệ và quy nạp toàn cục, GraphRAG mới có hiệu quả kinh tế.
 
-### 阶段三：从轻量图谱开始
+### Giai đoạn ba: bắt đầu từ graph nhẹ
 
-第一版不一定要做完整知识图谱。
+Phiên bản đầu không nhất thiết phải làm knowledge graph đầy đủ.
 
-可以先做一个轻量版：
+Có thể trước tiên làm một bản nhẹ:
 
-- 只抽取核心实体，比如系统、接口、负责人、事故、制度条款。
-- 只保留少量高价值关系，比如依赖、负责、影响、属于、引用。
-- 图谱只用于检索扩展，不直接用于最终事实判断。
-- 每条关系都保留原文证据。
+- Chỉ trích xuất entity cốt lõi, như hệ thống, interface, người phụ trách, sự cố, điều khoản quy chế.
+- Chỉ giữ ít quan hệ giá trị cao, như phụ thuộc, phụ trách, ảnh hưởng, thuộc về, trích dẫn.
+- Graph chỉ dùng để mở rộng truy vấn, không trực tiếp dùng cho phán đoán sự kiện cuối cùng.
+- Mỗi quan hệ đều giữ bằng chứng văn bản gốc.
 
-这样能用较低成本验证 GraphRAG 是否真的改善业务指标。
+Như vậy có thể dùng chi phí thấp xác minh GraphRAG có thật sự cải thiện chỉ số nghiệp vụ không.
 
-### 阶段四：再引入社区发现和全局检索
+### Giai đoạn bốn: rồi mới đưa community detection và truy vấn toàn cục
 
-当语料规模变大，且全局性问题增多，再考虑社区发现和社区摘要。
+Khi quy mô corpus lớn lên, và vấn đề toàn cục nhiều lên, mới cân nhắc community detection và tóm tắt cộng đồng.
 
-这个阶段要重点评测：
+Giai đoạn này phải trọng điểm đánh giá:
 
-- 社区划分是否符合业务直觉。
-- 社区摘要是否遗漏关键约束。
-- 全局回答是否有稳定引用。
-- 不同权限用户看到的摘要是否安全。
+- Việc phân chia cộng đồng có khớp trực giác nghiệp vụ không.
+- Tóm tắt cộng đồng có bỏ sót ràng buộc then chốt không.
+- Câu trả lời toàn cục có trích dẫn ổn định không.
+- Tóm tắt mà người dùng quyền khác nhau thấy được có an toàn không.
 
-如果评测跟不上，不要把全局检索开放给高风险场景。
+Nếu đánh giá không theo kịp, đừng mở truy vấn toàn cục cho kịch bản rủi ro cao.
 
-### 阶段五：引入 Hybrid RAG 路由（可选的终极形态）
+### Giai đoạn năm: đưa Hybrid RAG routing (hình thái cuối tùy chọn)
 
-阶段四之后，成熟系统通常不是纯 GraphRAG，而是按问题类型动态路由的混合架构：
+Sau giai đoạn bốn, hệ thống trưởng thành thường không phải GraphRAG thuần, mà là kiến trúc hybrid định tuyến động theo loại câu hỏi:
 
 ```mermaid
 flowchart LR
-    %% ========== 配色声明 ==========
+    %% ========== Khai báo màu ==========
     classDef client fill:#00838F,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef gateway fill:#7B68EE,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef business fill:#E99151,color:#FFFFFF,stroke:none,rx:10,ry:10
@@ -554,79 +554,79 @@ flowchart LR
     classDef success fill:#4CA497,color:#FFFFFF,stroke:none,rx:10,ry:10
     classDef warning fill:#F39C12,color:#FFFFFF,stroke:none,rx:10,ry:10
 
-    Q[用户问题]:::client
-    Classifier[轻量分类器<br/>小模型/规则]:::gateway
-    Router[问题路由]:::gateway
+    Q[Câu hỏi người dùng]:::client
+    Classifier[Bộ phân loại nhẹ<br/>model nhỏ/quy tắc]:::gateway
+    Router[Định tuyến câu hỏi]:::gateway
 
     V[Vector RAG]:::search
     Local[Local Search]:::business
-    Global[Global Search<br/>+ 社区摘要]:::business
+    Global[Global Search<br/>+ tóm tắt cộng đồng]:::business
     Agent[Agentic Loop]:::gateway
-    Fallback[降级 Vector RAG]:::warning
+    Fallback[Hạ cấp Vector RAG]:::warning
 
     Q --> Classifier --> Router
-    Router -->|事实型| V
-    Router -->|关系型| Local
-    Router -->|全局型| Global
-    Router -->|跨类型| Agent
-    Router -->|置信度低| Fallback
+    Router -->|dạng sự kiện| V
+    Router -->|dạng quan hệ| Local
+    Router -->|dạng toàn cục| Global
+    Router -->|xuyên loại| Agent
+    Router -->|độ tin cậy thấp| Fallback
 
-    V & Local & Global & Agent & Fallback --> Answer[LLM 生成<br/>最终答案]:::success
+    V & Local & Global & Agent & Fallback --> Answer[LLM sinh<br/>câu trả lời cuối]:::success
 
     linkStyle default stroke-width:2px,stroke:#333333,opacity:0.8
 ```
 
-关键设计点：入口分类器要可解释、降级策略要明确、路由日志要可回溯。
+Điểm thiết kế then chốt: bộ phân loại đầu vào phải giải thích được, chiến lược hạ cấp phải rõ ràng, log định tuyến phải truy vết được.
 
-## GraphRAG 评测怎么落地？
+## Đánh giá GraphRAG triển khai thế nào?
 
-全文反复强调“评测闭环”重要性，但具体怎么评？推荐三个层次：
+Toàn văn nhấn mạnh tầm quan trọng của "vòng đánh giá khép kín", nhưng cụ thể đánh giá thế nào? Khuyến nghị ba tầng:
 
-### 检索层指标
+### Chỉ số tầng truy vấn
 
-- **实体召回率 / 关系召回率**：评测检索结果是否覆盖了回答所需的实体和关系
-- **社区一致性**：社区划分是否符合业务直觉，可用人工抽检
+- **Entity recall rate / Relationship recall rate**: đánh giá kết quả truy vấn có bao phủ entity và quan hệ cần cho câu trả lời không
+- **Community consistency**: việc phân chia cộng đồng có khớp trực giác nghiệp vụ không, có thể dùng kiểm tra thủ công lấy mẫu
 
-### 生成层指标
+### Chỉ số tầng sinh
 
-- **Faithfulness（忠实度）**：生成回答是否忠实于检索到的上下文，推荐用 RAGAS 框架
-- **Answer Relevance（答案相关性）**、**Context Precision（上下文精确度）**
+- **Faithfulness (độ trung thành)**: câu trả lời sinh ra có trung thành với context truy vấn được không, khuyến nghị dùng framework RAGAS
+- **Answer Relevance (độ liên quan câu trả lời)**, **Context Precision (độ chính xác ngữ cảnh)**
 
-### 业务层指标
+### Chỉ số tầng nghiệp vụ
 
-- **用户采纳率、转人工率、引用点击率**：最终业务效果
-- **回归测试集**：建议每周新增 20-50 条业务真实问题，长期累积到千条级
+- **Tỷ lệ chấp nhận người dùng, tỷ lệ chuyển người, tỷ lệ click trích dẫn**: hiệu quả nghiệp vụ cuối cùng
+- **Tập test hồi quy**: khuyến nghị mỗi tuần thêm 20-50 câu hỏi thực tế nghiệp vụ, lâu dài tích lũy đến hàng nghìn
 
-## 与其他 RAG 增强路线的对比
+## So sánh với các hướng tăng cường RAG khác
 
-GraphRAG 不是唯一的 RAG 增强路线，了解横向坐标有助于做技术选型：
+GraphRAG không phải hướng tăng cường RAG duy nhất, hiểu tọa độ ngang sẽ giúp lựa chọn công nghệ:
 
-| 方案                                   | 解决的问题            | 未解决的问题 |
-| -------------------------------------- | --------------------- | ------------ |
-| **多向量（ColBERT/Late Interaction）** | Chunk 内细粒度匹配    | 关系问题     |
-| **HyDE / Query Rewriting**             | query 与 doc 表述差异 | 多跳推理     |
-| **Self-RAG / Corrective RAG**          | 答案可信度            | 检索结构     |
-| **GraphRAG**                           | 关系 + 全局归纳       | 成本最高     |
+| Giải pháp                                   | Vấn đề giải quyết               | Vấn đề chưa giải quyết |
+| ------------------------------------------- | ------------------------------- | ---------------------- |
+| **Multi-vector (ColBERT/Late Interaction)** | Khớp chi tiết hạt trong Chunk   | Vấn đề quan hệ         |
+| **HyDE / Query Rewriting**                  | Khác biệt diễn đạt query và doc | Suy luận nhiều chặng   |
+| **Self-RAG / Corrective RAG**               | Độ tin cậy câu trả lời          | Cấu trúc truy vấn      |
+| **GraphRAG**                                | Quan hệ + quy nạp toàn cục      | Chi phí cao nhất       |
 
-GraphRAG 是目前唯一系统性解决“关系推理 + 全局归纳”的方案，但代价也最高。
+GraphRAG hiện là giải pháp duy nhất giải quyết có hệ thống "suy luận quan hệ + quy nạp toàn cục", nhưng cái giá cũng cao nhất.
 
 <!-- @include: @rag-project.snippet.md -->
 
-## 总结
+## Tổng kết
 
-GraphRAG 的价值不在于听起来高级，而在于它补上了传统向量 RAG 的一个结构性短板：**向量检索擅长找相似片段，但不擅长理解片段之间的关系。**
+Giá trị của GraphRAG không nằm ở chỗ nghe có vẻ cấp cao, mà nằm ở chỗ nó bù vào một điểm yếu mang tính cấu trúc của vector RAG truyền thống: **vector retrieval giỏi tìm đoạn tương tự, nhưng không giỏi hiểu quan hệ giữa các đoạn.**
 
-GraphRAG 把检索对象从文本 Chunk 扩展到了实体、关系、路径、社区摘要。它适合多跳推理、影响分析、归因分析和复杂业务问答，但代价是数据治理成本更高。Neo4j GraphRAG 适合已有业务关系的场景；LangChain/LlamaIndex 等适合现有技术栈集成。选哪条路线，看你的技术栈、图模型复杂度和运维能力。
+GraphRAG mở rộng đối tượng truy vấn từ Chunk văn bản sang entity, quan hệ, path, tóm tắt cộng đồng. Nó phù hợp suy luận nhiều chặng, phân tích ảnh hưởng, phân tích quy nguyên nhân và hỏi đáp nghiệp vụ phức tạp, nhưng cái giá là chi phí quản trị dữ liệu cao hơn. Neo4j GraphRAG phù hợp kịch bản đã có quan hệ nghiệp vụ; LangChain/LlamaIndex... phù hợp tích hợp vào tech stack hiện có. Chọn hướng nào, xem tech stack của bạn, độ phức tạp graph model và năng lực vận hành.
 
-最后给一个非常务实的判断标准：如果你的 RAG 失败原因只是“没搜到那段话”，先优化检索；如果失败原因是“搜到了很多话，但系统不理解它们之间的关系”，再考虑 GraphRAG。
+Cuối cùng cho một tiêu chuẩn phán đoán rất thực dụng: nếu nguyên nhân thất bại RAG của bạn chỉ là "không tìm thấy đoạn văn đó", trước tiên tối ưu retrieval; nếu nguyên nhân thất bại là "tìm thấy nhiều đoạn, nhưng hệ thống không hiểu quan hệ giữa chúng", mới cân nhắc GraphRAG.
 
-## 参考资料
+## Tài liệu tham khảo
 
-- [Neo4j：What Is GraphRAG?](https://neo4j.com/blog/genai/what-is-graphrag/)
+- [Neo4j: What Is GraphRAG?](https://neo4j.com/blog/genai/what-is-graphrag/)
 - [Neo4j GraphRAG Python Package](https://neo4j.com/docs/neo4j-graphrag-python/current/)
 - [Neo4j GraphRAG RAG User Guide](https://neo4j.com/docs/neo4j-graphrag-python/current/user_guide_rag.html)
 - [LangChain Neo4j Integration](https://docs.langchain.com/oss/python/integrations/graphs/neo4j_cypher)
 - [LlamaIndex PropertyGraphIndex](https://developers.llamaindex.ai/python/framework/module_guides/indexing/lpg_index_guide/)
 - [FalkorDB Docs](https://docs.falkordb.com/)
-- [GraphRAG：从 RAG 到 GraphRAG 的企业知识检索实践](https://juejin.cn/post/7618261670406438964)
-- [RAGAS 评测框架](https://docs.ragas.io/)
+- [GraphRAG: Thực hành truy vấn tri thức doanh nghiệp từ RAG đến GraphRAG](https://juejin.cn/post/7618261670406438964)
+- [Framework đánh giá RAGAS](https://docs.ragas.io/)

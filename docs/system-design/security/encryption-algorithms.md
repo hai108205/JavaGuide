@@ -1,6 +1,6 @@
 ---
-title: 常见加密算法总结
-description: 常见加密算法详解，涵盖AES、RSA等对称与非对称加密算法及MD5、SHA等哈希算法的原理与应用场景。
+title: Tổng hợp các thuật toán mã hóa phổ biến
+description: Giải thích chi tiết các thuật toán mã hóa phổ biến, bao gồm nguyên lý và tình huống ứng dụng của thuật toán mã hóa đối xứng và bất đối xứng như AES, RSA, cùng các thuật toán băm như MD5, SHA.
 category: 系统设计
 tag:
   - 安全
@@ -11,88 +11,88 @@ head:
       content: 加密算法,AES,RSA,哈希算法,摘要算法,HTTPS,对称加密,非对称加密,BCrypt
 ---
 
-加密算法是一种用数学方法对数据进行变换的技术，目的是保护数据的安全，防止被未经授权的人读取或修改。加密算法可以分为三大类：对称加密算法、非对称加密算法和哈希算法（也叫摘要算法）。
+Thuật toán mã hóa là một kỹ thuật sử dụng phương pháp toán học để biến đổi dữ liệu, nhằm bảo vệ an toàn dữ liệu, ngăn chặn việc đọc hoặc sửa đổi trái phép. Thuật toán mã hóa có thể chia thành ba loại lớn: thuật toán mã hóa đối xứng, thuật toán mã hóa bất đối xứng và thuật toán băm (hash algorithm, còn gọi là thuật toán tóm lược - digest algorithm).
 
-日常开发中常见的需要用到加密算法的场景：
+Các tình huống phổ biến cần sử dụng thuật toán mã hóa trong phát triển hàng ngày:
 
-1. 保存在数据库中的密码需要加盐之后使用哈希算法（比如 BCrypt）进行加密。
-2. 保存在数据库中的银行卡号、身份号这类敏感数据需要使用对称加密算法（比如 AES）保存。
-3. 网络传输的敏感数据比如银行卡号、身份号需要用 HTTPS + 非对称加密算法（如 RSA）来保证传输数据的安全性。
+1. Mật khẩu lưu trong cơ sở dữ liệu cần được thêm muối (salt) rồi sử dụng thuật toán băm (ví dụ BCrypt) để mã hóa.
+2. Các dữ liệu nhạy cảm như số thẻ ngân hàng, số căn cước lưu trong cơ sở dữ liệu cần sử dụng thuật toán mã hóa đối xứng (ví dụ AES) để lưu trữ.
+3. Dữ liệu nhạy cảm truyền qua mạng như số thẻ ngân hàng, số căn cước cần sử dụng HTTPS + thuật toán mã hóa bất đối xứng (như RSA) để đảm bảo an toàn dữ liệu truyền tải.
 4. ……
 
-ps: 严格上来说，哈希算法其实不属于加密算法，只是可以用到某些加密场景中（例如密码加密），两者可以看作是并列关系。加密算法通常指的是可以将明文转换为密文，并且能够通过某种方式（如密钥）再将密文还原为明文的算法。而哈希算法是一种单向过程，它将输入信息转换成一个固定长度的、看似随机的哈希值，但这个过程是不可逆的，也就是说，不能从哈希值还原出原始信息。
+ps: Nói một cách chặt chẽ, thuật toán băm thực ra không thuộc về thuật toán mã hóa, chỉ là có thể dùng trong một số tình huống mã hóa (ví dụ như mã hóa mật khẩu), hai loại này có thể coi là quan hệ ngang hàng. Thuật toán mã hóa thường chỉ thuật toán có thể chuyển đổi văn bản gốc (plaintext) thành văn bản mã hóa (ciphertext), và có thể thông qua một cách nào đó (như khóa - key) để khôi phục văn bản mã hóa trở lại văn bản gốc. Còn thuật toán băm là một quá trình một chiều, nó chuyển đổi thông tin đầu vào thành một giá trị băm (hash value) có độ dài cố định, trông có vẻ ngẫu nhiên, nhưng quá trình này là không thể đảo ngược, tức là không thể từ giá trị băm khôi phục lại thông tin gốc.
 
-## 哈希算法
+## Thuật toán băm (Hash Algorithm)
 
-哈希算法也叫散列函数或摘要算法，它的作用是对任意长度的数据生成一个固定长度的唯一标识，也叫哈希值、散列值或消息摘要（后文统称为哈希值）。
+Thuật toán băm còn gọi là hàm băm (hash function) hoặc thuật toán tóm lược (digest algorithm), tác dụng của nó là tạo ra một định danh duy nhất có độ dài cố định cho dữ liệu có độ dài bất kỳ, còn gọi là giá trị băm, giá trị băm (hash value) hoặc tóm lược thông điệp (message digest, sau đây gọi chung là giá trị băm).
 
 ![哈希算法效果演示](https://oss.javaguide.cn/github/javaguide/system-design/security/encryption-algorithms/hash-function-effect-demonstration.png)
 
-哈希算法的是不可逆的，你无法通过哈希之后的值再得到原值。
+Thuật toán băm là không thể đảo ngược, bạn không thể từ giá trị sau khi băm mà lấy lại được giá trị gốc.
 
-哈希值的作用是可以用来验证数据的完整性和一致性。
+Tác dụng của giá trị băm là có thể dùng để xác minh tính toàn vẹn và tính nhất quán của dữ liệu.
 
-举两个实际的例子：
+Hai ví dụ thực tế:
 
-- 保存密码到数据库时使用哈希算法进行加密，可以通过比较用户输入密码的哈希值和数据库保存的哈希值是否一致，来判断密码是否正确。
-- 我们下载一个文件时，可以通过比较文件的哈希值和官方提供的哈希值是否一致，来判断文件是否被篡改或损坏；
+- Khi lưu mật khẩu vào cơ sở dữ liệu, sử dụng thuật toán băm để mã hóa, có thể thông qua việc so sánh giá trị băm của mật khẩu người dùng nhập vào với giá trị băm đã lưu trong cơ sở dữ liệu có khớp hay không, để phán đoán mật khẩu có đúng không.
+- Khi chúng ta tải xuống một tập tin, có thể thông qua việc so sánh giá trị băm của tập tin với giá trị băm do nhà phát hành chính thức cung cấp có khớp hay không, để phán đoán tập tin có bị sửa đổi hoặc hỏng hóc hay không;
 
-这种算法的特点是不可逆：
+Đặc điểm của loại thuật toán này là không thể đảo ngược:
 
-- 不能从哈希值还原出原始数据。
-- 原始数据的任何改变都会导致哈希值的巨大变化。
+- Không thể từ giá trị băm khôi phục lại dữ liệu gốc.
+- Bất kỳ thay đổi nào của dữ liệu gốc đều dẫn đến sự thay đổi lớn của giá trị băm.
 
-哈希算法可以简单分为两类：
+Thuật toán băm có thể chia đơn giản thành hai loại:
 
-1. **加密哈希算法**：安全性较高的哈希算法，它可以提供一定的数据完整性保护和数据防篡改能力，能够抵御一定的攻击手段，安全性相对较高，但性能较差，适用于对安全性要求较高的场景。例如 SHA2、SHA3、SM3、RIPEMD-160、BLAKE2 等等。
-2. **非加密哈希算法**：安全性相对较低的哈希算法，易受到暴力破解、冲突攻击等攻击手段的影响，但性能较高，适用于对安全性没有要求的业务场景。例如 CRC32、MurMurHash3 等等。
+1. **Thuật toán băm mật mã (Cryptographic Hash Algorithm)**：Thuật toán băm có độ an toàn cao hơn, nó có thể cung cấp khả năng bảo vệ tính toàn vẹn dữ liệu và khả năng chống sửa đổi dữ liệu ở mức độ nhất định, có thể chống lại một số phương thức tấn công, độ an toàn tương đối cao, nhưng hiệu năng kém hơn, phù hợp với các tình huống yêu cầu an toàn cao. Ví dụ SHA2, SHA3, SM3, RIPEMD-160, BLAKE2 v.v.
+2. **Thuật toán băm phi mật mã (Non-cryptographic Hash Algorithm)**：Thuật toán băm có độ an toàn tương đối thấp, dễ bị ảnh hưởng bởi các phương thức tấn công như brute force, tấn công xung đột (collision attack), nhưng hiệu năng cao, phù hợp với các tình huống nghiệp vụ không yêu cầu an toàn. Ví dụ CRC32, MurMurHash3 v.v.
 
-除了这两种之外，还有一些特殊的哈希算法，例如安全性更高的**慢哈希算法**。
+Ngoài hai loại này, còn có một số thuật toán băm đặc biệt, ví dụ như **thuật toán băm chậm (Slow Hash Algorithm)** có độ an toàn cao hơn.
 
-常见的哈希算法有：
+Các thuật toán băm phổ biến:
 
-- MD（Message Digest，消息摘要算法）：MD2、MD4、MD5 等，已经不被推荐使用。
-- SHA（Secure Hash Algorithm，安全哈希算法）：SHA-1 系列安全性低，SHA2，SHA3 系列安全性较高。
-- 国密算法：例如 SM2、SM3、SM4，其中 SM2 为非对称加密算法，SM4 为对称加密算法，SM3 为哈希算法（安全性及效率和 SHA-256 相当，但更适合国内的应用环境）。
-- Bcrypt（密码哈希算法）：基于 Blowfish 加密算法的密码哈希算法，专门为密码加密而设计，安全性高，属于慢哈希算法。
-- MAC（Message Authentication Code，消息认证码算法）：HMAC 是一种基于哈希的 MAC，可以与任何安全的哈希算法结合使用，例如 SHA-256。
-- CRC：（Cyclic Redundancy Check，循环冗余校验）：CRC32 是一种 CRC 算法，它的特点是生成 32 位的校验值，通常用于数据完整性校验、文件校验等场景。
-- SipHash：它不是传统的无密钥加密哈希函数（如 SHA-256），而是带密钥的 PRF（Pseudo-Random Function）。必须配合一个随机密钥使用，才能真正具备抗碰撞攻击的能力。它的设计目的是在速度和安全性之间达到一个平衡，用于防御[哈希泛洪 DoS 攻击](https://aumasson.jp/siphash/siphashdos_29c3_slides.pdf)。Rust 默认使用 SipHash 作为哈希算法（目前是 SipHash-1-3 ），从 Redis 4.0 版本开始，字典（dict）的哈希算法从原来的 MurmurHash2 切换为 SipHash（目前是 SipHash-1-2）。
-- MurMurHash：经典快速的非加密哈希算法，目前最新的版本是 MurMurHash3，可以生成 32 位或者 128 位哈希值；
+- MD（Message Digest, thuật toán tóm lược thông điệp）：MD2, MD4, MD5 v.v., đã không còn được khuyến nghị sử dụng.
+- SHA（Secure Hash Algorithm, thuật toán băm an toàn）：Dòng SHA-1 có độ an toàn thấp, dòng SHA2, SHA3 có độ an toàn cao hơn.
+- Thuật toán mật mã quốc gia Trung Quốc：ví dụ SM2, SM3, SM4, trong đó SM2 là thuật toán mã hóa bất đối xứng, SM4 là thuật toán mã hóa đối xứng, SM3 là thuật toán băm（độ an toàn và hiệu suất tương đương SHA-256, nhưng phù hợp hơn với môi trường ứng dụng trong nước Trung Quốc）.
+- BCrypt（thuật toán băm mật khẩu）：Thuật toán băm mật khẩu dựa trên thuật toán mã hóa Blowfish, được thiết kế chuyên biệt cho mã hóa mật khẩu, độ an toàn cao, thuộc về thuật toán băm chậm.
+- MAC（Message Authentication Code, thuật toán mã xác thực thông điệp）：HMAC là một loại MAC dựa trên băm, có thể kết hợp với bất kỳ thuật toán băm an toàn nào, ví dụ SHA-256.
+- CRC：（Cyclic Redundancy Check, kiểm tra dư thừa vòng）：CRC32 là một thuật toán CRC, đặc điểm của nó là tạo ra giá trị kiểm tra 32 bit, thường dùng trong các tình huống như kiểm tra tính toàn vẹn dữ liệu, kiểm tra tập tin.
+- SipHash：Nó không phải là hàm băm mật mã không khóa truyền thống（như SHA-256）, mà là PRF（Pseudo-Random Function, hàm giả ngẫu nhiên）có khóa. Phải kết hợp với một khóa ngẫu nhiên mới thực sự có khả năng chống tấn công xung đột. Mục đích thiết kế của nó là đạt được sự cân bằng giữa tốc độ và an toàn, dùng để phòng chống [tấn công DoS tràn băm (Hash Flooding DoS Attack)](https://aumasson.jp/siphash/siphashdos_29c3_slides.pdf). Rust mặc định sử dụng SipHash làm thuật toán băm（hiện tại là SipHash-1-3）, từ Redis 4.0 trở đi, thuật toán băm của dictionary（dict）đã chuyển từ MurmurHash2 ban đầu sang SipHash（hiện tại là SipHash-1-2）.
+- MurMurHash：Thuật toán băm phi mật mã cổ điển nhanh, phiên bản mới nhất hiện tại là MurMurHash3, có thể tạo ra giá trị băm 32 bit hoặc 128 bit；
 - ……
 
-哈希算法一般是不需要密钥的，但也存在部分特殊哈希算法需要密钥。例如，MAC 和 SipHash 就是一种基于密钥的哈希算法，它在哈希算法的基础上增加了一个密钥，使得只有知道密钥的人才能验证数据的完整性和来源。
+Thuật toán băm thông thường không cần khóa, nhưng cũng tồn tại một số thuật toán băm đặc biệt cần khóa. Ví dụ, MAC và SipHash chính là một loại thuật toán băm dựa trên khóa, nó thêm một khóa trên cơ sở thuật toán băm, khiến cho chỉ người biết khóa mới có thể xác minh tính toàn vẹn và nguồn gốc của dữ liệu.
 
 ### MD
 
-MD 算法有多个版本，包括 MD2、MD4、MD5 等，其中 MD5 是最常用的版本，它可以生成一个 128 位（16 字节）的哈希值。从安全性上说：MD5 > MD4 > MD2。除了这些版本，还有一些基于 MD4 或 MD5 改进的算法，如 RIPEMD、HAVAL 等。
+Thuật toán MD có nhiều phiên bản, bao gồm MD2, MD4, MD5 v.v., trong đó MD5 là phiên bản được sử dụng nhiều nhất, nó có thể tạo ra một giá trị băm 128 bit（16 byte）. Xét về độ an toàn：MD5 > MD4 > MD2. Ngoài các phiên bản này, còn có một số thuật toán cải tiến dựa trên MD4 hoặc MD5, như RIPEMD, HAVAL v.v.
 
-即使是最安全 MD 算法 MD5 也存在被破解的风险，攻击者可以通过暴力破解或彩虹表攻击等方式，找到与原始数据相同的哈希值，从而破解数据。
+Ngay cả thuật toán MD an toàn nhất là MD5 cũng tồn tại rủi ro bị phá giải, kẻ tấn công có thể thông qua brute force hoặc tấn công bảng cầu vồng (rainbow table attack) v.v., tìm ra giá trị băm giống với dữ liệu gốc, từ đó phá giải dữ liệu.
 
-为了增加破解难度，通常可以选择加盐。盐（Salt）在密码学中，是指通过在密码任意固定位置插入特定的字符串，让哈希后的结果和使用原始密码的哈希结果不相符，这种过程称之为“加盐”。
+Để tăng độ khó phá giải, thường có thể chọn thêm muối (salt). Muối (Salt) trong mật mã học, là chỉ việc chèn một chuỗi ký tự cụ thể vào vị trí cố định bất kỳ của mật khẩu, khiến cho kết quả sau khi băm không khớp với kết quả băm của mật khẩu gốc, quá trình này gọi là "thêm muối" (salting).
 
-加盐之后就安全了吗？并不一定，这只是增加了破解难度，不代表无法破解。而且，MD5 算法本身就存在弱碰撞（Collision）问题，即多个不同的输入产生相同的 MD5 值。
+Sau khi thêm muối thì đã an toàn chưa? Không hẳn, điều này chỉ làm tăng độ khó phá giải, không có nghĩa là không thể phá giải. Hơn nữa, bản thân thuật toán MD5 đã tồn tại vấn đề xung đột yếu (Weak Collision), tức là nhiều đầu vào khác nhau tạo ra cùng một giá trị MD5.
 
-因此，MD 算法已经不被推荐使用，建议使用更安全的哈希算法比如 SHA-2、Bcrypt。
+Do đó, thuật toán MD đã không còn được khuyến nghị sử dụng, nên sử dụng các thuật toán băm an toàn hơn như SHA-2, BCrypt.
 
-Java 提供了对 MD 算法系列的支持，包括 MD2、MD5。
+Java cung cấp hỗ trợ cho dòng thuật toán MD, bao gồm MD2, MD5.
 
-MD5 代码示例（未加盐）：
+Ví dụ code MD5（chưa thêm muối）：
 
 ```java
 String originalString = "Java学习 + 面试指南：javaguide.cn";
-// 创建MD5摘要对象
+// Tạo đối tượng tóm lược MD5
 MessageDigest messageDigest = MessageDigest.getInstance("MD5");
 messageDigest.update(originalString.getBytes(StandardCharsets.UTF_8));
-// 计算哈希值
+// Tính giá trị băm
 byte[] result = messageDigest.digest();
-// 将哈希值转换为十六进制字符串
+// Chuyển đổi giá trị băm thành chuỗi thập lục phân
 String hexString = new HexBinaryAdapter().marshal(result);
 System.out.println("Original String: " + originalString);
 System.out.println("MD5 Hash: " + hexString.toLowerCase());
 ```
 
-输出：
+Kết quả：
 
 ```bash
 Original String: Java学习 + 面试指南：javaguide.cn
@@ -101,56 +101,56 @@ MD5 Hash: fb246796f5b1b60d4d0268c817c608fa
 
 ### SHA
 
-SHA（Secure Hash Algorithm）系列算法是一组密码哈希算法，用于将任意长度的数据映射为固定长度的哈希值。SHA 系列算法由美国国家安全局（NSA）于 1993 年设计，目前共有 SHA-1、SHA-2、SHA-3 三种版本。
+Dòng thuật toán SHA（Secure Hash Algorithm）là một nhóm thuật toán băm mật mã, dùng để ánh xạ dữ liệu có độ dài bất kỳ thành giá trị băm có độ dài cố định. Dòng thuật toán SHA do Cơ quan An ninh Quốc gia Hoa Kỳ（NSA）thiết kế vào năm 1993, hiện có ba phiên bản SHA-1, SHA-2, SHA-3.
 
-SHA-1 算法将任意长度的数据映射为 160 位的哈希值。然而，SHA-1 算法存在一些严重的缺陷，比如安全性低，容易受到碰撞攻击和长度扩展攻击。因此，SHA-1 算法已经不再被推荐使用。 SHA-2 家族（如 SHA-256、SHA-384、SHA-512 等）和 SHA-3 系列是 SHA-1 算法的替代方案，它们都提供了更高的安全性和更长的哈希值长度。
+Thuật toán SHA-1 ánh xạ dữ liệu có độ dài bất kỳ thành giá trị băm 160 bit. Tuy nhiên, thuật toán SHA-1 tồn tại một số khiếm khuyết nghiêm trọng, như độ an toàn thấp, dễ bị tấn công xung đột (collision attack) và tấn công mở rộng độ dài (length extension attack). Do đó, thuật toán SHA-1 đã không còn được khuyến nghị sử dụng. Họ SHA-2（như SHA-256, SHA-384, SHA-512 v.v.）và dòng SHA-3 là các phương án thay thế cho thuật toán SHA-1, chúng đều cung cấp độ an toàn cao hơn và độ dài giá trị băm dài hơn.
 
-SHA-2 家族是在 SHA-1 算法的基础上改进而来的，它们采用了更复杂的运算过程和更多的轮次，使得攻击者更难以通过预计算或巧合找到碰撞。
+Họ SHA-2 được cải tiến trên cơ sở thuật toán SHA-1, chúng áp dụng quá trình tính toán phức tạp hơn và nhiều vòng hơn, khiến cho kẻ tấn công khó tìm ra xung đột thông qua tính toán trước hoặc trùng hợp ngẫu nhiên hơn.
 
-为了寻找一种更安全和更先进的密码哈希算法，美国国家标准与技术研究院（National Institute of Standards and Technology，简称 NIST）在 2007 年公开征集 SHA-3 的候选算法。NIST 一共收到了 64 个算法方案，经过多轮的评估和筛选，最终在 2012 年宣布 Keccak 算法胜出，成为 SHA-3 的标准算法（SHA-3 与 SHA-2 算法没有直接的关系）。 Keccak 算法具有与 MD 和 SHA-1/2 完全不同的设计思路，即海绵结构（Sponge Construction），使得传统攻击方法无法直接应用于 SHA-3 的攻击中（能够抵抗目前已知的所有攻击方式包括碰撞攻击、长度扩展攻击、差分攻击等）。
+Để tìm kiếm một thuật toán băm mật mã an toàn hơn và tiên tiến hơn, Viện Tiêu chuẩn và Công nghệ Quốc gia Hoa Kỳ（National Institute of Standards and Technology, viết tắt NIST）đã công khai kêu gọi các thuật toán ứng viên cho SHA-3 vào năm 2007. NIST đã nhận được tổng cộng 64 phương án thuật toán, sau nhiều vòng đánh giá và sàng lọc, cuối cùng vào năm 2012 tuyên bố thuật toán Keccak chiến thắng, trở thành thuật toán tiêu chuẩn của SHA-3（SHA-3 không có quan hệ trực tiếp với thuật toán SHA-2）. Thuật toán Keccak có ý tưởng thiết kế hoàn toàn khác với MD và SHA-1/2, đó là cấu trúc bọt biển（Sponge Construction）, khiến cho các phương pháp tấn công truyền thống không thể áp dụng trực tiếp vào việc tấn công SHA-3（có thể chống lại tất cả các phương thức tấn công đã biết hiện nay bao gồm tấn công xung đột, tấn công mở rộng độ dài, tấn công vi sai v.v.）.
 
-由于 SHA-2 算法还没有出现重大的安全漏洞，而且在软件中的效率更高，所以大多数人还是倾向于使用 SHA-2 算法。
+Do thuật toán SHA-2 vẫn chưa xuất hiện lỗ hổng an toàn nghiêm trọng, và hiệu suất trong phần mềm cao hơn, nên đa số mọi người vẫn có xu hướng sử dụng thuật toán SHA-2.
 
-相比 MD5 算法，SHA-2 算法之所以更强，主要有两个原因：
+So với thuật toán MD5, thuật toán SHA-2 mạnh hơn, chủ yếu có hai lý do：
 
-- 哈希值长度更长：例如 SHA-256 算法的哈希值长度为 256 位，而 MD5 算法的哈希值长度为 128 位，这就提高了攻击者暴力破解或者彩虹表攻击的难度。
-- 更强的碰撞抗性：SHA 算法采用了更复杂的运算过程和更多的轮次，使得攻击者更难以通过预计算或巧合找到碰撞。目前还没有找到任何两个不同的数据，它们的 SHA-256 哈希值相同。
+- Độ dài giá trị băm dài hơn：ví dụ giá trị băm của thuật toán SHA-256 có độ dài 256 bit, trong khi giá trị băm của thuật toán MD5 có độ dài 128 bit, điều này làm tăng độ khó cho kẻ tấn công brute force hoặc tấn công bảng cầu vồng.
+- Khả năng chống xung đột mạnh hơn：Thuật toán SHA áp dụng quá trình tính toán phức tạp hơn và nhiều vòng hơn, khiến cho kẻ tấn công khó tìm ra xung đột thông qua tính toán trước hoặc trùng hợp ngẫu nhiên hơn. Hiện vẫn chưa tìm thấy bất kỳ hai dữ liệu khác nhau nào có giá trị băm SHA-256 giống nhau.
 
-当然，SHA-2 也不是绝对安全的，也有被暴力破解或者彩虹表攻击的风险，所以，在实际的应用中，加盐还是必不可少的。
+Tất nhiên, SHA-2 cũng không phải an toàn tuyệt đối, cũng có rủi ro bị brute force hoặc tấn công bảng cầu vồng, vì vậy, trong ứng dụng thực tế, thêm muối vẫn là không thể thiếu.
 
-Java 提供了对 SHA 算法系列的支持，包括 SHA-1、SHA-256、SHA-384 和 SHA-512。
+Java cung cấp hỗ trợ cho dòng thuật toán SHA, bao gồm SHA-1, SHA-256, SHA-384 và SHA-512.
 
-SHA-256 代码示例（未加盐）：
+Ví dụ code SHA-256（chưa thêm muối）：
 
 ```java
 String originalString = "Java学习 + 面试指南：javaguide.cn";
-// 创建SHA-256摘要对象
+// Tạo đối tượng tóm lược SHA-256
 MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
 messageDigest.update(originalString.getBytes());
-// 计算哈希值
+// Tính giá trị băm
 byte[] result = messageDigest.digest();
-// 将哈希值转换为十六进制字符串
+// Chuyển đổi giá trị băm thành chuỗi thập lục phân
 String hexString = new HexBinaryAdapter().marshal(result);
 System.out.println("Original String: " + originalString);
 System.out.println("SHA-256 Hash: " + hexString.toLowerCase());
 ```
 
-输出：
+Kết quả：
 
 ```bash
 Original String: Java学习 + 面试指南：javaguide.cn
 SHA-256 Hash: 184eb7e1d7fb002444098c9bde3403c6f6722c93ecfac242c0e35cd9ed3b41cd
 ```
 
-### Bcrypt
+### BCrypt
 
-Bcrypt 算法是一种基于 Blowfish 加密算法的密码哈希算法，专门为密码加密而设计，安全性高。
+Thuật toán BCrypt là một thuật toán băm mật khẩu dựa trên thuật toán mã hóa Blowfish, được thiết kế chuyên biệt cho mã hóa mật khẩu, độ an toàn cao.
 
-由于 Bcrypt 采用了 salt（盐） 和 cost（成本） 两种机制，它可以有效地防止彩虹表攻击和暴力破解攻击，从而保证密码的安全性。salt 是一个随机生成的字符串，用于和密码混合，增加密码的复杂度和唯一性。cost 是一个数值参数，用于控制 Bcrypt 算法的迭代次数，增加密码哈希的计算时间和资源消耗。
+Do BCrypt áp dụng hai cơ chế salt（muối）và cost（chi phí）, nó có thể ngăn chặn hiệu quả tấn công bảng cầu vồng và tấn công brute force, từ đó đảm bảo an toàn cho mật khẩu. salt là một chuỗi ngẫu nhiên được sinh ra, dùng để trộn với mật khẩu, tăng độ phức tạp và tính duy nhất của mật khẩu. cost là một tham số số, dùng để kiểm soát số lần lặp của thuật toán BCrypt, tăng thời gian tính toán và tiêu thụ tài nguyên của việc băm mật khẩu.
 
-Bcrypt 算法可以根据实际情况进行调整加密的复杂度，可以设置不同的 cost 值和 salt 值，从而满足不同的安全需求，灵活性很高。
+Thuật toán BCrypt có thể điều chỉnh độ phức tạp mã hóa theo tình hình thực tế, có thể thiết lập giá trị cost và giá trị salt khác nhau, từ đó đáp ứng các nhu cầu an toàn khác nhau, tính linh hoạt rất cao.
 
-Java 应用程序的安全框架 Spring Security 支持多种密码编码器，其中 `BCryptPasswordEncoder` 是官方推荐的一种，它使用 BCrypt 算法对用户的密码进行加密存储。
+Framework bảo mật Spring Security của ứng dụng Java hỗ trợ nhiều bộ mã hóa mật khẩu (password encoder), trong đó `BCryptPasswordEncoder` là loại được chính thức khuyến nghị, nó sử dụng thuật toán BCrypt để mã hóa và lưu trữ mật khẩu của người dùng.
 
 ```java
 @Bean
@@ -159,49 +159,49 @@ public PasswordEncoder passwordEncoder(){
 }
 ```
 
-## 对称加密
+## Mã hóa đối xứng (Symmetric Encryption)
 
-对称加密算法是指加密和解密使用同一个密钥的算法，也叫共享密钥加密算法。
+Thuật toán mã hóa đối xứng là thuật toán sử dụng cùng một khóa để mã hóa và giải mã, còn gọi là thuật toán mã hóa khóa chia sẻ (shared-key encryption).
 
 ![对称加密](https://oss.javaguide.cn/github/javaguide/system-design/security/encryption-algorithms/symmetric-encryption.png)
 
-常见的对称加密算法有 DES、3DES、AES 等。
+Các thuật toán mã hóa đối xứng phổ biến có DES, 3DES, AES v.v.
 
-### DES 和 3DES
+### DES và 3DES
 
-DES（Data Encryption Standard）使用 64 位的密钥(有效秘钥长度为 56 位,8 位奇偶校验位)和 64 位的明文进行加密。
+DES（Data Encryption Standard）sử dụng khóa 64 bit（độ dài khóa hiệu quả là 56 bit, 8 bit kiểm tra chẵn lẻ）và văn bản gốc 64 bit để mã hóa.
 
-虽然 DES 一次只能加密 64 位，但我们只需要把明文划分成 64 位一组的块，就可以实现任意长度明文的加密。如果明文长度不是 64 位的倍数，必须进行填充，常用的模式有 PKCS5Padding, PKCS7Padding, NOPADDING。
+Mặc dù DES mỗi lần chỉ có thể mã hóa 64 bit, nhưng chúng ta chỉ cần chia văn bản gốc thành các khối 64 bit một nhóm, là có thể thực hiện mã hóa văn bản gốc có độ dài bất kỳ. Nếu độ dài văn bản gốc không phải là bội số của 64 bit, phải thực hiện đệm (padding), các chế độ thường dùng có PKCS5Padding, PKCS7Padding, NOPADDING.
 
-DES 加密算法的基本思想是将 64 位的明文分成两半，然后对每一半进行多轮的变换，最后再合并成 64 位的密文。这些变换包括置换、异或、选择、移位等操作，每一轮都使用了一个子密钥，而这些子密钥都是由同一个 56 位的主密钥生成的。DES 加密算法总共进行了 16 轮变换，最后再进行一次逆置换，得到最终的密文。
+Ý tưởng cơ bản của thuật toán mã hóa DES là chia văn bản gốc 64 bit thành hai nửa, sau đó thực hiện biến đổi nhiều vòng cho mỗi nửa, cuối cùng hợp nhất lại thành văn bản mã hóa 64 bit. Các biến đổi này bao gồm các thao tác hoán vị, XOR, chọn, dịch chuyển v.v., mỗi vòng đều sử dụng một khóa con, và các khóa con này đều được sinh ra từ cùng một khóa chính 56 bit. Thuật toán mã hóa DES tổng cộng thực hiện 16 vòng biến đổi, cuối cùng thực hiện một lần hoán vị ngược, nhận được văn bản mã hóa cuối cùng.
 
 ![DES（Data Encryption Standard）](https://oss.javaguide.cn/github/javaguide/system-design/security/des-steps.jpg)
 
-这是一个经典的对称加密算法，但也有明显的缺陷，即 56 位的密钥安全性不足，已被证实可以在短时间内破解。
+Đây là một thuật toán mã hóa đối xứng cổ điển, nhưng cũng có khiếm khuyết rõ ràng, đó là khóa 56 bit có độ an toàn không đủ, đã được chứng minh có thể bị phá giải trong thời gian ngắn.
 
-为了提高 DES 算法的安全性，人们提出了一些变种或者替代方案，例如 3DES（Triple DES）。
+Để nâng cao độ an toàn của thuật toán DES, người ta đã đề xuất một số biến thể hoặc phương án thay thế, ví dụ 3DES（Triple DES）.
 
-3DES（Triple DES）是 DES 向 AES 过渡的加密算法，它使用 2 个或者 3 个 56 位的密钥对数据进行三次加密。3DES 相当于是对每个数据块应用三次 DES 的对称加密算法。
+3DES（Triple DES）là thuật toán mã hóa chuyển tiếp từ DES sang AES, nó sử dụng 2 hoặc 3 khóa 56 bit để mã hóa dữ liệu ba lần. 3DES tương đương với việc áp dụng ba lần thuật toán mã hóa đối xứng DES cho mỗi khối dữ liệu.
 
-为了兼容普通的 DES，3DES 并没有直接使用 加密->加密->加密 的方式，而是采用了加密->解密->加密 的方式。当三种密钥均相同时，前两步相互抵消，相当于仅实现了一次加密，因此可实现对普通 DES 加密算法的兼容。3DES 比 DES 更为安全，但其处理速度不高。
+Để tương thích với DES thông thường, 3DES không trực tiếp sử dụng cách mã hóa->mã hóa->mã hóa, mà áp dụng cách mã hóa->giải mã->mã hóa. Khi ba khóa giống nhau, hai bước đầu triệt tiêu lẫn nhau, tương đương với chỉ thực hiện một lần mã hóa, do đó có thể tương thích với thuật toán mã hóa DES thông thường. 3DES an toàn hơn DES, nhưng tốc độ xử lý không cao.
 
 ### AES
 
-AES（Advanced Encryption Standard）算法是一种更先进的对称密钥加密算法，它使用 128 位、192 位或 256 位的密钥对数据进行加密或解密，密钥越长，安全性越高。
+Thuật toán AES（Advanced Encryption Standard）là một thuật toán mã hóa khóa đối xứng tiên tiến hơn, nó sử dụng khóa 128 bit, 192 bit hoặc 256 bit để mã hóa hoặc giải mã dữ liệu, khóa càng dài, độ an toàn càng cao.
 
-AES 也是一种分组(或者叫块)密码，分组长度只能是 128 位，也就是说，每个分组为 16 个字节。AES 加密算法有多种工作模式（mode of operation），如：ECB、CBC、OFB、CFB、CTR、XTS、OCB、GCM（目前使用最广泛的模式）。不同的模式参数和加密流程不同，但是核心仍然是 AES 算法。
+AES cũng là một loại mật mã khối (block cipher), độ dài khối chỉ có thể là 128 bit, tức là mỗi khối là 16 byte. Thuật toán mã hóa AES có nhiều chế độ hoạt động（mode of operation）, như：ECB, CBC, OFB, CFB, CTR, XTS, OCB, GCM（chế độ được sử dụng rộng rãi nhất hiện nay）. Các chế độ khác nhau có tham số và quy trình mã hóa khác nhau, nhưng cốt lõi vẫn là thuật toán AES.
 
-和 DES 类似，一些 AES 工作模式需要对不是 128 位倍数的明文进行填充。不过，GCM 是基于分组密码构造的认证加密（AEAD）模式，可以处理任意长度的明文，因此在 Java 中通常使用 `AES/GCM/NoPadding`。GCM 在提供机密性的同时还会校验密文完整性，但要求同一密钥下的 IV（Nonce）不得重复。
+Tương tự như DES, một số chế độ hoạt động AES cần đệm cho văn bản gốc không phải là bội số của 128 bit. Tuy nhiên, GCM là chế độ mã hóa có xác thực（AEAD）được xây dựng dựa trên mật mã khối, có thể xử lý văn bản gốc có độ dài bất kỳ, do đó trong Java thường sử dụng `AES/GCM/NoPadding`. GCM vừa cung cấp tính bảo mật vừa kiểm tra tính toàn vẹn của văn bản mã hóa, nhưng yêu cầu IV（Nonce）dưới cùng một khóa không được lặp lại.
 
-AES 的速度比 3DES 快，而且更安全。
+Tốc độ của AES nhanh hơn 3DES, và an toàn hơn.
 
 ![AES（Advanced Encryption Standard）](https://oss.javaguide.cn/github/javaguide/system-design/security/aes-steps.jpg)
 
-DES 算法和 AES 算法简单对比（图片来自于：[RSA vs. AES Encryption: Key Differences Explained](https://cheapsslweb.com/blog/rsa-vs-aes-encryption)）：
+So sánh đơn giản giữa thuật toán DES và AES（hình ảnh từ：[RSA vs. AES Encryption: Key Differences Explained](https://cheapsslweb.com/blog/rsa-vs-aes-encryption)）：
 
 ![DES 和 AES 对比](https://oss.javaguide.cn/github/javaguide/system-design/security/des-vs-aes.png)
 
-基于 Java 实现 AES-GCM 的代码示例。示例把每次加密随机生成的 IV 与密文一起编码；生产环境中的 AES 密钥应由 KMS、HSM 或 KeyStore 生成和保管，不要硬编码在源码中：
+Ví dụ code triển khai AES-GCM dựa trên Java. Ví dụ này mã hóa IV được sinh ngẫu nhiên mỗi lần cùng với văn bản mã hóa; trong môi trường production, khóa AES nên được sinh và quản lý bởi KMS, HSM hoặc KeyStore, không được nhúng cứng (hardcode) trong mã nguồn：
 
 ```java
 private static final String AES_TRANSFORMATION = "AES/GCM/NoPadding";
@@ -210,7 +210,7 @@ private static final int GCM_TAG_LENGTH = 128;
 private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
 /**
- * 加密
+ * Mã hóa
  */
 public static String encrypt(String data, SecretKey secretKey) throws GeneralSecurityException {
     byte[] iv = new byte[GCM_IV_LENGTH];
@@ -220,7 +220,7 @@ public static String encrypt(String data, SecretKey secretKey) throws GeneralSec
     cipher.init(Cipher.ENCRYPT_MODE, secretKey, new GCMParameterSpec(GCM_TAG_LENGTH, iv));
     byte[] encryptedBytes = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
 
-    // IV 不需要保密，但解密时必须使用同一个 IV，因此将其与密文一起保存。
+    // IV không cần giữ bí mật, nhưng khi giải mã phải sử dụng cùng một IV, do đó lưu cùng với văn bản mã hóa.
     ByteBuffer byteBuffer = ByteBuffer.allocate(iv.length + encryptedBytes.length);
     byteBuffer.put(iv);
     byteBuffer.put(encryptedBytes);
@@ -228,7 +228,7 @@ public static String encrypt(String data, SecretKey secretKey) throws GeneralSec
 }
 
 /**
- * 解密
+ * Giải mã
  */
 public static String decrypt(String encryptedData, SecretKey secretKey) throws GeneralSecurityException {
     byte[] input = Base64.getDecoder().decode(encryptedData);
@@ -250,7 +250,7 @@ public static String decrypt(String encryptedData, SecretKey secretKey) throws G
 }
 
 public static void main(String[] args) throws Exception {
-    // 仅用于演示。生产环境应从 KMS、HSM 或 KeyStore 获取密钥。
+    // Chỉ dùng để minh họa. Môi trường production nên lấy khóa từ KMS, HSM hoặc KeyStore.
     KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
     keyGenerator.init(256);
     SecretKey secretKey = keyGenerator.generateKey();
@@ -264,37 +264,37 @@ public static void main(String[] args) throws Exception {
 }
 ```
 
-输出：
+Kết quả：
 
 ```bash
 Original String: Java学习 + 面试指南：javaguide.cn
-AES Encrypted Data : <每次运行不同的 Base64 字符串>
+AES Encrypted Data : <chuỗi Base64 khác nhau mỗi lần chạy>
 AES Decrypted Data : Java学习 + 面试指南：javaguide.cn
 ```
 
-## 非对称加密
+## Mã hóa bất đối xứng (Asymmetric Encryption)
 
-非对称加密算法是指加密和解密使用不同的密钥的算法，也叫公开密钥加密算法。这两个密钥互不相同，一个称为公钥，另一个称为私钥。公钥可以公开给任何人使用，私钥则要保密。
+Thuật toán mã hóa bất đối xứng là thuật toán sử dụng các khóa khác nhau để mã hóa và giải mã, còn gọi là thuật toán mã hóa khóa công khai (public-key encryption). Hai khóa này khác nhau, một cái gọi là khóa công khai (public key), một cái gọi là khóa riêng tư (private key). Khóa công khai có thể công khai cho bất kỳ ai sử dụng, khóa riêng tư thì phải giữ bí mật.
 
-如果用公钥加密数据，只能用对应的私钥解密。数字签名则是另一类操作：发送方使用私钥生成签名，接收方使用公钥验证签名。不要把数字签名简单理解为“用私钥加密、公钥解密”，实际项目应分别使用加密 API 和签名 API。
+Nếu dùng khóa công khai mã hóa dữ liệu, chỉ có thể dùng khóa riêng tư tương ứng để giải mã. Chữ ký số (digital signature) là một loại thao tác khác：bên gửi sử dụng khóa riêng tư để sinh chữ ký, bên nhận sử dụng khóa công khai để xác minh chữ ký. Đừng hiểu đơn giản chữ ký số là "dùng khóa riêng tư mã hóa, khóa công khai giải mã", dự án thực tế nên sử dụng riêng API mã hóa và API chữ ký.
 
 ![非对称加密](https://oss.javaguide.cn/github/javaguide/system-design/security/encryption-algorithms/asymmetric-encryption.png)
 
-常见的公钥密码算法包括 RSA 和基于椭圆曲线的算法。它们的具体能力不同：RSA 可以用于加密和签名；DSA 只能用于签名；ECC 则是一类算法的统称，包含用于签名或密钥协商的不同方案。
+Các thuật toán mật mã khóa công khai phổ biến bao gồm RSA và các thuật toán dựa trên đường cong elliptic. Năng lực cụ thể của chúng khác nhau：RSA có thể dùng để mã hóa và chữ ký；DSA chỉ có thể dùng để chữ ký；ECC là tên gọi chung cho một loại thuật toán, bao gồm các phương án khác nhau dùng cho chữ ký hoặc thỏa thuận khóa.
 
 ### RSA
 
-RSA（Rivest–Shamir–Adleman algorithm）算法是一种基于大数分解的困难性的非对称加密算法，它需要选择两个大素数作为私钥的一部分，然后计算出它们的乘积作为公钥的一部分（寻求两个大素数比较简单，而将它们的乘积进行因式分解却极其困难）。RSA 算法原理的详细介绍，可以参考这篇文章：[你真的了解 RSA 加密算法吗？ - 小傅哥](https://www.cnblogs.com/xiaofuge/p/16954187.html)。
+Thuật toán RSA（Rivest–Shamir–Adleman algorithm）là một thuật toán mã hóa bất đối xứng dựa trên độ khó của việc phân tích thừa số số lớn, nó cần chọn hai số nguyên tố lớn làm một phần của khóa riêng tư, sau đó tính tích của chúng làm một phần của khóa công khai（tìm hai số nguyên tố lớn tương đối đơn giản, nhưng phân tích thừa số tích của chúng thì cực kỳ khó khăn）. Giới thiệu chi tiết về nguyên lý thuật toán RSA, có thể tham khảo bài viết này：[你真的了解 RSA 加密算法吗？ - 小傅哥](https://www.cnblogs.com/xiaofuge/p/16954187.html).
 
-RSA 算法的安全性依赖于大数分解的难度，目前已经有 512 位和 768 位的 RSA 公钥被成功分解，因此建议使用 2048 位或以上的密钥长度。
+Độ an toàn của thuật toán RSA phụ thuộc vào độ khó của việc phân tích thừa số số lớn, hiện đã có khóa công khai RSA 512 bit và 768 bit bị phân tích thành công, do đó khuyến nghị sử dụng độ dài khóa 2048 bit trở lên.
 
-RSA 算法的优点是简单易用，可以用于数据加密和数字签名；缺点是运算速度慢，不适合大量数据的加密。
+Ưu điểm của thuật toán RSA là đơn giản dễ sử dụng, có thể dùng để mã hóa dữ liệu và chữ ký số；nhược điểm là tốc độ tính toán chậm, không phù hợp để mã hóa lượng lớn dữ liệu.
 
-RSA 算法是是目前应用最广泛的非对称加密算法，像 SSL/TLS、SSH 等协议中就用到了 RSA 算法。
+Thuật toán RSA là thuật toán mã hóa bất đối xứng được ứng dụng rộng rãi nhất hiện nay, các giao thức như SSL/TLS, SSH đều sử dụng thuật toán RSA.
 
 ![HTTPS 证书签名算法中带RSA 加密的SHA-256 ](https://oss.javaguide.cn/github/javaguide/system-design/security/encryption-algorithms/https-rsa-sha-256.png)
 
-RSA 运算速度慢、可直接处理的数据长度有限，实际项目通常使用混合加密：随机生成对称密钥，通过 AES-GCM 加密业务数据，再通过 RSA-OAEP 加密对称密钥。下面的示例只演示如何用 RSA-OAEP 加密较短的数据：
+RSA có tốc độ tính toán chậm, độ dài dữ liệu có thể xử lý trực tiếp có hạn, dự án thực tế thường sử dụng mã hóa lai (hybrid encryption)：sinh ngẫu nhiên khóa đối xứng, mã hóa dữ liệu nghiệp vụ qua AES-GCM, rồi mã hóa khóa đối xứng qua RSA-OAEP. Ví dụ dưới đây chỉ minh họa cách dùng RSA-OAEP mã hóa dữ liệu ngắn：
 
 ```java
 private static final String RSA_ALGORITHM = "RSA";
@@ -307,17 +307,17 @@ private static final OAEPParameterSpec OAEP_SHA_256 = new OAEPParameterSpec(
 );
 
 /**
- * 生成RSA密钥对
+ * Sinh cặp khóa RSA
  */
 public static KeyPair generateKeyPair() throws NoSuchAlgorithmException {
     KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(RSA_ALGORITHM);
-    // 密钥大小为2048位
+    // Kích thước khóa 2048 bit
     keyPairGenerator.initialize(2048);
     return keyPairGenerator.generateKeyPair();
 }
 
 /**
- * 使用公钥加密数据
+ * Sử dụng khóa công khai mã hóa dữ liệu
  */
 public static String encrypt(String data, PublicKey publicKey) throws Exception {
     Cipher cipher = Cipher.getInstance(RSA_TRANSFORMATION);
@@ -327,7 +327,7 @@ public static String encrypt(String data, PublicKey publicKey) throws Exception 
 }
 
 /**
- * 使用私钥解密数据
+ * Sử dụng khóa riêng tư giải mã dữ liệu
  */
 public static String decrypt(String encryptedData, PrivateKey privateKey) throws Exception {
     byte[] decodedData = Base64.getDecoder().decode(encryptedData);
@@ -350,29 +350,29 @@ public static void main(String[] args) throws Exception {
 }
 ```
 
-输出：
+Kết quả：
 
 ```bash
 Original String: Java学习 + 面试指南：javaguide.cn
-RSA Encrypted Data : <每次运行不同的 Base64 字符串>
+RSA Encrypted Data : <chuỗi Base64 khác nhau mỗi lần chạy>
 RSA Decrypted Data : Java学习 + 面试指南：javaguide.cn
 ```
 
 ### DSA
 
-DSA（Digital Signature Algorithm）是一种数字签名算法，安全性基于离散对数问题。它只能用于生成和验证数字签名，不能用于数据加密。签名也不是“私钥加密摘要、公钥解密摘要”：发送方使用私钥和签名算法生成签名，接收方使用公钥和验证算法判断签名是否有效。
+DSA（Digital Signature Algorithm）là một thuật toán chữ ký số, độ an toàn dựa trên bài toán logarit rời rạc. Nó chỉ có thể dùng để sinh và xác minh chữ ký số, không thể dùng để mã hóa dữ liệu. Chữ ký cũng không phải là "khóa riêng tư mã hóa tóm lược, khóa công khai giải mã tóm lược"：bên gửi sử dụng khóa riêng tư và thuật toán chữ ký để sinh chữ ký, bên nhận sử dụng khóa công khai và thuật toán xác minh để phán đoán chữ ký có hợp lệ hay không.
 
-DSA 主要用于兼容遗留系统。NIST FIPS 186-5 已不再批准使用 DSA 生成新的数字签名，仅允许验证标准实施前生成的遗留签名。新系统通常应根据协议和兼容性要求选择 RSA-PSS、ECDSA 或 EdDSA，并使用成熟密码库提供的 `Signature` API。
+DSA chủ yếu dùng để tương thích với hệ thống cũ (legacy system). NIST FIPS 186-5 đã không còn phê duyệt sử dụng DSA để sinh chữ ký số mới, chỉ cho phép xác minh chữ ký cũ được sinh trước khi tiêu chuẩn này được triển khai. Hệ thống mới thường nên chọn RSA-PSS, ECDSA hoặc EdDSA tùy theo yêu cầu về giao thức và tương thích, và sử dụng API `Signature` do thư viện mật mã trưởng thành cung cấp.
 
-## 总结
+## Tổng kết
 
-这篇文章介绍了三种加密算法：哈希算法、对称加密算法和非对称加密算法。
+Bài viết này đã giới thiệu ba loại thuật toán mã hóa：thuật toán băm, thuật toán mã hóa đối xứng và thuật toán mã hóa bất đối xứng.
 
-- 哈希算法是一种用数学方法对数据生成一个固定长度的唯一标识的技术，可以用来验证数据的完整性和一致性，常见的哈希算法有 MD、SHA、MAC 等。
-- 对称加密算法是一种加密和解密使用同一个密钥的算法，可以用来保护数据的安全性和保密性，常见的对称加密算法有 DES、3DES、AES 等。
-- 公钥密码使用成对的公钥和私钥，可以支持加密、数字签名或密钥协商，但具体能力取决于算法。例如 RSA 可以用于加密和签名，DSA 只能用于签名。
+- Thuật toán băm là một kỹ thuật sử dụng phương pháp toán học để tạo ra một định danh duy nhất có độ dài cố định cho dữ liệu, có thể dùng để xác minh tính toàn vẹn và nhất quán của dữ liệu, các thuật toán băm phổ biến có MD, SHA, MAC v.v.
+- Thuật toán mã hóa đối xứng là thuật toán sử dụng cùng một khóa để mã hóa và giải mã, có thể dùng để bảo vệ tính an toàn và bảo mật của dữ liệu, các thuật toán mã hóa đối xứng phổ biến có DES, 3DES, AES v.v.
+- Mật mã khóa công khai sử dụng cặp khóa công khai và khóa riêng tư, có thể hỗ trợ mã hóa, chữ ký số hoặc thỏa thuận khóa, nhưng năng lực cụ thể phụ thuộc vào thuật toán. Ví dụ RSA có thể dùng để mã hóa và chữ ký, DSA chỉ có thể dùng để chữ ký.
 
-## 参考
+## Tham khảo
 
 - NIST SP 800-38D - Recommendation for Block Cipher Modes of Operation: GCM and GMAC：<https://csrc.nist.gov/pubs/sp/800/38/d/final>
 - NIST FIPS 186-5 - Digital Signature Standard：<https://csrc.nist.gov/pubs/fips/186-5/final>

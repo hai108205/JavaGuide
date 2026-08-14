@@ -1,138 +1,138 @@
 ---
-title: SQL语法基础知识总结
-description: SQL语法基础知识总结，系统讲解DDL数据定义、DML数据操作、DQL数据查询、DCL数据控制语言，涵盖表操作、约束、索引、事务、连接查询等核心知识点。
-category: 数据库
+title: Tổng hợp kiến thức cơ bản về cú pháp SQL
+description: Tổng hợp kiến thức cơ bản về cú pháp SQL, giải thích có hệ thống DDL (định nghĩa dữ liệu), DML (thao tác dữ liệu), DQL (truy vấn dữ liệu), DCL (kiểm soát dữ liệu), bao gồm các kiến thức cốt lõi về thao tác bảng, ràng buộc, index, transaction, truy vấn kết nối.
+category: Cơ sở dữ liệu
 tag:
-  - 数据库基础
+  - Cơ sở dữ liệu cơ bản
   - SQL
 head:
   - - meta
     - name: keywords
-      content: SQL语法,DDL,DML,DQL,DCL,CREATE,SELECT,INSERT,UPDATE,DELETE,JOIN连接,子查询
+      content: Cú pháp SQL,DDL,DML,DQL,DCL,CREATE,SELECT,INSERT,UPDATE,DELETE,JOIN kết nối,Subquery
 ---
 
-> 本文整理完善自下面这两份资料：
+> Bài viết này được tổng hợp và hoàn thiện từ hai tài liệu sau:
 >
-> - [SQL 语法速成手册](https://juejin.cn/post/6844903790571700231)
-> - [MySQL 超全教程](https://www.begtut.com/mysql/mysql-tutorial.html)
+> - [Hướng dẫn cấp tốc cú pháp SQL](https://juejin.cn/post/6844903790571700231)
+> - [Hướng dẫn MySQL đầy đủ](https://www.begtut.com/mysql/mysql-tutorial.html)
 
-## 基本概念
+## Khái niệm cơ bản
 
-### 数据库术语
+### Thuật ngữ cơ sở dữ liệu
 
-- `数据库（database）` - 保存有组织的数据的容器（通常是一个文件或一组文件）。
-- `数据表（table）` - 某种特定类型数据的结构化清单。
-- `模式（schema）` - 关于数据库和表的布局及特性的信息。模式定义了数据在表中如何存储，包含存储什么样的数据，数据如何分解，各部分信息如何命名等信息。数据库和表都有模式。
-- `列（column）` - 表中的一个字段。所有表都是由一个或多个列组成的。
-- `行（row）` - 表中的一个记录。
-- `主键（primary key）` - 一列（或一组列），其值能够唯一标识表中每一行。
+- `Cơ sở dữ liệu (database)` - Container lưu trữ dữ liệu có tổ chức (thường là một tệp hoặc một nhóm tệp).
+- `Bảng dữ liệu (table)` - Danh sách có cấu trúc của một loại dữ liệu cụ thể.
+- `Lược đồ (schema)` - Thông tin về bố cục và đặc tính của cơ sở dữ liệu và bảng. Schema định nghĩa cách dữ liệu được lưu trữ trong bảng, bao gồm việc lưu trữ loại dữ liệu nào, dữ liệu được phân tách ra sao, cách đặt tên từng phần thông tin, v.v. Cả cơ sở dữ liệu và bảng đều có schema.
+- `Cột (column)` - Một trường trong bảng. Mọi bảng đều được tạo thành từ một hoặc nhiều cột.
+- `Hàng (row)` - Một bản ghi trong bảng.
+- `Khóa chính (primary key)` - Một cột (hoặc một nhóm cột) mà giá trị của nó có thể định danh duy nhất mỗi hàng trong bảng.
 
-### SQL 语法
+### Cú pháp SQL
 
-SQL（Structured Query Language)，标准 SQL 由 ANSI 标准委员会管理，从而称为 ANSI SQL。各个 DBMS 都有自己的实现，如 PL/SQL、Transact-SQL 等。
+SQL (Structured Query Language), chuẩn SQL được quản lý bởi ủy ban tiêu chuẩn ANSI, nên được gọi là ANSI SQL. Mỗi DBMS có cách triển khai riêng, chẳng hạn như PL/SQL, Transact-SQL, v.v.
 
-#### SQL 语法结构
+#### Cấu trúc cú pháp SQL
 
 ![](https://oss.javaguide.cn/p3-juejin/cb684d4c75fc430e92aaee226069c7da~tplv-k3u1fbpfcp-zoom-1.png)
 
-SQL 语法结构包括：
+Cấu trúc cú pháp SQL bao gồm:
 
-- **`子句`** - 是语句和查询的组成成分。（在某些情况下，这些都是可选的。）
-- **`表达式`** - 可以产生任何标量值，或由列和行的数据库表
-- **`谓词`** - 给需要评估的 SQL 三值逻辑（3VL）（true/false/unknown）或布尔真值指定条件，并限制语句和查询的效果，或改变程序流程。
-- **`查询`** - 基于特定条件检索数据。这是 SQL 的一个重要组成部分。
-- **`语句`** - 可以持久地影响纲要和数据，也可以控制数据库事务、程序流程、连接、会话或诊断。
+- **`Mệnh đề (clause)`** - Là thành phần cấu tạo nên câu lệnh và truy vấn. (Trong một số trường hợp, chúng là tùy chọn.)
+- **`Biểu thức (expression)`** - Có thể tạo ra bất kỳ giá trị vô hướng nào, hoặc bảng cơ sở dữ liệu gồm các cột và hàng.
+- **`Vị từ (predicate)`** - Đưa ra điều kiện cho logic ba giá trị (3VL) của SQL (true/false/unknown) hoặc giá trị chân lý Boolean cần được đánh giá, và giới hạn tác động của câu lệnh và truy vấn, hoặc thay đổi luồng chương trình.
+- **`Truy vấn (query)`** - Truy xuất dữ liệu dựa trên các điều kiện cụ thể. Đây là một thành phần quan trọng của SQL.
+- **`Câu lệnh (statement)`** - Có thể ảnh hưởng lâu dài đến schema và dữ liệu, cũng có thể kiểm soát transaction của cơ sở dữ liệu, luồng chương trình, kết nối, phiên hoặc chẩn đoán.
 
-#### SQL 语法要点
+#### Điểm cần chú ý về cú pháp SQL
 
-- **SQL 语句不区分大小写**，但是数据库表名、列名和值是否区分，依赖于具体的 DBMS 以及配置。例如：`SELECT` 与 `select`、`Select` 是相同的。
-- **多条 SQL 语句必须以分号（`;`）分隔**。
-- 处理 SQL 语句时，**所有空格都被忽略**。
+- **Câu lệnh SQL không phân biệt hoa thường**, nhưng tên bảng, tên cột và giá trị trong cơ sở dữ liệu có phân biệt hoa thường hay không phụ thuộc vào DBMS và cấu hình cụ thể. Ví dụ: `SELECT` và `select`, `Select` là như nhau.
+- **Nhiều câu lệnh SQL phải được phân tách bằng dấu chấm phẩy (`;`)**.
+- Khi xử lý câu lệnh SQL, **mọi khoảng trắng đều bị bỏ qua**.
 
-SQL 语句可以写成一行，也可以分写为多行。
+Câu lệnh SQL có thể viết trên một dòng, hoặc chia thành nhiều dòng.
 
 ```sql
--- 一行 SQL 语句
+-- Câu lệnh SQL một dòng
 
 UPDATE user SET username='robot', password='robot' WHERE username = 'root';
 
--- 多行 SQL 语句
+-- Câu lệnh SQL nhiều dòng
 UPDATE user
 SET username='robot', password='robot'
 WHERE username = 'root';
 ```
 
-SQL 支持三种注释：
+SQL hỗ trợ ba loại chú thích:
 
 ```sql
-## 注释1
--- 注释2
-/* 注释3 */
+## Chú thích 1
+-- Chú thích 2
+/* Chú thích 3 */
 ```
 
-### SQL 分类
+### Phân loại SQL
 
-#### 数据定义语言（DDL）
+#### Ngôn ngữ định nghĩa dữ liệu (DDL)
 
-数据定义语言（Data Definition Language，DDL）是 SQL 语言集中负责数据结构定义与数据库对象定义的语言。
+Ngôn ngữ định nghĩa dữ liệu (Data Definition Language, DDL) là phần ngôn ngữ trong SQL chịu trách nhiệm định nghĩa cấu trúc dữ liệu và định nghĩa các đối tượng cơ sở dữ liệu.
 
-DDL 的主要功能是**定义数据库对象**。
+Chức năng chính của DDL là **định nghĩa đối tượng cơ sở dữ liệu**.
 
-DDL 的核心指令是 `CREATE`、`ALTER`、`DROP`。
+Các lệnh cốt lõi của DDL là `CREATE`, `ALTER`, `DROP`.
 
-#### 数据操纵语言（DML）
+#### Ngôn ngữ thao tác dữ liệu (DML)
 
-数据操纵语言（Data Manipulation Language, DML）是用于数据库操作，对数据库其中的对象和数据运行访问工作的编程语句。
+Ngôn ngữ thao tác dữ liệu (Data Manipulation Language, DML) là các câu lệnh lập trình dùng cho thao tác cơ sở dữ liệu, thực hiện công việc truy cập đối tượng và dữ liệu trong cơ sở dữ liệu.
 
-DML 的主要功能是 **访问数据**，因此其语法都是以**读写数据库**为主。
+Chức năng chính của DML là **truy cập dữ liệu**, vì vậy cú pháp của nó chủ yếu là **đọc và ghi cơ sở dữ liệu**.
 
-DML 的核心指令是 `INSERT`、`UPDATE`、`DELETE`、`SELECT`。这四个指令合称 CRUD(Create, Read, Update, Delete)，即增删改查。
+Các lệnh cốt lõi của DML là `INSERT`, `UPDATE`, `DELETE`, `SELECT`. Bốn lệnh này gọi chung là CRUD (Create, Read, Update, Delete), tức thêm, xóa, sửa, truy vấn.
 
-#### 事务控制语言（TCL）
+#### Ngôn ngữ kiểm soát transaction (TCL)
 
-事务控制语言 (Transaction Control Language, TCL) 用于**管理数据库中的事务**。这些用于管理由 DML 语句所做的更改。它还允许将语句分组为逻辑事务。
+Ngôn ngữ kiểm soát transaction (Transaction Control Language, TCL) dùng để **quản lý các transaction trong cơ sở dữ liệu**. Chúng dùng để quản lý các thay đổi do câu lệnh DML tạo ra. Nó cũng cho phép nhóm các câu lệnh thành các transaction logic.
 
-TCL 的核心指令是 `COMMIT`、`ROLLBACK`。
+Các lệnh cốt lõi của TCL là `COMMIT`, `ROLLBACK`.
 
-#### 数据控制语言（DCL）
+#### Ngôn ngữ kiểm soát dữ liệu (DCL)
 
-数据控制语言 (Data Control Language, DCL) 是一种可对数据访问权进行控制的指令，它可以控制特定用户账户对数据表、查看表、预存程序、用户自定义函数等数据库对象的控制权。
+Ngôn ngữ kiểm soát dữ liệu (Data Control Language, DCL) là loại lệnh có thể kiểm soát quyền truy cập dữ liệu, nó có thể kiểm soát quyền hạn của tài khoản người dùng cụ thể đối với các đối tượng cơ sở dữ liệu như bảng dữ liệu, view, stored procedure, hàm do người dùng định nghĩa, v.v.
 
-DCL 的核心指令是 `GRANT`、`REVOKE`。
+Các lệnh cốt lõi của DCL là `GRANT`, `REVOKE`.
 
-DCL 以**控制用户的访问权限**为主，因此其指令作法并不复杂，可利用 DCL 控制的权限有：`CONNECT`、`SELECT`、`INSERT`、`UPDATE`、`DELETE`、`EXECUTE`、`USAGE`、`REFERENCES`。
+DCL chủ yếu **kiểm soát quyền truy cập của người dùng**, vì vậy cách dùng lệnh của nó không phức tạp, các quyền có thể kiểm soát bằng DCL gồm: `CONNECT`, `SELECT`, `INSERT`, `UPDATE`, `DELETE`, `EXECUTE`, `USAGE`, `REFERENCES`.
 
-根据不同的 DBMS 以及不同的安全性实体，其支持的权限控制也有所不同。
+Tùy theo DBMS và thực thể bảo mật khác nhau, việc kiểm soát quyền được hỗ trợ cũng khác nhau.
 
-**我们先来介绍 DML 语句用法。 DML 的主要功能是读写数据库实现增删改查。**
+**Trước tiên chúng ta sẽ giới thiệu cách dùng câu lệnh DML. Chức năng chính của DML là đọc ghi cơ sở dữ liệu để thực hiện thêm, xóa, sửa, truy vấn.**
 
-## 增删改查
+## Thêm xóa sửa truy vấn
 
-增删改查，又称为 CRUD，数据库基本操作中的基本操作。
+Thêm xóa sửa truy vấn, còn gọi là CRUD, là thao tác cơ bản nhất trong các thao tác cơ bản của cơ sở dữ liệu.
 
-### 插入数据
+### Chèn dữ liệu
 
-`INSERT INTO` 语句用于向表中插入新记录。
+Câu lệnh `INSERT INTO` dùng để chèn bản ghi mới vào bảng.
 
-**插入完整的行**
+**Chèn toàn bộ một hàng**
 
 ```sql
-# 插入一行
+# Chèn một hàng
 INSERT INTO user
 VALUES (10, 'root', 'root', 'xxxx@163.com');
-# 插入多行
+# Chèn nhiều hàng
 INSERT INTO user
 VALUES (10, 'root', 'root', 'xxxx@163.com'), (12, 'user1', 'user1', 'xxxx@163.com'), (18, 'user2', 'user2', 'xxxx@163.com');
 ```
 
-**插入行的一部分**
+**Chèn một phần của hàng**
 
 ```sql
 INSERT INTO user(username, password, email)
 VALUES ('admin', 'admin', 'xxxx@163.com');
 ```
 
-**插入查询出来的数据**
+**Chèn dữ liệu từ kết quả truy vấn**
 
 ```sql
 INSERT INTO user(username)
@@ -140,9 +140,9 @@ SELECT name
 FROM account;
 ```
 
-### 更新数据
+### Cập nhật dữ liệu
 
-`UPDATE` 语句用于更新表中的记录。
+Câu lệnh `UPDATE` dùng để cập nhật bản ghi trong bảng.
 
 ```sql
 UPDATE user
@@ -150,102 +150,102 @@ SET username='robot', password='robot'
 WHERE username = 'root';
 ```
 
-### 删除数据
+### Xóa dữ liệu
 
-- `DELETE` 语句用于删除表中的记录。
-- `TRUNCATE TABLE` 可以清空表，也就是删除所有行。说明：`TRUNCATE` 语句不属于 DML 语法而是 DDL 语法。
+- Câu lệnh `DELETE` dùng để xóa bản ghi trong bảng.
+- `TRUNCATE TABLE` có thể xóa sạch bảng, tức là xóa tất cả các hàng. Lưu ý: câu lệnh `TRUNCATE` không thuộc cú pháp DML mà thuộc cú pháp DDL.
 
-**删除表中的指定数据**
+**Xóa dữ liệu chỉ định trong bảng**
 
 ```sql
 DELETE FROM user
 WHERE username = 'robot';
 ```
 
-**清空表中的数据**
+**Xóa sạch dữ liệu trong bảng**
 
 ```sql
 TRUNCATE TABLE user;
 ```
 
-### 查询数据
+### Truy vấn dữ liệu
 
-`SELECT` 语句用于从数据库中查询数据。
+Câu lệnh `SELECT` dùng để truy vấn dữ liệu từ cơ sở dữ liệu.
 
-`DISTINCT` 用于返回唯一不同的值。它作用于所有列，也就是说所有列的值都相同才算相同。
+`DISTINCT` dùng để trả về các giá trị duy nhất không trùng lặp. Nó tác động lên tất cả các cột, nghĩa là chỉ được coi là giống nhau khi giá trị của tất cả các cột đều giống nhau.
 
-`LIMIT` 限制返回的行数。可以有两个参数，第一个参数为起始行，从 0 开始；第二个参数为返回的总行数。
+`LIMIT` giới hạn số hàng trả về. Có thể có hai tham số, tham số thứ nhất là hàng bắt đầu, tính từ 0; tham số thứ hai là tổng số hàng trả về.
 
-- `ASC`：升序（默认）
-- `DESC`：降序
+- `ASC`: sắp xếp tăng dần (mặc định)
+- `DESC`: sắp xếp giảm dần
 
-**查询单列**
+**Truy vấn một cột**
 
 ```sql
 SELECT prod_name
 FROM products;
 ```
 
-**查询多列**
+**Truy vấn nhiều cột**
 
 ```sql
 SELECT prod_id, prod_name, prod_price
 FROM products;
 ```
 
-**查询所有列**
+**Truy vấn tất cả các cột**
 
 ```sql
 SELECT *
 FROM products;
 ```
 
-**查询不同的值**
+**Truy vấn các giá trị khác nhau**
 
 ```sql
 SELECT DISTINCT
 vend_id FROM products;
 ```
 
-**限制查询结果**
+**Giới hạn kết quả truy vấn**
 
 ```sql
--- 返回前 5 行
+-- Trả về 5 dòng đầu
 SELECT * FROM mytable LIMIT 5;
 SELECT * FROM mytable LIMIT 0, 5;
--- 返回第 3 ~ 5 行
+-- Trả về dòng thứ 3 ~ 5
 SELECT * FROM mytable LIMIT 2, 3;
 ```
 
-## 排序
+## Sắp xếp
 
-`order by` 用于对结果集按照一个列或者多个列进行排序。默认按照升序对记录进行排序，如果需要按照降序对记录进行排序，可以使用 `desc` 关键字。
+`order by` dùng để sắp xếp tập kết quả theo một hoặc nhiều cột. Mặc định sắp xếp bản ghi theo thứ tự tăng dần, nếu cần sắp xếp bản ghi theo thứ tự giảm dần, có thể dùng từ khóa `desc`.
 
-`order by` 对多列排序的时候，先排序的列放前面，后排序的列放后面。并且，不同的列可以有不同的排序规则。
+Khi `order by` sắp xếp theo nhiều cột, cột sắp xếp trước đặt trước, cột sắp xếp sau đặt sau. Và các cột khác nhau có thể có quy tắc sắp xếp khác nhau.
 
 ```sql
 SELECT * FROM products
 ORDER BY prod_price DESC, prod_name ASC;
 ```
 
-## 分组
+## Nhóm
 
-**`group by`**：
+**`group by`**:
 
-- `group by` 子句将记录分组到汇总行中。
-- `group by` 为每个组返回一个记录。
-- `group by` 通常还涉及聚合`count`，`max`，`sum`，`avg` 等。
-- `group by` 可以按一列或多列进行分组。
-- `group by` 按分组字段进行排序后，`order by` 可以以汇总字段来进行排序。
+- Mệnh đề `group by` nhóm các bản ghi thành các hàng tổng hợp.
+- `group by` trả về một bản ghi cho mỗi nhóm.
+- `group by` thường liên quan đến các hàm tổng hợp như `count`, `max`, `sum`, `avg`, v.v.
+- `group by` có thể nhóm theo một hoặc nhiều cột.
+- Sau khi `group by` sắp xếp theo trường nhóm, `order by` có thể sắp xếp theo trường tổng hợp.
 
-**分组**
+**Nhóm**
 
 ```sql
 SELECT cust_name, COUNT(cust_address) AS addr_num
 FROM Customers GROUP BY cust_name;
 ```
 
-**分组后排序**
+**Nhóm xong rồi sắp xếp**
 
 ```sql
 SELECT cust_name, COUNT(cust_address) AS addr_num
@@ -253,13 +253,13 @@ FROM Customers GROUP BY cust_name
 ORDER BY cust_name DESC;
 ```
 
-**`having`**：
+**`having`**:
 
-- `having` 用于对汇总的 `group by` 结果进行过滤。
-- `having` 一般都是和 `group by` 连用。
-- `where` 和 `having` 可以在相同的查询中。
+- `having` dùng để lọc kết quả `group by` đã tổng hợp.
+- `having` thường được dùng kèm với `group by`.
+- `where` và `having` có thể cùng xuất hiện trong một truy vấn.
 
-**使用 WHERE 和 HAVING 过滤数据**
+**Lọc dữ liệu bằng WHERE và HAVING**
 
 ```sql
 SELECT cust_name, COUNT(*) AS NumberOfOrders
@@ -269,25 +269,25 @@ GROUP BY cust_name
 HAVING COUNT(*) > 1;
 ```
 
-**`having` vs `where`**：
+**`having` so với `where`**:
 
-- `where`：过滤过滤指定的行，后面不能加聚合函数（分组函数）。`where` 在`group by` 前。
-- `having`：过滤分组，一般都是和 `group by` 连用，不能单独使用。`having` 在 `group by` 之后。
+- `where`: lọc các hàng chỉ định, phía sau không thể thêm hàm tổng hợp (hàm nhóm). `where` đứng trước `group by`.
+- `having`: lọc các nhóm, thường dùng kèm với `group by`, không thể dùng riêng lẻ. `having` đứng sau `group by`.
 
-## 子查询
+## Subquery
 
-子查询是嵌套在较大查询中的 SQL 查询，也称内部查询或内部选择，包含子查询的语句也称为外部查询或外部选择。简单来说，子查询就是指将一个 `select` 查询（子查询）的结果作为另一个 SQL 语句（主查询）的数据来源或者判断条件。
+Subquery (truy vấn con) là truy vấn SQL được lồng bên trong một truy vấn lớn hơn, còn gọi là truy vấn nội bộ hoặc lựa chọn nội bộ, câu lệnh chứa subquery còn được gọi là truy vấn ngoại bộ hoặc lựa chọn ngoại bộ. Nói đơn giản, subquery là việc lấy kết quả của một truy vấn `select` (truy vấn con) làm nguồn dữ liệu hoặc điều kiện phán đoán cho một câu lệnh SQL khác (truy vấn chính).
 
-子查询可以嵌入 `SELECT`、`INSERT`、`UPDATE` 和 `DELETE` 语句中，也可以和 `=`、`<`、`>`、`IN`、`BETWEEN`、`EXISTS` 等运算符一起使用。
+Subquery có thể được nhúng trong câu lệnh `SELECT`, `INSERT`, `UPDATE` và `DELETE`, cũng có thể dùng cùng với các toán tử `=`, `<`, `>`, `IN`, `BETWEEN`, `EXISTS`, v.v.
 
-子查询常用在 `WHERE` 子句和 `FROM` 子句后边：
+Subquery thường dùng sau mệnh đề `WHERE` và mệnh đề `FROM`:
 
-- 当用于 `WHERE` 子句时，根据不同的运算符，子查询可以返回单行单列、多行单列、单行多列数据。子查询就是要返回能够作为 `WHERE` 子句查询条件的值。
-- 当用于 `FROM` 子句时，一般返回多行多列数据，相当于返回一张临时表，这样才符合 `FROM` 后面是表的规则。这种做法能够实现多表联合查询。
+- Khi dùng trong mệnh đề `WHERE`, tùy theo toán tử khác nhau, subquery có thể trả về dữ liệu một hàng một cột, nhiều hàng một cột, hoặc một hàng nhiều cột. Subquery phải trả về giá trị có thể dùng làm điều kiện truy vấn của mệnh đề `WHERE`.
+- Khi dùng trong mệnh đề `FROM`, thường trả về dữ liệu nhiều hàng nhiều cột, tương đương với việc trả về một bảng tạm, như vậy mới phù hợp với quy tắc phía sau `FROM` là một bảng. Cách làm này có thể thực hiện truy vấn liên kết nhiều bảng.
 
-> 注意：MYSQL 数据库从 4.1 版本才开始支持子查询，早期版本是不支持的。
+> Lưu ý: Cơ sở dữ liệu MySQL từ phiên bản 4.1 mới bắt đầu hỗ trợ subquery, các phiên bản trước đó không hỗ trợ.
 
-用于 `WHERE` 子句的子查询的基本语法如下：
+Cú pháp cơ bản của subquery dùng trong mệnh đề `WHERE` như sau:
 
 ```sql
 select column_name [, column_name ]
@@ -298,10 +298,10 @@ where  column_name operator
     [where])
 ```
 
-- 子查询需要放在括号`( )`内。
-- `operator` 表示用于 where 子句的运算符。
+- Subquery cần đặt trong dấu ngoặc đơn `( )`.
+- `operator` biểu thị toán tử dùng cho mệnh đề where.
 
-用于 `FROM` 子句的子查询的基本语法如下：
+Cú pháp cơ bản của subquery dùng trong mệnh đề `FROM` như sau:
 
 ```sql
 select column_name [, column_name ]
@@ -311,9 +311,9 @@ from (select column_name [, column_name ]
 where  condition
 ```
 
-用于 `FROM` 的子查询返回的结果相当于一张临时表，所以需要使用 AS 关键字为该临时表起一个名字。
+Kết quả trả về của subquery dùng trong `FROM` tương đương với một bảng tạm, vì vậy cần dùng từ khóa AS để đặt tên cho bảng tạm đó.
 
-**子查询的子查询**
+**Subquery của subquery**
 
 ```sql
 SELECT cust_name, cust_contact
@@ -325,37 +325,37 @@ WHERE cust_id IN (SELECT cust_id
                                       WHERE prod_id = 'RGAN01'));
 ```
 
-内部查询首先在其父查询之前执行，以便可以将内部查询的结果传递给外部查询。执行过程可以参考下图：
+Truy vấn nội bộ trước tiên được thực thi trước truy vấn cha của nó, để kết quả của truy vấn nội bộ có thể được truyền cho truy vấn ngoại bộ. Có thể tham khảo quá trình thực thi trong hình dưới:
 
 ![](https://oss.javaguide.cn/p3-juejin/c439da1f5d4e4b00bdfa4316b933d764~tplv-k3u1fbpfcp-zoom-1.png)
 
 ### WHERE
 
-- `WHERE` 子句用于过滤记录，即缩小访问数据的范围。
-- `WHERE` 后跟一个返回 `true` 或 `false` 的条件。
-- `WHERE` 可以与 `SELECT`，`UPDATE` 和 `DELETE` 一起使用。
-- 可以在 `WHERE` 子句中使用的操作符。
+- Mệnh đề `WHERE` dùng để lọc bản ghi, tức thu hẹp phạm vi dữ liệu truy cập.
+- Sau `WHERE` là một điều kiện trả về `true` hoặc `false`.
+- `WHERE` có thể dùng cùng với `SELECT`, `UPDATE` và `DELETE`.
+- Các toán tử có thể dùng trong mệnh đề `WHERE`.
 
-| 运算符  | 描述                                                   |
-| ------- | ------------------------------------------------------ |
-| =       | 等于                                                   |
-| <>      | 不等于。注释：在 SQL 的一些版本中，该操作符可被写成 != |
-| >       | 大于                                                   |
-| <       | 小于                                                   |
-| >=      | 大于等于                                               |
-| <=      | 小于等于                                               |
-| BETWEEN | 在某个范围内                                           |
-| LIKE    | 搜索某种模式                                           |
-| IN      | 指定针对某个列的多个可能值                             |
+| Toán tử | Mô tả                                                                            |
+| ------- | -------------------------------------------------------------------------------- |
+| =       | Bằng                                                                             |
+| <>      | Không bằng. Chú thích: trong một số phiên bản SQL, toán tử này có thể viết là != |
+| >       | Lớn hơn                                                                          |
+| <       | Nhỏ hơn                                                                          |
+| >=      | Lớn hơn hoặc bằng                                                                |
+| <=      | Nhỏ hơn hoặc bằng                                                                |
+| BETWEEN | Trong một khoảng nào đó                                                          |
+| LIKE    | Tìm kiếm theo một mẫu nào đó                                                     |
+| IN      | Chỉ định nhiều giá trị có thể có cho một cột                                     |
 
-**`SELECT` 语句中的 `WHERE` 子句**
+**Mệnh đề `WHERE` trong câu lệnh `SELECT`**
 
 ```ini
 SELECT * FROM Customers
 WHERE cust_name = 'Kids Place';
 ```
 
-**`UPDATE` 语句中的 `WHERE` 子句**
+**Mệnh đề `WHERE` trong câu lệnh `UPDATE`**
 
 ```ini
 UPDATE Customers
@@ -363,19 +363,19 @@ SET cust_name = 'Jack Jones'
 WHERE cust_name = 'Kids Place';
 ```
 
-**`DELETE` 语句中的 `WHERE` 子句**
+**Mệnh đề `WHERE` trong câu lệnh `DELETE`**
 
 ```ini
 DELETE FROM Customers
 WHERE cust_name = 'Kids Place';
 ```
 
-### IN 和 BETWEEN
+### IN và BETWEEN
 
-- `IN` 操作符在 `WHERE` 子句中使用，作用是在指定的几个特定值中任选一个值。
-- `BETWEEN` 操作符在 `WHERE` 子句中使用，作用是选取介于某个范围内的值。
+- Toán tử `IN` dùng trong mệnh đề `WHERE`, có tác dụng chọn một giá trị bất kỳ trong một vài giá trị cụ thể được chỉ định.
+- Toán tử `BETWEEN` dùng trong mệnh đề `WHERE`, có tác dụng chọn các giá trị nằm trong một khoảng nào đó.
 
-**IN 示例**
+**Ví dụ IN**
 
 ```sql
 SELECT *
@@ -383,7 +383,7 @@ FROM products
 WHERE vend_id IN ('DLL01', 'BRS01');
 ```
 
-**BETWEEN 示例**
+**Ví dụ BETWEEN**
 
 ```sql
 SELECT *
@@ -391,15 +391,15 @@ FROM products
 WHERE prod_price BETWEEN 3 AND 5;
 ```
 
-### AND、OR、NOT
+### AND, OR, NOT
 
-- `AND`、`OR`、`NOT` 是用于对过滤条件的逻辑处理指令。
-- `AND` 优先级高于 `OR`，为了明确处理顺序，可以使用 `()`。
-- `AND` 操作符表示左右条件都要满足。
-- `OR` 操作符表示左右条件满足任意一个即可。
-- `NOT` 操作符用于否定一个条件。
+- `AND`, `OR`, `NOT` là các lệnh xử lý logic cho điều kiện lọc.
+- `AND` có độ ưu tiên cao hơn `OR`, để làm rõ thứ tự xử lý, có thể dùng `()`.
+- Toán tử `AND` biểu thị cả điều kiện bên trái và bên phải đều phải thỏa mãn.
+- Toán tử `OR` biểu thị chỉ cần thỏa mãn một trong hai điều kiện bên trái hoặc bên phải.
+- Toán tử `NOT` dùng để phủ định một điều kiện.
 
-**AND 示例**
+**Ví dụ AND**
 
 ```sql
 SELECT prod_id, prod_name, prod_price
@@ -407,7 +407,7 @@ FROM products
 WHERE vend_id = 'DLL01' AND prod_price <= 4;
 ```
 
-**OR 示例**
+**Ví dụ OR**
 
 ```ini
 SELECT prod_id, prod_name, prod_price
@@ -415,7 +415,7 @@ FROM products
 WHERE vend_id = 'DLL01' OR vend_id = 'BRS01';
 ```
 
-**NOT 示例**
+**Ví dụ NOT**
 
 ```sql
 SELECT *
@@ -425,14 +425,14 @@ WHERE prod_price NOT BETWEEN 3 AND 5;
 
 ### LIKE
 
-- `LIKE` 操作符在 `WHERE` 子句中使用，作用是确定字符串是否匹配模式。
-- 只有字段是文本值时才使用 `LIKE`。
-- `LIKE` 支持两个通配符匹配选项：`%` 和 `_`。
-- 不要滥用通配符，通配符位于开头处匹配会非常慢。
-- `%` 表示任何字符出现任意次数。
-- `_` 表示任何字符出现一次。
+- Toán tử `LIKE` dùng trong mệnh đề `WHERE`, có tác dụng xác định chuỗi có khớp với mẫu hay không.
+- Chỉ dùng `LIKE` khi trường là giá trị văn bản.
+- `LIKE` hỗ trợ hai tùy chọn khớp bằng ký tự đại diện (wildcard): `%` và `_`.
+- Đừng lạm dụng wildcard, khớp với wildcard nằm ở đầu sẽ rất chậm.
+- `%` biểu thị bất kỳ ký tự nào xuất hiện với số lần bất kỳ.
+- `_` biểu thị bất kỳ ký tự nào xuất hiện một lần.
 
-**% 示例**
+**Ví dụ %**
 
 ```sql
 SELECT prod_id, prod_name, prod_price
@@ -440,7 +440,7 @@ FROM products
 WHERE prod_name LIKE '%bean bag%';
 ```
 
-**\_ 示例**
+**Ví dụ \_**
 
 ```sql
 SELECT prod_id, prod_name, prod_price
@@ -448,13 +448,13 @@ FROM products
 WHERE prod_name LIKE '__ inch teddy bear';
 ```
 
-## 连接
+## Kết nối (JOIN)
 
-JOIN 是“连接”的意思，顾名思义，SQL JOIN 子句用于将两个或者多个表联合起来进行查询。
+JOIN có nghĩa là "kết nối", đúng như tên gọi, mệnh đề SQL JOIN dùng để kết hợp hai hoặc nhiều bảng lại với nhau để truy vấn.
 
-连接表时需要在每个表中选择一个字段，并对这些字段的值进行比较，值相同的两条记录将合并为一条。**连接表的本质就是将不同表的记录合并起来，形成一张新表。当然，这张新表只是临时的，它仅存在于本次查询期间**。
+Khi kết nối bảng, cần chọn một trường trong mỗi bảng và so sánh giá trị của các trường này, hai bản ghi có giá trị giống nhau sẽ được gộp thành một. **Bản chất của kết nối bảng là gộp các bản ghi của các bảng khác nhau lại, tạo thành một bảng mới. Tất nhiên, bảng mới này chỉ là tạm thời, nó chỉ tồn tại trong phạm vi truy vấn hiện tại**.
 
-使用 `JOIN` 连接两个表的基本语法如下：
+Cú pháp cơ bản để kết nối hai bảng bằng `JOIN` như sau:
 
 ```sql
 select table1.column1, table2.column2...
@@ -463,11 +463,11 @@ join table2
 on table1.common_column1 = table2.common_column2;
 ```
 
-`table1.common_column1 = table2.common_column2` 是连接条件，只有满足此条件的记录才会合并为一行。您可以使用多个运算符来连接表，例如 =、>、<、<>、<=、>=、!=、`between`、`like` 或者 `not`，但是最常见的是使用 =。
+`table1.common_column1 = table2.common_column2` là điều kiện kết nối, chỉ những bản ghi thỏa mãn điều kiện này mới được gộp thành một hàng. Bạn có thể dùng nhiều toán tử để kết nối bảng, ví dụ =, >, <, <>, <=, >=, !=, `between`, `like` hoặc `not`, nhưng phổ biến nhất là dùng =.
 
-当两个表中有同名的字段时，为了帮助数据库引擎区分是哪个表的字段，在书写同名字段名时需要加上表名。当然，如果书写的字段名在两个表中是唯一的，也可以不使用以上格式，只写字段名即可。
+Khi hai bảng có trường trùng tên, để giúp database engine phân biệt trường thuộc bảng nào, khi viết tên trường trùng cần thêm tên bảng. Tất nhiên, nếu tên trường được viết là duy nhất trong hai bảng, cũng có thể không cần dùng định dạng trên, chỉ cần viết tên trường là đủ.
 
-另外，如果两张表的关联字段名相同，也可以使用 `USING`子句来代替 `ON`，举个例子：
+Ngoài ra, nếu tên trường liên kết của hai bảng giống nhau, cũng có thể dùng mệnh đề `USING` thay cho `ON`, ví dụ:
 
 ```sql
 # join....on
@@ -477,7 +477,7 @@ inner join Orders o
 on c.cust_id = o.cust_id
 order by c.cust_name;
 
-# 如果两张表的关联字段名相同，也可以使用USING子句：join....using()
+# Nếu tên trường liên kết của hai bảng giống nhau, cũng có thể dùng mệnh đề USING: join....using()
 select c.cust_name, o.order_num
 from Customers c
 inner join Orders o
@@ -485,57 +485,57 @@ using(cust_id)
 order by c.cust_name;
 ```
 
-**`ON` 和 `WHERE` 的区别**：
+**Sự khác nhau giữa `ON` và `WHERE`**:
 
-- 连接表时，SQL 会根据连接条件生成一张新的临时表。`ON` 就是连接条件，它决定临时表的生成。
-- `WHERE` 是在临时表生成以后，再对临时表中的数据进行过滤，生成最终的结果集，这个时候已经没有 JOIN-ON 了。
+- Khi kết nối bảng, SQL sẽ tạo ra một bảng tạm mới dựa trên điều kiện kết nối. `ON` chính là điều kiện kết nối, nó quyết định việc tạo ra bảng tạm.
+- `WHERE` là sau khi bảng tạm đã được tạo, tiếp tục lọc dữ liệu trong bảng tạm, tạo ra tập kết quả cuối cùng, lúc này đã không còn JOIN-ON nữa.
 
-所以总结来说就是：**SQL 先根据 ON 生成一张临时表，然后再根据 WHERE 对临时表进行筛选**。
+Vì vậy tóm lại: **SQL trước tiên tạo ra một bảng tạm dựa trên ON, sau đó dựa trên WHERE để lọc bảng tạm**.
 
-SQL 允许在 `JOIN` 左边加上一些修饰性的关键词，从而形成不同类型的连接，如下表所示：
+SQL cho phép thêm một số từ khóa bổ trợ bên trái `JOIN`, từ đó tạo thành các loại kết nối khác nhau, như bảng dưới:
 
-| 连接类型                                 | 说明                                                                                          |
-| ---------------------------------------- | --------------------------------------------------------------------------------------------- |
-| INNER JOIN 内连接                        | （默认连接方式）只有当两个表都存在满足条件的记录时才会返回行。                                |
-| LEFT JOIN / LEFT OUTER JOIN 左(外)连接   | 返回左表中的所有行，即使右表中没有满足条件的行也是如此。                                      |
-| RIGHT JOIN / RIGHT OUTER JOIN 右(外)连接 | 返回右表中的所有行，即使左表中没有满足条件的行也是如此。                                      |
-| FULL JOIN / FULL OUTER JOIN 全(外)连接   | 只要其中有一个表存在满足条件的记录，就返回行。                                                |
-| SELF JOIN                                | 将一个表连接到自身，就像该表是两个表一样。为了区分两个表，在 SQL 语句中需要至少重命名一个表。 |
-| CROSS JOIN                               | 交叉连接，从两个或者多个连接表中返回记录集的笛卡尔积。                                        |
+| Loại kết nối                                       | Mô tả                                                                                                                                 |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| INNER JOIN kết nối trong                           | (Cách kết nối mặc định) Chỉ trả về hàng khi cả hai bảng đều có bản ghi thỏa mãn điều kiện.                                            |
+| LEFT JOIN / LEFT OUTER JOIN kết nối trái (ngoài)   | Trả về tất cả các hàng trong bảng trái, ngay cả khi bảng phải không có hàng nào thỏa mãn điều kiện.                                   |
+| RIGHT JOIN / RIGHT OUTER JOIN kết nối phải (ngoài) | Trả về tất cả các hàng trong bảng phải, ngay cả khi bảng trái không có hàng nào thỏa mãn điều kiện.                                   |
+| FULL JOIN / FULL OUTER JOIN kết nối đầy đủ (ngoài) | Chỉ cần một trong hai bảng có bản ghi thỏa mãn điều kiện là trả về hàng.                                                              |
+| SELF JOIN                                          | Kết nối một bảng với chính nó, giống như bảng đó là hai bảng. Để phân biệt hai bảng, trong câu lệnh SQL cần đổi tên ít nhất một bảng. |
+| CROSS JOIN                                         | Kết nối chéo, trả về tích Descartes của tập bản ghi từ hai hoặc nhiều bảng được kết nối.                                              |
 
-下图展示了 LEFT JOIN、RIGHT JOIN、INNER JOIN、OUTER JOIN 相关的 7 种用法。
+Hình dưới minh họa 7 cách dùng liên quan đến LEFT JOIN, RIGHT JOIN, INNER JOIN, OUTER JOIN.
 
 ![](https://oss.javaguide.cn/p3-juejin/701670942f0f45d3a3a2187cd04a12ad~tplv-k3u1fbpfcp-zoom-1.png)
 
-如果不加任何修饰词，只写 `JOIN`，那么默认为 `INNER JOIN`
+Nếu không thêm bất kỳ từ bổ trợ nào, chỉ viết `JOIN`, thì mặc định là `INNER JOIN`
 
-对于 `INNER JOIN` 来说，还有一种隐式的写法，称为 “**隐式内连接**”，也就是没有 `INNER JOIN` 关键字，使用 `WHERE` 语句实现内连接的功能
+Đối với `INNER JOIN`, còn có một cách viết ẩn, gọi là "**kết nối trong ẩn**", tức là không có từ khóa `INNER JOIN`, dùng câu lệnh `WHERE` để thực hiện chức năng kết nối trong
 
 ```sql
-# 隐式内连接
+# Kết nối trong ẩn
 select c.cust_name, o.order_num
 from Customers c, Orders o
 where c.cust_id = o.cust_id
 order by c.cust_name;
 
-# 显式内连接
+# Kết nối trong tường minh
 select c.cust_name, o.order_num
 from Customers c inner join Orders o
 using(cust_id)
 order by c.cust_name;
 ```
 
-## 组合
+## Kết hợp (UNION)
 
-`UNION` 运算符将两个或更多查询的结果组合起来，并生成一个结果集，其中包含来自 `UNION` 中参与查询的提取行。
+Toán tử `UNION` kết hợp kết quả của hai hoặc nhiều truy vấn, và tạo ra một tập kết quả chứa các hàng được trích xuất từ các truy vấn tham gia trong `UNION`.
 
-`UNION` 基本规则：
+Quy tắc cơ bản của `UNION`:
 
-- 所有查询的列数和列顺序必须相同。
-- 每个查询中涉及表的列的数据类型必须相同或兼容。
-- 通常返回的列名取自第一个查询。
+- Số cột và thứ tự cột của tất cả các truy vấn phải giống nhau.
+- Kiểu dữ liệu của các cột liên quan trong bảng của mỗi truy vấn phải giống nhau hoặc tương thích.
+- Tên cột trả về thường được lấy từ truy vấn đầu tiên.
 
-默认地，`UNION` 操作符选取不同的值。如果允许重复的值，请使用 `UNION ALL`。
+Mặc định, toán tử `UNION` chọn các giá trị khác nhau. Nếu cho phép giá trị trùng lặp, hãy dùng `UNION ALL`.
 
 ```sql
 SELECT column_name(s) FROM table1
@@ -543,28 +543,28 @@ UNION ALL
 SELECT column_name(s) FROM table2;
 ```
 
-`UNION` 结果集中的列名总是等于 `UNION` 中第一个 `SELECT` 语句中的列名。
+Tên cột trong tập kết quả của `UNION` luôn bằng tên cột trong câu lệnh `SELECT` đầu tiên của `UNION`.
 
-`JOIN` vs `UNION`：
+`JOIN` so với `UNION`:
 
-- `JOIN` 中连接表的列可能不同，但在 `UNION` 中，所有查询的列数和列顺序必须相同。
-- `UNION` 将查询之后的行放在一起（垂直放置），但 `JOIN` 将查询之后的列放在一起（水平放置），即它构成一个笛卡尔积。
+- Trong `JOIN`, các cột được kết nối của các bảng có thể khác nhau, nhưng trong `UNION`, số cột và thứ tự cột của tất cả các truy vấn phải giống nhau.
+- `UNION` đặt các hàng sau truy vấn lại với nhau (đặt theo chiều dọc), còn `JOIN` đặt các cột sau truy vấn lại với nhau (đặt theo chiều ngang), tức là tạo thành tích Descartes.
 
-## 函数
+## Hàm
 
-不同数据库的函数往往各不相同，因此不可移植。本节主要以 MySQL 的函数为例。
+Hàm của các cơ sở dữ liệu khác nhau thường không giống nhau, vì vậy không thể chuyển đổi giữa các hệ thống. Phần này chủ yếu lấy hàm của MySQL làm ví dụ.
 
-### 文本处理
+### Xử lý văn bản
 
-| 函数                 | 说明                   |
-| -------------------- | ---------------------- |
-| `LEFT()`、`RIGHT()`  | 左边或者右边的字符     |
-| `LOWER()`、`UPPER()` | 转换为小写或者大写     |
-| `LTRIM()`、`RTRIM()` | 去除左边或者右边的空格 |
-| `LENGTH()`           | 长度，以字节为单位     |
-| `SOUNDEX()`          | 转换为语音值           |
+| Hàm                  | Mô tả                                       |
+| -------------------- | ------------------------------------------- |
+| `LEFT()`, `RIGHT()`  | Ký tự bên trái hoặc bên phải                |
+| `LOWER()`, `UPPER()` | Chuyển thành chữ thường hoặc chữ hoa        |
+| `LTRIM()`, `RTRIM()` | Loại bỏ khoảng trắng bên trái hoặc bên phải |
+| `LENGTH()`           | Độ dài, tính theo byte                      |
+| `SOUNDEX()`          | Chuyển thành giá trị ngữ âm                 |
 
-其中， **`SOUNDEX()`** 可以将一个字符串转换为描述其语音表示的字母数字模式。
+Trong đó, **`SOUNDEX()`** có thể chuyển một chuỗi thành mẫu chữ-số mô tả biểu diễn ngữ âm của nó.
 
 ```sql
 SELECT *
@@ -572,170 +572,170 @@ FROM mytable
 WHERE SOUNDEX(col1) = SOUNDEX('apple')
 ```
 
-### 日期和时间处理
+### Xử lý ngày và giờ
 
-- 日期格式：`YYYY-MM-DD`
-- 时间格式：`HH:MM:SS`
+- Định dạng ngày: `YYYY-MM-DD`
+- Định dạng giờ: `HH:MM:SS`
 
-| 函 数           | 说 明                          |
-| --------------- | ------------------------------ |
-| `AddDate()`     | 增加一个日期（天、周等）       |
-| `AddTime()`     | 增加一个时间（时、分等）       |
-| `CurDate()`     | 返回当前日期                   |
-| `CurTime()`     | 返回当前时间                   |
-| `Date()`        | 返回日期时间的日期部分         |
-| `DateDiff()`    | 计算两个日期之差               |
-| `Date_Add()`    | 高度灵活的日期运算函数         |
-| `Date_Format()` | 返回一个格式化的日期或时间串   |
-| `Day()`         | 返回一个日期的天数部分         |
-| `DayOfWeek()`   | 对于一个日期，返回对应的星期几 |
-| `Hour()`        | 返回一个时间的小时部分         |
-| `Minute()`      | 返回一个时间的分钟部分         |
-| `Month()`       | 返回一个日期的月份部分         |
-| `Now()`         | 返回当前日期和时间             |
-| `Second()`      | 返回一个时间的秒部分           |
-| `Time()`        | 返回一个日期时间的时间部分     |
-| `Year()`        | 返回一个日期的年份部分         |
+| Hàm             | Mô tả                                         |
+| --------------- | --------------------------------------------- |
+| `AddDate()`     | Tăng một ngày (ngày, tuần, v.v.)              |
+| `AddTime()`     | Tăng một khoảng thời gian (giờ, phút, v.v.)   |
+| `CurDate()`     | Trả về ngày hiện tại                          |
+| `CurTime()`     | Trả về giờ hiện tại                           |
+| `Date()`        | Trả về phần ngày của ngày giờ                 |
+| `DateDiff()`    | Tính hiệu hai ngày                            |
+| `Date_Add()`    | Hàm tính toán ngày rất linh hoạt              |
+| `Date_Format()` | Trả về chuỗi ngày hoặc giờ đã định dạng       |
+| `Day()`         | Trả về phần ngày trong tháng của một ngày     |
+| `DayOfWeek()`   | Với một ngày, trả về thứ trong tuần tương ứng |
+| `Hour()`        | Trả về phần giờ của một thời gian             |
+| `Minute()`      | Trả về phần phút của một thời gian            |
+| `Month()`       | Trả về phần tháng của một ngày                |
+| `Now()`         | Trả về ngày và giờ hiện tại                   |
+| `Second()`      | Trả về phần giây của một thời gian            |
+| `Time()`        | Trả về phần giờ của một ngày giờ              |
+| `Year()`        | Trả về phần năm của một ngày                  |
 
-### 数值处理
+### Xử lý số
 
-| 函数   | 说明   |
-| ------ | ------ |
-| SIN()  | 正弦   |
-| COS()  | 余弦   |
-| TAN()  | 正切   |
-| ABS()  | 绝对值 |
-| SQRT() | 平方根 |
-| MOD()  | 余数   |
-| EXP()  | 指数   |
-| PI()   | 圆周率 |
-| RAND() | 随机数 |
+| Hàm    | Mô tả             |
+| ------ | ----------------- |
+| SIN()  | Sin               |
+| COS()  | Cos               |
+| TAN()  | Tang              |
+| ABS()  | Giá trị tuyệt đối |
+| SQRT() | Căn bậc hai       |
+| MOD()  | Số dư             |
+| EXP()  | Số mũ             |
+| PI()   | Số Pi             |
+| RAND() | Số ngẫu nhiên     |
 
-### 汇总
+### Tổng hợp
 
-| 函 数     | 说 明            |
-| --------- | ---------------- |
-| `AVG()`   | 返回某列的平均值 |
-| `COUNT()` | 返回某列的行数   |
-| `MAX()`   | 返回某列的最大值 |
-| `MIN()`   | 返回某列的最小值 |
-| `SUM()`   | 返回某列值之和   |
+| Hàm       | Mô tả                                 |
+| --------- | ------------------------------------- |
+| `AVG()`   | Trả về giá trị trung bình của một cột |
+| `COUNT()` | Trả về số hàng của một cột            |
+| `MAX()`   | Trả về giá trị lớn nhất của một cột   |
+| `MIN()`   | Trả về giá trị nhỏ nhất của một cột   |
+| `SUM()`   | Trả về tổng giá trị của một cột       |
 
-`AVG()` 会忽略 NULL 行。
+`AVG()` sẽ bỏ qua các hàng NULL.
 
-使用 `DISTINCT` 可以让汇总函数值汇总不同的值。
+Dùng `DISTINCT` có thể làm cho hàm tổng hợp chỉ tổng hợp các giá trị khác nhau.
 
 ```sql
 SELECT AVG(DISTINCT col1) AS avg_col
 FROM mytable
 ```
 
-**接下来，我们来介绍 DDL 语句用法。DDL 的主要功能是定义数据库对象（如：数据库、数据表、视图、索引等）**
+**Tiếp theo, chúng ta sẽ giới thiệu cách dùng câu lệnh DDL. Chức năng chính của DDL là định nghĩa các đối tượng cơ sở dữ liệu (như: cơ sở dữ liệu, bảng dữ liệu, view, index, v.v.)**
 
-## 数据定义
+## Định nghĩa dữ liệu
 
-### 数据库（DATABASE）
+### Cơ sở dữ liệu (DATABASE)
 
-#### 创建数据库
+#### Tạo cơ sở dữ liệu
 
 ```sql
 CREATE DATABASE test;
 ```
 
-#### 删除数据库
+#### Xóa cơ sở dữ liệu
 
 ```sql
 DROP DATABASE test;
 ```
 
-#### 选择数据库
+#### Chọn cơ sở dữ liệu
 
 ```sql
 USE test;
 ```
 
-### 数据表（TABLE）
+### Bảng dữ liệu (TABLE)
 
-#### 创建数据表
+#### Tạo bảng dữ liệu
 
-**普通创建**
+**Tạo thông thường**
 
 ```sql
 CREATE TABLE user (
   id int(10) unsigned NOT NULL COMMENT 'Id',
-  username varchar(64) NOT NULL DEFAULT 'default' COMMENT '用户名',
-  password varchar(64) NOT NULL DEFAULT 'default' COMMENT '密码',
-  email varchar(64) NOT NULL DEFAULT 'default' COMMENT '邮箱'
-) COMMENT='用户表';
+  username varchar(64) NOT NULL DEFAULT 'default' COMMENT 'Tên người dùng',
+  password varchar(64) NOT NULL DEFAULT 'default' COMMENT 'Mật khẩu',
+  email varchar(64) NOT NULL DEFAULT 'default' COMMENT 'Email'
+) COMMENT='Bảng người dùng';
 ```
 
-**根据已有的表创建新表**
+**Tạo bảng mới dựa trên bảng đã có**
 
 ```sql
 CREATE TABLE vip_user AS
 SELECT * FROM user;
 ```
 
-#### 删除数据表
+#### Xóa bảng dữ liệu
 
 ```sql
 DROP TABLE user;
 ```
 
-#### 修改数据表
+#### Sửa bảng dữ liệu
 
-**添加列**
+**Thêm cột**
 
 ```sql
 ALTER TABLE user
 ADD age int(3);
 ```
 
-**删除列**
+**Xóa cột**
 
 ```sql
 ALTER TABLE user
 DROP COLUMN age;
 ```
 
-**修改列**
+**Sửa cột**
 
 ```sql
 ALTER TABLE `user`
 MODIFY COLUMN age tinyint;
 ```
 
-**添加主键**
+**Thêm khóa chính**
 
 ```sql
 ALTER TABLE user
 ADD PRIMARY KEY (id);
 ```
 
-**删除主键**
+**Xóa khóa chính**
 
 ```sql
 ALTER TABLE user
 DROP PRIMARY KEY;
 ```
 
-### 视图（VIEW）
+### View
 
-定义：
+Định nghĩa:
 
-- 视图是基于 SQL 语句的结果集的可视化的表。
-- 视图是虚拟的表，本身不包含数据，也就不能对其进行索引操作。对视图的操作和对普通表的操作一样。
+- View là bảng trực quan dựa trên tập kết quả của câu lệnh SQL.
+- View là bảng ảo, bản thân nó không chứa dữ liệu, nên cũng không thể thao tác index trên nó. Thao tác trên view giống như thao tác trên bảng thông thường.
 
-作用：
+Tác dụng:
 
-- 简化复杂的 SQL 操作，比如复杂的联结；
-- 只使用实际表的一部分数据；
-- 通过只给用户访问视图的权限，保证数据的安全性；
-- 更改数据格式和表示。
+- Đơn giản hóa các thao tác SQL phức tạp, chẳng hạn các kết nối phức tạp;
+- Chỉ sử dụng một phần dữ liệu của bảng thực tế;
+- Thông qua việc chỉ cấp quyền truy cập view cho người dùng, đảm bảo tính an toàn của dữ liệu;
+- Thay đổi định dạng và biểu diễn dữ liệu.
 
-![mysql视图](https://oss.javaguide.cn/p3-juejin/ec4c975296ea4a7097879dac7c353878~tplv-k3u1fbpfcp-zoom-1.jpeg)
+![mysql view](https://oss.javaguide.cn/p3-juejin/ec4c975296ea4a7097879dac7c353878~tplv-k3u1fbpfcp-zoom-1.jpeg)
 
-#### 创建视图
+#### Tạo view
 
 ```sql
 CREATE VIEW top_10_user_view AS
@@ -744,137 +744,137 @@ FROM user
 WHERE id < 10;
 ```
 
-#### 删除视图
+#### Xóa view
 
 ```sql
 DROP VIEW top_10_user_view;
 ```
 
-### 索引（INDEX）
+### Index
 
-**索引是一种用于快速查询和检索数据的数据结构，其本质可以看成是一种排序好的数据结构。**
+**Index (chỉ mục) là một cấu trúc dữ liệu dùng để truy vấn và truy xuất dữ liệu nhanh, bản chất của nó có thể xem là một cấu trúc dữ liệu đã được sắp xếp.**
 
-索引的作用就相当于书的目录。打个比方: 我们在查字典的时候，如果没有目录，那我们就只能一页一页的去找我们需要查的那个字，速度很慢。如果有目录了，我们只需要先去目录里查找字的位置，然后直接翻到那一页就行了。
+Tác dụng của index giống như mục lục của một cuốn sách. Ví dụ: khi tra từ điển, nếu không có mục lục, chúng ta chỉ có thể lật từng trang để tìm chữ cần tra, tốc độ rất chậm. Nếu có mục lục, chúng ta chỉ cần tìm vị trí của chữ trong mục lục trước, sau đó lật thẳng đến trang đó là được.
 
-**优点**：
+**Ưu điểm**:
 
-- 使用索引可以大大加快 数据的检索速度（大大减少检索的数据量）, 这也是创建索引的最主要的原因。
-- 通过创建唯一性索引，可以保证数据库表中每一行数据的唯一性。
+- Sử dụng index có thể tăng đáng kể tốc độ truy xuất dữ liệu (giảm đáng kể lượng dữ liệu cần truy xuất), đây cũng là lý do chính để tạo index.
+- Thông qua việc tạo index duy nhất, có thể đảm bảo tính duy nhất của mỗi hàng dữ liệu trong bảng cơ sở dữ liệu.
 
-**缺点**：
+**Nhược điểm**:
 
-- 创建索引和维护索引需要耗费许多时间。当对表中的数据进行增删改的时候，如果数据有索引，那么索引也需要动态的修改，会降低 SQL 执行效率。
-- 索引需要使用物理文件存储，也会耗费一定空间。
+- Tạo index và bảo trì index cần tốn nhiều thời gian. Khi thêm xóa sửa dữ liệu trong bảng, nếu dữ liệu có index, thì index cũng cần được sửa động, sẽ làm giảm hiệu suất thực thi SQL.
+- Index cần dùng tệp vật lý để lưu trữ, cũng tốn một khoảng không gian nhất định.
 
-但是，**使用索引一定能提高查询性能吗?**
+Tuy nhiên, **dùng index có chắc chắn tăng hiệu năng truy vấn không?**
 
-大多数情况下，索引查询都是比全表扫描要快的。但是如果数据库的数据量不大，那么使用索引也不一定能够带来很大提升。
+Trong hầu hết các trường hợp, truy vấn bằng index đều nhanh hơn quét toàn bảng. Nhưng nếu lượng dữ liệu trong cơ sở dữ liệu không lớn, thì dùng index cũng chưa chắc mang lại cải thiện đáng kể.
 
-关于索引的详细介绍，请看我写的 [MySQL 索引详解](https://javaguide.cn/database/mysql/mysql-index.html) 这篇文章。
+Về giới thiệu chi tiết của index, hãy xem bài viết [Giải thích chi tiết MySQL Index](https://javaguide.cn/database/mysql/mysql-index.html) do tôi viết.
 
-#### 创建索引
+#### Tạo index
 
 ```sql
 CREATE INDEX user_index
 ON user (id);
 ```
 
-#### 添加索引
+#### Thêm index
 
 ```sql
 ALTER table user ADD INDEX user_index(id)
 ```
 
-#### 创建唯一索引
+#### Tạo index duy nhất
 
 ```sql
 CREATE UNIQUE INDEX user_index
 ON user (id);
 ```
 
-#### 删除索引
+#### Xóa index
 
 ```sql
 ALTER TABLE user
 DROP INDEX user_index;
 ```
 
-### 约束
+### Ràng buộc
 
-SQL 约束用于规定表中的数据规则。
+Ràng buộc SQL dùng để quy định quy tắc dữ liệu trong bảng.
 
-如果存在违反约束的数据行为，行为会被约束终止。
+Nếu tồn tại hành vi dữ liệu vi phạm ràng buộc, hành vi đó sẽ bị ràng buộc chấm dứt.
 
-约束可以在创建表时规定（通过 CREATE TABLE 语句），或者在表创建之后规定（通过 ALTER TABLE 语句）。
+Ràng buộc có thể được quy định khi tạo bảng (thông qua câu lệnh CREATE TABLE), hoặc quy định sau khi bảng đã được tạo (thông qua câu lệnh ALTER TABLE).
 
-约束类型：
+Các loại ràng buộc:
 
-- `NOT NULL` - 指示某列不能存储 NULL 值。
-- `UNIQUE` - 保证某列的每行必须有唯一的值。
-- `PRIMARY KEY` - NOT NULL 和 UNIQUE 的结合。确保某列（或两个列多个列的结合）有唯一标识，有助于更容易更快速地找到表中的一个特定的记录。
-- `FOREIGN KEY` - 保证一个表中的数据匹配另一个表中的值的参照完整性。
-- `CHECK` - 保证列中的值符合指定的条件。
-- `DEFAULT` - 规定没有给列赋值时的默认值。
+- `NOT NULL` - Chỉ định cột không được lưu giá trị NULL.
+- `UNIQUE` - Đảm bảo mỗi hàng của cột phải có giá trị duy nhất.
+- `PRIMARY KEY` - Kết hợp của NOT NULL và UNIQUE. Đảm bảo một cột (hoặc kết hợp của hai hay nhiều cột) có định danh duy nhất, giúp tìm một bản ghi cụ thể trong bảng dễ dàng và nhanh hơn.
+- `FOREIGN KEY` - Đảm bảo tính toàn vẹn tham chiếu của dữ liệu trong một bảng khớp với giá trị trong bảng khác.
+- `CHECK` - Đảm bảo giá trị trong cột thỏa mãn điều kiện chỉ định.
+- `DEFAULT` - Quy định giá trị mặc định khi cột chưa được gán giá trị.
 
-创建表时使用约束条件：
+Sử dụng điều kiện ràng buộc khi tạo bảng:
 
 ```sql
 CREATE TABLE Users (
-  Id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增Id',
-  Username VARCHAR(64) NOT NULL UNIQUE DEFAULT 'default' COMMENT '用户名',
-  Password VARCHAR(64) NOT NULL DEFAULT 'default' COMMENT '密码',
-  Email VARCHAR(64) NOT NULL DEFAULT 'default' COMMENT '邮箱地址',
-  Enabled TINYINT(4) DEFAULT NULL COMMENT '是否有效',
+  Id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id tự tăng',
+  Username VARCHAR(64) NOT NULL UNIQUE DEFAULT 'default' COMMENT 'Tên người dùng',
+  Password VARCHAR(64) NOT NULL DEFAULT 'default' COMMENT 'Mật khẩu',
+  Email VARCHAR(64) NOT NULL DEFAULT 'default' COMMENT 'Địa chỉ email',
+  Enabled TINYINT(4) DEFAULT NULL COMMENT 'Có hiệu lực hay không',
   PRIMARY KEY (Id)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='Bảng người dùng';
 ```
 
-**接下来，我们来介绍 TCL 语句用法。TCL 的主要功能是管理数据库中的事务。**
+**Tiếp theo, chúng ta sẽ giới thiệu cách dùng câu lệnh TCL. Chức năng chính của TCL là quản lý các transaction trong cơ sở dữ liệu.**
 
-## 事务处理
+## Xử lý transaction
 
-不能回退 `SELECT` 语句，回退 `SELECT` 语句也没意义；也不能回退 `CREATE` 和 `DROP` 语句。
+Không thể rollback câu lệnh `SELECT`, rollback câu lệnh `SELECT` cũng không có ý nghĩa; cũng không thể rollback câu lệnh `CREATE` và `DROP`.
 
-**MySQL 默认是隐式提交**，每执行一条语句就把这条语句当成一个事务然后进行提交。当出现 `START TRANSACTION` 语句时，会关闭隐式提交；当 `COMMIT` 或 `ROLLBACK` 语句执行后，事务会自动关闭，重新恢复隐式提交。
+**MySQL mặc định là commit ẩn**, mỗi khi thực thi một câu lệnh thì coi câu lệnh đó như một transaction rồi commit. Khi xuất hiện câu lệnh `START TRANSACTION`, sẽ tắt commit ẩn; khi câu lệnh `COMMIT` hoặc `ROLLBACK` thực thi xong, transaction sẽ tự động đóng, khôi phục lại commit ẩn.
 
-通过 `set autocommit=0` 可以取消自动提交，直到 `set autocommit=1` 才会提交；`autocommit` 标记是针对每个连接而不是针对服务器的。
+Thông qua `set autocommit=0` có thể hủy bỏ tự động commit, cho đến khi `set autocommit=1` mới commit; cờ `autocommit` áp dụng cho từng kết nối chứ không phải cho server.
 
-指令：
+Các lệnh:
 
-- `START TRANSACTION` - 指令用于标记事务的起始点。
-- `SAVEPOINT` - 指令用于创建保留点。
-- `ROLLBACK TO` - 指令用于回滚到指定的保留点；如果没有设置保留点，则回退到 `START TRANSACTION` 语句处。
-- `COMMIT` - 提交事务。
+- `START TRANSACTION` - Lệnh dùng để đánh dấu điểm bắt đầu của transaction.
+- `SAVEPOINT` - Lệnh dùng để tạo điểm lưu (savepoint).
+- `ROLLBACK TO` - Lệnh dùng để rollback đến điểm lưu chỉ định; nếu không có điểm lưu nào được đặt, thì rollback về câu lệnh `START TRANSACTION`.
+- `COMMIT` - Commit transaction.
 
 ```sql
--- 开始事务
+-- Bắt đầu transaction
 START TRANSACTION;
 
--- 插入操作 A
+-- Thao tác chèn A
 INSERT INTO `user`
 VALUES (1, 'root1', 'root1', 'xxxx@163.com');
 
--- 创建保留点 updateA
+-- Tạo điểm lưu updateA
 SAVEPOINT updateA;
 
--- 插入操作 B
+-- Thao tác chèn B
 INSERT INTO `user`
 VALUES (2, 'root2', 'root2', 'xxxx@163.com');
 
--- 回滚到保留点 updateA
+-- Rollback về điểm lưu updateA
 ROLLBACK TO updateA;
 
--- 提交事务，只有操作 A 生效
+-- Commit transaction, chỉ có thao tác A có hiệu lực
 COMMIT;
 ```
 
-**接下来，我们来介绍 DCL 语句用法。DCL 的主要功能是控制用户的访问权限。**
+**Tiếp theo, chúng ta sẽ giới thiệu cách dùng câu lệnh DCL. Chức năng chính của DCL là kiểm soát quyền truy cập của người dùng.**
 
-## 权限控制
+## Kiểm soát quyền
 
-要授予用户帐户权限，可以用`GRANT`命令。要撤销用户的权限，可以用`REVOKE`命令。这里以 MySQL 为例，介绍权限控制实际应用。
+Để cấp quyền cho tài khoản người dùng, có thể dùng lệnh `GRANT`. Để thu hồi quyền của người dùng, có thể dùng lệnh `REVOKE`. Ở đây lấy MySQL làm ví dụ, giới thiệu ứng dụng thực tế của kiểm soát quyền.
 
-`GRANT`授予权限语法：
+Cú pháp cấp quyền `GRANT`:
 
 ```sql
 GRANT privilege,[privilege],.. ON privilege_level
@@ -883,15 +883,15 @@ TO user [IDENTIFIED BY password]
 [WITH [GRANT_OPTION | resource_option]];
 ```
 
-简单解释一下：
+Giải thích đơn giản:
 
-1. 在`GRANT`关键字后指定一个或多个权限。如果授予用户多个权限，则每个权限由逗号分隔。
-2. `ON privilege_level` 确定权限应用级别。MySQL 支持 global（`*.*`），database（`database.*`），table（`database.table`）和列级别。如果使用列权限级别，则必须在每个权限之后指定一个或逗号分隔列的列表。
-3. `user` 是要授予权限的用户。如果用户已存在，则`GRANT`语句将修改其权限。否则，`GRANT`语句将创建一个新用户。可选子句`IDENTIFIED BY`允许您为用户设置新的密码。
-4. `REQUIRE tsl_option`指定用户是否必须通过 SSL，X059 等安全连接连接到数据库服务器。
-5. 可选 `WITH GRANT OPTION` 子句允许您授予其他用户或从其他用户中删除您拥有的权限。此外，您可以使用`WITH`子句分配 MySQL 数据库服务器的资源，例如，设置用户每小时可以使用的连接数或语句数。这在 MySQL 共享托管等共享环境中非常有用。
+1. Sau từ khóa `GRANT`, chỉ định một hoặc nhiều quyền. Nếu cấp nhiều quyền cho người dùng, thì mỗi quyền được phân tách bằng dấu phẩy.
+2. `ON privilege_level` xác định cấp độ áp dụng của quyền. MySQL hỗ trợ cấp global (`*.*`), database (`database.*`), table (`database.table`) và cấp cột. Nếu dùng cấp quyền theo cột, thì phải chỉ định một cột hoặc danh sách các cột phân tách bằng dấu phẩy sau mỗi quyền.
+3. `user` là người dùng được cấp quyền. Nếu người dùng đã tồn tại, câu lệnh `GRANT` sẽ sửa quyền của người dùng đó. Nếu không, câu lệnh `GRANT` sẽ tạo người dùng mới. Mệnh đề tùy chọn `IDENTIFIED BY` cho phép bạn đặt mật khẩu mới cho người dùng.
+4. `REQUIRE tsl_option` chỉ định người dùng có bắt buộc phải kết nối đến database server thông qua kết nối an toàn như SSL, X059 hay không.
+5. Mệnh đề tùy chọn `WITH GRANT OPTION` cho phép bạn cấp quyền đang có cho người dùng khác hoặc thu hồi quyền từ người dùng khác. Ngoài ra, bạn có thể dùng mệnh đề `WITH` để phân bổ tài nguyên của MySQL database server, ví dụ đặt số kết nối hoặc số câu lệnh mà người dùng có thể dùng mỗi giờ. Điều này rất hữu ích trong các môi trường chia sẻ như MySQL shared hosting.
 
-`REVOKE` 撤销权限语法：
+Cú pháp thu hồi quyền `REVOKE`:
 
 ```sql
 REVOKE   privilege_type [(column_list)]
@@ -900,134 +900,134 @@ ON [object_type] privilege_level
 FROM user [, user]...
 ```
 
-简单解释一下：
+Giải thích đơn giản:
 
-1. 在 `REVOKE` 关键字后面指定要从用户撤消的权限列表。您需要用逗号分隔权限。
-2. 指定在 `ON` 子句中撤销特权的特权级别。
-3. 指定要撤消 `FROM` 子句中的权限的用户帐户。
+1. Sau từ khóa `REVOKE`, chỉ định danh sách quyền cần thu hồi từ người dùng. Cần phân tách các quyền bằng dấu phẩy.
+2. Chỉ định cấp độ quyền cần thu hồi trong mệnh đề `ON`.
+3. Chỉ định tài khoản người dùng cần thu hồi quyền trong mệnh đề `FROM`.
 
-`GRANT` 和 `REVOKE` 可在几个层次上控制访问权限：
+`GRANT` và `REVOKE` có thể kiểm soát quyền truy cập ở một số cấp độ:
 
-- 整个服务器，使用 `GRANT ALL` 和 `REVOKE ALL`；
-- 整个数据库，使用 `ON database.*`；
-- 特定的表，使用 `ON database.table`；
-- 特定的列；
-- 特定的存储过程。
+- Toàn bộ server, dùng `GRANT ALL` và `REVOKE ALL`;
+- Toàn bộ cơ sở dữ liệu, dùng `ON database.*`;
+- Bảng cụ thể, dùng `ON database.table`;
+- Cột cụ thể;
+- Stored procedure cụ thể.
 
-新创建的账户没有任何权限。账户用 `username@host` 的形式定义，`username@%` 使用的是默认主机名。MySQL 的账户信息保存在 mysql 这个数据库中。
+Tài khoản mới tạo không có bất kỳ quyền nào. Tài khoản được định nghĩa dưới dạng `username@host`, `username@%` sử dụng tên máy chủ mặc định. Thông tin tài khoản của MySQL được lưu trong cơ sở dữ liệu mysql.
 
 ```sql
 USE mysql;
 SELECT user FROM user;
 ```
 
-下表说明了可用于`GRANT`和`REVOKE`语句的所有允许权限：
+Bảng dưới minh họa tất cả các quyền được phép dùng với câu lệnh `GRANT` và `REVOKE`:
 
-| **特权**                | **说明**                                                                                                | **级别** |        |          |          |     |     |
-| ----------------------- | ------------------------------------------------------------------------------------------------------- | -------- | ------ | -------- | -------- | --- | --- |
-| **全局**                | 数据库                                                                                                  | **表**   | **列** | **程序** | **代理** |     |     |
-| ALL [PRIVILEGES]        | 授予除 GRANT OPTION 之外的指定访问级别的所有权限                                                        |          |        |          |          |     |     |
-| ALTER                   | 允许用户使用 ALTER TABLE 语句                                                                           | X        | X      | X        |          |     |     |
-| ALTER ROUTINE           | 允许用户更改或删除存储的例程                                                                            | X        | X      |          |          | X   |     |
-| CREATE                  | 允许用户创建数据库和表                                                                                  | X        | X      | X        |          |     |     |
-| CREATE ROUTINE          | 允许用户创建存储的例程                                                                                  | X        | X      |          |          |     |     |
-| CREATE TABLESPACE       | 允许用户创建，更改或删除表空间和日志文件组                                                              | X        |        |          |          |     |     |
-| CREATE TEMPORARY TABLES | 允许用户使用 CREATE TEMPORARY TABLE 创建临时表                                                          | X        | X      |          |          |     |     |
-| CREATE USER             | 允许用户使用 CREATE USER，DROP USER，RENAME USER 和 REVOKE ALL PRIVILEGES 语句。                        | X        |        |          |          |     |     |
-| CREATE VIEW             | 允许用户创建或修改视图。                                                                                | X        | X      | X        |          |     |     |
-| DELETE                  | 允许用户使用 DELETE                                                                                     | X        | X      | X        |          |     |     |
-| DROP                    | 允许用户删除数据库，表和视图                                                                            | X        | X      | X        |          |     |     |
-| EVENT                   | 启用事件计划程序的事件使用。                                                                            | X        | X      |          |          |     |     |
-| EXECUTE                 | 允许用户执行存储的例程                                                                                  | X        | X      | X        |          |     |     |
-| FILE                    | 允许用户读取数据库目录中的任何文件。                                                                    | X        |        |          |          |     |     |
-| GRANT OPTION            | 允许用户拥有授予或撤消其他帐户权限的权限。                                                              | X        | X      | X        |          | X   | X   |
-| INDEX                   | 允许用户创建或删除索引。                                                                                | X        | X      | X        |          |     |     |
-| INSERT                  | 允许用户使用 INSERT 语句                                                                                | X        | X      | X        | X        |     |     |
-| LOCK TABLES             | 允许用户对具有 SELECT 权限的表使用 LOCK TABLES                                                          | X        | X      |          |          |     |     |
-| PROCESS                 | 允许用户使用 SHOW PROCESSLIST 语句查看所有进程。                                                        | X        |        |          |          |     |     |
-| PROXY                   | 启用用户代理。                                                                                          |          |        |          |          |     |     |
-| REFERENCES              | 允许用户创建外键                                                                                        | X        | X      | X        | X        |     |     |
-| RELOAD                  | 允许用户使用 FLUSH 操作                                                                                 | X        |        |          |          |     |     |
-| REPLICATION CLIENT      | 允许用户查询以查看主服务器或从属服务器的位置                                                            | X        |        |          |          |     |     |
-| REPLICATION SLAVE       | 允许用户使用复制从属从主服务器读取二进制日志事件。                                                      | X        |        |          |          |     |     |
-| SELECT                  | 允许用户使用 SELECT 语句                                                                                | X        | X      | X        | X        |     |     |
-| SHOW DATABASES          | 允许用户显示所有数据库                                                                                  | X        |        |          |          |     |     |
-| SHOW VIEW               | 允许用户使用 SHOW CREATE VIEW 语句                                                                      | X        | X      | X        |          |     |     |
-| SHUTDOWN                | 允许用户使用 mysqladmin shutdown 命令                                                                   | X        |        |          |          |     |     |
-| SUPER                   | 允许用户使用其他管理操作，例如 CHANGE MASTER TO，KILL，PURGE BINARY LOGS，SET GLOBAL 和 mysqladmin 命令 | X        |        |          |          |     |     |
-| TRIGGER                 | 允许用户使用 TRIGGER 操作。                                                                             | X        | X      | X        |          |     |     |
-| UPDATE                  | 允许用户使用 UPDATE 语句                                                                                | X        | X      | X        | X        |     |     |
-| USAGE                   | 相当于“没有特权”                                                                                        |          |        |          |          |     |     |
+| **Quyền**               | **Mô tả**                                                                                                                         | **Cấp độ** |         |                  |           |     |     |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------- | ---------------- | --------- | --- | --- |
+| **Global**              | Cơ sở dữ liệu                                                                                                                     | **Bảng**   | **Cột** | **Chương trình** | **Proxy** |     |     |
+| ALL [PRIVILEGES]        | Cấp tất cả các quyền của cấp truy cập được chỉ định, ngoại trừ GRANT OPTION                                                       |            |         |                  |           |     |     |
+| ALTER                   | Cho phép người dùng dùng câu lệnh ALTER TABLE                                                                                     | X          | X       | X                |           |     |     |
+| ALTER ROUTINE           | Cho phép người dùng thay đổi hoặc xóa stored routine                                                                              | X          | X       |                  |           | X   |     |
+| CREATE                  | Cho phép người dùng tạo cơ sở dữ liệu và bảng                                                                                     | X          | X       | X                |           |     |     |
+| CREATE ROUTINE          | Cho phép người dùng tạo stored routine                                                                                            | X          | X       |                  |           |     |     |
+| CREATE TABLESPACE       | Cho phép người dùng tạo, thay đổi hoặc xóa tablespace và nhóm tệp nhật ký                                                         | X          |         |                  |           |     |     |
+| CREATE TEMPORARY TABLES | Cho phép người dùng dùng CREATE TEMPORARY TABLE để tạo bảng tạm                                                                   | X          | X       |                  |           |     |     |
+| CREATE USER             | Cho phép người dùng dùng các câu lệnh CREATE USER, DROP USER, RENAME USER và REVOKE ALL PRIVILEGES.                               | X          |         |                  |           |     |     |
+| CREATE VIEW             | Cho phép người dùng tạo hoặc sửa view.                                                                                            | X          | X       | X                |           |     |     |
+| DELETE                  | Cho phép người dùng dùng DELETE                                                                                                   | X          | X       | X                |           |     |     |
+| DROP                    | Cho phép người dùng xóa cơ sở dữ liệu, bảng và view                                                                               | X          | X       | X                |           |     |     |
+| EVENT                   | Cho phép sử dụng event của event scheduler.                                                                                       | X          | X       |                  |           |     |     |
+| EXECUTE                 | Cho phép người dùng thực thi stored routine                                                                                       | X          | X       | X                |           |     |     |
+| FILE                    | Cho phép người dùng đọc bất kỳ tệp nào trong thư mục cơ sở dữ liệu.                                                               | X          |         |                  |           |     |     |
+| GRANT OPTION            | Cho phép người dùng có quyền cấp hoặc thu hồi quyền của tài khoản khác.                                                           | X          | X       | X                |           | X   | X   |
+| INDEX                   | Cho phép người dùng tạo hoặc xóa index.                                                                                           | X          | X       | X                |           |     |     |
+| INSERT                  | Cho phép người dùng dùng câu lệnh INSERT                                                                                          | X          | X       | X                | X         |     |     |
+| LOCK TABLES             | Cho phép người dùng dùng LOCK TABLES trên bảng có quyền SELECT                                                                    | X          | X       |                  |           |     |     |
+| PROCESS                 | Cho phép người dùng dùng câu lệnh SHOW PROCESSLIST để xem tất cả tiến trình.                                                      | X          |         |                  |           |     |     |
+| PROXY                   | Cho phép user proxy.                                                                                                              |            |         |                  |           |     |     |
+| REFERENCES              | Cho phép người dùng tạo khóa ngoại                                                                                                | X          | X       | X                | X         |     |     |
+| RELOAD                  | Cho phép người dùng dùng thao tác FLUSH                                                                                           | X          |         |                  |           |     |     |
+| REPLICATION CLIENT      | Cho phép người dùng truy vấn để xem vị trí của master server hoặc slave server                                                    | X          |         |                  |           |     |     |
+| REPLICATION SLAVE       | Cho phép replication slave đọc các sự kiện binary log từ master server.                                                           | X          |         |                  |           |     |     |
+| SELECT                  | Cho phép người dùng dùng câu lệnh SELECT                                                                                          | X          | X       | X                | X         |     |     |
+| SHOW DATABASES          | Cho phép người dùng hiển thị tất cả cơ sở dữ liệu                                                                                 | X          |         |                  |           |     |     |
+| SHOW VIEW               | Cho phép người dùng dùng câu lệnh SHOW CREATE VIEW                                                                                | X          | X       | X                |           |     |     |
+| SHUTDOWN                | Cho phép người dùng dùng lệnh mysqladmin shutdown                                                                                 | X          |         |                  |           |     |     |
+| SUPER                   | Cho phép người dùng dùng các thao tác quản trị khác, như CHANGE MASTER TO, KILL, PURGE BINARY LOGS, SET GLOBAL và lệnh mysqladmin | X          |         |                  |           |     |     |
+| TRIGGER                 | Cho phép người dùng dùng thao tác TRIGGER.                                                                                        | X          | X       | X                |           |     |     |
+| UPDATE                  | Cho phép người dùng dùng câu lệnh UPDATE                                                                                          | X          | X       | X                | X         |     |     |
+| USAGE                   | Tương đương với "không có quyền"                                                                                                  |            |         |                  |           |     |     |
 
-### 创建账户
+### Tạo tài khoản
 
 ```sql
 CREATE USER myuser IDENTIFIED BY 'mypassword';
 ```
 
-### 修改账户名
+### Sửa tên tài khoản
 
 ```sql
 UPDATE user SET user='newuser' WHERE user='myuser';
 FLUSH PRIVILEGES;
 ```
 
-### 删除账户
+### Xóa tài khoản
 
 ```sql
 DROP USER myuser;
 ```
 
-### 查看权限
+### Xem quyền
 
 ```sql
 SHOW GRANTS FOR myuser;
 ```
 
-### 授予权限
+### Cấp quyền
 
 ```sql
 GRANT SELECT, INSERT ON *.* TO myuser;
 ```
 
-### 删除权限
+### Thu hồi quyền
 
 ```sql
 REVOKE SELECT, INSERT ON *.* FROM myuser;
 ```
 
-### 更改密码
+### Đổi mật khẩu
 
 ```sql
 SET PASSWORD FOR myuser = 'mypass';
 ```
 
-## 存储过程
+## Stored procedure
 
-存储过程可以看成是对一系列 SQL 操作的批处理。存储过程可以由触发器，其他存储过程以及 Java， Python，PHP 等应用程序调用。
+Stored procedure (thủ tục lưu trữ) có thể xem là xử lý hàng loạt của một chuỗi các thao tác SQL. Stored procedure có thể được gọi bởi trigger, stored procedure khác và các ứng dụng như Java, Python, PHP, v.v.
 
-![mysql存储过程](https://oss.javaguide.cn/p3-juejin/60afdc9c9a594f079727ec64a2e698a3~tplv-k3u1fbpfcp-zoom-1.jpeg)
+![mysql stored procedure](https://oss.javaguide.cn/p3-juejin/60afdc9c9a594f079727ec64a2e698a3~tplv-k3u1fbpfcp-zoom-1.jpeg)
 
-使用存储过程的好处：
+Lợi ích của việc dùng stored procedure:
 
-- 代码封装，保证了一定的安全性；
-- 代码复用；
-- 由于是预先编译，因此具有很高的性能。
+- Đóng gói mã, đảm bảo mức độ an toàn nhất định;
+- Tái sử dụng mã;
+- Do được biên dịch trước nên có hiệu năng rất cao.
 
-创建存储过程：
+Tạo stored procedure:
 
-- 命令行中创建存储过程需要自定义分隔符，因为命令行是以 `;` 为结束符，而存储过程中也包含了分号，因此会错误把这部分分号当成是结束符，造成语法错误。
-- 包含 `in`、`out` 和 `inout` 三种参数。
-- 给变量赋值都需要用 `select into` 语句。
-- 每次只能给一个变量赋值，不支持集合的操作。
+- Khi tạo stored procedure trong dòng lệnh cần tùy chỉnh ký tự phân tách, vì dòng lệnh lấy `;` làm ký tự kết thúc, mà trong stored procedure cũng chứa dấu chấm phẩy, nên sẽ nhầm lẫn coi phần dấu chấm phẩy này là ký tự kết thúc, gây ra lỗi cú pháp.
+- Bao gồm ba loại tham số `in`, `out` và `inout`.
+- Gán giá trị cho biến đều cần dùng câu lệnh `select into`.
+- Mỗi lần chỉ có thể gán giá trị cho một biến, không hỗ trợ thao tác trên tập hợp.
 
-需要注意的是：**阿里巴巴《Java 开发手册》强制禁止使用存储过程。因为存储过程难以调试和扩展，更没有移植性。**
+Cần lưu ý: **"Cẩm nang phát triển Java" của Alibaba nghiêm cấm sử dụng stored procedure. Vì stored procedure khó debug và khó mở rộng, tính khả chuyển cũng kém hơn.**
 
 ![](https://oss.javaguide.cn/p3-juejin/93a5e011ade4450ebfa5d82057532a49~tplv-k3u1fbpfcp-zoom-1.png)
 
-至于到底要不要在项目中使用，还是要看项目实际需求，权衡好利弊即可！
+Rốt cuộc có nên dùng trong dự án hay không, vẫn phải xem nhu cầu thực tế của dự án, cân nhắc kỹ lợi hại là được!
 
-### 创建存储过程
+### Tạo stored procedure
 
 ```sql
 DROP PROCEDURE IF EXISTS `proc_adder`;
@@ -1047,7 +1047,7 @@ END
 DELIMITER ;
 ```
 
-### 使用存储过程
+### Sử dụng stored procedure
 
 ```less
 set @b=5;
@@ -1055,41 +1055,41 @@ call proc_adder(2,@b,@s);
 select @s as sum;
 ```
 
-## 游标
+## Cursor
 
-游标（cursor）是一个存储在 DBMS 服务器上的数据库查询，它不是一条 `SELECT` 语句，而是被该语句检索出来的结果集。
+Cursor (con trỏ) là một truy vấn cơ sở dữ liệu được lưu trữ trên DBMS server, nó không phải là một câu lệnh `SELECT`, mà là tập kết quả được truy xuất bởi câu lệnh đó.
 
-在存储过程中使用游标可以对一个结果集进行移动遍历。
+Sử dụng cursor trong stored procedure có thể duyệt qua từng hàng của một tập kết quả.
 
-游标主要用于交互式应用，其中用户需要滚动屏幕上的数据，并对数据进行浏览或做出更改。
+Cursor chủ yếu dùng cho các ứng dụng tương tác, trong đó người dùng cần cuộn dữ liệu trên màn hình, và xem hoặc thay đổi dữ liệu.
 
-使用游标的几个明确步骤：
+Các bước rõ ràng khi sử dụng cursor:
 
-- 在使用游标前，必须声明(定义)它。这个过程实际上没有检索数据， 它只是定义要使用的 `SELECT` 语句和游标选项。
+- Trước khi dùng cursor, phải khai báo (định nghĩa) nó. Quá trình này thực tế không truy xuất dữ liệu, nó chỉ định nghĩa câu lệnh `SELECT` và các tùy chọn cursor sẽ dùng.
 
-- 一旦声明，就必须打开游标以供使用。这个过程用前面定义的 SELECT 语句把数据实际检索出来。
+- Sau khi khai báo, phải mở cursor để sử dụng. Quá trình này dùng câu lệnh SELECT đã định nghĩa trước đó để thực sự truy xuất dữ liệu.
 
-- 对于填有数据的游标，根据需要取出(检索)各行。
+- Đối với cursor đã có dữ liệu, lấy ra (truy xuất) từng hàng theo nhu cầu.
 
-- 在结束游标使用时，必须关闭游标，可能的话，释放游标(有赖于具
+- Khi kết thúc sử dụng cursor, phải đóng cursor, nếu có thể, giải phóng cursor (tùy thuộc vào
 
-  体的 DBMS)。
+  DBMS cụ thể).
 
 ```sql
 DELIMITER $
 CREATE  PROCEDURE getTotal()
 BEGIN
     DECLARE total INT;
-    -- 创建接收游标数据的变量
+    -- Tạo biến nhận dữ liệu từ cursor
     DECLARE sid INT;
     DECLARE sname VARCHAR(10);
-    -- 创建总数变量
+    -- Tạo biến tổng
     DECLARE sage INT;
-    -- 创建结束标志变量
+    -- Tạo biến cờ kết thúc
     DECLARE done INT DEFAULT false;
-    -- 创建游标
+    -- Tạo cursor
     DECLARE cur CURSOR FOR SELECT id,name,age from cursor_table where age>30;
-    -- 指定游标循环结束时的返回值
+    -- Chỉ định giá trị trả về khi vòng lặp cursor kết thúc
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = true;
     SET total = 0;
     OPEN cur;
@@ -1105,61 +1105,61 @@ BEGIN
 END $
 DELIMITER ;
 
--- 调用存储过程
+-- Gọi stored procedure
 call getTotal();
 ```
 
-## 触发器
+## Trigger
 
-触发器是一种与表操作有关的数据库对象，当触发器所在表上出现指定事件时，将调用该对象，即表的操作事件触发表上的触发器的执行。
+Trigger là một đối tượng cơ sở dữ liệu liên quan đến thao tác bảng, khi sự kiện chỉ định xuất hiện trên bảng chứa trigger, đối tượng này sẽ được gọi, tức là sự kiện thao tác bảng kích hoạt việc thực thi trigger trên bảng.
 
-我们可以使用触发器来进行审计跟踪，把修改记录到另外一张表中。
+Chúng ta có thể dùng trigger để theo dõi audit, ghi lại các thay đổi vào một bảng khác.
 
-使用触发器的优点：
+Ưu điểm của việc dùng trigger:
 
-- SQL 触发器提供了另一种检查数据完整性的方法。
-- SQL 触发器可以捕获数据库层中业务逻辑中的错误。
-- SQL 触发器提供了另一种运行计划任务的方法。通过使用 SQL 触发器，您不必等待运行计划任务，因为在对表中的数据进行更改之前或之后会自动调用触发器。
-- SQL 触发器对于审计表中数据的更改非常有用。
+- Trigger SQL cung cấp một phương pháp khác để kiểm tra tính toàn vẹn của dữ liệu.
+- Trigger SQL có thể bắt lỗi trong logic nghiệp vụ ở tầng cơ sở dữ liệu.
+- Trigger SQL cung cấp một phương pháp khác để chạy các tác vụ theo lịch. Bằng cách dùng trigger SQL, bạn không cần chờ chạy tác vụ theo lịch, vì trigger sẽ tự động được gọi trước hoặc sau khi thay đổi dữ liệu trong bảng.
+- Trigger SQL rất hữu ích cho việc audit các thay đổi dữ liệu trong bảng.
 
-使用触发器的缺点：
+Nhược điểm của việc dùng trigger:
 
-- SQL 触发器只能提供扩展验证，并且不能替换所有验证。必须在应用程序层中完成一些简单的验证。例如，您可以使用 JavaScript 在客户端验证用户的输入，或者使用服务器端脚本语言（如 JSP，PHP，ASP.NET，Perl）在服务器端验证用户的输入。
-- 从客户端应用程序调用和执行 SQL 触发器是不可见的，因此很难弄清楚数据库层中发生了什么。
-- SQL 触发器可能会增加数据库服务器的开销。
+- Trigger SQL chỉ có thể cung cấp kiểm tra mở rộng, và không thể thay thế tất cả các kiểm tra. Phải hoàn thành một số kiểm tra đơn giản ở tầng ứng dụng. Ví dụ, bạn có thể dùng JavaScript để kiểm tra dữ liệu nhập của người dùng ở phía client, hoặc dùng ngôn ngữ kịch bản phía server (như JSP, PHP, ASP.NET, Perl) để kiểm tra dữ liệu nhập của người dùng ở phía server.
+- Trigger SQL được gọi và thực thi một cách vô hình từ ứng dụng client, vì vậy rất khó để biết chuyện gì đang xảy ra ở tầng cơ sở dữ liệu.
+- Trigger SQL có thể làm tăng chi phí của database server.
 
-MySQL 不允许在触发器中使用 CALL 语句 ，也就是不能调用存储过程。
+MySQL không cho phép dùng câu lệnh CALL trong trigger, tức là không thể gọi stored procedure.
 
-> 注意：在 MySQL 中，分号 `;` 是语句结束的标识符，遇到分号表示该段语句已经结束，MySQL 可以开始执行了。因此，解释器遇到触发器执行动作中的分号后就开始执行，然后会报错，因为没有找到和 BEGIN 匹配的 END。
+> Lưu ý: Trong MySQL, dấu chấm phẩy `;` là ký tự kết thúc câu lệnh, gặp dấu chấm phẩy nghĩa là đoạn câu lệnh đó đã kết thúc, MySQL có thể bắt đầu thực thi. Vì vậy, khi trình thông dịch gặp dấu chấm phẩy trong hành động thực thi của trigger thì sẽ bắt đầu thực thi, sau đó sẽ báo lỗi, vì không tìm thấy END khớp với BEGIN.
 >
-> 这时就会用到 `DELIMITER` 命令（DELIMITER 是定界符，分隔符的意思）。它是一条命令，不需要语句结束标识，语法为：`DELIMITER new_delimiter`。`new_delimiter` 可以设为 1 个或多个长度的符号，默认的是分号 `;`，我们可以把它修改为其他符号，如 `$` - `DELIMITER $` 。在这之后的语句，以分号结束，解释器不会有什么反应，只有遇到了 `$`，才认为是语句结束。注意，使用完之后，我们还应该记得把它给修改回来。
+> Lúc này sẽ cần dùng lệnh `DELIMITER` (DELIMITER có nghĩa là ký tự phân giới, ký tự phân tách). Đây là một lệnh, không cần ký tự kết thúc câu lệnh, cú pháp là: `DELIMITER new_delimiter`. `new_delimiter` có thể đặt thành ký hiệu có độ dài 1 hoặc nhiều ký tự, mặc định là dấu chấm phẩy `;`, chúng ta có thể đổi nó thành ký hiệu khác, như `$` - `DELIMITER $`. Sau đó, các câu lệnh kết thúc bằng dấu chấm phẩy, trình thông dịch sẽ không có phản ứng gì, chỉ khi gặp `$`, mới coi là kết thúc câu lệnh. Lưu ý, sau khi dùng xong, chúng ta phải nhớ đổi nó trở lại.
 
-在 MySQL 5.7.2 版之前，可以为每个表定义最多六个触发器。
+Trước phiên bản MySQL 5.7.2, có thể định nghĩa tối đa sáu trigger cho mỗi bảng.
 
-- `BEFORE INSERT` - 在将数据插入表格之前激活。
-- `AFTER INSERT` - 将数据插入表格后激活。
-- `BEFORE UPDATE` - 在更新表中的数据之前激活。
-- `AFTER UPDATE` - 更新表中的数据后激活。
-- `BEFORE DELETE` - 在从表中删除数据之前激活。
-- `AFTER DELETE` - 从表中删除数据后激活。
+- `BEFORE INSERT` - Kích hoạt trước khi chèn dữ liệu vào bảng.
+- `AFTER INSERT` - Kích hoạt sau khi chèn dữ liệu vào bảng.
+- `BEFORE UPDATE` - Kích hoạt trước khi cập nhật dữ liệu trong bảng.
+- `AFTER UPDATE` - Kích hoạt sau khi cập nhật dữ liệu trong bảng.
+- `BEFORE DELETE` - Kích hoạt trước khi xóa dữ liệu khỏi bảng.
+- `AFTER DELETE` - Kích hoạt sau khi xóa dữ liệu khỏi bảng.
 
-但是，从 MySQL 版本 5.7.2+开始，可以为同一触发事件和操作时间定义多个触发器。
+Tuy nhiên, từ phiên bản MySQL 5.7.2 trở đi, có thể định nghĩa nhiều trigger cho cùng một sự kiện kích hoạt và thời điểm hành động.
 
-**`NEW` 和 `OLD`**：
+**`NEW` và `OLD`**:
 
-- MySQL 中定义了 `NEW` 和 `OLD` 关键字，用来表示触发器的所在表中，触发了触发器的那一行数据。
-- 在 `INSERT` 型触发器中，`NEW` 用来表示将要（`BEFORE`）或已经（`AFTER`）插入的新数据；
-- 在 `UPDATE` 型触发器中，`OLD` 用来表示将要或已经被修改的原数据，`NEW` 用来表示将要或已经修改为的新数据；
-- 在 `DELETE` 型触发器中，`OLD` 用来表示将要或已经被删除的原数据；
-- 使用方法：`NEW.columnName` （columnName 为相应数据表某一列名）
+- Trong MySQL định nghĩa các từ khóa `NEW` và `OLD`, dùng để biểu thị hàng dữ liệu trong bảng chứa trigger đã kích hoạt trigger đó.
+- Trong trigger loại `INSERT`, `NEW` dùng để biểu thị dữ liệu mới sắp (`BEFORE`) hoặc đã (`AFTER`) được chèn;
+- Trong trigger loại `UPDATE`, `OLD` dùng để biểu thị dữ liệu gốc sắp hoặc đã bị sửa, `NEW` dùng để biểu thị dữ liệu mới sắp hoặc đã được sửa thành;
+- Trong trigger loại `DELETE`, `OLD` dùng để biểu thị dữ liệu gốc sắp hoặc đã bị xóa;
+- Cách dùng: `NEW.columnName` (columnName là tên một cột nào đó của bảng dữ liệu tương ứng)
 
-### 创建触发器
+### Tạo trigger
 
-> 提示：为了理解触发器的要点，有必要先了解一下创建触发器的指令。
+> Gợi ý: Để hiểu các điểm chính của trigger, cần tìm hiểu trước về lệnh tạo trigger.
 
-`CREATE TRIGGER` 指令用于创建触发器。
+Lệnh `CREATE TRIGGER` dùng để tạo trigger.
 
-语法：
+Cú pháp:
 
 ```sql
 CREATE TRIGGER trigger_name
@@ -1172,18 +1172,18 @@ BEGIN
 END;
 ```
 
-说明：
+Giải thích:
 
-- `trigger_name`：触发器名
-- `trigger_time` : 触发器的触发时机。取值为 `BEFORE` 或 `AFTER`。
-- `trigger_event` : 触发器的监听事件。取值为 `INSERT`、`UPDATE` 或 `DELETE`。
-- `table_name` : 触发器的监听目标。指定在哪张表上建立触发器。
-- `FOR EACH ROW`: 行级监视，Mysql 固定写法，其他 DBMS 不同。
-- `trigger_statements`: 触发器执行动作。是一条或多条 SQL 语句的列表，列表内的每条语句都必须用分号 `;` 来结尾。
+- `trigger_name`: tên trigger
+- `trigger_time`: thời điểm kích hoạt của trigger. Giá trị là `BEFORE` hoặc `AFTER`.
+- `trigger_event`: sự kiện lắng nghe của trigger. Giá trị là `INSERT`, `UPDATE` hoặc `DELETE`.
+- `table_name`: đối tượng lắng nghe của trigger. Chỉ định tạo trigger trên bảng nào.
+- `FOR EACH ROW`: giám sát cấp hàng, cách viết cố định của MySQL, các DBMS khác thì khác.
+- `trigger_statements`: hành động thực thi của trigger. Là danh sách của một hoặc nhiều câu lệnh SQL, mỗi câu lệnh trong danh sách đều phải kết thúc bằng dấu chấm phẩy `;`.
 
-当触发器的触发条件满足时，将会执行 `BEGIN` 和 `END` 之间的触发器执行动作。
+Khi điều kiện kích hoạt của trigger được thỏa mãn, sẽ thực thi hành động của trigger giữa `BEGIN` và `END`.
 
-示例：
+Ví dụ:
 
 ```sql
 DELIMITER $
@@ -1197,21 +1197,21 @@ END $
 DELIMITER ;
 ```
 
-### 查看触发器
+### Xem trigger
 
 ```sql
 SHOW TRIGGERS;
 ```
 
-### 删除触发器
+### Xóa trigger
 
 ```sql
 DROP TRIGGER IF EXISTS trigger_insert_user;
 ```
 
-## 文章推荐
+## Bài viết đề xuất
 
-- [后端程序员必备：SQL 高性能优化指南！35+条优化建议立马 GET!](https://mp.weixin.qq.com/s/I-ZT3zGTNBZ6egS7T09jyQ)
-- [后端程序员必备：书写高质量 SQL 的 30 条建议](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247486461&idx=1&sn=60a22279196d084cc398936fe3b37772&chksm=cea24436f9d5cd20a4fa0e907590f3e700d7378b3f608d7b33bb52cfb96f503b7ccb65a1deed&token=1987003517&lang=zh_CN#rd)
+- [Lập trình viên Backend cần biết: Hướng dẫn tối ưu hiệu năng SQL! Nhận ngay hơn 35 đề xuất tối ưu!](https://mp.weixin.qq.com/s/I-ZT3zGTNBZ6egS7T09jyQ)
+- [Lập trình viên Backend cần biết: 30 lời khuyên để viết SQL chất lượng cao](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247486461&idx=1&sn=60a22279196d084cc398936fe3b37772&chksm=cea24436f9d5cd20a4fa0e907590f3e700d7378b3f608d7b33bb52cfb96f503b7ccb65a1deed&token=1987003517&lang=zh_CN#rd)
 
 <!-- @include: @article-footer.snippet.md -->

@@ -17,76 +17,76 @@ head:
 
 <!-- @include: @small-advertisement.snippet.md -->
 
-这份 **开发工具知识体系** 面向后端学习和日常开发，围绕“项目构建 -> 依赖管理 -> 版本控制 -> 协作提效 -> 容器化交付”的顺序整理本站开发工具相关文章。
+**Hệ thống kiến thức về công cụ phát triển** này hướng đến việc học backend và phát triển hằng ngày, được sắp xếp theo trình tự "build dự án -> quản lý dependency -> version control -> cộng tác hiệu quả -> triển khai bằng container", tổng hợp các bài viết về công cụ phát triển trên trang này.
 
-开发工具不只是会敲几个命令，更重要的是理解它们在团队协作、工程规范、环境一致性和交付效率中的作用。
+Công cụ phát triển không chỉ là biết gõ vài câu lệnh, mà quan trọng hơn là hiểu vai trò của chúng trong cộng tác nhóm, quy chuẩn kỹ thuật, tính nhất quán của môi trường và hiệu quả bàn giao.
 
-## 适合谁看
+## Phù hợp với ai
 
-- 正在学习后端开发，需要补齐常用工程工具的同学。
-- 准备校招、社招，想把 Maven、Git、Docker 等工具问题答得更扎实的读者。
-- 已经能写业务代码，但对依赖冲突、Git 分支协作、Docker 镜像和容器管理不够熟的开发者。
-- 想提升项目构建、代码协作、环境交付和日常开发效率的工程师。
+- Những bạn đang học backend development, cần bổ sung các công cụ kỹ thuật thường dùng.
+- Những người chuẩn bị phỏng vấn tuyển dụng, muốn trả lời chắc chắn hơn các câu hỏi về Maven, Git, Docker.
+- Những developer đã viết được code nghiệp vụ nhưng chưa nắm vững về xung đột dependency, cộng tác nhánh Git, quản lý image và container của Docker.
+- Những kỹ sư muốn nâng cao hiệu quả build dự án, cộng tác code, bàn giao môi trường và phát triển hằng ngày.
 
-## 学习重点
+## Trọng tâm học tập
 
-- Maven 和 Gradle 解决的是项目构建、依赖管理、生命周期、Wrapper 和插件扩展问题。
-- Git 是团队协作的基础能力，重点不是背命令，而是理解工作区、暂存区、提交、分支、合并和冲突处理。
-- GitHub 不只是代码托管平台，也承载开源协作、个人展示、代码阅读、Actions 自动化和项目管理。
-- Docker 主要解决环境一致性、部署隔离、镜像分发、本地快速搭建依赖服务和多容器应用编排的问题。
-- 工具类知识最好结合真实项目练习，单独看概念容易会看不会用。
+- Maven và Gradle giải quyết các vấn đề về build dự án, quản lý dependency, lifecycle, Wrapper và mở rộng bằng plugin.
+- Git là năng lực nền tảng của cộng tác nhóm; trọng tâm không phải là học thuộc lệnh, mà là hiểu về working directory, staging area, commit, branch, merge và xử lý conflict.
+- GitHub không chỉ là nền tảng host code, mà còn phục vụ cộng tác open source, thể hiện cá nhân, đọc code, tự động hóa bằng Actions và quản lý dự án.
+- Docker chủ yếu giải quyết các vấn đề về tính nhất quán của môi trường, cô lập khi triển khai, phân phối image, dựng nhanh các dịch vụ phụ thuộc cục bộ và orchestration ứng dụng đa container.
+- Kiến thức về công cụ tốt nhất nên luyện tập cùng dự án thực tế; chỉ đọc lý thuyết đơn thuần thì dễ hiểu nhưng không dùng được.
 
-## 建议阅读顺序
+## Thứ tự đọc gợi ý
 
-1. [Git 核心概念总结](./git/git-intro.md)：先掌握版本控制、提交、分支、合并和协作流程。
-2. [Maven 核心概念总结](./maven/maven-core-concepts.md)：理解 Java 项目构建、POM、坐标、仓库、依赖和生命周期。
-3. [Maven 最佳实践](./maven/maven-best-practices.md)：补齐依赖版本管理、BOM、Maven Wrapper、CI 和日常使用规范。
-4. [Docker 核心概念总结](./docker/docker-intro.md)：建立镜像、容器、仓库和 Docker 引擎的基本认知。
-5. [Docker 实战](./docker/docker-in-action.md)：通过命令和场景练习容器管理、镜像构建、数据卷和常见排查。
-6. [Gradle 核心概念总结](./gradle/gradle-core-concepts.md) 和 [GitHub 实用小技巧总结](./git/github-tips.md)：按项目需要补充 Gradle Wrapper、GitHub Actions 与代码阅读技巧。
+1. [Tổng hợp khái niệm cốt lõi của Git](./git/git-intro.md): trước tiên nắm vững version control, commit, branch, merge và quy trình cộng tác.
+2. [Tổng hợp khái niệm cốt lõi của Maven](./maven/maven-core-concepts.md): hiểu về build dự án Java, POM, coordinate, repository, dependency và lifecycle.
+3. [Thực hành tốt nhất với Maven](./maven/maven-best-practices.md): bổ sung quản lý phiên bản dependency, BOM, Maven Wrapper, CI và các quy tắc sử dụng hằng ngày.
+4. [Tổng hợp khái niệm cốt lõi của Docker](./docker/docker-intro.md): xây dựng nhận thức cơ bản về image, container, registry và Docker engine.
+5. [Docker thực chiến](./docker/docker-in-action.md): luyện tập quản lý container, build image, volume và xử lý sự cố thường gặp thông qua câu lệnh và tình huống.
+6. [Tổng hợp khái niệm cốt lõi của Gradle](./gradle/gradle-core-concepts.md) và [Tổng hợp các mẹo hữu ích trên GitHub](./git/github-tips.md): bổ sung Gradle Wrapper, GitHub Actions và kỹ năng đọc code theo nhu cầu dự án.
 
-## 核心文章
+## Bài viết cốt lõi
 
-### 项目构建与依赖管理
+### Build dự án và quản lý dependency
 
-- [Maven 专题](./maven/)：讲清 Maven 核心概念和最佳实践，是 Java 后端项目构建最常用的工具专题。
-- [Maven 核心概念总结](./maven/maven-core-concepts.md)：理解 POM、坐标、仓库、依赖范围、生命周期、插件和多模块项目。
-- [Maven 最佳实践](./maven/maven-best-practices.md)：整理标准目录结构、编译版本、依赖管理、Maven Wrapper、CI 和常用实践建议。
-- [Gradle 核心概念总结](./gradle/gradle-core-concepts.md)：了解 Gradle、Groovy/Kotlin DSL、Gradle Wrapper、插件和 Task 等核心概念。
+- [Chuyên đề Maven](./maven/): trình bày rõ các khái niệm cốt lõi và thực hành tốt nhất của Maven, là chuyên đề công cụ được dùng nhiều nhất khi build dự án Java backend.
+- [Tổng hợp khái niệm cốt lõi của Maven](./maven/maven-core-concepts.md): hiểu về POM, coordinate, repository, dependency scope, lifecycle, plugin và dự án đa module.
+- [Thực hành tốt nhất với Maven](./maven/maven-best-practices.md): tổng hợp cấu trúc thư mục chuẩn, phiên bản compile, quản lý dependency, Maven Wrapper, CI và các khuyến nghị thực hành thường dùng.
+- [Tổng hợp khái niệm cốt lõi của Gradle](./gradle/gradle-core-concepts.md): tìm hiểu Gradle, Groovy/Kotlin DSL, Gradle Wrapper, plugin và Task cùng các khái niệm cốt lõi khác.
 
-### 版本控制与代码协作
+### Version control và cộng tác code
 
-- [Git 专题](./git/)：围绕 Git 核心概念、工作流和 GitHub 提效技巧展开。
-- [Git 核心概念总结](./git/git-intro.md)：理解版本控制、工作区、暂存区、提交、分支、合并、冲突和远程仓库。
-- [GitHub 实用小技巧总结](./git/github-tips.md)：整理个人主页、项目徽章、代码阅读、Actions、Explore/Trending 和开源协作相关技巧。
+- [Chuyên đề Git](./git/): xoay quanh các khái niệm cốt lõi của Git, workflow và các mẹo nâng cao hiệu quả trên GitHub.
+- [Tổng hợp khái niệm cốt lõi của Git](./git/git-intro.md): hiểu về version control, working directory, staging area, commit, branch, merge, conflict và remote repository.
+- [Tổng hợp các mẹo hữu ích trên GitHub](./git/github-tips.md): tổng hợp các mẹo về trang cá nhân, badge dự án, đọc code, Actions, Explore/Trending và cộng tác open source.
 
-### 容器化与本地环境
+### Container hóa và môi trường cục bộ
 
-- [Docker 专题](./docker/)：从核心概念到实战操作，帮助理解容器化交付和环境一致性。
-- [Docker 核心概念总结](./docker/docker-intro.md)：理解容器、镜像、仓库、Docker 引擎以及容器和虚拟机的区别。
-- [Docker 实战](./docker/docker-in-action.md)：通过镜像、容器、网络、数据卷、日志和排查命令完成 Docker 入门实践。
+- [Chuyên đề Docker](./docker/): từ khái niệm cốt lõi đến thao tác thực chiến, giúp hiểu về bàn giao bằng container và tính nhất quán của môi trường.
+- [Tổng hợp khái niệm cốt lõi của Docker](./docker/docker-intro.md): hiểu về container, image, registry, Docker engine cũng như sự khác nhau giữa container và máy ảo.
+- [Docker thực chiến](./docker/docker-in-action.md): hoàn thành thực hành nhập môn Docker thông qua image, container, network, volume, log và câu lệnh xử lý sự cố.
 
-### IDE 与效率工具
+### IDE và công cụ nâng cao hiệu quả
 
-- [IDEA 教程](https://gitee.com/SnailClimb/awesome-idea-tutorial)：整理 IntelliJ IDEA 常用配置、插件、快捷键和提效技巧。
+- [Hướng dẫn IDEA](https://gitee.com/SnailClimb/awesome-idea-tutorial): tổng hợp cấu hình, plugin, phím tắt và mẹo nâng cao hiệu quả thường dùng của IntelliJ IDEA.
 
-## 高频问题
+## Câu hỏi thường gặp
 
-- Maven 的 POM、坐标、仓库、依赖范围分别是什么？
-- Maven 生命周期和插件是什么关系？
-- Maven 多模块项目如何通过 BOM、`dependencyManagement` 和 Maven Wrapper 管理公共依赖与构建版本？
-- Gradle 和 Maven 有什么区别？什么时候需要了解 Gradle？
-- Git 工作区、暂存区、本地仓库和远程仓库分别是什么？
-- Git merge 和 rebase 有什么区别？冲突应该如何处理？
-- GitHub 除了托管代码，还能通过 Profile README、Actions、Codespaces、Explore/Trending 帮开发者做哪些事？
-- Docker 镜像和容器是什么关系？容器和虚拟机有什么区别？
-- Docker 为什么能解决开发、测试、部署环境不一致的问题？Compose 适合解决什么问题？
+- POM, coordinate, repository và dependency scope của Maven lần lượt là gì?
+- Mối quan hệ giữa lifecycle và plugin của Maven là gì?
+- Dự án đa module trong Maven quản lý dependency chung và phiên bản build thông qua BOM, `dependencyManagement` và Maven Wrapper như thế nào?
+- Gradle và Maven khác nhau ở điểm nào? Khi nào cần tìm hiểu Gradle?
+- Working directory, staging area, local repository và remote repository của Git lần lượt là gì?
+- Git merge và rebase khác nhau ở điểm nào? Nên xử lý conflict như thế nào?
+- Ngoài host code, GitHub còn có thể giúp developer làm những gì thông qua Profile README, Actions, Codespaces và Explore/Trending?
+- Docker image và container có mối quan hệ gì? Container và máy ảo khác nhau ở điểm nào?
+- Tại sao Docker có thể giải quyết vấn đề môi trường không nhất quán giữa development, test và deployment? Compose phù hợp để giải quyết vấn đề gì?
 
-## 相关专题
+## Chuyên đề liên quan
 
-- [面试准备](../interview-preparation/)
-- [Java 基础](../java/basis/java-basic-questions-01.md)
+- [Chuẩn bị phỏng vấn](../interview-preparation/)
+- [Java cơ bản](../java/basis/java-basic-questions-01.md)
 - [Spring&Spring Boot](../system-design/framework/spring/)
-- [开源项目](../open-source-project/)
+- [Dự án open source](../open-source-project/)
 
 <!-- @include: @article-footer.snippet.md -->

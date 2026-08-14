@@ -1,6 +1,6 @@
 ---
-title: Spring & Spring Boot 专题：IoC、AOP、事务、自动装配、常用注解与源码
-description: Spring 和 Spring Boot 面试学习路线，涵盖 IoC、AOP、Bean 生命周期、事务、自动装配、常用注解、设计模式、@Async、源码和常见面试题。
+title: "Spring & Spring Boot Chuyên Đề: IoC, AOP, Transaction, Auto-Assembly, Annotation Thường Dùng và Source Code"
+description: Lộ trình học phỏng vấn Spring và Spring Boot, bao gồm IoC, AOP, Bean Lifecycle, Transaction, Auto-Assembly, Annotation thường dùng, Design Pattern, @Async, source code và các câu hỏi phỏng vấn thường gặp.
 category: 框架
 tag:
   - Spring
@@ -15,68 +15,68 @@ head:
       content: Spring,Spring Boot,Spring面试题,SpringBoot面试题,IoC,AOP,Bean生命周期,Spring事务,Spring自动装配,Spring常用注解,Spring源码,@Async,Java后端面试
 ---
 
-Spring 是 Java 后端最核心的基础设施之一。学习 Spring 不能只背注解，还要理解 IoC、AOP、Bean 生命周期、事务、自动装配、设计模式和常见扩展点。
+Spring là một trong những cơ sở hạ tầng (infrastructure) quan trọng nhất của Java backend. Học Spring không chỉ đơn thuần là học thuộc annotation, mà còn cần hiểu IoC, AOP, Bean Lifecycle, Transaction, Auto-Assembly, Design Pattern và các extension point phổ biến.
 
-Spring Boot 则进一步把配置、依赖管理、自动装配和生产可观测能力整合起来，让应用开发更快，但也更容易让人忽略底层原理。
+Spring Boot tiến thêm một bước nữa bằng cách tích hợp cấu hình (configuration), quản lý dependency, auto-assembly và khả năng quan sát (observability) trong production, giúp phát triển ứng dụng nhanh hơn, nhưng cũng dễ khiến người học bỏ qua nguyên lý nền tảng.
 
-## 适合谁看
+## Đối tượng phù hợp
 
-- 正在系统学习 Spring、Spring MVC、Spring Boot 的 Java 后端开发者。
-- 准备 Spring、Spring Boot 高频面试题的同学。
-- 用过 Spring Boot 开发项目，但对 IoC、AOP、事务和自动装配理解不够深的读者。
-- 想从框架原理角度理解后端工程基础设施的工程师。
+- Java backend developer đang học tập có hệ thống về Spring, Spring MVC, Spring Boot.
+- Bạn đọc đang chuẩn bị cho các câu hỏi phỏng vấn tần suất cao về Spring, Spring Boot.
+- Bạn đọc đã từng dùng Spring Boot để phát triển dự án, nhưng chưa hiểu sâu về IoC, AOP, Transaction và Auto-Assembly.
+- Kỹ sư muốn hiểu cơ sở hạ tầng backend engineering từ góc độ nguyên lý framework.
 
-## 学习重点
+## Trọng tâm học tập
 
-- Spring IoC 解决对象创建和依赖管理问题，AOP 解决横切逻辑复用问题。
-- Bean 生命周期、作用域、循环依赖和扩展点是理解 Spring 容器的关键。
-- Spring 事务要重点掌握传播行为、隔离级别、回滚规则和失效场景。
-- Spring Boot 自动装配的核心在于条件装配、配置绑定和 Starter 体系。
-- 学注解不能只背用途，还要知道它背后对应的容器能力。
-- Spring 源码和设计模式适合用来加深理解，不建议一开始就硬啃源码细节。
+- Spring IoC giải quyết vấn đề tạo object và quản lý dependency, AOP giải quyết vấn đề tái sử dụng logic xuyên suốt (cross-cutting concerns).
+- Bean Lifecycle, Scope, Circular Dependency và Extension Point là chìa khóa để hiểu Spring Container.
+- Spring Transaction cần nắm vững Propagation Behavior, Isolation Level, Rollback Rule và các tình huống transaction không hoạt động (failure scenarios).
+- Cốt lõi của Spring Boot Auto-Assembly nằm ở Conditional Assembly, Configuration Binding và hệ thống Starter.
+- Học annotation không chỉ học thuộc công dụng, mà còn phải biết năng lực của container đứng đằng sau nó.
+- Spring source code và Design Pattern phù hợp để đào sâu hiểu biết, không khuyến khích "cày" chi tiết source code ngay từ đầu.
 
-## 建议阅读顺序
+## Thứ tự đọc đề xuất
 
-1. [Spring常见面试题总结](./spring-knowledge-and-questions-summary.md)：先建立 Spring 高频问题清单。
-2. [IoC & AOP详解（快速搞懂）](./ioc-and-aop.md)：理解 Spring 最核心的两个基础概念。
-3. [Spring&SpringMVC&SpringBoot常用注解总结](./spring-common-annotations.md)：把常用注解和容器能力对应起来。
-4. [Spring 事务详解](./spring-transaction.md)：重点掌握事务传播、隔离级别、回滚规则和失效场景。
-5. [SpringBoot 自动装配原理详解](./spring-boot-auto-assembly-principles.md)：理解 Spring Boot 为什么能做到开箱即用。
-6. 再根据需要阅读 [Spring 中的设计模式详解](./spring-design-patterns-summary.md)、[Async 注解原理分析](./async.md) 和 [Spring Boot核心源码解读](./springboot-source-code.md)。
+1. [Tổng hợp câu hỏi phỏng vấn Spring thường gặp](./spring-knowledge-and-questions-summary.md): Xây dựng danh sách câu hỏi tần suất cao về Spring trước.
+2. [IoC & AOP chi tiết (hiểu nhanh)](./ioc-and-aop.md): Hiểu hai khái niệm cốt lõi nhất của Spring.
+3. [Tổng hợp annotation thường dùng trong Spring&SpringMVC&SpringBoot](./spring-common-annotations.md): Liên kết annotation thường dùng với năng lực của container.
+4. [Spring Transaction chi tiết](./spring-transaction.md): Tập trung nắm vững Transaction Propagation, Isolation Level, Rollback Rule và failure scenario.
+5. [Nguyên lý SpringBoot Auto-Assembly chi tiết](./spring-boot-auto-assembly-principles.md): Hiểu tại sao Spring Boot có thể "dùng ngay không cần cấu hình".
+6. Sau đó đọc thêm theo nhu cầu: [Design Pattern trong Spring chi tiết](./spring-design-patterns-summary.md), [Phân tích nguyên lý Async annotation](./async.md) và [Giải mã Spring Boot source code cốt lõi](./springboot-source-code.md).
 
-## 核心文章
+## Bài viết cốt lõi
 
-- [Spring常见面试题总结](./spring-knowledge-and-questions-summary.md)：覆盖 IoC 容器、AOP 原理、Bean 生命周期、依赖注入等 Spring 核心知识点。
-- [SpringBoot常见面试题总结](./springboot-knowledge-and-questions-summary.md)：覆盖自动配置原理、Starter 机制、配置文件加载及 Actuator 监控等知识点。
-- [IoC & AOP详解（快速搞懂）](./ioc-and-aop.md)：讲解控制反转、依赖注入、切面编程和动态代理实现机制。
-- [Spring&SpringMVC&SpringBoot常用注解总结](./spring-common-annotations.md)：梳理 `@Autowired`、`@Component`、`@RequestMapping` 等常用注解。
-- [Spring 事务详解](./spring-transaction.md)：覆盖 `@Transactional`、事务传播行为、隔离级别、事务失效场景及回滚规则。
-- [SpringBoot 自动装配原理详解](./spring-boot-auto-assembly-principles.md)：解析 `@EnableAutoConfiguration`、SpringFactories 加载机制和条件注解。
-- [Spring 中的设计模式详解](./spring-design-patterns-summary.md)：理解工厂模式、代理模式、单例模式、模板方法等在 Spring 中的应用。
-- [Async 注解原理分析](./async.md)：理解异步任务配置、线程池设置和 `@EnableAsync` 机制。
-- [Spring Boot核心源码解读](./springboot-source-code.md)：从源码角度理解启动流程、自动配置机制和 SpringApplication。
+- [Tổng hợp câu hỏi phỏng vấn Spring thường gặp](./spring-knowledge-and-questions-summary.md): Bao gồm IoC Container, nguyên lý AOP, Bean Lifecycle, Dependency Injection và các kiến thức cốt lõi khác của Spring.
+- [Tổng hợp câu hỏi phỏng vấn SpringBoot thường gặp](./springboot-knowledge-and-questions-summary.md): Bao gồm nguyên lý Auto-Configuration, cơ chế Starter, tải file cấu hình và Actuator monitoring.
+- [IoC & AOP chi tiết (hiểu nhanh)](./ioc-and-aop.md): Giải thích Inversion of Control, Dependency Injection, Aspect-Oriented Programming và cơ chế Dynamic Proxy.
+- [Tổng hợp annotation thường dùng trong Spring&SpringMVC&SpringBoot](./spring-common-annotations.md): Tổng hợp các annotation thường dùng như `@Autowired`, `@Component`, `@RequestMapping`.
+- [Spring Transaction chi tiết](./spring-transaction.md): Bao gồm `@Transactional`, Transaction Propagation Behavior, Isolation Level, Transaction Failure Scenario và Rollback Rule.
+- [Nguyên lý SpringBoot Auto-Assembly chi tiết](./spring-boot-auto-assembly-principles.md): Phân tích `@EnableAutoConfiguration`, cơ chế tải SpringFactories và Conditional Annotation.
+- [Design Pattern trong Spring chi tiết](./spring-design-patterns-summary.md): Hiểu cách Factory Pattern, Proxy Pattern, Singleton Pattern, Template Method Pattern, v.v. được áp dụng trong Spring.
+- [Phân tích nguyên lý Async annotation](./async.md): Hiểu cấu hình Async Task, thiết lập Thread Pool và cơ chế `@EnableAsync`.
+- [Giải mã Spring Boot source code cốt lõi](./springboot-source-code.md): Hiểu quy trình khởi động (startup), cơ chế Auto-Configuration và SpringApplication từ góc độ source code.
 
-## 高频问题
+## Câu hỏi tần suất cao
 
-- 什么是 IoC？什么是 DI？
-- Spring AOP 和动态代理是什么关系？
-- Spring Bean 的生命周期是怎样的？
-- Spring 如何解决循环依赖？哪些循环依赖解决不了？
-- `@Autowired` 和 `@Resource` 有什么区别？
-- Spring 事务的传播行为有哪些？
-- `@Transactional` 常见失效场景有哪些？
-- Spring Boot 自动装配的流程是什么？
-- Starter 的作用是什么？如何自定义一个 Starter？
-- Spring 中用到了哪些设计模式？
-- `@Async` 为什么有时不生效？
-- Spring 源码应该从哪些入口开始看？
+- IoC là gì? DI là gì?
+- Spring AOP và Dynamic Proxy có mối quan hệ như thế nào?
+- Spring Bean Lifecycle diễn ra như thế nào?
+- Spring giải quyết Circular Dependency ra sao? Những trường hợp Circular Dependency nào không thể giải quyết?
+- `@Autowired` và `@Resource` khác nhau thế nào?
+- Spring Transaction Propagation Behavior gồm những loại nào?
+- Các tình huống `@Transactional` không hoạt động (failure scenario) thường gặp là gì?
+- Quy trình Auto-Assembly của Spring Boot là gì?
+- Starter có vai trò gì? Làm thế nào để tự định nghĩa một Starter?
+- Spring sử dụng những Design Pattern nào?
+- Tại sao `@Async` đôi khi không hoạt động?
+- Nên bắt đầu đọc Spring source code từ những entry point nào?
 
-## 相关专题
+## Chuyên đề liên quan
 
-- [系统设计知识体系](../../)
-- [系统设计基础专题](../../basis/)
-- [设计模式常见面试题总结](../../design-pattern.md)
-- [MyBatis常见面试题总结](../mybatis/mybatis-interview.md)
-- [分布式系统知识体系](../../../distributed-system/)
+- [Hệ thống kiến thức System Design](../../)
+- [Chuyên đề cơ bản về System Design](../../basis/)
+- [Tổng hợp câu hỏi phỏng vấn Design Pattern thường gặp](../../design-pattern.md)
+- [Tổng hợp câu hỏi phỏng vấn MyBatis thường gặp](../mybatis/mybatis-interview.md)
+- [Hệ thống kiến thức Distributed System](../../../distributed-system/)
 
 <!-- @include: @article-footer.snippet.md -->

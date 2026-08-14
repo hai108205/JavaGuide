@@ -1,18 +1,18 @@
 ---
-title: Spring Boot核心源码解读（付费）
-description: Spring Boot核心源码深度解读，涵盖启动流程、自动配置机制、条件注解及SpringApplication源码分析。
-category: 框架
+title: Giải mã mã nguồn lõi Spring Boot (Trả phí)
+description: Giải mã chuyên sâu mã nguồn lõi Spring Boot, bao gồm quy trình khởi động, cơ chế tự động cấu hình (auto-configuration), annotation điều kiện (conditional annotation) và phân tích mã nguồn SpringApplication.
+category: Framework
 tag:
   - Spring
 head:
   - - meta
     - name: keywords
-      content: Spring Boot源码,启动流程,自动配置源码,SpringApplication,Bean加载,条件注解,源码解读
+      content: Spring Boot source code,startup process,auto-configuration source code,SpringApplication,Bean loading,conditional annotation,source code interpretation
 ---
 
-**Spring Boot 核心源码解读** 为我的[知识星球](https://javaguide.cn/about-the-author/zhishixingqiu-two-years.html)（点击链接即可查看详细介绍以及加入方法）专属内容，已经整理到了[《Java 必读源码系列》](https://javaguide.cn/zhuanlan/source-code-reading.html)中。
+**Giải mã mã nguồn lõi Spring Boot** là nội dung độc quyền trên [知识星球 (Zhishi Xingqiu)](https://javaguide.cn/about-the-author/zhishixingqiu-two-years.html) của tôi (nhấp vào liên kết để xem giới thiệu chi tiết và cách tham gia), đã được tổng hợp vào [《Loạt bài Mã nguồn Java Phải đọc》](https://javaguide.cn/zhuanlan/source-code-reading.html).
 
-![Spring Boot核心源码解读](https://oss.javaguide.cn/xingqiu/springboot-source-code.png)
+![Giải mã mã nguồn lõi Spring Boot](https://oss.javaguide.cn/xingqiu/springboot-source-code.png)
 
 <!-- @include: @yuanma.snippet.md -->
 

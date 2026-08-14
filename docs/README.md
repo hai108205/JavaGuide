@@ -1,78 +1,75 @@
 ---
 home: true
 icon: "mdi:home-outline"
-title: JavaGuide（Java 面试 & 后端通用知识体系）
-description: JavaGuide 是 GitHub 156K+ Star 的 Java 面试与后端知识体系指南，免费开源，系统覆盖 Java、计算机基础、数据库、分布式、高并发、高可用、系统设计与 AI 应用开发，适合校招、社招、跳槽和后端能力体系化复习。
+title: "JavaGuide (Phỏng vấn Java & Hệ thống kiến thức Backend tổng quát)"
+description: "JavaGuide là cẩm nang phỏng vấn Java và hệ thống kiến thức Backend với hơn 156K+ Star trên GitHub, miễn phí và Open Source. Nội dung bao phủ có hệ thống Java, Computer Science Fundamentals, Database, Distributed System, High Concurrency, High Availability, System Design và AI Application Development, phù hợp cho Campus Recruitment, Experienced Hire, chuyển việc và ôn tập Backend một cách hệ thống."
 heroImage: /logo.svg
 heroText: JavaGuide
-tagline: GitHub 156K+ Star 的 Java 面试与后端知识体系，覆盖计算机基础、数据库、分布式、高并发、系统设计与 AI 应用开发
+tagline: "Hệ thống kiến thức Phỏng vấn Java & Backend với 156K+ Star trên GitHub, bao phủ Computer Science Fundamentals, Database, Distributed System, High Concurrency, System Design và AI Application Development"
 sitemap:
   changefreq: weekly
   priority: 0.9
 head:
   - - meta
     - name: keywords
-      content: JavaGuide,Java面试,Java面试指南,Java八股文,后端面试,后端开发,数据库面试,MySQL面试,Redis面试,分布式,高并发,高性能,高可用,系统设计,消息队列,缓存,计算机网络,Linux,AI面试,AI应用开发,Agent,RAG,MCP,LLM,AI编程
+      content: "JavaGuide,Phỏng vấn Java,Hướng dẫn phỏng vấn Java,Java Interview Questions,Phỏng vấn Backend,Backend Development,Phỏng vấn Database,Phỏng vấn MySQL,Phỏng vấn Redis,Distributed System,High Concurrency,High Performance,High Availability,System Design,Message Queue,Cache,Computer Network,Linux,AI Interview,AI Application Development,Agent,RAG,MCP,LLM,AI Coding"
   - - meta
     - property: og:image
       content: https://javaguide.cn/logo.png
 actions:
-  - text: 开始阅读
+  - text: "Bắt đầu đọc"
     link: /home.md
     type: primary
-  - text: 知识星球
+  - text: "Knowledge Planet"
     link: /about-the-author/zhishixingqiu-two-years.md
     type: default
 footer: |-
-  <a href="https://beian.miit.gov.cn/" target="_blank">鄂ICP备2020015769号-1</a> | 主题: <a href="https://theme-hope.vuejs.press/" target="_blank">VuePress Theme Hope</a>
+  <a href="https://beian.miit.gov.cn/" target="_blank">Ố browser ICP</a> | Chủ đề: VuePress Theme Hope
 ---
 
-<!-- markdownlint-disable MD033 -->
+## Các cổng nội dung chính
 
-## 核心入口
+- **Lộ trình phỏng vấn Backend**: [Hướng dẫn phỏng vấn Backend](./home.md) (⭐ **Nội dung cốt lõi của website**): Hệ thống hóa **Java Interview Questions** và các câu hỏi phỏng vấn Backend thường gặp, bao phủ Java Fundamentals, Collections, Concurrency, JVM, Spring, MySQL, Redis, Distributed System, High Concurrency, High Availability và System Design.
+- **Computer Science Fundamentals**: [Hướng dẫn phỏng vấn Computer Science Fundamentals](./cs-basics/): Hệ thống hóa các kiến thức nền tảng cho Backend Interview như **Computer Network, Operating System, Data Structures & Algorithms**, phù hợp để bổ sung những phần kiến thức còn thiếu.
+- **AI Application Development**: [Hướng dẫn phỏng vấn AI Application Development](./ai/) (⭐ **Mới**): Tổng hợp các kiến thức thường gặp dành cho Backend Developer về **LLM Fundamentals, Prompt, Agent, RAG, MCP, LLM API Engineering và AI System Design**. Nếu muốn học một cách hệ thống, có thể kết hợp với [Lộ trình AI Application Development & Agent (Phiên bản mới nhất 2026)](./roadmap/java-to-ai-roadmap.md) và [Định hướng chuyển từ Backend sang AI Agent (Phiên bản mới nhất 2026)](./roadmap/backend-to-ai-agent-roadmap.md).
+- **AI Coding thực chiến**: [Hướng dẫn thực hành AI Coding](./ai-coding/) (⭐ **Mới**): Tập trung vào **Claude Code, Codex, AI IDE, CLI Agent, Context Management và AI-assisted Development Workflow**, giúp bạn thực sự tích hợp AI vào quy trình lập trình hằng ngày.
+- **Learning Roadmap**: [Tổng hợp Learning Roadmap (Phiên bản mới nhất 2026)](./roadmap/): Tổng hợp các lộ trình học tập có hệ thống cho **Java Backend, AI Application Development, AI Agent và Full-stack Development**.
+- **Tài liệu mở rộng**:
 
-- **后端面试主线**：[后端面试指南](./home.md)（⭐网站核心）：系统整理 Java 面试八股文和后端高频面试题，覆盖 Java 基础、集合、并发、JVM、Spring、MySQL、Redis、分布式、高并发、高可用和系统设计。
-- **计算机基础**：[计算机基础面试指南](./cs-basics/)：系统梳理计算机网络、操作系统、数据结构与算法等后端面试底层基础，适合补齐基础短板。
-- **AI 应用开发**：[AI 应用开发面试指南](./ai/)（⭐新增）：面向后端开发者梳理大模型基础、Prompt、Agent、RAG、MCP、LLM API 工程和 AI 系统设计等高频知识；如果想系统学习，可以配合 [AI 应用开发与 Agent 学习路线（2026 最新版）](./roadmap/java-to-ai-roadmap.md) 和 [后端转 AI Agent 学习建议（2026 最新版）](./roadmap/backend-to-ai-agent-roadmap.md)。
-- **AI 编程实战**：[AI 编程实践指南](./ai-coding/)（⭐新增）：聚焦 Claude Code、Codex、AI IDE、CLI Agent、上下文管理和 AI 辅助开发工作流，帮助你把 AI 真正用进日常编码。
-- **学习路线**：[学习路线合集（2026 最新版）](./roadmap/)：整理 Java 后端、AI 应用开发、AI Agent 和全栈开发等方向的系统学习建议。
-- **延伸资料**：
-  - [《Java 面试指北》](https://javaguide.cn/zhuanlan/java-mian-shi-zhi-bei.html)：四年打磨，和 JavaGuide 开源版的内容互补，带你从零开始系统准备后端面试！
-  - [《后端面试高频系统设计&场景题》](https://javaguide.cn/zhuanlan/back-end-interview-high-frequency-system-design-and-scenario-questions.html)：30+ 道高频系统设计和场景面试，助你应对当下中大厂面试趋势。
-  - [⭐AI 智能面试辅助平台 + RAG 知识库](https://javaguide.cn/zhuanlan/interview-guide.html)：基于 Spring Boot 4.0 + Java 21 + Spring AI 2.0 的大模型实战项目，适合作为学习和简历项目。
+  - [**"Định hướng phỏng vấn Java"**](https://javaguide.cn/zhuanlan/java-mian-shi-zhi-bei.html): Được hoàn thiện và cập nhật trong 4 năm, bổ sung cho nội dung Open Source của JavaGuide, giúp bạn xây dựng lộ trình chuẩn bị phỏng vấn Backend một cách hệ thống từ con số 0.
+  - [**"System Design & Scenario Questions Backend thường gặp trong phỏng vấn"**](https://javaguide.cn/zhuanlan/back-end-interview-high-frequency-system-design-and-scenario-questions.html): Hơn 30 câu hỏi System Design và Scenario Questions thường gặp, giúp bạn chuẩn bị cho xu hướng phỏng vấn Backend tại các công ty công nghệ lớn hiện nay.
+  - [⭐**Nền tảng hỗ trợ phỏng vấn thông minh bằng AI + RAG Knowledge Base**](https://javaguide.cn/zhuanlan/interview-guide.html): Project thực chiến về LLM được xây dựng dựa trên **Spring Boot 4.0 + Java 21 + Spring AI 2.0**, phù hợp làm project học tập và project đưa vào CV.
 
-## 精选文章
+## Bài viết nổi bật
 
-- **后端面试路径**：[Java 后端面试通关计划](./interview-preparation/backend-interview-plan.md)、[Java 学习路线（2026 最新版）](./interview-preparation/java-roadmap.md)、[Java 后端面试重点总结](./interview-preparation/key-points-of-interview.md)。不知道从哪里开始复习时，优先看这一组。
-- **Java、数据库与分布式高频题**：[Java 基础](./java/basis/java-basic-questions-01.md)、[Java 集合](./java/collection/java-collection-questions-01.md)、[Java 并发](./java/concurrent/java-concurrent-questions-01.md)、[JVM](./java/jvm/README.md)、[MySQL](./database/mysql/mysql-questions-01.md)、[Redis](./database/redis/redis-questions-01.md)、[分布式](./distributed-system/distributed-system-interview-questions.md)。适合集中刷核心八股和后端通用高频题。
-- **计算机基础补强**：[计算机网络](./cs-basics/network/other-network-questions.md)、[操作系统](./cs-basics/operating-system/operating-system-basic-questions-01.md)、[进程和线程](./cs-basics/operating-system/process-and-thread.md)、[数据结构与算法](./cs-basics/algorithms/)。适合补齐校招、社招和大厂面试都绕不开的基础能力。
-- **AI 应用开发进阶**：[AI 应用开发与 Agent 学习路线（2026 最新版）](./roadmap/java-to-ai-roadmap.md)、[后端转 AI Agent 学习建议（2026 最新版）](./roadmap/backend-to-ai-agent-roadmap.md)、[AI 应用开发知识体系](./ai/)、[LLM API 工程实践](./ai/llm-basis/llm-api-engineering.md)、[RAG 基础概念](./ai/rag/rag-basis.md)、[AI 应用系统设计](./ai/system-design/ai-application-architecture.md)。适合后端开发者先明确学习路径，再从模型调用走向可上线的 AI 应用。
-- **AI 编程效率提升**：[AI 编程实战指南](./ai-coding/)、[Claude Code 使用指南](./ai-coding/practices/claudecode-tips.md)、[Codex 使用指南](./ai-coding/practices/codex-best-practices.md)、[AI IDE 选型与实践](./ai-coding/practices/ai-ide.md)。适合把 AI 编程工具真正接入日常开发、重构和排障流程。
+- **Lộ trình phỏng vấn Backend**: [Kế hoạch chinh phục phỏng vấn Java Backend](./interview-preparation/backend-interview-plan.md), [Lộ trình học Java (Phiên bản mới nhất 2026)](./interview-preparation/java-roadmap.md), [Tổng hợp trọng điểm phỏng vấn Java Backend](./interview-preparation/key-points-of-interview.md). Nếu chưa biết bắt đầu ôn tập từ đâu, hãy ưu tiên nhóm nội dung này.
+- **Java, Database và Distributed System — các câu hỏi thường gặp**: [Java Fundamentals](./java/basis/java-basic-questions-01.md), [Java Collections](./java/collection/java-collection-questions-01.md), [Java Concurrency](./java/concurrent/java-concurrent-questions-01.md), [JVM](./java/jvm/README.md), [MySQL](./database/mysql/mysql-questions-01.md), [Redis](./database/redis/redis-questions-01.md), [Distributed System](./distributed-system/distributed-system-interview-questions.md). Phù hợp để tập trung ôn các câu hỏi lý thuyết cốt lõi và các chủ đề Backend thường gặp.
+- **Bổ sung Computer Science Fundamentals**: [Computer Network](./cs-basics/network/other-network-questions.md), [Operating System](./cs-basics/operating-system/operating-system-basic-questions-01.md), [Process & Thread](./cs-basics/operating-system/process-and-thread.md), [Data Structures & Algorithms](./cs-basics/algorithms/). Phù hợp để bổ sung những kiến thức nền tảng không thể bỏ qua trong Campus Recruitment, Experienced Hire và phỏng vấn tại các công ty công nghệ lớn.
+- **Nâng cao AI Application Development**: [Lộ trình AI Application Development & Agent (Phiên bản mới nhất 2026)](./roadmap/java-to-ai-roadmap.md), [Định hướng chuyển từ Backend sang AI Agent (Phiên bản mới nhất 2026)](./roadmap/backend-to-ai-agent-roadmap.md), [Hệ thống kiến thức AI Application Development](./ai/), [LLM API Engineering](./ai/llm-basis/llm-api-engineering.md), [Khái niệm cơ bản về RAG](./ai/rag/rag-basis.md), [AI Application System Design](./ai/system-design/ai-application-architecture.md). Phù hợp với Backend Developer muốn xác định rõ Learning Roadmap trước khi tiến từ việc gọi Model API đến xây dựng AI Application có thể triển khai thực tế.
+- **Nâng cao hiệu suất AI Coding**: [Hướng dẫn thực chiến AI Coding](./ai-coding/), [Hướng dẫn sử dụng Claude Code](./ai-coding/practices/claudecode-tips.md), [Hướng dẫn sử dụng Codex](./ai-coding/practices/codex-best-practices.md), [Lựa chọn và thực hành với AI IDE](./ai-coding/practices/ai-ide.md). Phù hợp để đưa các công cụ AI Coding thực sự vào quy trình **Development, Refactoring và Troubleshooting** hằng ngày.
 
-## 关于 JavaGuide
+## Về JavaGuide
 
-JavaGuide 是一份面向 Java 和后端开发者的开源知识库，已在 GitHub 获得 **156K+ Star**。项目从 Java 面试复习出发，逐步扩展为覆盖后端核心技术、工程实践和 AI 应用开发的系统化学习指南。
+JavaGuide là một **Knowledge Base Open Source** dành cho Java Developer và Backend Developer, hiện đã đạt **156K+ Star trên GitHub**. Project bắt đầu từ mục tiêu hỗ trợ ôn tập **Java Interview**, sau đó từng bước mở rộng thành một **Learning Guide có hệ thống**, bao phủ Backend Core Technologies, Engineering Practices và AI Application Development.
 
-JavaGuide 自 2018 年开源以来持续维护，累计提交 **6200+** commit ，共有 **640+** 多位贡献者共同参与维护和完善。
+JavaGuide được Open Source từ năm 2018 và liên tục được duy trì. Đến nay project đã có hơn **6.200 commit** và có hơn **640 contributors** cùng tham gia duy trì, đóng góp và hoàn thiện nội dung.
 
-![JavaGuide 目前的 Star、Fork、Issue 和 PR 情况](https://oss.javaguide.cn/github/javaguide/intro/javaguide-star-issue-pr.png)
+Nội dung website bao phủ:
 
-网站内容覆盖：
+- **Backend Interview**: Java Fundamentals, Collections, Concurrency, JVM, MySQL, Redis, Distributed System, System Design và các kiến thức cốt lõi khác.
+- **AI Application Development**: Kiến thức nền tảng về **Large Language Model (LLM)**, **Agent**, **Retrieval-Augmented Generation (RAG)**, **MCP (Model Context Protocol)** và các công nghệ AI hiện đại.
 
-- **后端面试**：Java 基础、集合、并发、JVM、MySQL、Redis、分布式、系统设计等核心知识。
-- **AI 应用开发**：大模型（LLM）基础、Agent 智能体、RAG 检索增强生成、MCP 协议等前沿技术。
+Tôi thực sự hy vọng có thể xây dựng project này thật tốt và thực sự giúp ích cho những bạn đang cần một nguồn tài liệu học tập có hệ thống!
 
-真心希望能够把这个项目做好，真正能够帮助到有需要的朋友！
+Nếu bạn cảm thấy nội dung của JavaGuide hữu ích, hãy cho project một **Star miễn phí** trên GitHub (hoàn toàn không bắt buộc — nếu bạn thấy nội dung hữu ích và có giá trị thì hãy Star). Đây là sự động viên lớn nhất dành cho tôi. Cảm ơn mọi người đã đồng hành trên hành trình này!
 
-如果觉得 JavaGuide 的内容对你有帮助的话，还请点个免费的 Star（绝不强制点 Star，觉得内容不错有收获再点赞就好），这是对我最大的鼓励，感谢各位一路同行，共勉！传送门：[GitHub](https://github.com/Snailclimb/JavaGuide) | [Gitee](https://gitee.com/SnailClimb/JavaGuide)。
+Các liên kết: [**GitHub**](https://github.com/Snailclimb/JavaGuide) | [**Gitee**](https://gitee.com/SnailClimb/JavaGuide).
 
-- [项目介绍](./javaguide/intro.md)（JavaGuide 的诞生）
-- [贡献指南](./javaguide/contribution-guideline.md)（期待你的贡献，奖励丰富）
-- [常见问题](./javaguide/faq.md)（统一回复大家的一些疑问）
+- [**Giới thiệu Project**](./javaguide/intro.md) (Sự ra đời của JavaGuide)
+- [**Contribution Guide**](./javaguide/contribution-guideline.md) (Chào đón mọi đóng góp của bạn, nhiều phần thưởng hấp dẫn)
+- [**FAQ**](./javaguide/faq.md) (Tổng hợp và giải đáp các câu hỏi thường gặp)
 
-## PDF 版本 & 微信联系
+## Phiên bản PDF & Liên hệ WeChat
 
-- 如果你更喜欢 **PDF**（比如通勤/离线阅读/打印学习），扫描下方二维码，后台回复“**PDF**”即可获取最新版（持续更新，详细介绍见：**[2026 最新后端面试 PDF 资料](./interview-preparation/pdf-interview-javaguide.md)**）。
-- 如果你想加我的微信，可以扫描下方二维码，后台回复“**微信**”。我会在朋友圈分享一些优质技术内容、学习资料和项目更新。
-
-<img src="https://oss.javaguide.cn/github/javaguide/gongzhonghao-javaguide.png" alt="JavaGuide 公众号" style="zoom: 43%; display: block; margin: 0 auto;" />
+- Nếu bạn thích **PDF** hơn (ví dụ đọc khi di chuyển, đọc Offline hoặc in ra để học), hãy quét **QR Code** bên dưới và gửi từ khóa "**PDF**" qua tài khoản chính thức để nhận phiên bản mới nhất (liên tục được cập nhật; xem chi tiết tại: **[Tài liệu PDF phỏng vấn Backend mới nhất 2026](./interview-preparation/pdf-interview-javaguide.md)**).
+- Nếu muốn kết nối với tôi qua **WeChat**, hãy quét **QR Code** bên dưới và gửi từ khóa "**微信**". Tôi sẽ chia sẻ trên Moments một số nội dung kỹ thuật chất lượng, tài liệu học tập và thông tin cập nhật về project.

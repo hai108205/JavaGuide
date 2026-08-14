@@ -1,6 +1,6 @@
 ---
-title: Java 语法糖详解
-description: 深入剖析Java语法糖原理：详解自动装箱拆箱、泛型擦除、增强for、可变参数、枚举、Lambda等语法糖的编译期实现机制，避免使用误区。
+title: Java Syntactic Sugar Chi Tiết
+description: "Phân tích chuyên sâu nguyên lý Syntactic Sugar trong Java: giải thích cơ chế biên dịch của autoboxing/unboxing, type erasure, enhanced for, varargs, enum, Lambda và các loại syntactic sugar khác, giúp tránh các lỗi thường gặp khi sử dụng."
 category: Java
 tag:
   - Java基础
@@ -14,37 +14,37 @@ head:
 >
 > 原文：<https://mp.weixin.qq.com/s/o4XdEMq1DL-nBS-f8Za5Aw>
 
-语法糖是大厂 Java 面试常问的一个知识点。
+Syntactic sugar là một chủ đề thường gặp trong phỏng vấn Java ở các công ty lớn.
 
-本文从 Java 编译原理角度，深入字节码及 class 文件，抽丝剥茧，了解 Java 中的语法糖原理及用法，帮助大家在学会如何使用 Java 语法糖的同时，了解这些语法糖背后的原理。
+Bài viết này đi từ góc độ nguyên lý biên dịch Java, đi sâu vào bytecode và class file, phân tích cặn kẽ nguyên lý và cách sử dụng syntactic sugar trong Java, giúp bạn vừa học cách dùng syntactic sugar, vừa hiểu được cơ chế đằng sau chúng.
 
-## 什么是语法糖？
+## Syntactic sugar là gì?
 
-**语法糖（Syntactic Sugar）** 也称糖衣语法，是英国计算机学家 Peter.J.Landin 发明的一个术语，指在计算机语言中添加的某种语法，这种语法对语言的功能并没有影响，但是更方便程序员使用。简而言之，语法糖让程序更加简洁，有更高的可读性。
+**Syntactic Sugar** (cú pháp đường) là một thuật ngữ do nhà khoa học máy tính người Anh Peter.J.Landin đặt ra, dùng để chỉ một loại cú pháp được thêm vào ngôn ngữ lập trình, không làm thay đổi chức năng của ngôn ngữ nhưng giúp lập trình viên sử dụng thuận tiện hơn. Nói ngắn gọn, syntactic sugar giúp chương trình ngắn gọn hơn và dễ đọc hơn.
 
 ![](https://oss.javaguide.cn/github/javaguide/java/basis/syntactic-sugar/image-20220818175953954.png)
 
-> 有意思的是，在编程领域，除了语法糖，还有语法盐和语法糖精的说法，篇幅有限这里不做扩展了。
+> Thú vị là trong lĩnh vực lập trình, ngoài syntactic sugar, còn có các khái niệm syntactic salt và syntactic saccharin, nhưng do giới hạn độ dài bài viết nên sẽ không mở rộng ở đây.
 
-我们所熟知的编程语言中几乎都有语法糖。作者认为，语法糖的多少是评判一个语言够不够牛逼的标准之一。很多人说 Java 是一个“低糖语言”，其实从 Java 7 开始 Java 语言层面上一直在添加各种糖，主要是在“Project Coin”项目下研发。尽管现在 Java 有人还是认为现在的 Java 是低糖，未来还会持续向着“高糖”的方向发展。
+Hầu như mọi ngôn ngữ lập trình chúng ta biết đều có syntactic sugar. Tác giả cho rằng, số lượng syntactic sugar là một trong những tiêu chí đánh giá một ngôn ngữ có đủ mạnh hay không. Nhiều người nói Java là một "ngôn ngữ ít đường", nhưng thực ra từ Java 7 trở đi, Java đã liên tục bổ sung nhiều loại sugar, chủ yếu trong khuôn khổ dự án "Project Coin". Mặc dù hiện nay một số người vẫn cho rằng Java là ngôn ngữ ít đường, nhưng trong tương lai nó sẽ tiếp tục phát triển theo hướng "nhiều đường" hơn.
 
-## Java 中有哪些常见的语法糖？
+## Java có những loại syntactic sugar phổ biến nào?
 
-前面提到过，语法糖的存在主要是方便开发人员使用。但其实， **Java 虚拟机并不支持这些语法糖。这些语法糖在编译阶段就会被还原成简单的基础语法结构，这个过程就是解语法糖。**
+Như đã đề cập ở trên, syntactic sugar tồn tại chủ yếu để giúp lập trình viên sử dụng thuận tiện hơn. Nhưng thực ra, **Java Virtual Machine không hỗ trợ những syntactic sugar này. Các syntactic sugar sẽ được chuyển đổi ngược về cấu trúc cú pháp cơ bản đơn giản trong giai đoạn biên dịch, quá trình này gọi là desugar (giải đường).**
 
-说到编译，大家肯定都知道，Java 语言中，`javac` 命令可以将后缀名为 `.java` 的源文件编译为后缀名为 `.class` 的可以运行于 Java 虚拟机的字节码。如果你去看 `com.sun.tools.javac.main.JavaCompiler` 的源码，你会发现在 `compile()` 中有一个步骤就是调用 `desugar()`，这个方法就是负责解语法糖的实现的。
+Nhắc đến biên dịch, chắc hẳn ai cũng biết, trong Java, lệnh `javac` có thể biên dịch file nguồn đuôi `.java` thành file đuôi `.class` chứa bytecode chạy được trên JVM. Nếu bạn xem mã nguồn của `com.sun.tools.javac.main.JavaCompiler`, bạn sẽ thấy trong phương thức `compile()` có một bước gọi `desugar()`, phương thức này chính là nơi thực hiện việc giải syntactic sugar.
 
-Java 中最常用的语法糖主要有泛型、变长参数、条件编译、自动拆装箱、内部类等。本文主要来分析下这些语法糖背后的原理。一步一步剥去糖衣，看看其本质。
+Các syntactic sugar phổ biến nhất trong Java bao gồm generics, varargs, conditional compilation, autoboxing/unboxing, inner class, v.v. Bài viết này sẽ phân tích nguyên lý đằng sau những syntactic sugar này, từng bước lột bỏ lớp vỏ đường để nhìn thấy bản chất.
 
-我们这里会用到[反编译](https://mp.weixin.qq.com/s?__biz=MzI3NzE0NjcwMg==&mid=2650120609&idx=1&sn=5659f96310963ad57d55b48cee63c788&chksm=f36bbc80c41c3596a1e4bf9501c6280481f1b9e06d07af354474e6f3ed366fef016df673a7ba&scene=21#wechat_redirect)，你可以通过 [Decompilers online](http://www.javadecompilers.com/) 对 Class 文件进行在线反编译。
+Chúng ta sẽ sử dụng [decompiler](https://mp.weixin.qq.com/s?__biz=MzI3NzE0NjcwMg==&mid=2650120609&idx=1&sn=5659f96310963ad57d55b48cee63c788&chksm=f36bbc80c41c3596a1e4bf9501c6280481f1b9e06d07af354474e6f3ed366fef016df673a7ba&scene=21#wechat_redirect), bạn có thể dùng [Decompilers online](http://www.javadecompilers.com/) để decompile trực tuyến class file.
 
-### switch 支持 String 与枚举
+### switch hỗ trợ String và Enum
 
-前面提到过，从 Java 7 开始，Java 语言中的语法糖在逐渐丰富，其中一个比较重要的就是 Java 7 中 `switch` 开始支持 `String`。
+Như đã đề cập, từ Java 7, syntactic sugar trong Java dần phong phú hơn, một trong những thay đổi quan trọng là `switch` bắt đầu hỗ trợ `String`.
 
-在开始之前先科普下，早期 Java 的 `switch` 支持 `byte`、`short`、`char`、`int` 以及对应的包装类型，不支持 `boolean`、`long`、`float`、`double`。`char` 表示 UTF-16 代码单元，并不是 ASCII 类型。之后，Java 又增加了对枚举和 `String` 等引用类型的支持。
+Trước khi bắt đầu, hãy điểm qua kiến thức nền: thời kỳ đầu, `switch` trong Java hỗ trợ `byte`, `short`, `char`, `int` và các wrapper type tương ứng, không hỗ trợ `boolean`, `long`, `float`, `double`. `char` biểu diễn UTF-16 code unit, không phải kiểu ASCII. Sau đó, Java bổ sung hỗ trợ cho enum và các kiểu tham chiếu như `String`.
 
-那么接下来看下 `switch` 对 `String` 的支持，有以下代码：
+Vậy hãy xem `switch` hỗ trợ `String` hoạt động thế nào qua đoạn mã sau:
 
 ```java
 public class switchDemoString {
@@ -64,7 +64,7 @@ public class switchDemoString {
 }
 ```
 
-反编译后内容如下：
+Sau khi decompile, nội dung như sau:
 
 ```java
 public class switchDemoString
@@ -93,21 +93,21 @@ public class switchDemoString
 }
 ```
 
-从这份特定版本 `javac` 生成并反编译的代码可以看到，**字符串 `switch` 被转换成了 `hashCode()` 分派和 `equals()` 校验。** 这是编译器实现策略，不是 JLS 强制规定的字节码形式。
+Từ đoạn mã được sinh ra bởi một phiên bản `javac` cụ thể và sau đó decompile, ta có thể thấy rằng **`switch` với `String` được chuyển đổi thành dispatch theo `hashCode()` và kiểm tra bằng `equals()`.** Đây là chiến lược triển khai của trình biên dịch, không phải dạng bytecode bắt buộc theo JLS.
 
-仔细看下可以发现，进行 `switch` 的实际是哈希值，然后通过使用 `equals` 方法比较进行安全检查，这个检查是必要的，因为哈希可能会发生碰撞。因此它的性能是不如使用枚举进行 `switch` 或者使用纯整数常量，但这也不是很差。
+Quan sát kỹ có thể thấy, thứ thực sự được `switch` là giá trị hash, sau đó dùng phương thức `equals` để kiểm tra an toàn. Việc kiểm tra này là cần thiết vì hash có thể xảy ra collision. Do đó hiệu năng của nó không bằng khi dùng `switch` với enum hoặc hằng số nguyên thuần túy, nhưng cũng không quá tệ.
 
-### 泛型
+### Generics
 
-我们都知道，很多语言都是支持泛型的，但是很多人不知道的是，不同的编译器对于泛型的处理方式是不同的，通常情况下，一个编译器处理泛型有两种方式：`Code specialization` 和 `Code sharing`。C++和 C#是使用 `Code specialization` 的处理机制，而 Java 使用的是 `Code sharing` 的机制。
+Chúng ta đều biết nhiều ngôn ngữ hỗ trợ generics, nhưng không phải ai cũng biết rằng các trình biên dịch khác nhau xử lý generics theo cách khác nhau. Thông thường, một trình biên dịch xử lý generics theo hai cách: `Code specialization` và `Code sharing`. C++ và C# sử dụng cơ chế `Code specialization`, còn Java sử dụng cơ chế `Code sharing`.
 
-> Code sharing 方式为每个泛型类型创建唯一的字节码表示，并且将该泛型类型的实例都映射到这个唯一的字节码表示上。将多种泛型类形实例映射到唯一的字节码表示是通过类型擦除（`type erasure`）实现的。
+> Cơ chế Code sharing tạo ra một biểu diễn bytecode duy nhất cho mỗi kiểu generic, và ánh xạ tất cả các instance của kiểu generic đó vào biểu diễn bytecode duy nhất này. Việc ánh xạ nhiều instance của kiểu generic vào một biểu diễn bytecode duy nhất được thực hiện thông qua type erasure (xóa kiểu).
 
-也就是说，**对于 Java 虚拟机来说，他根本不认识 `Map<String, String> map` 这样的语法。需要在编译阶段通过类型擦除的方式进行解语法糖。**
+Nói cách khác, **đối với JVM, nó hoàn toàn không hiểu cú pháp như `Map<String, String> map`. Cần phải giải syntactic sugar thông qua type erasure trong giai đoạn biên dịch.**
 
-类型擦除的主要过程如下：1.将所有的泛型参数用其最左边界（最顶级的父类型）类型替换。 2.移除所有的类型参数。
+Quá trình type erasure chính diễn ra như sau: 1. Thay thế tất cả các tham số generic bằng kiểu biên trái nhất (kiểu cha cao nhất). 2. Loại bỏ tất cả các tham số kiểu.
 
-以下代码：
+Đoạn mã sau:
 
 ```java
 Map<String, String> map = new HashMap<String, String>();
@@ -116,7 +116,7 @@ map.put("wechat", "Hollis");
 map.put("blog", "www.hollischuang.com");
 ```
 
-解语法糖之后会变成：
+Sau khi giải syntactic sugar sẽ trở thành:
 
 ```java
 Map map = new HashMap();
@@ -125,7 +125,7 @@ map.put("wechat", "Hollis");
 map.put("blog", "www.hollischuang.com");
 ```
 
-以下代码：
+Đoạn mã sau:
 
 ```java
 public static <A extends Comparable<A>> A max(Collection<A> xs) {
@@ -140,7 +140,7 @@ public static <A extends Comparable<A>> A max(Collection<A> xs) {
 }
 ```
 
-类型擦除后会变成：
+Sau khi type erasure sẽ trở thành:
 
 ```java
  public static Comparable max(Collection xs){
@@ -156,13 +156,13 @@ public static <A extends Comparable<A>> A max(Collection<A> xs) {
 }
 ```
 
-**虚拟机中没有泛型，只有普通类和普通方法，所有泛型类的类型参数在编译时都会被擦除，泛型类并没有自己独有的 `Class` 类对象。比如并不存在 `List<String>.class` 或是 `List<Integer>.class`，而只有 `List.class`。**
+**Trong JVM không có generics, chỉ có các class và method thông thường. Tất cả tham số kiểu của generic class đều bị xóa khi biên dịch, generic class không có đối tượng `Class` riêng. Ví dụ, không tồn tại `List<String>.class` hay `List<Integer>.class`, mà chỉ có `List.class`.**
 
-### 自动装箱与拆箱
+### Autoboxing và Unboxing
 
-自动装箱就是 Java 自动将原始类型值转换成对应的对象，比如将 int 的变量转换成 Integer 对象，这个过程叫做装箱，反之将 Integer 对象转换成 int 类型值，这个过程叫做拆箱。因为这里的装箱和拆箱是自动进行的非人为转换，所以就称作为自动装箱和拆箱。原始类型 byte, short, char, int, long, float, double 和 boolean 对应的封装类为 Byte, Short, Character, Integer, Long, Float, Double, Boolean。
+Autoboxing là việc Java tự động chuyển đổi giá trị kiểu nguyên thủy thành đối tượng tương ứng, ví dụ chuyển biến int thành đối tượng Integer, quá trình này gọi là boxing; ngược lại, chuyển đối tượng Integer thành giá trị kiểu int, quá trình này gọi là unboxing. Vì việc boxing và unboxing ở đây được thực hiện tự động mà không cần can thiệp thủ công, nên được gọi là autoboxing và unboxing. Các kiểu nguyên thủy byte, short, char, int, long, float, double và boolean tương ứng với các wrapper class Byte, Short, Character, Integer, Long, Float, Double, Boolean.
 
-先来看个自动装箱的代码：
+Hãy xem một đoạn mã autoboxing:
 
 ```java
  public static void main(String[] args) {
@@ -171,7 +171,7 @@ public static <A extends Comparable<A>> A max(Collection<A> xs) {
 }
 ```
 
-反编译后代码如下:
+Sau khi decompile, mã như sau:
 
 ```java
 public static void main(String args[])
@@ -181,7 +181,7 @@ public static void main(String args[])
 }
 ```
 
-再来看个自动拆箱的代码：
+Tiếp theo xem một đoạn mã unboxing:
 
 ```java
 public static void main(String[] args) {
@@ -191,7 +191,7 @@ public static void main(String[] args) {
 }
 ```
 
-反编译后代码如下：
+Sau khi decompile, mã như sau:
 
 ```java
 public static void main(String args[])
@@ -201,15 +201,15 @@ public static void main(String args[])
 }
 ```
 
-从反编译得到内容可以看出，在装箱的时候自动调用的是 `Integer` 的 `valueOf(int)` 方法。而在拆箱的时候自动调用的是 `Integer` 的 `intValue` 方法。
+Từ nội dung decompile có thể thấy, khi boxing, tự động gọi phương thức `valueOf(int)` của `Integer`. Còn khi unboxing, tự động gọi phương thức `intValue` của `Integer`.
 
-所以，**装箱过程是通过调用包装器的 valueOf 方法实现的，而拆箱过程是通过调用包装器的 xxxValue 方法实现的。**
+Vì vậy, **quá trình boxing được thực hiện bằng cách gọi phương thức valueOf của wrapper, còn quá trình unboxing được thực hiện bằng cách gọi phương thức xxxValue của wrapper.**
 
-### 可变长参数
+### Varargs (Tham số biến đổi)
 
-可变参数(`variable arguments`)是在 Java 1.5 中引入的一个特性。它允许一个方法把任意数量的值作为参数。
+Varargs (`variable arguments`) là một tính năng được giới thiệu từ Java 1.5. Nó cho phép một phương thức nhận số lượng tham số tùy ý.
 
-看下以下可变参数代码，其中 `print` 方法接收可变参数：
+Xem đoạn mã varargs sau, trong đó phương thức `print` nhận tham số biến đổi:
 
 ```java
 public static void main(String[] args)
@@ -226,7 +226,7 @@ public static void print(String... strs)
 }
 ```
 
-反编译后代码：
+Sau khi decompile:
 
 ```java
  public static void main(String args[])
@@ -244,13 +244,13 @@ public static transient void print(String strs[])
 }
 ```
 
-从反编译后代码可以看出，可变参数在被使用的时候，他首先会创建一个数组，数组的长度就是调用该方法是传递的实参的个数，然后再把参数值全部放到这个数组当中，然后再把这个数组作为参数传递到被调用的方法中。（注：`transient` 仅在修饰成员变量时有意义，此处 “修饰方法” 是由于在 javassist 中使用相同数值分别表示 `transient` 以及 `vararg`，见 [此处](https://github.com/jboss-javassist/javassist/blob/7302b8b0a09f04d344a26ebe57f29f3db43f2a3e/src/main/javassist/bytecode/AccessFlag.java#L32)。）
+Từ mã sau khi decompile có thể thấy, khi varargs được sử dụng, đầu tiên nó sẽ tạo ra một mảng, độ dài của mảng chính là số lượng tham số thực tế được truyền vào khi gọi phương thức, sau đó đặt tất cả giá trị tham số vào mảng này, rồi truyền mảng này làm tham số cho phương thức được gọi. (Ghi chú: `transient` chỉ có ý nghĩa khi sửa biến thành viên, việc nó "sửa phương thức" ở đây là do trong javassist cùng một giá trị số được dùng để biểu diễn cả `transient` và `vararg`, xem [tại đây](https://github.com/jboss-javassist/javassist/blob/7302b8b0a09f04d344a26ebe57f29f3db43f2a3e/src/main/javassist/bytecode/AccessFlag.java#L32).)
 
-### 枚举
+### Enum
 
-Java SE5 提供了一种新的类型-Java 的枚举类型，关键字 `enum` 可以将一组具名的值的有限集合创建为一种新的类型，而这些具名的值可以作为常规的程序组件使用，这是一种非常有用的功能。
+Java SE5 cung cấp một kiểu mới - kiểu enum trong Java, từ khóa `enum` có thể tạo ra một kiểu mới từ một tập hợp hữu hạn các giá trị có tên, và những giá trị có tên này có thể được sử dụng như các thành phần chương trình thông thường, đây là một tính năng rất hữu ích.
 
-要想看源码，首先得有一个类吧，那么枚举类型到底是什么类呢？是 `enum` 吗？答案很明显不是，`enum` 就和 `class` 一样，只是一个关键字，他并不是一个类，那么枚举是由什么类维护的呢，我们简单的写一个枚举：
+Để xem mã nguồn, trước tiên cần có một class, vậy enum thực chất là class gì? Là `enum` chăng? Rõ ràng không phải, `enum` cũng giống như `class`, chỉ là một từ khóa, không phải là một class. Vậy enum được duy trì bởi class nào? Hãy viết một enum đơn giản:
 
 ```java
 public enum t {
@@ -258,7 +258,7 @@ public enum t {
 }
 ```
 
-然后我们使用反编译，看看这段代码到底是怎么实现的，反编译后代码内容如下：
+Sau đó dùng decompiler để xem đoạn mã này thực sự được triển khai thế nào, nội dung sau khi decompile:
 
 ```java
 // 枚举的二进制名称仍为 t，Java 标识符区分大小写
@@ -296,15 +296,15 @@ public final class t extends Enum
 }
 ```
 
-通过反编译后代码我们可以看到，`public final class t extends Enum`，说明，该类继承了 `Enum` 类；当前枚举没有包含常量专属类体，因此它隐式为 `final`。
+Qua mã sau khi decompile, ta thấy `public final class t extends Enum`, điều này cho thấy class này kế thừa class `Enum`; enum hiện tại không chứa constant-specific class body, do đó nó ngầm định là `final`.
 
-**使用 `enum` 定义的枚举类会直接继承 `Enum`，因此不能显式继承其他类，也不能被普通类继承。没有常量专属类体的枚举类隐式为 `final`；只要有枚举常量声明了专属类体，枚举类就隐式为 `sealed`，这些专属类体对应其许可的匿名子类。**
+**Enum class được định nghĩa bằng `enum` sẽ trực tiếp kế thừa `Enum`, do đó không thể kế thừa class khác một cách tường minh, và cũng không thể bị class thông thường kế thừa. Enum class không có constant-specific class body thì ngầm định là `final`; chỉ cần có ít nhất một hằng số enum khai báo constant-specific class body, enum class sẽ ngầm định là `sealed`, các constant-specific class body này tương ứng với các anonymous subclass được phép của nó.**
 
-### 内部类
+### Inner Class
 
-内部类又称为嵌套类，可以把内部类理解为外部类的一个普通成员。
+Inner class còn được gọi là nested class, có thể hiểu inner class như một thành viên thông thường của outer class.
 
-**内部类之所以也是语法糖，是因为它仅仅是一个编译时的概念，`outer.java` 里面定义了一个内部类 `inner`，一旦编译成功，就会生成两个完全不同的 `.class` 文件，分别是 `outer.class` 和 `outer$inner.class`。不过，JLS 明确禁止嵌套类与任一外围类或接口具有相同的简单名称。**
+**Inner class cũng là syntactic sugar vì nó chỉ là một khái niệm ở thời điểm biên dịch. File `outer.java` định nghĩa một inner class `inner`, sau khi biên dịch thành công, sẽ sinh ra hai file `.class` hoàn toàn khác nhau, là `outer.class` và `outer$inner.class`. Tuy nhiên, JLS nghiêm cấm nested class có cùng simple name với bất kỳ enclosing class hay interface nào.**
 
 ```java
 public class OuterClass {
@@ -336,7 +336,7 @@ public class OuterClass {
 }
 ```
 
-以上代码编译后会生成两个 class 文件：`OuterClass$InnerClass.class`、`OuterClass.class`。当我们尝试对 `OuterClass.class` 文件进行反编译的时候，命令行会打印以下内容：`Parsing OuterClass.class...Parsing inner class OuterClass$InnerClass.class... Generating OuterClass.jad`。他会把两个文件全部进行反编译，然后一起生成一个 `OuterClass.jad` 文件。文件内容如下：
+Đoạn mã trên sau khi biên dịch sẽ sinh ra hai class file: `OuterClass$InnerClass.class`, `OuterClass.class`. Khi chúng ta thử decompile `OuterClass.class`, dòng lệnh sẽ in ra nội dung sau: `Parsing OuterClass.class...Parsing inner class OuterClass$InnerClass.class... Generating OuterClass.jad`. Nó sẽ decompile cả hai file, rồi cùng sinh ra một file `OuterClass.jad`. Nội dung file như sau:
 
 ```java
 public class OuterClass
@@ -378,9 +378,9 @@ public class OuterClass
 }
 ```
 
-**为什么内部类可以使用外部类的 private 属性**：
+**Tại sao inner class có thể truy cập thuộc tính private của outer class**:
 
-我们在 InnerClass 中增加一个方法，打印外部类的 userName 属性
+Chúng ta thêm một phương thức vào InnerClass, in ra thuộc tính userName của outer class:
 
 ```java
 //省略其他属性
@@ -410,7 +410,7 @@ class OuterClass$InnerClass {
 
 ```
 
-实际上，在编译完成之后，inner 实例内部通常会有指向 outer 实例的引用 `this$0`。在 JDK 10 及更早版本生成的 class 文件中，编译器通常通过类似 `access$000` 的合成访问方法实现嵌套类之间的 private 成员访问，因此反编译后的 `printOut()` 方法大致如下。JDK 11 起引入基于 nest 的访问控制，同一 nest 中的类可以直接访问彼此的 private 成员，通常不再需要这类合成访问方法：
+Thực tế, sau khi biên dịch, bên trong instance của inner class thường có tham chiếu `this$0` trỏ đến instance của outer class. Trong các class file được sinh bởi JDK 10 trở về trước, trình biên dịch thường sử dụng các synthetic access method như `access$000` để truy cập private member giữa các nested class, do đó phương thức `printOut()` sau khi decompile sẽ gần giống như sau. Từ JDK 11 trở đi, cơ chế nest-based access control được giới thiệu, các class trong cùng một nest có thể truy cập trực tiếp private member của nhau, thường không cần synthetic access method nữa:
 
 ```java
 public void printOut() {
@@ -418,11 +418,11 @@ public void printOut() {
 }
 ```
 
-补充：
+Bổ sung:
 
-1. 在 JDK 10 及更早版本的典型 `javac` 输出中，匿名内部类、局部内部类、静态内部类也可能通过合成访问方法获取 private 属性；JDK 11 起通常使用 nest-based access control。
-2. 静态内部类没有 `this$0` 的引用
-3. 匿名内部类、局部内部类通过复制使用局部变量，该变量初始化之后就不能被修改。以下是一个案例：
+1. Trong đầu ra `javac` điển hình của JDK 10 trở về trước, anonymous inner class, local inner class, static inner class cũng có thể truy cập thuộc tính private thông qua synthetic access method; từ JDK 11 trở đi thường sử dụng nest-based access control.
+2. Static inner class không có tham chiếu `this$0`
+3. Anonymous inner class, local inner class sử dụng biến cục bộ bằng cách sao chép, biến đó sau khi khởi tạo sẽ không thể bị thay đổi. Dưới đây là một ví dụ:
 
 ```java
 public class OuterClass {
@@ -441,7 +441,7 @@ public class OuterClass {
 }
 ```
 
-反编译后：
+Sau khi decompile:
 
 ```java
 //javap命令反编译Inner的结果
@@ -455,11 +455,11 @@ class OuterClass$1Inner {
 
 ```
 
-### 条件编译
+### Conditional Compilation (Biên dịch có điều kiện)
 
-—般情况下，程序中的每一行代码都要参加编译。但有时候出于对程序代码优化的考虑，希望只对其中一部分内容进行编译，此时就需要在程序中加上条件，让编译器只对满足条件的代码进行编译，将不满足条件的代码舍弃，这就是条件编译。
+Thông thường, mỗi dòng mã trong chương trình đều tham gia biên dịch. Nhưng đôi khi vì mục đích tối ưu mã chương trình, ta chỉ muốn biên dịch một phần nội dung, lúc này cần thêm điều kiện vào chương trình, để trình biên dịch chỉ biên dịch những đoạn mã thỏa mãn điều kiện và loại bỏ những đoạn không thỏa mãn — đây chính là conditional compilation.
 
-如在 C 或 CPP 中，可以通过预处理语句来实现条件编译。其实在 Java 中也可实现条件编译。我们先来看一段代码：
+Trong C hoặc CPP, có thể thực hiện conditional compilation thông qua câu lệnh tiền xử lý. Thực ra trong Java cũng có thể thực hiện conditional compilation. Hãy xem đoạn mã sau:
 
 ```java
 public class ConditionalCompilation {
@@ -478,7 +478,7 @@ public class ConditionalCompilation {
 }
 ```
 
-反编译后代码如下：
+Sau khi decompile, mã như sau:
 
 ```java
 public class ConditionalCompilation
@@ -497,15 +497,15 @@ public class ConditionalCompilation
 }
 ```
 
-首先，我们发现，在反编译后的代码中没有 `System.out.println("Hello, ONLINE!");`，这其实就是条件编译。当 `if(ONLINE)` 为 false 的时候，编译器就没有对其内的代码进行编译。
+Trước tiên, ta phát hiện trong mã sau khi decompile không có `System.out.println("Hello, ONLINE!");`, đây chính là conditional compilation. Khi `if(ONLINE)` là false, trình biên dịch đã không biên dịch đoạn mã bên trong nó.
 
-所以，**Java 语法的条件编译，是通过判断条件为常量的 if 语句实现的。其原理也是 Java 语言的语法糖。根据 if 判断条件的真假，编译器直接把分支为 false 的代码块消除。通过该方式实现的条件编译，必须在方法体内实现，而无法在整个 Java 类的结构或者类的属性上进行条件编译，这与 C/C++的条件编译相比，确实更有局限性。在 Java 语言设计之初并没有引入条件编译的功能，虽有局限，但是总比没有更强。**
+Vì vậy, **conditional compilation trong Java được thực hiện thông qua câu lệnh if với điều kiện là hằng số. Nguyên lý của nó cũng là syntactic sugar của ngôn ngữ Java. Dựa vào điều kiện if đúng hay sai, trình biên dịch sẽ trực tiếp loại bỏ khối mã của nhánh false. Conditional compilation thực hiện theo cách này phải nằm trong thân phương thức, không thể thực hiện conditional compilation trên cấu trúc của toàn bộ Java class hay trên các thuộc tính của class. So với conditional compilation của C/C++, điều này quả thực có nhiều hạn chế hơn. Ngay từ đầu thiết kế ngôn ngữ Java đã không đưa vào chức năng conditional compilation, tuy có hạn chế, nhưng có còn hơn không.**
 
-### 断言
+### Assertion
 
-在 Java 中，`assert` 关键字是从 JAVA SE 1.4 引入的，为了避免和老版本的 Java 代码中使用了 `assert` 关键字导致错误，Java 在执行的时候默认是不启动断言检查的（这个时候，所有的断言语句都将忽略！），如果要开启断言检查，则需要用开关 `-enableassertions` 或 `-ea` 来开启。
+Trong Java, từ khóa `assert` được giới thiệu từ JAVA SE 1.4. Để tránh lỗi do mã Java phiên bản cũ sử dụng từ khóa `assert`, Java mặc định không bật kiểm tra assertion khi thực thi (lúc này, tất cả các câu lệnh assert đều bị bỏ qua!). Để bật kiểm tra assertion, cần dùng tùy chọn `-enableassertions` hoặc `-ea`.
 
-看一段包含断言的代码：
+Xem một đoạn mã chứa assertion:
 
 ```java
 public class AssertTest {
@@ -520,7 +520,7 @@ public class AssertTest {
 }
 ```
 
-反编译后代码如下：
+Sau khi decompile, mã như sau:
 
 ```java
 public class AssertTest {
@@ -549,13 +549,13 @@ static final boolean $assertionsDisabled = !com/hollis/suguar/AssertTest.desired
 }
 ```
 
-很明显，反编译之后的代码要比我们自己的代码复杂的多。所以，使用了 assert 这个语法糖我们节省了很多代码。**其实断言的底层实现就是 if 语句，如果断言结果为 true，则什么都不做，程序继续执行，如果断言结果为 false，则程序抛出 `AssertionError` 来打断程序的执行。**`-enableassertions` 会设置\$assertionsDisabled 字段的值。
+Rõ ràng, mã sau khi decompile phức tạp hơn nhiều so với mã của chúng ta. Vì vậy, sử dụng syntactic sugar assert đã giúp chúng ta tiết kiệm rất nhiều mã. **Thực ra, cơ chế cơ bản của assertion là câu lệnh if: nếu kết quả assertion là true, không làm gì cả, chương trình tiếp tục thực thi; nếu kết quả assertion là false, chương trình ném `AssertionError` để ngắt việc thực thi.** `-enableassertions` sẽ thiết lập giá trị của trường \$assertionsDisabled.
 
-### 数值字面量
+### Numeric Literal (Hằng số chữ số)
 
-在 java 7 中，数值字面量，不管是整数还是浮点数，都允许在数字之间插入任意多个下划线。这些下划线不会对字面量的数值产生影响，目的就是方便阅读。
+Trong Java 7, numeric literal, dù là số nguyên hay số thực, đều cho phép chèn số lượng dấu gạch dưới tùy ý giữa các chữ số. Những dấu gạch dưới này không ảnh hưởng đến giá trị của literal, mục đích chỉ là để dễ đọc hơn.
 
-比如：
+Ví dụ:
 
 ```java
 public class Test {
@@ -566,7 +566,7 @@ public class Test {
 }
 ```
 
-反编译后：
+Sau khi decompile:
 
 ```java
 public class Test
@@ -579,11 +579,11 @@ public class Test
 }
 ```
 
-反编译结果中看不到 `_`，是因为它只是源代码中字面量语法的一部分，不会影响数值，也不会被记录到 class 文件中。**编译器必须识别并校验 `_` 的位置，然后把字面量的数值写入字节码。**
+Không thấy `_` trong kết quả decompile, vì nó chỉ là một phần cú pháp của literal trong mã nguồn, không ảnh hưởng đến giá trị số và cũng không được ghi vào class file. **Trình biên dịch phải nhận diện và kiểm tra vị trí của `_`, sau đó ghi giá trị số của literal vào bytecode.**
 
 ### for-each
 
-增强 for 循环（`for-each`）相信大家都不陌生，日常开发经常会用到的，他会比 for 循环要少写很多代码，那么这个语法糖背后是如何实现的呢？
+Enhanced for loop (`for-each`) chắc hẳn ai cũng quen thuộc, thường xuyên dùng trong phát triển hàng ngày, nó giúp viết ít mã hơn nhiều so với vòng lặp for thông thường. Vậy syntactic sugar này được thực hiện như thế nào ở phía sau?
 
 ```java
 public static void main(String... args) {
@@ -598,7 +598,7 @@ public static void main(String... args) {
 }
 ```
 
-反编译后代码如下：
+Sau khi decompile, mã như sau:
 
 ```java
 public static transient void main(String args[])
@@ -622,13 +622,13 @@ public static transient void main(String args[])
 }
 ```
 
-代码很简单，**for-each 的实现原理其实就是使用了普通的 for 循环和迭代器。**
+Mã rất đơn giản, **nguyên lý thực hiện của for-each thực chất là sử dụng vòng lặp for thông thường và iterator.**
 
 ### try-with-resource
 
-Java 里，对于文件操作 IO 流、数据库连接等开销非常昂贵的资源，用完之后必须及时通过 close 方法将其关闭，否则资源会一直处于打开状态，可能会导致内存泄露等问题。
+Trong Java, đối với các tài nguyên tốn kém như thao tác file IO stream, kết nối cơ sở dữ liệu, sau khi sử dụng phải kịp thời đóng lại thông qua phương thức close, nếu không tài nguyên sẽ luôn ở trạng thái mở, có thể dẫn đến các vấn đề như memory leak.
 
-关闭资源的常用方式就是在 `finally` 块里是释放，即调用 `close` 方法。比如，我们经常会写这样的代码：
+Cách đóng tài nguyên thường dùng là giải phóng trong khối `finally`, tức gọi phương thức `close`. Ví dụ, chúng ta thường viết mã như sau:
 
 ```java
 public static void main(String[] args) {
@@ -653,7 +653,7 @@ public static void main(String[] args) {
 }
 ```
 
-从 Java 7 开始，jdk 提供了一种更好的方式关闭资源，使用 `try-with-resources` 语句，改写一下上面的代码，效果如下：
+Từ Java 7, JDK cung cấp một cách tốt hơn để đóng tài nguyên, sử dụng câu lệnh `try-with-resources`, viết lại đoạn mã trên, hiệu quả như sau:
 
 ```java
 public static void main(String... args) {
@@ -668,7 +668,7 @@ public static void main(String... args) {
 }
 ```
 
-看，这简直是一大福音啊，虽然我之前一般使用 `IOUtils` 去关闭流，并不会使用在 `finally` 中写很多代码的方式，但是这种新的语法糖看上去好像优雅很多呢。看下他的背后：
+Xem này, đúng là một ân huệ lớn. Mặc dù trước đây tôi thường dùng `IOUtils` để đóng stream, chứ không dùng cách viết nhiều mã trong `finally`, nhưng syntactic sugar mới này trông có vẻ thanh lịch hơn nhiều. Hãy xem đằng sau nó:
 
 ```java
 public static transient void main(String args[])
@@ -707,13 +707,13 @@ public static transient void main(String args[])
 }
 ```
 
-**其实背后的原理也很简单，那些我们没有做的关闭资源的操作，编译器都帮我们做了。所以，再次印证了，语法糖的作用就是方便程序员的使用，但最终还是要转成编译器认识的语言。**
+**Thực ra nguyên lý đằng sau cũng rất đơn giản, những thao tác đóng tài nguyên mà chúng ta không làm, trình biên dịch đã làm thay chúng ta. Vì vậy, một lần nữa khẳng định, vai trò của syntactic sugar là giúp lập trình viên sử dụng thuận tiện hơn, nhưng cuối cùng vẫn phải chuyển thành ngôn ngữ mà trình biên dịch hiểu được.**
 
-### Lambda 表达式
+### Lambda Expression
 
-关于 lambda 表达式，有人可能会有质疑，因为网上有人说他并不是语法糖。其实我想纠正下这个说法。**Lambda 表达式不是匿名内部类的语法糖，但是他也是一个语法糖。实现方式其实是依赖了几个 JVM 底层提供的 lambda 相关 api。**
+Về lambda expression, có thể có người sẽ nghi ngờ, vì trên mạng có người nói nó không phải là syntactic sugar. Thực ra tôi muốn chỉnh lại quan điểm này. **Lambda expression không phải là syntactic sugar của anonymous inner class, nhưng nó cũng là một loại syntactic sugar. Cách thức triển khai thực tế phụ thuộc vào một số lambda API cấp thấp do JVM cung cấp.**
 
-先来看一个简单的 lambda 表达式。遍历一个 list：
+Hãy xem một lambda expression đơn giản, duyệt qua một list:
 
 ```java
 public static void main(String... args) {
@@ -723,9 +723,9 @@ public static void main(String... args) {
 }
 ```
 
-为啥说他并不是内部类的语法糖呢，前面讲内部类我们说过，内部类在编译之后会有两个 class 文件，但是，包含 lambda 表达式的类编译后只有一个文件。
+Tại sao nói nó không phải là syntactic sugar của inner class? Như đã nói ở phần inner class, inner class sau khi biên dịch sẽ có hai class file, nhưng class chứa lambda expression sau khi biên dịch chỉ có một file.
 
-反编译后代码如下:
+Sau khi decompile, mã như sau:
 
 ```java
 public static /* varargs */ void main(String ... args) {
@@ -738,9 +738,9 @@ private static /* synthetic */ void lambda$main$0(String s) {
 }
 ```
 
-可以看到，在 `forEach` 方法中，其实是调用了 `java.lang.invoke.LambdaMetafactory#metafactory` 方法，该方法的第四个参数 `implMethod` 指定了方法实现。可以看到这里其实是调用了一个 `lambda$main$0` 方法进行了输出。
+Có thể thấy, trong phương thức `forEach`, thực tế đã gọi phương thức `java.lang.invoke.LambdaMetafactory#metafactory`, tham số thứ tư `implMethod` của phương thức này chỉ định phương thức triển khai. Có thể thấy ở đây đã gọi một phương thức `lambda$main$0` để thực hiện việc in ra.
 
-再来看一个稍微复杂一点的，先对 List 进行过滤，然后再输出：
+Hãy xem một ví dụ phức tạp hơn một chút, trước tiên lọc List, sau đó in ra:
 
 ```java
 public static void main(String... args) {
@@ -752,7 +752,7 @@ public static void main(String... args) {
 }
 ```
 
-反编译后代码如下：
+Sau khi decompile, mã như sau:
 
 ```java
 public static /* varargs */ void main(String ... args) {
@@ -770,15 +770,15 @@ private static /* synthetic */ boolean lambda$main$0(String string) {
 }
 ```
 
-两个 lambda 表达式分别调用了 `lambda$main$1` 和 `lambda$main$0` 两个方法。
+Hai lambda expression lần lượt gọi hai phương thức `lambda$main$1` và `lambda$main$0`.
 
-**所以，lambda 表达式的实现其实是依赖了一些底层的 api，在编译阶段，编译器会把 lambda 表达式进行解糖，转换成调用内部 api 的方式。**
+**Vì vậy, việc triển khai lambda expression thực tế phụ thuộc vào một số API cấp thấp, trong giai đoạn biên dịch, trình biên dịch sẽ giải syntactic sugar lambda expression, chuyển thành cách gọi các API nội bộ.**
 
-## 可能遇到的坑
+## Những cạm bẫy có thể gặp
 
-### 泛型
+### Generics
 
-**一、当泛型遇到重载**
+**1. Khi generics gặp overload**
 
 ```java
 public class GenericTypes {
@@ -793,13 +793,13 @@ public class GenericTypes {
 }
 ```
 
-上面这段代码，有两个重载的函数，因为他们的参数类型不同，一个是 `List<String>` 另一个是 `List<Integer>`，但是，这段代码是编译通不过的。因为我们前面讲过，参数 `List<Integer>` 和 `List<String>` 编译之后都被擦除了，变成了一样的原生类型 List，擦除动作导致这两个方法的特征签名变得一模一样。
+Đoạn mã trên có hai hàm overload, vì kiểu tham số của chúng khác nhau, một cái là `List<String>`, cái kia là `List<Integer>`. Tuy nhiên, đoạn mã này không biên dịch được. Vì như chúng ta đã nói, tham số `List<Integer>` và `List<String>` sau khi biên dịch đều bị xóa, trở thành cùng một raw type List, hành động xóa kiểu khiến signature của hai phương thức này trở nên giống hệt nhau.
 
-**二、当泛型遇到 catch**
+**2. Khi generics gặp catch**
 
-泛型的类型参数不能用在 Java 异常处理的 catch 语句中。因为异常处理是由 JVM 在运行时刻来进行的。由于类型信息被擦除，JVM 是无法区分两个异常类型 `MyException<String>` 和 `MyException<Integer>` 的
+Tham số kiểu của generics không thể dùng trong câu lệnh catch của Java exception handling. Vì exception handling được JVM thực hiện tại runtime. Do thông tin kiểu bị xóa, JVM không thể phân biệt hai kiểu exception là `MyException<String>` và `MyException<Integer>`.
 
-**三、当泛型内包含静态变量**
+**3. Khi generic class chứa biến static**
 
 ```java
 public class StaticTest{
@@ -817,14 +817,13 @@ class GT<T>{
 }
 ```
 
-以上代码输出结果为：2！
+Kết quả output của đoạn mã trên là: 2!
 
-有些同学可能会误认为泛型类是不同的类，对应不同的字节码，其实
-由于经过类型擦除，所有的泛型类实例都关联到同一份字节码上，泛型类的静态变量是共享的。上面例子里的 `GT<Integer>.var` 和 `GT<String>.var` 其实是一个变量。
+Một số bạn có thể lầm tưởng rằng các generic class là các class khác nhau, tương ứng với các bytecode khác nhau. Nhưng thực tế, do đã trải qua type erasure, tất cả các instance của generic class đều liên kết đến cùng một bản bytecode, biến static của generic class là được chia sẻ. Trong ví dụ trên, `GT<Integer>.var` và `GT<String>.var` thực chất là cùng một biến.
 
-### 自动装箱与拆箱
+### Autoboxing và Unboxing
 
-**对象相等比较**
+**So sánh bằng nhau giữa các đối tượng**
 
 ```java
 public static void main(String[] args) {
@@ -837,20 +836,20 @@ public static void main(String[] args) {
 }
 ```
 
-输出结果：
+Kết quả output:
 
 ```plain
 a == b is false
 c == d is true
 ```
 
-在 Java 5 中，在 Integer 的操作上引入了一个新功能来节省内存和提高性能。整型对象通过使用相同的对象引用实现了缓存和重用。
+Trong Java 5, một tính năng mới được giới thiệu trên thao tác Integer để tiết kiệm bộ nhớ và tăng hiệu năng. Các đối tượng số nguyên sử dụng cùng một object reference để thực hiện caching và tái sử dụng.
 
-> 适用于整数值区间-128 至 +127。
+> Áp dụng cho khoảng giá trị nguyên từ -128 đến +127.
 >
-> 只适用于自动装箱。使用构造函数创建对象不适用。
+> Chỉ áp dụng cho autoboxing. Tạo đối tượng bằng constructor không áp dụng.
 
-### 增强 for 循环
+### Enhanced for loop
 
 ```java
 for (Student stu : students) {
@@ -859,16 +858,16 @@ for (Student stu : students) {
 }
 ```
 
-会抛出 `ConcurrentModificationException` 异常。
+Sẽ ném ra ngoại lệ `ConcurrentModificationException`.
 
-这里涉及集合的 **fail-fast（快速失败）** 机制。以 `ArrayList` 为例，其内部维护了一个 `modCount` 计数器，每次对集合结构进行修改（如添加、删除）时都会递增该计数器。当创建 `Iterator` 时，会将当前的 `modCount` 记录为 `expectedModCount`。在每次调用 `next()` 时，`Iterator` 都会检查 `modCount` 是否等于 `expectedModCount`，如果不等，说明集合在遍历期间被其他方式修改了，就会抛出 `java.util.ConcurrentModificationException` 异常。
+Ở đây liên quan đến cơ chế **fail-fast** của collection. Lấy `ArrayList` làm ví dụ, bên trong nó duy trì một biến đếm `modCount`, mỗi khi thay đổi cấu trúc collection (như thêm, xóa) thì biến đếm này sẽ tăng lên. Khi tạo `Iterator`, `modCount` hiện tại sẽ được ghi nhận là `expectedModCount`. Mỗi lần gọi `next()`, `Iterator` sẽ kiểm tra xem `modCount` có bằng `expectedModCount` hay không, nếu không bằng, nghĩa là collection đã bị thay đổi bởi cách khác trong quá trình duyệt, và sẽ ném ra ngoại lệ `java.util.ConcurrentModificationException`.
 
-所以 `Iterator` 在工作的时候是不允许被迭代的对象被改变的。但你可以使用 `Iterator` 本身的方法 `remove()` 来删除对象，`Iterator.remove()` 方法会在删除元素后同步更新 `expectedModCount`，从而避免触发该异常。
+Vì vậy, `Iterator` không cho phép đối tượng đang được duyệt bị thay đổi trong quá trình làm việc. Nhưng bạn có thể dùng chính phương thức `remove()` của `Iterator` để xóa đối tượng. Phương thức `Iterator.remove()` sẽ đồng bộ cập nhật `expectedModCount` sau khi xóa phần tử, nhờ đó tránh được việc kích hoạt ngoại lệ này.
 
-## 总结
+## Tổng kết
 
-前面介绍了 12 种 Java 中常用的语法糖。所谓语法糖就是提供给开发人员便于开发的一种语法而已。但是这种语法只有开发人员认识。要想被执行，需要进行解糖，即转成 JVM 认识的语法。当我们把语法糖解糖之后，你就会发现其实我们日常使用的这些方便的语法，其实都是一些其他更简单的语法构成的。
+Bài viết đã giới thiệu 12 loại syntactic sugar thường dùng trong Java. Syntactic sugar đơn giản là một loại cú pháp được cung cấp cho lập trình viên để phát triển thuận tiện hơn. Nhưng loại cú pháp này chỉ có lập trình viên hiểu được. Để được thực thi, cần phải desugar, tức chuyển thành cú pháp mà JVM hiểu được. Khi chúng ta giải đường các syntactic sugar, bạn sẽ phát hiện rằng những cú pháp tiện lợi mà chúng ta dùng hàng ngày thực chất đều được tạo thành từ những cú pháp đơn giản hơn.
 
-有了这些语法糖，我们在日常开发的时候可以大大提升效率，但是同时也要避过度使用。使用之前最好了解下原理，避免掉坑。
+Với những syntactic sugar này, chúng ta có thể nâng cao đáng kể hiệu suất phát triển hàng ngày, nhưng đồng thời cũng phải tránh lạm dụng. Trước khi sử dụng, tốt nhất nên hiểu nguyên lý để tránh rơi vào cạm bẫy.
 
 <!-- @include: @article-footer.snippet.md -->
