@@ -1,5 +1,5 @@
 ---
-title: Java基础常见面试题总结(中)
+title: Tổng hợp câu hỏi phỏng vấn cơ bản về Java (Phần 2)
 description: Java面向对象编程核心知识点总结：涵盖封装继承多态三大特性、接口与抽象类区别、Object类方法详解、深拷贝浅拷贝、String/StringBuffer/StringBuilder对比等，帮助快速掌握Java OOP精髓。
 category: Java
 tag:

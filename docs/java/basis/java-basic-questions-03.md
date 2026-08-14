@@ -1,5 +1,5 @@
 ---
-title: Tổng hợp câu hỏi phỏng vấn Java Core (Phần dưới)
+title: Tổng hợp câu hỏi phỏng vấn Java Core (Phần 3)
 description: "Tổng hợp câu hỏi phỏng vấn về các tính năng nâng cao của Java: giải thích sâu về cơ chế xử lý Exception, nguyên lý Generics, ứng dụng Reflection, cách sử dụng Annotation, cơ chế SPI, serialization, mô hình I/O (BIO/NIO/AIO), syntactic sugar và các kiến thức trọng tâm khác."
 category: Java
 tag:
