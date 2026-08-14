@@ -1,5 +1,5 @@
 ---
-title: Lộ trình học full-stack cho lập trình viên Backend (phiên bản mới nhất 2026): Cách bổ sung kỹ năng Frontend và năng lực giao sản phẩm trong thời đại AI
+title: "Lộ trình học full-stack cho lập trình viên Backend (phiên bản mới nhất 2026): Cách bổ sung kỹ năng Frontend và năng lực giao sản phẩm trong thời đại AI"
 description: Lộ trình học full-stack phiên bản mới nhất 2026 dành cho lập trình viên Backend, kết hợp công cụ AI coding để hướng dẫn cách bổ sung năng lực Frontend, hiểu chia tách component (component splitting), quản lý state, tích hợp interface (接口联调/interface integration), quyền hạn, triển khai và năng lực giao sản phẩm độc lập.
 category: Lộ trình học tập
 head:
