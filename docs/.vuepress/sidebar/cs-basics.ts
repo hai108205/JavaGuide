@@ -2,254 +2,296 @@ import { ICONS, createImportantSection } from "./constants.js";
 
 export const csBasics = [
   {
-    text: "网络",
+    text: "Mạng máy tính",
     prefix: "network/",
     icon: ICONS.NETWORK,
     children: [
       {
-        text: "面试题",
+        text: "Câu hỏi phỏng vấn",
         icon: ICONS.INTERVIEW,
         children: [
           {
-            text: "⭐️计算机网络常见面试题总结（上）",
+            text: "⭐️Tổng hợp câu hỏi phỏng vấn mạng máy tính thường gặp (phần 1)",
             link: "other-network-questions",
           },
           {
-            text: "⭐️计算机网络常见面试题总结（下）",
+            text: "⭐️Tổng hợp câu hỏi phỏng vấn mạng máy tính thường gặp (phần 2)",
             link: "other-network-questions2",
           },
           // { text: "计算机网络知识总结", link: "computer-network-xiexiren-summary" },
         ],
       },
       {
-        text: "基础",
+        text: "Cơ bản",
         icon: ICONS.STAR,
         collapsible: true,
         children: [
           {
-            text: "OSI 七层模型与 TCP/IP 四层模型详解",
+            text: "Giải thích chi tiết mô hình OSI 7 tầng và TCP/IP 4 tầng",
             link: "osi-and-tcp-ip-model",
           },
           {
-            text: "从输入 URL 到页面展示到底发生了什么？",
+            text: "Từ nhập URL đến hiển thị trang web, chuyện gì thực sự xảy ra?",
             link: "the-whole-process-of-accessing-web-pages",
           },
         ],
       },
       {
-        text: "应用层",
+        text: "Tầng ứng dụng",
         icon: ICONS.CODE,
         collapsible: true,
         children: [
-          { text: "⭐️应用层常见协议总结", link: "application-layer-protocol" },
-          { text: "⭐️HTTP vs HTTPS", link: "http-vs-https" },
-          { text: "⭐️有了HTTP，为什么还要RPC？", link: "http-vs-rpc" },
           {
-            text: "HTTPS 握手里的 RSA 和 ECDHE",
+            text: "⭐️Tổng kết giao thức tầng ứng dụng phổ biến",
+            link: "application-layer-protocol",
+          },
+          { text: "⭐️HTTP vs HTTPS", link: "http-vs-https" },
+          { text: "⭐️Đã có HTTP, vì sao vẫn cần RPC?", link: "http-vs-rpc" },
+          {
+            text: "RSA và ECDHE trong quá trình bắt tay HTTPS",
             link: "https-rsa-vs-ecdhe",
           },
           { text: "HTTP 1.0 vs HTTP 1.1", link: "http1.0-vs-http1.1" },
-          { text: "HTTP 常见状态码总结", link: "http-status-codes" },
-          { text: "DNS 域名系统详解", link: "dns" },
+          {
+            text: "Tổng kết các mã trạng thái (status code) HTTP phổ biến",
+            link: "http-status-codes",
+          },
+          { text: "Giải thích chi tiết hệ thống tên miền DNS", link: "dns" },
         ],
       },
       {
-        text: "传输层",
+        text: "Tầng giao vận",
         icon: ICONS.NETWORK,
         collapsible: true,
         children: [
           {
-            text: "⭐️TCP 三次握手和四次挥手",
+            text: "⭐️Bắt tay ba lần và bắt tay bốn lần của TCP",
             link: "tcp-connection-and-disconnection",
           },
-          { text: "TCP TIME_WAIT 详解", link: "tcp-time-wait" },
+          { text: "Giải thích chi tiết TCP TIME_WAIT", link: "tcp-time-wait" },
           {
-            text: "TCP Keepalive和HTTP Keep-Alive有什么区别？",
+            text: "TCP Keepalive và HTTP Keep-Alive khác nhau thế nào?",
             link: "tcp-keepalive-vs-http-keepalive",
           },
           {
-            text: "TCP 字节流 vs UDP 报文",
+            text: "Dòng byte TCP vs bản tin UDP",
             link: "tcp-byte-stream-udp-datagram",
           },
           {
-            text: "⭐️TCP 如何保证可靠传输？",
+            text: "⭐️Làm thế nào TCP đảm bảo truyền tải tin cậy?",
             link: "tcp-reliability-guarantee",
           },
           {
-            text: "能 Ping 通，TCP 就一定能连通吗？",
+            text: "Ping được thì TCP có chắc kết nối được không?",
             link: "can-ping-but-tcp-may-not-connect",
           },
           {
-            text: "TCP 和 UDP 可以使用同一个端口吗？",
+            text: "TCP và UDP có thể dùng chung một cổng (port) không?",
             link: "can-tcp-and-udp-use-the-same-port",
           },
           {
-            text: "一台主机最多能保持多少个 TCP 连接？",
+            text: "Một host có thể giữ tối đa bao nhiêu kết nối TCP?",
             link: "maximum-number-of-tcp-connections-per-host",
           },
         ],
       },
       {
-        text: "网络层",
+        text: "Tầng mạng",
         icon: ICONS.NETWORK,
         collapsible: true,
         children: [
-          { text: "ARP 协议详解", link: "arp" },
-          { text: "NAT 协议详解", link: "nat" },
+          { text: "Giải thích chi tiết giao thức ARP", link: "arp" },
+          { text: "Giải thích chi tiết giao thức NAT", link: "nat" },
         ],
       },
       {
-        text: "安全",
+        text: "Bảo mật",
         icon: ICONS.SECURITY,
         collapsible: true,
         children: [
-          { text: "网络攻击常见手段总结", link: "network-attack-means" },
+          {
+            text: "Tổng kết các phương thức tấn công mạng phổ biến",
+            link: "network-attack-means",
+          },
         ],
       },
     ],
   },
   {
-    text: "操作系统",
+    text: "Hệ điều hành",
     prefix: "operating-system/",
     icon: ICONS.OS,
     children: [
       {
-        text: "面试题",
+        text: "Câu hỏi phỏng vấn",
         icon: ICONS.INTERVIEW,
         children: [
           {
-            text: "⭐️操作系统常见面试题总结（上）",
+            text: "⭐️Tổng hợp câu hỏi phỏng vấn hệ điều hành thường gặp (phần 1)",
             link: "operating-system-basic-questions-01",
           },
           {
-            text: "⭐️操作系统常见面试题总结（下）",
+            text: "⭐️Tổng hợp câu hỏi phỏng vấn hệ điều hành thường gặp (phần 2)",
             link: "operating-system-basic-questions-02",
           },
         ],
       },
       {
-        text: "面试必考",
+        text: "Bắt buộc ôn trong phỏng vấn",
         icon: ICONS.STAR,
         children: [
-          { text: "⭐️虚拟内存详解", link: "virtual-memory" },
-          { text: "⭐️I/O 多路复用详解", link: "io-multiplexing" },
-          { text: "⭐️零拷贝详解", link: "zero-copy" },
+          { text: "⭐️Giải thích chi tiết bộ nhớ ảo", link: "virtual-memory" },
+          {
+            text: "⭐️Giải thích chi tiết I/O đa kênh (Multiplexing)",
+            link: "io-multiplexing",
+          },
+          { text: "⭐️Giải thích chi tiết Zero-Copy", link: "zero-copy" },
         ],
       },
       {
-        text: "内存与文件系统",
+        text: "Bộ nhớ và hệ thống tệp",
         icon: ICONS.OS,
         collapsible: true,
         children: [
-          { text: "内存管理详解", link: "memory-management" },
-          { text: "文件系统详解", link: "file-system" },
+          {
+            text: "Giải thích chi tiết quản lý bộ nhớ",
+            link: "memory-management",
+          },
+          { text: "Giải thích chi tiết hệ thống tệp", link: "file-system" },
         ],
       },
       {
-        text: "进程与线程",
+        text: "Tiến trình và luồng",
         icon: ICONS.STAR,
         collapsible: true,
         children: [
-          { text: "⭐️进程与线程详解", link: "process-and-thread" },
-          { text: "⭐️锁与同步机制", link: "os-lock-and-sync" },
-          { text: "⭐️死锁详解", link: "dead-lock" },
           {
-            text: "中断、异常与系统调用",
+            text: "⭐️Giải thích chi tiết tiến trình và luồng",
+            link: "process-and-thread",
+          },
+          { text: "⭐️Cơ chế khóa và đồng bộ hóa", link: "os-lock-and-sync" },
+          { text: "⭐️Giải thích chi tiết deadlock", link: "dead-lock" },
+          {
+            text: "Ngắt, ngoại lệ và lời gọi hệ thống (system call)",
             link: "interrupt-exception-syscall",
           },
-          { text: "CPU 调度与系统负载", link: "cpu-scheduling-and-load" },
-          { text: "进程间通信（IPC）详解", link: "ipc" },
+          {
+            text: "Lập lịch CPU và tải hệ thống",
+            link: "cpu-scheduling-and-load",
+          },
+          {
+            text: "Giải thích chi tiết IPC (truyền thông giữa tiến trình)",
+            link: "ipc",
+          },
         ],
       },
       {
         text: "Linux",
         icon: ICONS.LINUX,
         children: [
-          { text: "Linux 基础知识总结", link: "linux-intro" },
-          { text: "Shell 编程基础知识总结", link: "shell-intro" },
+          { text: "Tổng kết kiến thức cơ bản Linux", link: "linux-intro" },
+          {
+            text: "Tổng kết kiến thức cơ bản lập trình Shell",
+            link: "shell-intro",
+          },
         ],
       },
     ],
   },
   {
-    text: "数据结构",
+    text: "Cấu trúc dữ liệu",
     prefix: "data-structure/",
     icon: ICONS.DATA_STRUCTURE,
     collapsible: true,
     children: [
       {
-        text: "知识体系",
+        text: "Hệ thống kiến thức",
         link: "/cs-basics/data-structure/",
       },
       {
-        text: "基础结构",
+        text: "Cấu trúc cơ bản",
         collapsible: true,
         children: [
-          { text: "线性数据结构", link: "linear-data-structure" },
-          { text: "⭐️哈希表", link: "hash-table" },
+          {
+            text: "Cấu trúc dữ liệu tuyến tính",
+            link: "linear-data-structure",
+          },
+          { text: "⭐️Bảng băm (Hash Table)", link: "hash-table" },
         ],
       },
       {
-        text: "树与堆",
+        text: "Cây và Heap",
         collapsible: true,
         children: [
-          { text: "⭐️树结构", link: "tree" },
-          { text: "⭐️堆", link: "heap" },
-          { text: "红黑树", link: "red-black-tree" },
+          { text: "⭐️Cấu trúc cây", link: "tree" },
+          { text: "⭐️Heap", link: "heap" },
+          { text: "Cây đỏ-đen (Red Black Tree)", link: "red-black-tree" },
         ],
       },
       {
-        text: "图与集合",
+        text: "Đồ thị và tập hợp",
         collapsible: true,
         children: [
-          { text: "图", link: "graph" },
-          { text: "⭐️并查集", link: "union-find" },
+          { text: "Đồ thị (Graph)", link: "graph" },
+          { text: "⭐️Union-Find (tập hợp liên kết)", link: "union-find" },
         ],
       },
       {
-        text: "字符串与有序索引",
+        text: "Chuỗi và chỉ mục có thứ tự",
         collapsible: true,
         children: [
-          { text: "Trie 前缀树", link: "trie" },
-          { text: "跳表", link: "skip-list" },
+          { text: "Cây tiền tố Trie", link: "trie" },
+          { text: "Danh sách bước nhảy (Skip List)", link: "skip-list" },
         ],
       },
       {
-        text: "工程型结构",
+        text: "Cấu trúc dạng kỹ thuật",
         collapsible: true,
         children: [
-          { text: "⭐️布隆过滤器", link: "bloom-filter" },
-          { text: "⭐️LRU 缓存", link: "lru-cache" },
+          { text: "⭐️Bộ lọc Bloom (Bloom Filter)", link: "bloom-filter" },
+          { text: "⭐️Bộ nhớ đệm LRU", link: "lru-cache" },
         ],
       },
     ],
   },
   {
-    text: "算法",
+    text: "Thuật toán",
     prefix: "algorithms/",
     icon: ICONS.ALGORITHM,
     collapsible: true,
     children: [
-      { text: "复杂度分析", link: "complexity-analysis" },
-      { text: "二分查找", link: "binary-search" },
-      { text: "双指针与滑动窗口", link: "two-pointers-and-sliding-window" },
-      { text: "DFS 与 BFS", link: "dfs-bfs" },
-      { text: "回溯算法", link: "backtracking" },
-      { text: "动态规划", link: "dynamic-programming" },
-      { text: "贪心算法", link: "greedy" },
-      { text: "Top K 问题", link: "top-k" },
+      { text: "Phân tích độ phức tạp", link: "complexity-analysis" },
+      { text: "Tìm kiếm nhị phân", link: "binary-search" },
       {
-        text: "经典算法思想",
+        text: "Hai con trỏ và cửa sổ trượt",
+        link: "two-pointers-and-sliding-window",
+      },
+      { text: "DFS và BFS", link: "dfs-bfs" },
+      { text: "Thuật toán quay lui (Backtracking)", link: "backtracking" },
+      { text: "Quy hoạch động", link: "dynamic-programming" },
+      { text: "Thuật toán tham lam", link: "greedy" },
+      { text: "Bài toán Top K", link: "top-k" },
+      {
+        text: "Tư tưởng thuật toán kinh điển",
         link: "classical-algorithm-problems-recommendations",
       },
       {
-        text: "数据结构 LeetCode",
+        text: "Cấu trúc dữ liệu LeetCode",
         link: "common-data-structures-leetcode-recommendations",
       },
-      { text: "字符串算法题", link: "string-algorithm-problems" },
-      { text: "链表算法题", link: "linkedlist-algorithm-problems" },
-      { text: "剑指 Offer", link: "the-sword-refers-to-offer" },
-      { text: "经典排序算法", link: "10-classical-sorting-algorithms" },
+      { text: "Bài toán thuật toán chuỗi", link: "string-algorithm-problems" },
+      {
+        text: "Bài toán thuật toán danh sách liên kết",
+        link: "linkedlist-algorithm-problems",
+      },
+      {
+        text: "剑指 Offer (Kiếm Chỉ Offer)",
+        link: "the-sword-refers-to-offer",
+      },
+      {
+        text: "Thuật toán sắp xếp kinh điển",
+        link: "10-classical-sorting-algorithms",
+      },
     ],
   },
 ];

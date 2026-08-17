@@ -3,37 +3,57 @@ import { ICONS } from "./constants.js";
 
 export const ai = arraySidebar([
   {
-    text: "入门总览",
+    text: "Nhập môn tổng quan",
     icon: ICONS.BASIC,
-    children: [{ text: "⭐️AI 核心概念总览", link: "ai-core-concepts" }],
+    children: [
+      { text: "⭐️Tổng quan khái niệm cốt lõi AI", link: "ai-core-concepts" },
+    ],
   },
   {
-    text: "面试题",
+    text: "Câu hỏi phỏng vấn",
     icon: ICONS.INTERVIEW,
     prefix: "interview-questions/",
     children: [
-      { text: "⭐️AI 应用开发面试指南", link: "ai-interview-guide" },
-      { text: "大模型基础面试题总结", link: "llm-interview-questions" },
-      { text: "AI Agent 面试题总结", link: "agent-interview-questions" },
-      { text: "RAG 面试题总结", link: "rag-interview-questions" },
       {
-        text: "AI 系统设计面试题总结",
+        text: "⭐️Hướng dẫn phỏng vấn phát triển ứng dụng AI",
+        link: "ai-interview-guide",
+      },
+      {
+        text: "Tổng hợp câu hỏi phỏng vấn cơ bản về mô hình lớn",
+        link: "llm-interview-questions",
+      },
+      {
+        text: "Tổng hợp câu hỏi phỏng vấn AI Agent",
+        link: "agent-interview-questions",
+      },
+      {
+        text: "Tổng hợp câu hỏi phỏng vấn RAG",
+        link: "rag-interview-questions",
+      },
+      {
+        text: "Tổng hợp câu hỏi phỏng vấn thiết kế hệ thống AI",
         link: "ai-system-design-interview-questions",
       },
     ],
   },
   {
-    text: "大模型基础",
+    text: "Mô hình lớn (LLM) cơ bản",
     icon: ICONS.MACHINE_LEARNING,
     prefix: "llm-basis/",
     children: [
-      { text: "万字拆解 LLM 运行机制", link: "llm-operation-mechanism" },
-      { text: "大模型 API 调用工程实践", link: "llm-api-engineering" },
       {
-        text: "大模型结构化输出详解",
+        text: "Giải mã vận hành của LLM (chi tiết)",
+        link: "llm-operation-mechanism",
+      },
+      {
+        text: "Thực tiễn kỹ thuật gọi API mô hình lớn",
+        link: "llm-api-engineering",
+      },
+      {
+        text: "Giải thích chi tiết đầu ra có cấu trúc của mô hình lớn",
         link: "structured-output-function-calling",
       },
-      { text: "AI 应用评测体系", link: "llm-evaluation" },
+      { text: "Hệ thống đánh giá ứng dụng AI", link: "llm-evaluation" },
     ],
   },
   {
@@ -41,15 +61,33 @@ export const ai = arraySidebar([
     icon: ICONS.CHAT,
     prefix: "agent/",
     children: [
-      { text: "⭐️AI Agent 核心概念详解", link: "agent-basis" },
-      { text: "⭐️AI Agent 记忆系统详解", link: "agent-memory" },
-      { text: "提示词工程实战指南", link: "prompt-engineering" },
-      { text: "上下文工程实战指南", link: "context-engineering" },
-      { text: "万字详解 Agent Skills", link: "skills" },
-      { text: "万字拆解 MCP 协议", link: "mcp" },
-      { text: "Harness Engineering 详解", link: "harness-engineering" },
-      { text: "AI 工作流详解", link: "workflow-graph-loop" },
-      { text: "Loop Engineering 详解", link: "loop-engineering" },
+      {
+        text: "⭐️Giải thích chi tiết khái niệm cốt lõi AI Agent",
+        link: "agent-basis",
+      },
+      {
+        text: "⭐️Giải thích chi tiết hệ thống bộ nhớ AI Agent",
+        link: "agent-memory",
+      },
+      {
+        text: "Hướng dẫn thực chiến kỹ thuật prompt",
+        link: "prompt-engineering",
+      },
+      {
+        text: "Hướng dẫn thực chiến kỹ thuật ngữ cảnh (context)",
+        link: "context-engineering",
+      },
+      { text: "Giải mã chi tiết Agent Skills", link: "skills" },
+      { text: "Giải mã chi tiết giao thức MCP", link: "mcp" },
+      {
+        text: "Giải thích chi tiết Harness Engineering",
+        link: "harness-engineering",
+      },
+      { text: "Giải thích chi tiết AI Workflow", link: "workflow-graph-loop" },
+      {
+        text: "Giải thích chi tiết Loop Engineering",
+        link: "loop-engineering",
+      },
     ],
   },
   {
@@ -57,34 +95,40 @@ export const ai = arraySidebar([
     icon: ICONS.SEARCH,
     prefix: "rag/",
     children: [
-      { text: "⭐️RAG 基础概念详解", link: "rag-basis" },
       {
-        text: "RAG 文档处理与切分策略",
+        text: "⭐️Giải thích chi tiết khái niệm cơ bản RAG",
+        link: "rag-basis",
+      },
+      {
+        text: "Chiến lược xử lý và chia tách tài liệu RAG",
         link: "rag-document-processing",
       },
       {
-        text: "⭐️RAG 向量索引算法和向量数据库",
+        text: "⭐️Thuật toán chỉ mục vector và cơ sở dữ liệu vector trong RAG",
         link: "rag-vector-store",
       },
       {
-        text: "RAG 知识库文档更新策略",
+        text: "Chiến lược cập nhật tài liệu kho tri thức RAG",
         link: "rag-knowledge-update",
       },
-      { text: "GraphRAG 详解", link: "graphrag" },
-      { text: "RAG 检索优化", link: "rag-optimization" },
+      { text: "Giải thích chi tiết GraphRAG", link: "graphrag" },
+      { text: "Tối ưu tìm kiếm RAG", link: "rag-optimization" },
     ],
   },
   {
-    text: "AI 系统设计",
+    text: "Thiết kế hệ thống AI",
     icon: ICONS.DESIGN,
     prefix: "system-design/",
     children: [
       {
-        text: "AI 应用系统设计",
+        text: "Thiết kế hệ thống ứng dụng AI",
         link: "ai-application-architecture",
       },
-      { text: "大模型网关详解", link: "llm-gateway" },
-      { text: "AI 语音技术详解", link: "ai-voice" },
+      {
+        text: "Giải thích chi tiết cổng mô hình lớn (LLM Gateway)",
+        link: "llm-gateway",
+      },
+      { text: "Giải thích chi tiết công nghệ giọng nói AI", link: "ai-voice" },
     ],
   },
 ]);

@@ -1,5 +1,5 @@
 import { defineClientConfig } from "vuepress/client";
-import { defineAsyncComponent, h } from "vue";
+import { h } from "vue";
 import DeferredLayoutToggle from "./components/DeferredLayoutToggle.vue";
 import ClickImagePreview from "./components/ClickImagePreview.vue";
 import LazyMermaid from "./components/LazyMermaid.vue";

@@ -3,25 +3,34 @@ import { ICONS } from "./constants.js";
 
 export const zhuanlan = arraySidebar([
   {
-    text: "实战项目",
+    text: "Dự án thực chiến",
     icon: ICONS.PROJECT,
     collapsible: false,
     children: [
-      { text: "Spring AI 智能面试平台", link: "interview-guide" },
-      { text: "手写 RPC 框架", link: "handwritten-rpc-framework" },
+      {
+        text: "Nền tảng phỏng vấn thông minh Spring AI",
+        link: "interview-guide",
+      },
+      { text: "Tự viết framework RPC", link: "handwritten-rpc-framework" },
     ],
   },
   {
-    text: "面试资料",
+    text: "Tài liệu phỏng vấn",
     icon: ICONS.INTERVIEW,
     collapsible: false,
     children: [
-      { text: "Java 面试指北", link: "java-mian-shi-zhi-bei" },
       {
-        text: "后端高频系统设计&场景题",
+        text: "Java 面试指北 (La bàn phỏng vấn Java)",
+        link: "java-mian-shi-zhi-bei",
+      },
+      {
+        text: "Bài tập tần suất cao về thiết kế hệ thống & tình huống cho backend",
         link: "back-end-interview-high-frequency-system-design-and-scenario-questions",
       },
-      { text: "Java 必读源码系列", link: "source-code-reading" },
+      {
+        text: "Loạt bài đọc mã nguồn bắt buộc cho Java",
+        link: "source-code-reading",
+      },
     ],
   },
 ]);

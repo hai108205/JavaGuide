@@ -3,7 +3,7 @@ import { ICONS } from "./constants.js";
 
 export const highQualityTechnicalArticles = arraySidebar([
   {
-    text: "练级攻略",
+    text: "Chiến lược nâng cấp trình độ",
     icon: ICONS.PERFORMANCE,
     prefix: "advanced-programmer/",
     collapsible: false,
@@ -18,7 +18,7 @@ export const highQualityTechnicalArticles = arraySidebar([
     ],
   },
   {
-    text: "个人经历",
+    text: "Kinh nghiệm cá nhân",
     icon: ICONS.EXPERIENCE,
     prefix: "personal-experience/",
     collapsible: false,
@@ -30,7 +30,7 @@ export const highQualityTechnicalArticles = arraySidebar([
     ],
   },
   {
-    text: "程序员",
+    text: "Lập trình viên",
     icon: ICONS.CODE,
     prefix: "programmer/",
     collapsible: false,
@@ -42,7 +42,7 @@ export const highQualityTechnicalArticles = arraySidebar([
     ],
   },
   {
-    text: "面试",
+    text: "Phỏng vấn",
     icon: ICONS.INTERVIEW,
     prefix: "interview/",
     collapsible: true,
@@ -58,7 +58,7 @@ export const highQualityTechnicalArticles = arraySidebar([
     ],
   },
   {
-    text: "工作",
+    text: "Công việc",
     icon: ICONS.WORK,
     prefix: "work/",
     collapsible: true,
