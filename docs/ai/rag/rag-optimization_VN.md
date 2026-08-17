@@ -1,5 +1,5 @@
 ---
-title: Giải thích chi tiết tối ưu hóa RAG: từ recall, rerank đến tinh chỉnh hệ thống của context engineering
+title: "Giải thích chi tiết tối ưu hóa RAG: từ recall, rerank đến tinh chỉnh hệ thống của context engineering"
 description: Phân tích sâu phương pháp engineering hệ thống của tối ưu hóa RAG, bao phủ chiến lược Chunk, Metadata, Hybrid Search, Query Rewrite, Rerank, nén context, đánh giá câu trả lời và đường truy vấn-production.
 category: Phát triển ứng dụng AI
 head:

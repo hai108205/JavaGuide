@@ -5,10 +5,9 @@ description: Chuyên mục phân tích Source Code các Java Framework phổ bi�
 category: Knowledge Planet
 star: true
 head:
-
-* * meta
-  * name: keywords
-    content: Java Source Code,Phân tích Source Code,Dubbo Source Code,Netty Source Code,Spring Boot Source Code,Framework Source Code,Source Code Reading,Học Java Source Code,Open Source Framework Source Code
+  - - meta
+    - name: keywords
+      content: Java Source Code,Phân tích Source Code,Dubbo Source Code,Netty Source Code,Spring Boot Source Code,Framework Source Code,Source Code Reading,Học Java Source Code,Open Source Framework Source Code
 
 ---
 

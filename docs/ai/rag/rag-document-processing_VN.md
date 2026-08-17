@@ -1,5 +1,5 @@
 ---
-title: Chiến lược xử lý và phân đoạn tài liệu trong RAG: từ phân tích, làm sạch, Chunking đến xử lý nội dung đa phương thức
+title: "Chiến lược xử lý và phân đoạn tài liệu trong RAG: từ phân tích, làm sạch, Chunking đến xử lý nội dung đa phương thức"
 description: Phân tích sâu chuỗi hoàn chỉnh trước khi tài liệu RAG vào chỉ mục, bao phủ phân giải file, làm sạch, cấu trúc hóa, chiến lược Chunking, xử lý mất ngữ nghĩa, kiểm tra phân tầng và xử lý nội dung đa phương thức cùng các thực hành engineering hóa.
 category: Phát triển ứng dụng AI
 head:

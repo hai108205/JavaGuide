@@ -4,10 +4,9 @@ title: Bộ câu hỏi phỏng vấn System Design Backend thường gặp | Sce
 description: Phân tích các câu hỏi System Design và Scenario Questions thường gặp trong phỏng vấn Backend, bao gồm Seckill System, Short URL System, xử lý dữ liệu quy mô lớn, Distributed ID và hơn 30 câu hỏi kinh điển, phù hợp để chuẩn bị phỏng vấn Backend tại các công ty công nghệ lớn.
 category: Knowledge Planet
 head:
-
-* * meta
-  * name: keywords
-    content: câu hỏi phỏng vấn System Design,câu hỏi Scenario,Backend System Design,thiết kế Seckill System,thiết kế Short URL System,câu hỏi xử lý dữ liệu lớn,Distributed System Design,câu hỏi phỏng vấn thường gặp,Case Study System Design,Backend Scenario Questions
+  - - meta
+    - name: keywords
+      content: câu hỏi phỏng vấn System Design,câu hỏi Scenario,Backend System Design,thiết kế Seckill System,thiết kế Short URL System,câu hỏi xử lý dữ liệu lớn,Distributed System Design,câu hỏi phỏng vấn thường gặp,Case Study System Design,Backend Scenario Questions
 
 ---
 

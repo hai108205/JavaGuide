@@ -1,16 +1,15 @@
 ---
 
-title: Chuyên mục chất lượng độc quyền: Phỏng vấn Java, Thiết kế hệ thống, Tự xây dựng RPC, Đọc mã nguồn và Dự án thực chiến
+title: "Chuyên mục chất lượng độc quyền: Phỏng vấn Java, Thiết kế hệ thống, Tự xây dựng RPC, Đọc mã nguồn và Dự án thực chiến"
 description: Chuyên mục Knowledge Planet và lộ trình học tập của JavaGuide, bao gồm định hướng phỏng vấn Java, thiết kế hệ thống Backend, các bài toán tình huống, tự xây dựng RPC, đọc mã nguồn Java và nền tảng hỗ trợ phỏng vấn thông minh bằng AI.
 category: Knowledge Planet
 sitemap:
-changefreq: weekly
-priority: 0.9
+  changefreq: weekly
+  priority: 0.9
 head:
-
-* * meta
-  * name: keywords
-    content: JavaGuide Knowledge Planet,Phỏng vấn Java,Thiết kế hệ thống Backend,Tự xây dựng Framework RPC,Đọc mã nguồn Java,Dự án Java thực chiến,Tài liệu phỏng vấn Java,Chuyên mục Knowledge Planet
+  - - meta
+    - name: keywords
+      content: JavaGuide Knowledge Planet,Phỏng vấn Java,Thiết kế hệ thống Backend,Tự xây dựng Framework RPC,Đọc mã nguồn Java,Dự án Java thực chiến,Tài liệu phỏng vấn Java,Chuyên mục Knowledge Planet
 
 ---
 

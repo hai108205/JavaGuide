@@ -1,5 +1,5 @@
 ---
-title: Hệ thống kiến thức phát triển ứng dụng AI: LLM, Agent, RAG, MCP, Prompt Engineering và System Design
+title: "Hệ thống kiến thức phát triển ứng dụng AI: LLM, Agent, RAG, MCP, Prompt Engineering và System Design"
 description: Lộ trình phỏng vấn và học tập phát triển ứng dụng AI, dành cho Backend Developer tổng hợp về gọi LLM, Agent, RAG, Skills, MCP, Prompt Engineering, cơ sở dữ liệu vector, đánh giá và thiết kế hệ thống.
 category: AI
 tag:
@@ -17,7 +17,7 @@ head:
       content: Phát triển ứng dụng AI,Phỏng vấn phát triển ứng dụng AI,Phỏng vấn AI Engineer,LLM,Phỏng vấn LLM,LLM Interview,Agent,Phỏng vấn Agent,RAG,Phỏng vấn RAG,MCP,Prompt Engineering,Cơ sở dữ liệu vector,System Design AI,Phỏng vấn lập trình AI
   - - meta
     - property: og:title
-      content: Hệ thống kiến thức phát triển ứng dụng AI: LLM, Agent, RAG, MCP, Prompt Engineering và System Design
+      content: "Hệ thống kiến thức phát triển ứng dụng AI: LLM, Agent, RAG, MCP, Prompt Engineering và System Design"
   - - meta
     - property: og:description
       content: Từ gọi LLM, Agent, RAG, MCP, Prompt Engineering đến đánh giá và thiết kế hệ thống, tổng hợp các kiến thức quan trọng mà Backend Developer cần bổ sung khi bước vào phát triển ứng dụng AI.

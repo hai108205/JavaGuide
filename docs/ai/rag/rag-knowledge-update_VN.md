@@ -1,5 +1,5 @@
 ---
-title: Cập nhật tài liệu knowledge base RAG: cập nhật gia tăng, kiểm soát phiên bản, khử trùng lặp và xây dựng lại toàn bộ
+title: "Cập nhật tài liệu knowledge base RAG: cập nhật gia tăng, kiểm soát phiên bản, khử trùng lặp và xây dựng lại toàn bộ"
 description: Phân tích sâu mục tiêu cốt lõi và thực hành engineering của việc cập nhật knowledge base RAG, bao phủ tính nhất quán Embedding model, thiết kế metadata, cơ chế đồng bộ, so sánh cập nhật gia tăng và xây dựng lại toàn bộ, giải pháp gray release production-level và rollback, cùng các điểm thường vấp phải.
 category: Phát triển ứng dụng AI
 head:

@@ -11,5 +11,8 @@ node_modules/
 # pnpm lock file
 pnpm-lock.yaml
 
+# VuePress markdown YAML frontmatter — prettier corrupts it
+docs/
+
 index.html
 sw.js

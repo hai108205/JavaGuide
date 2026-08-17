@@ -1,5 +1,5 @@
 ---
-title: Tổng quan các khái niệm cốt lõi của AI: LLM, Agent, RAG, MCP, Skills và ReAct
+title: "Tổng quan các khái niệm cốt lõi của AI: LLM, Agent, RAG, MCP, Skills và ReAct"
 description: Trích trực tiếp các khái niệm cốt lõi đã được tổng hợp trong chuyên đề AI của JavaGuide, nối liền LLM, Token, context window, Prompt, Function Calling, Agent Loop, ReAct, Plan-and-Execute, MCP, Skills, Embedding, vector retrieval, Rerank, GraphRAG... theo ba tuyến chính là nền tảng LLM, Agent và RAG.
 category: AI
 tag:

@@ -1,5 +1,5 @@
 ---
-title: Giải thích chi tiết GraphRAG: Vì sao chỉ dựa vào vector retrieval không đỡ nổi hỏi đáp tri thức phức tạp
+title: "Giải thích chi tiết GraphRAG: Vì sao chỉ dựa vào vector retrieval không đỡ nổi hỏi đáp tri thức phức tạp"
 description: Phân tích sâu các khái niệm cốt lõi của GraphRAG, làm rõ knowledge graph, entity, relation, community detection, global search, local search, cùng khác biệt bản chất giữa GraphRAG và vector RAG truyền thống và chi phí triển khai công nghệ.
 category: Phát triển ứng dụng AI
 head:

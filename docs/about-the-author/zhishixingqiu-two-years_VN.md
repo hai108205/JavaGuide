@@ -1,5 +1,5 @@
 ---
-title: Giới thiệu JavaGuide Knowledge Planet: Tài liệu phỏng vấn Java, Sửa CV và Dự án thực tế
+title: "Giới thiệu JavaGuide Knowledge Planet: Tài liệu phỏng vấn Java, Sửa CV và Dự án thực tế"
 description: Giới thiệu về JavaGuide Knowledge Planet, cung cấp cẩm nang phỏng vấn Java, tài liệu phỏng vấn backend, sửa CV, tối ưu CV, giải đáp 1-1, dự án thực tế Java và hướng dẫn dự án mô hình lớn (LLM), đã giúp hơn 9000+ thành viên nâng cao năng lực cạnh tranh khi tìm việc.
 category: Knowledge Planet
 star: 2

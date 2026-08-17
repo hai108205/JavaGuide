@@ -1,14 +1,13 @@
 ---
 
-title: Chuyên đề RAG: Xử lý tài liệu, Cơ sở dữ liệu vector, GraphRAG, Tối ưu hóa truy xuất và Cập nhật cơ sở tri thức
+title: "Chuyên đề RAG: Xử lý tài liệu, Cơ sở dữ liệu vector, GraphRAG, Tối ưu hóa truy xuất và Cập nhật cơ sở tri thức"
 description: Lộ trình học RAG và Retrieval-Augmented Generation, bao gồm xử lý tài liệu, cơ sở dữ liệu vector, GraphRAG, tối ưu hóa truy xuất, cập nhật cơ sở tri thức và đánh giá RAG.
 category: AI
 tag:
-
-* RAG
-* Cơ sở dữ liệu vector
-* Phát triển ứng dụng AI
-  sidebar: false
+  - RAG
+  - Cơ sở dữ liệu vector
+  - Phát triển ứng dụng AI
+sidebar: false
 
 ---
 

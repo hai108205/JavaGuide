@@ -8,24 +8,24 @@ heroImage: /logo.svg
 heroText: JavaGuide
 tagline: Hệ thống kiến thức Phỏng vấn Java & Backend với 156K+ Star trên GitHub, bao phủ Computer Science Fundamentals, Database, Distributed System, High Concurrency, System Design và AI Application Development
 sitemap:
-changefreq: weekly
-priority: 0.9
+  changefreq: weekly
+  priority: 0.9
 head:
-
-* * meta
-  * name: keywords
-    content: JavaGuide,Phỏng vấn Java,Hướng dẫn phỏng vấn Java,Java Interview Questions,Phỏng vấn Backend,Backend Development,Phỏng vấn Database,Phỏng vấn MySQL,Phỏng vấn Redis,Distributed System,High Concurrency,High Performance,High Availability,System Design,Message Queue,Cache,Computer Network,Linux,AI Interview,AI Application Development,Agent,RAG,MCP,LLM,AI Coding
-* * meta
-  * property: og:image
-    content: https://javaguide.cn/logo.png
-    actions:
-* text: Bắt đầu đọc
-  link: /home.md
-  type: primary
-* text: Knowledge Planet
-  link: /about-the-author/zhishixingqiu-two-years.md
-  type: default
-  footer: |-
+  - - meta
+    - name: keywords
+      content: JavaGuide,Phỏng vấn Java,Hướng dẫn phỏng vấn Java,Java Interview Questions,Phỏng vấn Backend,Backend Development,Phỏng vấn Database,Phỏng vấn MySQL,Phỏng vấn Redis,Distributed System,High Concurrency,High Performance,High Availability,System Design,Message Queue,Cache,Computer Network,Linux,AI Interview,AI Application Development,Agent,RAG,MCP,LLM,AI Coding
+  - - meta
+    - property: og:image
+      content: https://javaguide.cn/logo.png
+actions:
+  - text: Bắt đầu đọc
+    link: /home.md
+    type: primary
+  - text: Knowledge Planet
+    link: /about-the-author/zhishixingqiu-two-years.md
+    type: default
+footer: |-
+  鄂ICP备2020015769号-1 | Theme: VuePress Theme Hope
   鄂ICP备2020015769号-1 | Theme: VuePress Theme Hope
 
 ---
