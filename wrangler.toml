@@ -1,1 +1,2 @@
 name = "javaguide"
+pages_build_output_dir = "docs/.vuepress/dist"
