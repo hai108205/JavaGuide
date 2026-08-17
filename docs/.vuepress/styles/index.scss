@@ -1,3 +1,618 @@
+/* ============================================================
+ * JavaGuide — Premium dark tech-skin design tokens
+ *
+ * vuepress-theme-hope v2 exposes its palette as `--vp-*` CSS vars
+ * (base + [data-theme] overrides) plus a light/dark toggle on
+ * the html element. This file re-tokens that system and adds a
+ * cohesive component layer. Existing layout mechanics (immersive
+ * reading mode, click-preview, lazy-mermaid) are untouched.
+ * ============================================================ */
+
+/* ============================================================
+ * Font-face — Be Vietnam Pro (local, loaded from /public/fonts)
+ * ============================================================ */
+
+@font-face {
+  font-family: "Be Vietnam Pro";
+  src: url("/fonts/BeVietnamPro-400.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Be Vietnam Pro";
+  src: url("/fonts/BeVietnamPro-500.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Be Vietnam Pro";
+  src: url("/fonts/BeVietnamPro-600.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Be Vietnam Pro";
+  src: url("/fonts/BeVietnamPro-700.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* --- Surfaces (dark default) ----------------------------------- */
+  --vw-bg: #0b0f1a;
+  --vw-bg-alt: #0e1420;
+  --vw-bg-soft: #101726;
+  --vw-bg-elv: #141c2c;
+  --vw-bg-elv-soft: #182135;
+
+  /* --- Accent: electric blue -------------------------------------- */
+  --vw-accent: #38bdf8; /* sky-400 — primary links / active / CTA */
+  --vw-accent-hover: #0ea5e9; /* sky-500 */
+  --vw-accent-soft: rgba(56, 189, 248, 0.12);
+  --vw-accent-gradient: linear-gradient(135deg, #38bdf8 0%, #3b82f6 100%);
+
+  /* --- Text -------------------------------------------------------- */
+  --vw-text: #e5eaf3;
+  --vw-text-mute: #94a3b8; /* slate-400 — muted meta */
+  --vw-text-subtle: #64748b; /* slate-500 */
+
+  /* --- Borders ----------------------------------------------------- */
+  --vw-border: rgba(148, 163, 184, 0.14);
+  --vw-border-hard: rgba(148, 163, 184, 0.26);
+  --vw-divider: rgba(148, 163, 184, 0.12);
+
+  /* --- Semantic states --------------------------------------------- */
+  --vw-danger: #f87171;
+  --vw-danger-soft: rgba(248, 113, 113, 0.12);
+  --vw-warn: #fbbf24;
+  --vw-warn-soft: rgba(251, 191, 36, 0.12);
+  --vw-success: #34d399;
+  --vw-success-soft: rgba(52, 211, 153, 0.12);
+
+  /* --- Elevation / glow --------------------------------------------- */
+  --vw-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+  --vw-shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.28);
+  --vw-glow: 0 0 0 1px rgba(56, 189, 248, 0.25),
+    0 8px 30px rgba(56, 189, 248, 0.12);
+  --vw-glow-hover: 0 0 0 1px rgba(56, 189, 248, 0.4),
+    0 12px 40px rgba(56, 189, 248, 0.18);
+
+  /* --- Radius / spacing / motion ------------------------------------- */
+  --vw-radius: 14px;
+  --vw-radius-sm: 9px;
+  --vw-radius-lg: 20px;
+  --vw-t: 0.18s ease;
+  --vp-font-mono: "JetBrains Mono", "Fira Code", ui-monospace, "SFMono-Regular",
+    consolas, "Liberation Mono", monospace;
+  --vp-font: "Be Vietnam Pro", Inter, Lexend, -apple-system, ui-sans-serif,
+    system-ui, sans-serif;
+  --vp-font-heading: "Be Vietnam Pro", Inter, Lexend, -apple-system,
+    ui-sans-serif, system-ui, sans-serif;
+
+  /* --- Re-map theme-hope tokens (dark) ------------------------------- */
+  --vp-c-bg: var(--vw-bg);
+  --vp-c-bg-alt: var(--vw-bg-alt);
+  --vp-c-bg-elv: var(--vw-bg-elv);
+  --vp-c-bg-elv-soft: var(--vw-bg-elv-soft);
+  --vp-c-bg-soft: var(--vw-bg-soft);
+  --vp-c-border: var(--vw-border);
+  --vp-c-border-hard: var(--vw-border-hard);
+  --vp-c-divider: var(--vw-divider);
+  --vp-c-text: var(--vw-text);
+  --vp-c-text-mute: var(--vw-text-mute);
+  --vp-c-text-subtle: var(--vw-text-subtle);
+  --vp-c-shadow: var(--vw-shadow);
+  --vp-c-grey-soft: var(--vw-bg-alt);
+  --vp-c-accent: var(--vw-accent);
+  --vp-c-accent-hover: var(--vw-accent-hover);
+  --vp-c-accent-bg: var(--vw-accent);
+  --vp-c-accent-text: var(--vw-accent);
+  --vp-c-accent-soft: var(--vw-accent-soft);
+}
+
+:root[data-theme="light"] {
+  /* --- Light mirror -------------------------------------------------- */
+  --vw-bg: #ffffff;
+  --vw-bg-alt: #f6f8fb;
+  --vw-bg-soft: #f1f4f9;
+  --vw-bg-elv: #ffffff;
+  --vw-bg-elv-soft: #eef2f9;
+
+  --vw-accent: #2563eb; /* blue-600 — sufficient on white */
+  --vw-accent-hover: #1d4ed8;
+  --vw-accent-soft: rgba(37, 99, 235, 0.1);
+  --vw-accent-gradient: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+
+  --vw-text: #1f2937;
+  --vw-text-mute: #475569; /* slate-600 — 4.6:1 on white */
+  --vw-text-subtle: #64748b;
+
+  --vw-border: rgba(15, 23, 42, 0.12);
+  --vw-border-hard: rgba(15, 23, 42, 0.24);
+  --vw-divider: rgba(15, 23, 42, 0.1);
+
+  --vw-danger: #dc2626;
+  --vw-danger-soft: rgba(220, 38, 38, 0.1);
+  --vw-warn: #d97706;
+  --vw-warn-soft: rgba(217, 119, 6, 0.1);
+  --vw-success: #059669;
+  --vw-success-soft: rgba(5, 150, 105, 0.1);
+
+  --vw-shadow: 0 8px 30px rgba(15, 23, 42, 0.1);
+  --vw-shadow-sm: 0 2px 10px rgba(15, 23, 42, 0.07);
+  --vw-glow: 0 0 0 1px rgba(37, 99, 235, 0.18),
+    0 8px 30px rgba(37, 99, 235, 0.1);
+  --vw-glow-hover: 0 0 0 1px rgba(37, 99, 235, 0.3),
+    0 12px 40px rgba(37, 99, 235, 0.14);
+}
+
+/* ============================================================
+ * Component layer
+ * ============================================================ */
+
+/* --- Global layout defaults --------------------------------------- */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--vp-c-text);
+  background-color: var(--vp-c-bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Visually hidden but accessible (for icon-only toggles) */
+.vw-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Focus visibility (a11y) --------------------------------------- */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--vp-c-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* --- Navbar --------------------------------------------------------- */
+.vp-navbar {
+  border-bottom: 1px solid var(--vp-c-divider);
+  background: color-mix(in srgb, var(--vp-c-bg) 82%, transparent);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  backdrop-filter: saturate(180%) blur(12px);
+  transition: background-color var(--vw-t);
+}
+
+.vp-site-name {
+  font-weight: 700;
+  letter-spacing: 0.008em;
+}
+
+.vp-nav-item > .vp-nav-link {
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: var(--vp-c-text-mute);
+  font-weight: 500;
+  transition:
+    color var(--vw-t),
+    background-color var(--vw-t);
+}
+
+.vp-nav-item > .vp-nav-link:hover {
+  color: var(--vp-c-accent);
+  background-color: var(--vp-c-accent-soft);
+}
+
+.vp-nav-item > .vp-nav-link.vp-active,
+.vp-nav-item > .vp-nav-link[aria-current="page"],
+.vp-nav-item > .vp-nav-link.active {
+  color: var(--vp-c-accent);
+  font-weight: 600;
+}
+
+.vp-dropdown-title,
+.vp-dropdown {
+  transition:
+    color var(--vw-t),
+    background-color var(--vw-t);
+}
+
+.vp-dropdown-title:hover,
+.vp-toggle-navbar-button:hover:not(.vp-active) {
+  color: var(--vp-c-accent);
+}
+
+.vp-dropdown-wrapper,
+.vp-dropdown-warp {
+  border: 1px solid var(--vp-c-border);
+  border-radius: var(--vw-radius);
+  background: var(--vp-c-bg-elv);
+  box-shadow: var(--vp-c-shadow);
+}
+
+.vp-dropdown-item,
+.vp-dropdown-title,
+.vp-dropdown-subtitle {
+  border-radius: 8px;
+  transition: var(--vw-t);
+}
+
+li.vp-dropdown-item:hover,
+.vp-dropdown-subtitle:hover {
+  color: var(--vp-c-accent);
+  background-color: var(--vp-c-accent-soft);
+}
+
+.vp-toggle-navbar-button {
+  transition:
+    color var(--vw-t),
+    background-color var(--vw-t);
+}
+
+/* --- Sidebar -------------------------------------------------------- */
+.vp-sidebar {
+  border-right: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg);
+}
+
+.vp-site-name,
+.vp-sidebar-group {
+  color: var(--vp-c-text);
+}
+
+.vp-sidebar-header {
+  color: var(--vp-c-text-mute);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.vp-sidebar-link {
+  border-radius: 8px;
+  color: var(--vp-c-text-mute);
+  font-weight: 500;
+  transition:
+    color var(--vw-t),
+    background-color var(--vw-t);
+}
+
+.vp-sidebar-link:hover {
+  color: var(--vp-c-accent);
+  background-color: var(--vp-c-accent-soft);
+}
+
+.vp-sidebar-link.vp-active,
+.vp-sidebar-link.active {
+  color: var(--vp-c-accent);
+  font-weight: 600;
+  background-color: var(--vp-c-accent-soft);
+}
+
+/* --- TOC (table of contents) ---------------------------------------- */
+.vp-toc {
+  border: 1px solid var(--vp-c-border);
+  border-radius: var(--vw-radius);
+  background: var(--vp-c-bg-soft);
+}
+
+.vp-toc a {
+  color: var(--vp-c-text-mute);
+  border-radius: 6px;
+  transition: var(--vw-t);
+}
+
+.vp-toc a:hover {
+  color: var(--vp-c-accent);
+  background-color: var(--vp-c-accent-soft);
+}
+
+.vp-toc a.vp-active,
+.vp-toc a.active {
+  color: var(--vp-c-accent);
+  font-weight: 600;
+}
+
+/* --- Cards (home / category grids) ---------------------------------- */
+.vp-card,
+.vp-project-card,
+.vp-project,
+.vp-feature,
+.vp-project-panel,
+.vp-steps-item,
+.vp-mark-card {
+  border: 1px solid var(--vp-c-border);
+  border-radius: var(--vw-radius);
+  background: var(--vp-c-bg-elv-soft);
+  box-shadow: var(--vp-c-shadow-sm);
+  transition:
+    transform var(--vw-t),
+    box-shadow var(--vw-t),
+    border-color var(--vw-t),
+    background-color var(--vw-t);
+}
+
+.vp-card:hover,
+.vp-project-card:hover,
+.vp-project:hover,
+.vp-feature:hover,
+.vp-mark-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--vp-c-border-hard);
+  box-shadow: var(--vp-c-shadow);
+}
+
+/* --- Buttons (theme/accent) ----------------------------------------- */
+.vp-button,
+.vp-button.theme-color,
+a.vp-button {
+  border: 1px solid var(--vp-c-border-hard);
+  border-radius: 10px;
+  background: var(--vp-c-accent-soft);
+  color: var(--vp-c-accent);
+  font-weight: 600;
+  transition:
+    background-color var(--vw-t),
+    color var(--vw-t),
+    box-shadow var(--vw-t);
+}
+
+.vp-button:hover,
+.vp-button.theme-color:hover,
+a.vp-button:hover {
+  color: var(--vp-c-accent-hover);
+  background-color: var(--vp-c-accent-soft);
+  box-shadow: var(--vp-c-shadow-sm);
+}
+
+/* --- Modals / overlays ---------------------------------------------- */
+.vp-modal,
+.vp-modal-container,
+.vp-search-modal,
+.vp-search-result-item {
+  border: 1px solid var(--vp-c-border);
+  border-radius: var(--vw-radius);
+  background: var(--vp-c-bg-elv);
+  box-shadow: var(--vp-c-shadow);
+}
+
+/* --- Page (docs layout) ---------------------------------------------- */
+.vp-page {
+  color: var(--vp-c-text);
+}
+
+.theme-hope-content {
+  line-height: 1.75;
+}
+
+/* --- Article typography & readability -------------------------------- */
+.theme-hope-content h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.theme-hope-content h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.theme-hope-content h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.theme-hope-content h1,
+.theme-hope-content h2,
+.theme-hope-content h3,
+.theme-hope-content h4 {
+  color: var(--vp-c-text);
+  scroll-margin-top: calc(4.5rem + 24px);
+}
+
+.theme-hope-content p,
+.theme-hope-content li,
+.theme-hope-content ul,
+.theme-hope-content ol {
+  color: var(--vp-c-text);
+}
+
+.theme-hope-content p {
+  line-height: 1.8;
+  font-size: 1.0625rem;
+}
+
+.theme-hope-content a {
+  color: var(--vp-c-accent);
+  text-decoration: none;
+  transition: var(--vw-t);
+}
+
+.theme-hope-content a:hover {
+  color: var(--vp-c-accent-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* --- Code blocks ----------------------------------------------------- */
+.theme-hope-content div[class*="language-"] {
+  border: 1px solid var(--vp-c-border);
+  border-radius: var(--vw-radius);
+  background: #0a0e17;
+  box-shadow: var(--vp-c-shadow-sm);
+}
+
+.theme-hope-content div[class*="language-"] pre {
+  background: transparent;
+}
+
+.theme-hope-content div[class*="language-"] code {
+  font-family: var(--vp-font-mono);
+  font-size: 0.9em;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Inline code */
+.theme-hope-content :not(pre) > code {
+  background: var(--vp-c-accent-soft);
+  color: var(--vp-c-accent);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 6px;
+  padding: 0.12em 0.4em;
+  font-family: var(--vp-font-mono);
+  font-size: 0.88em;
+}
+
+:root[data-theme="light"] .theme-hope-content div[class*="language-"] {
+  background: #0a0e17; /* keep code dark in both modes for contrast */
+}
+
+.theme-hope-content div[class*="language-"] .line-numbers {
+  color: var(--vw-text-subtle);
+}
+
+/* --- Code line highlight / copy button -------------------------------- */
+.theme-hope-content .line-numbers-rows {
+  color: rgba(148, 163, 184, 0.35);
+}
+
+.theme-hope-content div[class*="language-"] .copy-code-button {
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 8px;
+  color: var(--vp-c-text-mute);
+  transition: var(--vw-t);
+}
+
+.theme-hope-content div[class*="language-"] .copy-code-button:hover {
+  color: var(--vp-c-accent);
+  background: var(--vp-c-accent-soft);
+}
+
+/* --- Blockquote -------------------------------------------------------- */
+.theme-hope-content blockquote {
+  border-left: 3px solid var(--vp-c-accent);
+  background: var(--vp-c-accent-soft);
+  border-radius: 0 var(--vw-radius-sm) var(--vw-radius-sm) 0;
+  color: var(--vp-c-text-mute);
+  padding: 0.75rem 1rem;
+  margin-left: 0;
+}
+
+.theme-hope-content blockquote p {
+  line-height: 1.7;
+}
+
+/* --- Tables ------------------------------------------------------------- */
+.theme-hope-content table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.95rem;
+}
+
+.theme-hope-content th {
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text);
+  font-weight: 700;
+  border-bottom: 2px solid var(--vp-c-border-hard);
+  padding: 0.6rem 0.9rem;
+  text-align: left;
+}
+
+.theme-hope-content td {
+  border-bottom: 1px solid var(--vp-c-divider);
+  padding: 0.6rem 0.9rem;
+  color: var(--vp-c-text);
+}
+
+.theme-hope-content tr:hover {
+  background: var(--vp-c-bg-soft);
+}
+
+/* --- Images ----------------------------------------------------------------- */
+.theme-hope-content img {
+  border-radius: var(--vw-radius-sm);
+  background: var(--vp-c-bg-soft);
+}
+
+/* --- Horizontal rule ------------------------------------------------------------ */
+.theme-hope-content hr {
+  border: 0;
+  height: 1px;
+  background: var(--vp-c-divider);
+}
+
+/* --- Badges / tags ------------------------------------------------------------------ */
+.theme-hope-content .badge,
+.vp-badge {
+  border: 1px solid var(--vp-c-border);
+  border-radius: 6px;
+  background: var(--vp-c-accent-soft);
+  color: var(--vp-c-accent);
+  font-weight: 600;
+}
+
+/* --- Alerts / admonitions (tip, warning, danger, note) ------------------------------- */
+.theme-hope-content .vp-alert,
+.theme-hope-content .tip,
+.theme-hope-content .warning,
+.theme-hope-content .danger,
+.theme-hope-content .note {
+  border: 1px solid var(--vp-c-border);
+  border-radius: var(--vw-radius-sm);
+}
+
+.theme-hope-content .tip {
+  background: var(--vw-success-soft);
+  border-left-color: var(--vw-success);
+}
+.theme-hope-content .warning {
+  background: var(--vw-warn-soft);
+  border-left-color: var(--vw-warn);
+}
+.theme-hope-content .danger {
+  background: var(--vw-danger-soft);
+  border-left-color: var(--vw-danger);
+}
+
+/* --- Footnote / footnotes ------------------------------------------------------------------ */
+.theme-hope-content .footnotes {
+  border-top: 1px solid var(--vp-c-divider);
+  color: var(--vp-c-text-mute);
+}
+
+/* --- Selection ------------------------------------------------------------------------------- */
+::selection {
+  background: var(--vp-c-accent-soft);
+  color: var(--vp-c-accent);
+}
+
+/* ============================================================
+ * Existing feature styles preserved
+ * ============================================================ */
+
 body {
   @media (min-width: 1440px) {
     font-size: 16px;
@@ -49,6 +664,8 @@ body {
 
 // 隐藏布局模式
 html.layout-hidden {
+  background-color: var(--vp-c-bg);
+
   // 隐藏顶部导航栏
   .vp-navbar {
     transform: translateY(-100%) !important;
@@ -164,5 +781,71 @@ html.layout-hidden {
       max-width: 100% !important;
       padding: 1rem 3rem !important;
     }
+  }
+}
+
+/* ============================================================
+ * Responsive + motion
+ * ============================================================ */
+
+/* Loading / empty / error states get the token surfaces */
+.vp-loading,
+.vp-empty,
+.vp-error-state {
+  border-radius: var(--vw-radius);
+}
+
+/* Smooth theme-switch transition, skipped for reduced motion */
+html:not([data-reduced-motion]),
+body:not([data-reduced-motion]) {
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+/* --- prefers-reduced-motion: respect user setting -------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --- Small screens: tuck the TOC, keep reading comfortable -------------------------- */
+@media (max-width: 719px) {
+  .theme-hope-content h1 {
+    font-size: 1.6rem;
+  }
+
+  .theme-hope-content h2 {
+    font-size: 1.3rem;
+  }
+
+  .theme-hope-content p {
+    font-size: 1rem;
+  }
+
+  .theme-hope-content table {
+    font-size: 0.85rem;
+  }
+
+  .vp-toc {
+    display: none;
+  }
+}
+
+/* --- Pointer-coarse (touch) target sizing --------------------------------------------- */
+@media (pointer: coarse) {
+  .vp-nav-item > .vp-nav-link,
+  .vp-sidebar-link {
+    min-height: 44px;
   }
 }

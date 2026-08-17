@@ -1,114 +1,114 @@
 ---
-title: Java 知识体系：基础、集合、并发、JVM、IO 与新特性
-description: Java 面试与知识体系学习路线，涵盖 Java 基础、集合源码、并发编程、JVM、IO/NIO 和 Java 新特性，适合校招、社招和 Java 后端面试复习。
+title: "Hệ thống kiến thức Java: Cơ bản, Collection, Concurrent, JVM, IO và các tính năng mới"
+description: Lộ trình học và ôn tập Java dành cho phỏng vấn, bao gồm Java Core, Collection Framework, lập trình đồng thời, JVM, IO/NIO và các tính năng mới của Java. Phù hợp cho sinh viên mới ra trường, người chuyển việc và lập trình viên Backend Java.
 category: Java
 tag:
   - Java
-  - Java基础
-  - Java面试
+  - Java Core
+  - Phỏng vấn Java
 sitemap:
   changefreq: weekly
   priority: 0.95
 head:
   - - meta
     - name: keywords
-      content: Java,Java基础,Java集合,Java并发,JVM,Java IO,Java NIO,Java新特性,Java面试题,Java后端面试
+      content: Java,Java Core,Java Collection,Java Concurrent,JVM,Java IO,Java NIO,Tính năng mới Java,Câu hỏi phỏng vấn Java,Phỏng vấn Backend Java
 ---
 
 <!-- @include: @small-advertisement.snippet.md -->
 
-这份 **Java 知识体系** 面向 Java 后端学习和面试复习，按“基础语法 -> 集合容器 -> 并发编程 -> IO/NIO -> JVM -> 新特性”的顺序整理本站 Java 相关文章。
+Tài liệu **Hệ thống kiến thức Java** này được xây dựng dành cho việc học Java Backend và ôn tập phỏng vấn, sắp xếp theo lộ trình: **Cú pháp cơ bản → Collection Framework → Lập trình đồng thời → IO/NIO → JVM → Các tính năng mới của Java**, đồng thời tổng hợp các bài viết liên quan trên website.
 
-如果你时间有限，建议先看 Java 基础、集合、并发和 JVM 的面试题总结，快速建立高频问题清单；如果你想系统补基础，可以按下面的专题顺序阅读。
+Nếu bạn không có nhiều thời gian, hãy ưu tiên đọc các bài tổng hợp câu hỏi phỏng vấn về **Java Core, Collection, Concurrent và JVM** để nhanh chóng nắm được những chủ đề xuất hiện nhiều nhất. Nếu muốn xây dựng nền tảng vững chắc, bạn nên học theo thứ tự các chuyên đề bên dưới.
 
-## 适合谁看
+## Phù hợp với ai?
 
-- 正在系统学习 Java 的后端开发者。
-- 准备校招、社招、中大厂 Java 后端面试的同学。
-- 想把 Java 基础、集合、并发、JVM、IO 和新特性串起来复习的读者。
-- 已经写过 Java 项目，但对底层原理、源码设计和工程实践理解不够系统的工程师。
+- Lập trình viên Backend đang học Java một cách bài bản.
+- Sinh viên chuẩn bị phỏng vấn tuyển dụng, người chuyển việc hoặc ứng tuyển vào các công ty công nghệ.
+- Người muốn ôn tập có hệ thống về Java Core, Collection, Concurrent, JVM, IO và các tính năng mới.
+- Lập trình viên đã từng phát triển dự án Java nhưng muốn hiểu sâu hơn về nguyên lý hoạt động, mã nguồn và các kỹ thuật triển khai trong thực tế.
 
-## 学习重点
+## Nội dung trọng tâm
 
-- Java 基础语法、面向对象、异常、泛型、反射、代理、序列化等核心机制。
-- List、Map、Queue、并发容器的使用边界、源码实现和常见面试题。
-- Java 线程、锁、JMM、CAS、AQS、线程池、CompletableFuture 和虚拟线程。
-- JVM 内存区域、类加载、垃圾回收、参数配置、监控工具和线上问题排查。
-- BIO、NIO、AIO、IO 模型，以及装饰器、适配器等 IO 相关设计模式。
-- Java 8 到 Java 26 的重要新特性，以及哪些特性真正影响日常开发。
+- Cú pháp Java, lập trình hướng đối tượng, xử lý ngoại lệ, Generic, Reflection, Proxy, Serialization và các cơ chế cốt lõi.
+- Giới hạn sử dụng, cách triển khai bên trong và các câu hỏi phỏng vấn thường gặp của List, Map, Queue và các Collection hỗ trợ đồng thời.
+- Thread, Lock, Java Memory Model (JMM), CAS, AQS, Thread Pool, CompletableFuture và Virtual Thread.
+- Kiến trúc bộ nhớ JVM, Class Loading, Garbage Collection, cấu hình JVM, công cụ giám sát và xử lý sự cố trong môi trường production.
+- BIO, NIO, AIO, các mô hình IO và các mẫu thiết kế thường gặp như Decorator, Adapter trong IO.
+- Những tính năng mới quan trọng từ Java 8 đến Java 26 và mức độ ảnh hưởng của chúng trong phát triển ứng dụng thực tế.
 
-## 建议阅读顺序
+## Thứ tự học được khuyến nghị
 
-1. [Java 基础专题](./basis/)：先掌握语法、面向对象、泛型、反射、代理、序列化等基础能力。
-2. [Java 集合专题](./collection/)：理解 ArrayList、LinkedList、HashMap、ConcurrentHashMap 等常用容器的使用和源码。
-3. [Java 并发编程专题](./concurrent/)：系统学习线程、锁、JMM、CAS、AQS、线程池和并发工具类。
-4. [JVM 专题](./jvm/)：理解内存区域、类加载、垃圾回收、JVM 参数和线上排查。
-5. [Java IO 专题](./io/)：补齐 BIO、NIO、AIO、Reactor、多路复用和 IO 设计模式。
-6. [Java 新特性专题](./new-features/)：按版本梳理 Lambda、Stream、模块化、var、Record、虚拟线程等关键特性。
+1. [Chuyên đề Java Core](./basis/): Nắm vững cú pháp, lập trình hướng đối tượng, Generic, Reflection, Proxy và Serialization.
+2. [Chuyên đề Java Collection](./collection/): Hiểu cách sử dụng và nguyên lý hoạt động của ArrayList, LinkedList, HashMap, ConcurrentHashMap và các Collection phổ biến.
+3. [Chuyên đề Lập trình đồng thời](./concurrent/): Học có hệ thống về Thread, Lock, JMM, CAS, AQS, Thread Pool và các công cụ hỗ trợ đồng thời.
+4. [Chuyên đề JVM](./jvm/): Tìm hiểu bộ nhớ JVM, Class Loader, Garbage Collection, tham số JVM và kỹ thuật phân tích sự cố.
+5. [Chuyên đề Java IO](./io/): Bổ sung kiến thức về BIO, NIO, AIO, Reactor, Multiplexing và các Design Pattern liên quan đến IO.
+6. [Chuyên đề Tính năng mới của Java](./new-features/): Học theo từng phiên bản với Lambda, Stream, Module, `var`, Record, Virtual Thread và các cải tiến đáng chú ý.
 
-## 核心文章
+## Các bài viết cốt lõi
 
-### Java 基础
+### Java Core
 
-- [Java 基础专题](./basis/)：从基础语法讲到核心机制和常见 Java 面试题。
-- [Java基础常见面试题总结(上)](./basis/java-basic-questions-01.md)：覆盖 Java 语言特点、基础语法、面向对象和常用类。
-- [Java基础常见面试题总结(中)](./basis/java-basic-questions-02.md)：继续梳理异常、泛型、反射、注解和常见细节。
-- [Java基础常见面试题总结(下)](./basis/java-basic-questions-03.md)：补齐高级基础知识和常见易错点。
-- [Java 值传递详解](./basis/why-there-only-value-passing-in-java.md)：厘清值传递、引用变量和对象修改之间的关系。
-- [Java 序列化详解](./basis/serialization.md)：理解序列化机制、serialVersionUID、安全风险和替代方案。
-- [Java 反射机制详解](./basis/reflection.md) 和 [Java 代理模式详解](./basis/proxy.md)：掌握框架底层常见机制。
+- [Chuyên đề Java Core](./basis/): Từ cú pháp cơ bản đến các cơ chế cốt lõi và những câu hỏi phỏng vấn phổ biến.
+- [Tổng hợp câu hỏi phỏng vấn Java Core (Phần 1)](./basis/java-basic-questions-01.md): Bao gồm đặc điểm của Java, cú pháp cơ bản, lập trình hướng đối tượng và các lớp thường dùng.
+- [Tổng hợp câu hỏi phỏng vấn Java Core (Phần 2)](./basis/java-basic-questions-02.md): Tiếp tục với Exception, Generic, Reflection, Annotation và các chi tiết quan trọng.
+- [Tổng hợp câu hỏi phỏng vấn Java Core (Phần 3)](./basis/java-basic-questions-03.md): Hoàn thiện kiến thức nâng cao và các lỗi thường gặp.
+- [Giải thích cơ chế truyền tham trị trong Java](./basis/why-there-only-value-passing-in-java.md): Làm rõ mối quan hệ giữa truyền tham trị, biến tham chiếu và việc thay đổi đối tượng.
+- [Serialization trong Java](./basis/serialization.md): Hiểu cơ chế tuần tự hóa, `serialVersionUID`, các rủi ro bảo mật và các giải pháp thay thế.
+- [Reflection trong Java](./basis/reflection.md) và [Proxy trong Java](./basis/proxy.md): Nắm vững những cơ chế nền tảng thường được các framework sử dụng.
 
-### Java 集合
+### Java Collection
 
-- [Java 集合专题](./collection/)：串联集合框架、使用注意事项和常见源码分析。
-- [Java集合常见面试题总结(上)](./collection/java-collection-questions-01.md) 和 [Java集合常见面试题总结(下)](./collection/java-collection-questions-02.md)：覆盖 List、Set、Map、Queue 和并发集合高频问题。
-- [Java集合使用注意事项总结](./collection/java-collection-precautions-for-use.md)：总结集合判空、遍历、扩容、线程安全和性能相关注意点。
-- [ArrayList 源码分析](./collection/arraylist-source-code.md)、[HashMap 源码分析](./collection/hashmap-source-code.md)、[ConcurrentHashMap 源码分析](./collection/concurrent-hash-map-source-code.md)：从源码理解常用容器的设计取舍。
+- [Chuyên đề Java Collection](./collection/): Tổng quan về Collection Framework, cách sử dụng và phân tích mã nguồn.
+- [Tổng hợp câu hỏi phỏng vấn Java Collection (Phần 1)](./collection/java-collection-questions-01.md) và [Tổng hợp câu hỏi phỏng vấn Java Collection (Phần 2)](./collection/java-collection-questions-02.md): Bao gồm List, Set, Map, Queue và Collection đồng thời.
+- [Những lưu ý khi sử dụng Java Collection](./collection/java-collection-precautions-for-use.md): Tổng hợp các vấn đề về kiểm tra rỗng, duyệt Collection, mở rộng dung lượng, thread safety và hiệu năng.
+- [Phân tích mã nguồn ArrayList](./collection/arraylist-source-code.md), [HashMap](./collection/hashmap-source-code.md), [ConcurrentHashMap](./collection/concurrent-hash-map-source-code.md): Hiểu rõ các quyết định thiết kế thông qua mã nguồn.
 
-### Java 并发
+### Lập trình đồng thời
 
-- [Java 并发编程专题](./concurrent/)：围绕线程、锁、内存模型、线程池和并发工具展开。
-- [Java并发常见面试题总结（上）](./concurrent/java-concurrent-questions-01.md)、[Java并发常见面试题总结（中）](./concurrent/java-concurrent-questions-02.md)、[Java并发常见面试题总结（下）](./concurrent/java-concurrent-questions-03.md)：建立并发面试问题清单。
-- [JMM（Java 内存模型）详解](./concurrent/jmm.md)：理解可见性、原子性、有序性和 happens-before。
-- [CAS 详解](./concurrent/cas.md)、[AQS 详解](./concurrent/aqs.md)、[Java 线程池详解](./concurrent/java-thread-pool-summary.md)：掌握并发底层高频考点。
-- [虚拟线程常见问题总结](./concurrent/virtual-thread.md)：理解 Project Loom 对并发模型的影响。
+- [Chuyên đề Java Concurrent](./concurrent/): Bao quát Thread, Lock, Memory Model, Thread Pool và các công cụ đồng thời.
+- [Tổng hợp câu hỏi phỏng vấn Java Concurrent (Phần 1)](./concurrent/java-concurrent-questions-01.md), [Phần 2](./concurrent/java-concurrent-questions-02.md), [Phần 3](./concurrent/java-concurrent-questions-03.md): Danh sách các câu hỏi xuất hiện nhiều trong phỏng vấn.
+- [JMM (Java Memory Model)](./concurrent/jmm.md): Hiểu Visibility, Atomicity, Ordering và nguyên tắc _happens-before_.
+- [CAS](./concurrent/cas.md), [AQS](./concurrent/aqs.md), [Thread Pool trong Java](./concurrent/java-thread-pool-summary.md): Các chủ đề nền tảng được hỏi rất nhiều trong phỏng vấn.
+- [Những câu hỏi thường gặp về Virtual Thread](./concurrent/virtual-thread.md): Tìm hiểu ảnh hưởng của Project Loom đến mô hình lập trình đồng thời.
 
-### JVM 与 IO
+### JVM và IO
 
-- [JVM 专题](./jvm/)：围绕内存、类加载、GC、参数、工具和线上排查展开。
-- [Java内存区域详解（重点）](./jvm/memory-area.md)：理解程序计数器、虚拟机栈、本地方法栈、堆和方法区。
-- [JVM垃圾回收详解（重点）](./jvm/jvm-garbage-collection.md)：理解对象存活判断、垃圾收集算法和主流垃圾收集器。
-- [类加载过程详解](./jvm/class-loading-process.md) 和 [类加载器详解（重点）](./jvm/classloader.md)：掌握类生命周期和双亲委派模型。
-- [Java IO 专题](./io/)：从 BIO、NIO、AIO 讲到 IO 模型和 IO 设计模式。
-- [Java IO 基础知识总结](./io/io-basis.md)、[Java NIO 核心知识总结](./io/nio-basis.md)、[Java IO 模型详解](./io/io-model.md)：补齐网络编程和中间件学习前置知识。
+- [Chuyên đề JVM](./jvm/): Bao gồm bộ nhớ, Class Loading, Garbage Collection, tham số JVM, công cụ và xử lý sự cố.
+- [Kiến trúc bộ nhớ JVM (Quan trọng)](./jvm/memory-area.md): Hiểu Program Counter, JVM Stack, Native Method Stack, Heap và Method Area.
+- [Garbage Collection trong JVM (Quan trọng)](./jvm/jvm-garbage-collection.md): Tìm hiểu cách xác định đối tượng còn sống, các thuật toán GC và các Garbage Collector phổ biến.
+- [Quy trình Class Loading](./jvm/class-loading-process.md) và [ClassLoader (Quan trọng)](./jvm/classloader.md): Nắm vững vòng đời của lớp và cơ chế ủy quyền cha (Parent Delegation).
+- [Chuyên đề Java IO](./io/): Từ BIO, NIO, AIO đến các mô hình IO và Design Pattern liên quan.
+- [Kiến thức nền tảng Java IO](./io/io-basis.md), [Kiến thức cốt lõi Java NIO](./io/nio-basis.md), [Các mô hình IO trong Java](./io/io-model.md): Bổ sung nền tảng cho lập trình mạng và các middleware.
 
-### Java 新特性
+### Các tính năng mới của Java
 
-- [Java 新特性专题](./new-features/)：按版本梳理 Java 8 之后的重要语言、标准库和 JVM 特性。
-- [Java8 新特性实战](./new-features/java8-common-new-features.md)：掌握 Lambda、Stream、Optional、接口默认方法和新日期 API。
-- [Java 11 新特性概览（重要）](./new-features/java11.md)、[Java 17 新特性概览（重要）](./new-features/java17.md)、[Java 21 新特性概览(重要)](./new-features/java21.md)：优先关注 LTS 版本中的长期可用特性。
+- [Chuyên đề Tính năng mới của Java](./new-features/): Tổng hợp các cải tiến về ngôn ngữ, thư viện chuẩn và JVM từ Java 8 trở đi.
+- [Thực hành các tính năng mới trong Java 8](./new-features/java8-common-new-features.md): Lambda, Stream, Optional, Default Method và API thời gian mới.
+- [Tổng quan Java 11 (Quan trọng)](./new-features/java11.md), [Java 17 (Quan trọng)](./new-features/java17.md), [Java 21 (Quan trọng)](./new-features/java21.md): Ưu tiên các tính năng trong các phiên bản LTS.
 
-## 高频问题
+## Những câu hỏi xuất hiện nhiều
 
-- Java 为什么是值传递？对象引用作为参数传递时到底发生了什么？
-- `String`、`StringBuilder`、`StringBuffer` 有什么区别？
-- `equals()` 和 `hashCode()` 有什么关系？
-- `ArrayList` 和 `LinkedList` 如何选择？`HashMap` 为什么线程不安全？
-- `ConcurrentHashMap` 在 JDK 7 和 JDK 8 中有什么变化？
-- `synchronized` 和 `ReentrantLock` 有什么区别？
-- JMM 如何保证可见性、有序性和原子性？
-- 线程池核心参数如何配置？为什么不建议直接使用 `Executors`？
-- JVM 内存区域如何划分？哪些区域可能发生 OOM？
-- G1、ZGC、Shenandoah 分别适合什么场景？
-- BIO、NIO、AIO 有什么区别？Reactor 模型解决什么问题？
-- Java 8、11、17、21 中哪些新特性最值得掌握？
+- Vì sao Java chỉ hỗ trợ truyền tham trị? Điều gì thực sự xảy ra khi truyền tham số là đối tượng?
+- Khác nhau giữa `String`, `StringBuilder` và `StringBuffer` là gì?
+- Mối quan hệ giữa `equals()` và `hashCode()`?
+- Khi nào nên dùng `ArrayList`, khi nào nên dùng `LinkedList`? Vì sao `HashMap` không an toàn trong môi trường đa luồng?
+- `ConcurrentHashMap` trong JDK 7 và JDK 8 khác nhau như thế nào?
+- So sánh `synchronized` và `ReentrantLock`.
+- JMM đảm bảo Visibility, Ordering và Atomicity bằng cách nào?
+- Cấu hình Thread Pool như thế nào? Vì sao không nên sử dụng trực tiếp `Executors`?
+- JVM chia bộ nhớ thành những vùng nào? Những vùng nào có thể phát sinh OOM?
+- Khi nào nên sử dụng G1, ZGC hoặc Shenandoah?
+- BIO, NIO và AIO khác nhau như thế nào? Reactor giải quyết vấn đề gì?
+- Trong Java 8, 11, 17 và 21, những tính năng nào quan trọng nhất đối với lập trình viên?
 
-## 相关专题
+## Chuyên đề liên quan
 
-- [计算机基础](../cs-basics/)
-- [系统设计](../system-design/)
-- [数据库](../database/)
-- [分布式系统知识体系](../distributed-system/)
-- [高性能系统知识体系](../high-performance/)
+- [Kiến thức nền tảng Khoa học Máy tính](../cs-basics/)
+- [Thiết kế hệ thống](../system-design/)
+- [Cơ sở dữ liệu](../database/)
+- [Hệ thống kiến thức Hệ thống phân tán](../distributed-system/)
+- [Hệ thống kiến thức Hệ thống hiệu năng cao](../high-performance/)
 
 <!-- @include: @article-footer.snippet.md -->

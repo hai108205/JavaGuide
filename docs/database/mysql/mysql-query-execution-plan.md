@@ -1,32 +1,32 @@
 ---
-title: MySQL执行计划分析
-description: 详解MySQL EXPLAIN执行计划的各列含义，包括id、select_type、type、key、rows、Extra等关键字段解读，帮助你分析SQL性能瓶颈并进行针对性优化。
-category: 数据库
+title: Phân tích Execution Plan trong MySQL
+description: Giải thích chi tiết ý nghĩa từng cột trong Execution Plan của EXPLAIN trong MySQL, bao gồm các trường quan trọng như id, select_type, type, key, rows, Extra, giúp bạn phân tích nút thắt hiệu năng SQL và tối ưu hóa có mục tiêu.
+category: Cơ sở dữ liệu
 tag:
   - MySQL
 head:
   - - meta
     - name: keywords
-      content: MySQL执行计划,EXPLAIN,查询优化器,SQL性能分析,索引命中,type访问类型,Extra字段,慢查询优化
+      content: Execution Plan trong MySQL,EXPLAIN,Query Optimizer,Phân tích hiệu năng SQL,Index Hit,type Access Type,Extra Field,Tối ưu Slow Query
 ---
 
-优化 SQL 的第一步应该是读懂 SQL 的执行计划。本篇文章，我们一起来学习下 MySQL `EXPLAIN` 执行计划相关知识。
+Bước đầu tiên để tối ưu hóa SQL là đọc hiểu Execution Plan (Kế hoạch thực thi) của câu lệnh SQL. Trong bài viết này, chúng ta sẽ cùng tìm hiểu các kiến thức liên quan đến Execution Plan của `EXPLAIN` trong MySQL.
 
-> **版本说明**：本文内容基于 MySQL 5.7+ 和 8.0+ 版本。`filtered` 和 `partitions` 列在 MySQL 5.7+ 可用，`EXPLAIN ANALYZE` 和 Hash Join 特性需要 MySQL 8.0.18+ 和 8.0.20+。
+> **Lưu ý về phiên bản**: Nội dung bài viết dựa trên MySQL phiên bản 5.7+ và 8.0+. Cột `filtered` và `partitions` khả dụng từ MySQL 5.7+, tính năng `EXPLAIN ANALYZE` và Hash Join yêu cầu MySQL 8.0.18+ và 8.0.20+.
 
-## 什么是执行计划？
+## Execution Plan là gì?
 
-**执行计划** 是指一条 SQL 语句在经过 **MySQL 查询优化器** 的优化后，具体的执行方式。
+**Execution Plan** là phương thức thực thi cụ thể của một câu lệnh SQL sau khi được tối ưu hóa bởi **Query Optimizer (Bộ tối ưu hóa truy vấn) của MySQL**.
 
-执行计划通常用于 SQL 性能分析、优化等场景。通过 `EXPLAIN` 的结果，可以了解到如数据表的查询顺序、数据查询操作的操作类型、哪些索引可以被命中、哪些索引实际会命中、每个数据表有多少行记录被查询等信息。
+Execution Plan thường được sử dụng trong các tình huống phân tích và tối ưu hiệu năng SQL. Thông qua kết quả của `EXPLAIN`, chúng ta có thể biết được các thông tin như thứ tự truy vấn của các bảng dữ liệu, loại thao tác truy vấn dữ liệu, những Index nào có thể được sử dụng, những Index nào thực sự được sử dụng, mỗi bảng dữ liệu có bao nhiêu dòng được truy vấn, v.v.
 
-## 如何获取执行计划？
+## Làm thế nào để lấy Execution Plan?
 
-MySQL 为我们提供了 `EXPLAIN` 命令，来获取执行计划的相关信息。
+MySQL cung cấp cho chúng ta lệnh `EXPLAIN` để lấy các thông tin liên quan của Execution Plan.
 
-需要注意的是，标准 `EXPLAIN` 语句并不会真的去执行相关的语句，而是通过查询优化器对语句进行分析，找出最优的查询方案，并显示对应的信息。
+Cần lưu ý rằng câu lệnh `EXPLAIN` tiêu chuẩn không thực sự thực thi câu lệnh liên quan, mà thông qua Query Optimizer để phân tích câu lệnh, tìm ra phương án truy vấn tối ưu nhất và hiển thị thông tin tương ứng.
 
-MySQL 8.0.18 引入了 `EXPLAIN ANALYZE`，它会**真正执行**查询并输出每个步骤的实际耗时与行数，比标准 `EXPLAIN` 的估算数据更可靠，适合在测试环境深度排查慢查询：
+MySQL 8.0.18 đã giới thiệu `EXPLAIN ANALYZE`, nó sẽ **thực sự thực thi** truy vấn và đưa ra thời gian thực tế cũng như số dòng của từng bước, đáng tin cậy hơn so với dữ liệu ước tính của `EXPLAIN` tiêu chuẩn, phù hợp để điều tra chuyên sâu Slow Query trong môi trường test:
 
 ```sql
 mysql> EXPLAIN ANALYZE SELECT * FROM users WHERE age = 25\G
@@ -35,7 +35,7 @@ EXPLAIN: -> Covering index lookup on users using idx_age_score_name (age=25)
 (cost=1.52 rows=12) (actual time=0.0272..0.0344 rows=12 loops=1)
 ```
 
-此外，`EXPLAIN FORMAT=JSON` 可以输出优化器的成本模型数据（`query_cost`），比表格形式更能反映各步骤的实际代价，在多表 JOIN 或子查询调优时尤为有用：
+Ngoài ra, `EXPLAIN FORMAT=JSON` có thể xuất dữ liệu mô hình chi phí của Optimizer (`query_cost`), phản ánh chi phí thực tế của từng bước tốt hơn so với dạng bảng, đặc biệt hữu ích khi tối ưu JOIN nhiều bảng hoặc Subquery:
 
 ```sql
 mysql> EXPLAIN FORMAT=JSON SELECT * FROM users WHERE age = 25\G
@@ -58,18 +58,18 @@ EXPLAIN: {
 }
 ```
 
-`EXPLAIN` 执行计划支持 `SELECT`、`DELETE`、`INSERT`、`REPLACE` 以及 `UPDATE` 语句。我们一般多用于分析 `SELECT` 查询语句，使用起来非常简单，语法如下：
+Execution Plan của `EXPLAIN` hỗ trợ các câu lệnh `SELECT`, `DELETE`, `INSERT`, `REPLACE` và `UPDATE`. Chúng ta thường dùng nó để phân tích câu lệnh truy vấn `SELECT`, cách sử dụng rất đơn giản, cú pháp như sau:
 
 ```sql
 EXPLAIN SELECT 查询语句；
 ```
 
-我们简单来看下一条查询语句的执行计划：
+Chúng ta cùng xem nhanh Execution Plan của một câu lệnh truy vấn:
 
-**示例 1：单表查询（使用索引）**
+**Ví dụ 1: Truy vấn bảng đơn (sử dụng Index)**
 
 ```sql
--- 表结构：users(id, age, score, name, address)，联合索引 idx_age_score_name(age, score, name)
+-- Cấu trúc bảng: users(id, age, score, name, address), Composite Index idx_age_score_name(age, score, name)
 mysql> EXPLAIN SELECT * FROM users WHERE age = 25;
 +----+-------------+-------+------------+------+---------------------+---------------------+---------+-------+------+----------+-------------+
 | id | select_type | table | partitions | type | possible_keys       | key                 | key_len | ref   | rows | filtered | Extra       |
@@ -78,7 +78,7 @@ mysql> EXPLAIN SELECT * FROM users WHERE age = 25;
 +----+-------------+-------+------------+------+---------------------+---------------------+---------+-------+------+----------+-------------+
 ```
 
-**示例 2：UNION 查询（id 为 NULL 的场景）**
+**Ví dụ 2: Truy vấn UNION (trường hợp id là NULL)**
 
 ```sql
 mysql> EXPLAIN SELECT * FROM users WHERE id = 1 UNION SELECT * FROM users WHERE id = 2;
@@ -91,38 +91,38 @@ mysql> EXPLAIN SELECT * FROM users WHERE id = 1 UNION SELECT * FROM users WHERE 
 +----+--------------+------------+------------+-------+---------------+---------+---------+-------+------+----------+-------+
 ```
 
-可以看到，执行计划结果中共有 12 列，各列代表的含义总结如下表：
+Có thể thấy, kết quả Execution Plan có tổng cộng 12 cột, ý nghĩa của các cột được tổng kết trong bảng sau:
 
-| **列名**      | **含义**                                     |
-| ------------- | -------------------------------------------- |
-| id            | SELECT 查询的序列标识符                      |
-| select_type   | SELECT 关键字对应的查询类型                  |
-| table         | 用到的表名                                   |
-| partitions    | 匹配的分区，对于未分区的表，值为 NULL        |
-| type          | 表的访问方法                                 |
-| possible_keys | 可能用到的索引                               |
-| key           | 实际用到的索引                               |
-| key_len       | 所选索引的长度                               |
-| ref           | 当使用索引等值查询时，与索引作比较的列或常量 |
-| rows          | 预计要读取的行数                             |
-| filtered      | 按表条件过滤后，留存的记录数的百分比         |
-| Extra         | 附加信息                                     |
+| **Tên cột**   | **Ý nghĩa**                                                                  |
+| ------------- | ---------------------------------------------------------------------------- |
+| id            | Số định danh tuần tự của truy vấn SELECT                                     |
+| select_type   | Loại truy vấn tương ứng với từ khóa SELECT                                   |
+| table         | Tên bảng được sử dụng                                                        |
+| partitions    | Partition khớp, với bảng không phân vùng thì giá trị là NULL                 |
+| type          | Phương thức truy cập bảng                                                    |
+| possible_keys | Index có thể được sử dụng                                                    |
+| key           | Index thực sự được sử dụng                                                   |
+| key_len       | Độ dài của Index được chọn                                                   |
+| ref           | Khi truy vấn đẳng trị sử dụng Index, cột hoặc hằng số được so sánh với Index |
+| rows          | Số dòng dự kiến cần đọc                                                      |
+| filtered      | Tỷ lệ phần trăm số bản ghi còn lại sau khi lọc theo điều kiện của bảng       |
+| Extra         | Thông tin bổ sung                                                            |
 
-## 如何分析 EXPLAIN 结果？
+## Làm thế nào để phân tích kết quả EXPLAIN?
 
-为了分析 `EXPLAIN` 语句的执行结果，我们需要搞懂执行计划中的重要字段。
+Để phân tích kết quả thực thi của câu lệnh `EXPLAIN`, chúng ta cần hiểu rõ các trường quan trọng trong Execution Plan.
 
 ### id
 
-`SELECT` 标识符，用于标识每个 `SELECT` 语句的执行顺序。
+`SELECT` identifier, dùng để đánh dấu thứ tự thực thi của mỗi câu lệnh `SELECT`.
 
-`id` 列的解读规则：
+Quy tắc đọc hiểu cột `id`:
 
-- **id 相同**：从上往下依次执行（通常出现在多表 JOIN 场景）
-- **id 不同**：id 值越大，执行优先级越高（子查询先于外层查询执行）
-- **id 为 NULL**：表示这是 UNION RESULT 或 DERIVED 表的结果集，不需要单独执行查询
+- **id giống nhau**: thực thi lần lượt từ trên xuống dưới (thường xuất hiện trong tình huống JOIN nhiều bảng)
+- **id khác nhau**: giá trị id càng lớn, độ ưu tiên thực thi càng cao (Subquery được thực thi trước truy vấn bên ngoài)
+- **id là NULL**: cho biết đây là tập kết quả của UNION RESULT hoặc bảng DERIVED, không cần thực thi truy vấn riêng
 
-**示例**：
+**Ví dụ**:
 
 ```sql
 mysql> EXPLAIN SELECT * FROM users WHERE id = 1
@@ -146,95 +146,95 @@ mysql> EXPLAIN SELECT * FROM users WHERE id = 1
         Extra: Using temporary
 ```
 
-第三行的 `id = NULL`，table = `<union1,2>`，表示这是前两个查询结果的合并。
+Dòng thứ ba có `id = NULL`, table = `<union1,2>`, cho biết đây là kết quả hợp nhất của hai truy vấn trước đó.
 
 ### select_type
 
-查询的类型，主要用于区分普通查询、联合查询、子查询等复杂的查询，常见的值有：
+Loại truy vấn, chủ yếu dùng để phân biệt các truy vấn phức tạp như truy vấn thông thường, truy vấn UNION, Subquery, v.v. Các giá trị thường gặp:
 
-- **SIMPLE**：简单查询，不包含 UNION 或者子查询。
-- **PRIMARY**：查询中如果包含子查询或其他部分，外层的 SELECT 将被标记为 PRIMARY。
-- **SUBQUERY**：子查询中的第一个 SELECT。
-- **UNION**：在 UNION 语句中，UNION 之后出现的 SELECT。
-- **DERIVED**：在 FROM 中出现的子查询将被标记为 DERIVED。
-- **UNION RESULT**：UNION 查询的结果。
+- **SIMPLE**: Truy vấn đơn giản, không chứa UNION hoặc Subquery.
+- **PRIMARY**: Nếu truy vấn chứa Subquery hoặc các phần khác, SELECT bên ngoài sẽ được đánh dấu là PRIMARY.
+- **SUBQUERY**: SELECT đầu tiên trong Subquery.
+- **UNION**: Trong câu lệnh UNION, SELECT xuất hiện sau UNION.
+- **DERIVED**: Subquery xuất hiện trong FROM sẽ được đánh dấu là DERIVED.
+- **UNION RESULT**: Kết quả của truy vấn UNION.
 
 ### table
 
-查询用到的表名，每行都有对应的表名，表名除了正常的表之外，也可能是以下列出的值：
+Tên bảng được dùng trong truy vấn, mỗi dòng đều có tên bảng tương ứng, ngoài bảng thông thường, tên bảng cũng có thể là các giá trị sau:
 
-- **`<unionM,N>`** : 本行引用了 id 为 M 和 N 的行的 UNION 结果；
-- **`<derivedN>`** : 本行引用了 id 为 N 的表所产生的派生表结果。派生表有可能产生自 FROM 语句中的子查询。
-- **`<subqueryN>`** : 本行引用了 id 为 N 的表所产生的物化子查询结果。
+- **`<unionM,N>`** : Dòng này tham chiếu kết quả UNION của các dòng có id là M và N;
+- **`<derivedN>`** : Dòng này tham chiếu kết quả Derived Table được tạo ra từ bảng có id là N. Derived Table có thể được sinh ra từ Subquery trong câu lệnh FROM.
+- **`<subqueryN>`** : Dòng này tham chiếu kết quả Materialized Subquery được tạo ra từ bảng có id là N.
 
-### type（重要）
+### type (quan trọng)
 
-查询执行的类型，描述了查询是如何执行的。**从最优到最差的排序为**：
+Loại thực thi truy vấn, mô tả cách truy vấn được thực thi. **Thứ tự từ tốt nhất đến kém nhất**:
 
 `system > const > eq_ref > ref > fulltext > ref_or_null > index_merge > unique_subquery > index_subquery > range > index > ALL`
 
-**性能判断经验法则**：
+**Quy tắc kinh nghiệm đánh giá hiệu năng**:
 
-- **优秀**（至少达到）：`system`、`const`、`eq_ref`、`ref`、`range`
-- **需关注**：`index_merge`、`index`（全索引扫描，大数据量下仍有性能风险）
-- **需优化**：`ALL`（全表扫描）
+- **Xuất sắc** (ít nhất phải đạt): `system`, `const`, `eq_ref`, `ref`, `range`
+- **Cần chú ý**: `index_merge`, `index` (Full Index Scan, vẫn có rủi ro hiệu năng khi dữ liệu lớn)
+- **Cần tối ưu**: `ALL` (Full Table Scan)
 
-**注意**：此排序反映的是**单表访问效率**，不代表整体查询性能。例如 `type=ref` 配合大量回表，可能比 `type=index` 的覆盖索引更慢。
+**Lưu ý**: Thứ tự này phản ánh **hiệu quả truy cập bảng đơn**, không đại diện cho hiệu năng truy vấn tổng thể. Ví dụ `type=ref` kèm theo nhiều Back to Table có thể chậm hơn Covering Index của `type=index`.
 
-常见的几种类型具体含义如下：
+Ý nghĩa cụ thể của một số loại thường gặp như sau:
 
-- **system**：表中只有一行记录（或者是空表），且存储引擎能够精确统计行数。适用于 MyISAM、Memory、InnoDB（当表只有 1 行时，InnoDB 会优化为 const）等引擎。是 const 访问类型的特例。
-- **const**：表中最多只有一行匹配的记录，一次查询就可以找到，常用于使用主键或唯一索引的所有字段作为查询条件。
-- **eq_ref**：当连表查询时，前一张表的行在当前这张表中只有一行与之对应。是除了 system 与 const 之外最好的 join 方式，常用于使用主键或唯一非空索引的所有字段作为连表条件（严格保证一对一匹配）。
-- **ref**：使用普通索引作为查询条件，查询结果可能找到多个符合条件的行（与 eq_ref 的区别：一个驱动行可能匹配多个被驱动行）。
-- **index_merge**：当 WHERE 子句包含多个范围条件，且每个条件可以使用不同索引时，MySQL 会合并多个索引的扫描结果。key 列列出使用的索引，Extra 列显示合并算法：
+- **system**: Bảng chỉ có một dòng dữ liệu (hoặc là bảng trống), và Storage Engine có thể thống kê chính xác số dòng. Áp dụng cho các engine như MyISAM, Memory, InnoDB (khi bảng chỉ có 1 dòng, InnoDB sẽ tối ưu thành const), v.v. Là trường hợp đặc biệt của loại truy cập const.
+- **const**: Bảng có tối đa một dòng khớp, một lần truy vấn là tìm thấy, thường dùng khi sử dụng tất cả các trường của Primary Key hoặc Unique Index làm điều kiện truy vấn.
+- **eq_ref**: Khi JOIN nhiều bảng, mỗi dòng của bảng trước chỉ có một dòng tương ứng trong bảng hiện tại. Là phương thức JOIN tốt nhất ngoài system và const, thường dùng khi sử dụng tất cả các trường của Primary Key hoặc Unique NOT NULL Index làm điều kiện JOIN (đảm bảo nghiêm ngặt khớp một-một).
+- **ref**: Sử dụng Index thông thường làm điều kiện truy vấn, kết quả truy vấn có thể tìm thấy nhiều dòng phù hợp điều kiện (khác biệt với eq_ref: một dòng điều khiển có thể khớp với nhiều dòng được điều khiển).
+- **index Merge**: Khi mệnh đề WHERE chứa nhiều điều kiện phạm vi, và mỗi điều kiện có thể sử dụng Index khác nhau, MySQL sẽ hợp nhất kết quả quét của nhiều Index. Cột key liệt kê các Index được sử dụng, cột Extra hiển thị thuật toán hợp nhất:
 
-  - `Using union(...)`：对多个索引结果取并集（OR 条件）
-  - `Using sort_union(...)`：先对索引结果排序再取并集（OR 条件，索引列非有序）
-  - `Using intersection(...)`：对多个索引结果取交集（AND 条件）
+  - `Using union(...)`: lấy hợp của kết quả nhiều Index (điều kiện OR)
+  - `Using sort_union(...)`: sắp xếp kết quả Index trước rồi mới lấy hợp (điều kiện OR, cột Index không có thứ tự)
+  - `Using intersection(...)`: lấy giao của kết quả nhiều Index (điều kiện AND)
 
-  **示例**：
+  **Ví dụ**:
 
   ```sql
-  -- OR 条件触发 index merge union
+  -- Điều kiện OR kích hoạt index merge union
   EXPLAIN SELECT * FROM employees WHERE emp_no = 10001 OR dept_no = 'd001';
   -- Extra: Using union(PRIMARY,dept_no_index)
   ```
 
-- **range**：对索引列进行范围查询，执行计划中的 key 列表示哪个索引被使用了。
-- **index**：Full Index Scan，查询遍历了整棵索引树。与 ALL（全表扫描）类似，但通常开销更低：索引记录的体积远小于完整行数据，读取相同行数所需的 I/O 页数更少；若同时满足覆盖索引条件，还可避免回表。但在超大表（亿级以上）上，全索引扫描同样可能产生大量 I/O，不可因 type 级别高于 ALL 就忽视其代价。
-- **ALL**：全表扫描。
+- **range**: Truy vấn phạm vi trên cột Index, cột key trong Execution Plan cho biết Index nào được sử dụng.
+- **index**: Full Index Scan, truy vấn duyệt qua toàn bộ cây Index. Tương tự ALL (Full Table Scan) nhưng thường có chi phí thấp hơn: kích thước bản ghi Index nhỏ hơn nhiều so với dữ liệu dòng đầy đủ, số trang I/O cần đọc để đọc cùng số dòng ít hơn; nếu đồng thời thỏa mãn điều kiện Covering Index thì còn tránh được Back to Table. Nhưng trên các bảng siêu lớn (hàng trăm triệu dòng trở lên), Full Index Scan cũng có thể sinh ra lượng lớn I/O, không thể vì cấp độ type cao hơn ALL mà bỏ qua chi phí của nó.
+- **ALL**: Full Table Scan.
 
 ### possible_keys
 
-possible_keys 列表示 MySQL 执行查询时可能用到的索引。如果这一列为 NULL ，则表示没有可能用到的索引；这种情况下，需要检查 WHERE 语句中所使用的列，看是否可以通过给这些列中某个或多个添加索引的方法来提高查询性能。
+Cột possible_keys biểu thị các Index mà MySQL có thể sử dụng khi thực thi truy vấn. Nếu cột này là NULL thì nghĩa là không có Index nào có thể được sử dụng; trong trường hợp này, cần kiểm tra các cột được dùng trong câu lệnh WHERE, xem có thể cải thiện hiệu năng truy vấn bằng cách thêm Index cho một hoặc nhiều cột đó hay không.
 
-### key（重要）
+### key (quan trọng)
 
-key 列表示 MySQL 实际使用到的索引。如果为 NULL，则表示未用到索引。
+Cột key biểu thị Index mà MySQL thực sự sử dụng. Nếu là NULL thì nghĩa là không sử dụng Index.
 
 ### key_len
 
-key_len 列表示 MySQL 实际使用的索引的最大长度；当使用到联合索引时，有可能是多个列的长度和。在满足需求的前提下越短越好。如果 key 列显示 NULL ，则 key_len 列也显示 NULL 。
+Cột key_len biểu thị độ dài tối đa của Index mà MySQL thực sự sử dụng; khi sử dụng Composite Index, có thể là tổng độ dài của nhiều cột. Càng ngắn càng tốt với điều kiện đáp ứng yêu cầu. Nếu cột key hiển thị NULL thì cột key_len cũng hiển thị NULL.
 
 ### rows
 
-rows 列表示根据表统计信息及索引选用情况，**估算**出找到所需记录需要读取的行数，数值越小越好。
+Cột rows biểu thị số dòng **ước tính** cần đọc để tìm được bản ghi cần thiết, dựa trên thống kê của bảng và tình trạng sử dụng Index, giá trị càng nhỏ càng tốt.
 
-需要注意的是，该值是估算值而非精确值。InnoDB 的统计信息基于对索引页的随机采样：
+Cần lưu ý rằng giá trị này là ước tính chứ không phải giá trị chính xác. Thống kê của InnoDB dựa trên lấy mẫu ngẫu nhiên các trang Index:
 
-- 采样页数由 `innodb_stats_persistent_sample_pages` 控制（默认 20 页）
-- 在表数据频繁变动或批量导入后，估算值与真实行数的偏差可能达到 10%～50% 甚至更大
-- **小表陷阱**：当表行数极少（如 < 100 行）时，优化器可能忽略索引而选择全表扫描，因为全表扫描的成本估算更低
+- Số trang lấy mẫu được điều khiển bởi `innodb_stats_persistent_sample_pages` (mặc định 20 trang)
+- Khi dữ liệu bảng biến động thường xuyên hoặc sau khi import dữ liệu hàng loạt, sai lệch giữa giá trị ước tính và số dòng thực tế có thể lên tới 10%~50% hoặc hơn
+- **Bẫy bảng nhỏ**: khi bảng có rất ít dòng (ví dụ < 100 dòng), Optimizer có thể bỏ qua Index và chọn Full Table Scan, vì ước tính chi phí của Full Table Scan thấp hơn
 
-**验证方法**：
+**Phương pháp xác minh**:
 
 ```sql
--- 执行计划估算行数
+-- Số dòng ước tính trong Execution Plan
 mysql> EXPLAIN SELECT * FROM users WHERE age = 25\G
 rows: 12
 
--- 实际行数（注意：在大表上慎用 COUNT(*)）
+-- Số dòng thực tế (lưu ý: cẩn thận khi dùng COUNT(*) trên bảng lớn)
 mysql> SELECT COUNT(*) FROM users WHERE age = 25;
 +----------+
 | COUNT(*) |
@@ -243,41 +243,41 @@ mysql> SELECT COUNT(*) FROM users WHERE age = 25;
 +----------+
 ```
 
-遇到执行计划与实际性能不符时，可以执行 `ANALYZE TABLE` 重新采样，再观察执行计划的变化。
+Khi gặp trường hợp Execution Plan không khớp với hiệu năng thực tế, có thể thực thi `ANALYZE TABLE` để lấy mẫu lại, sau đó quan sát sự thay đổi của Execution Plan.
 
 ### filtered
 
-filtered 列表示存储引擎返回的数据在 Server 层经 WHERE 条件过滤后，**估算**留存的记录占比（百分比，0～100）。计算公式为：`filtered = (条件过滤后的行数 / 存储引擎返回的行数) × 100`。
+Cột filtered biểu thị tỷ lệ phần trăm bản ghi còn lại (**ước tính**) sau khi dữ liệu do Storage Engine trả về được lọc theo điều kiện WHERE ở tầng Server (giá trị phần trăm, 0~100). Công thức tính: `filtered = (số dòng sau khi lọc điều kiện / số dòng Storage Engine trả về) × 100`.
 
-**解读规则**：
+**Quy tắc đọc hiểu**:
 
-- 当 `filtered = 100`：存储引擎返回的所有行都满足 WHERE 条件（理想情况）
-- 当 `filtered < 100`：部分行被 Server 层过滤掉，说明索引未能覆盖所有查询条件
-- **JOIN 场景**：优化器用 `rows × (filtered / 100)` 估算当前表传递给下一张表的行数（扇出）
+- Khi `filtered = 100`: tất cả các dòng Storage Engine trả về đều thỏa mãn điều kiện WHERE (trường hợp lý tưởng)
+- Khi `filtered < 100`: một số dòng bị lọc bỏ ở tầng Server, cho thấy Index không bao phủ được tất cả điều kiện truy vấn
+- **Tình huống JOIN**: Optimizer dùng `rows × (filtered / 100)` để ước tính số dòng mà bảng hiện tại truyền cho bảng tiếp theo (fan-out)
 
-该字段在多表 JOIN 场景中尤为重要：扇出越大，驱动表需要匹配的被驱动表行数就越多。因此当 `filtered` 值很低时，说明过滤效率较好；而当 `rows` 很大且 `filtered` 又不高时，则是潜在性能瓶颈的信号，应优先考虑通过索引下推（ICP）或更合适的索引来减少扇出。
+Trường này đặc biệt quan trọng trong tình huống JOIN nhiều bảng: fan-out càng lớn, số dòng bảng được điều khiển mà bảng điều khiển cần khớp càng nhiều. Vì vậy khi giá trị `filtered` rất thấp, cho thấy hiệu suất lọc khá tốt; còn khi `rows` rất lớn mà `filtered` lại không cao thì đó là tín hiệu của nút thắt hiệu năng tiềm ẩn, nên ưu tiên giảm fan-out thông qua Index Condition Pushdown (ICP) hoặc Index phù hợp hơn.
 
-### Extra（重要）
+### Extra (quan trọng)
 
-这列包含了 MySQL 解析查询的额外信息，通过这些信息，可以更准确的理解 MySQL 到底是如何执行查询的。常见的值如下：
+Cột này chứa thông tin bổ sung về cách MySQL phân tích truy vấn, thông qua những thông tin này, có thể hiểu chính xác hơn MySQL thực sự thực thi truy vấn như thế nào. Các giá trị thường gặp:
 
-- **Using filesort**：MySQL 无法利用索引完成 ORDER BY 或 GROUP BY 的排序要求，需要在返回结果集后额外执行一次排序操作。当结果集大小在 `sort_buffer_size` 以内时，排序在内存中完成；超出则借助临时磁盘文件。"filesort" 是历史遗留名称，并不代表一定产生磁盘 I/O。
-- **Using temporary**：MySQL 需要创建临时表来存储查询的结果，常见于 ORDER BY 和 GROUP BY。
-- **Using index**：表明查询使用了覆盖索引，不用回表，查询效率非常高。
-- **Using index condition**：表示查询优化器选择使用了索引条件下推这个特性。
-- **Using where**：MySQL Server 层对存储引擎返回的行应用了额外的 WHERE 条件过滤。即使已命中索引（如 `type=ref`），若索引只能满足部分查询条件，剩余条件仍需在 Server 层过滤，此时同样会出现 `Using where`。
-- **Using join buffer (Block Nested Loop)**：连表查询时，被驱动表未使用索引，MySQL 会先将驱动表数据读入 join buffer，再遍历被驱动表进行匹配（复杂度 O(N×M)）。
-- **Using join buffer (hash join)**：MySQL 8.0.18 引入了 Hash Join 算法，**仅用于等值 JOIN**（如 `t1.id = t2.id`），8.0.20 起默认替代 BNL。Hash Join 复杂度为构建阶段 O(N) + 探测阶段 O(M)，比 BNL 的 O(N×M) 更高效。
+- **Using filesort**: MySQL không thể tận dụng Index để hoàn thành yêu cầu sắp xếp của ORDER BY hoặc GROUP BY, cần thực thi thêm một thao tác sắp xếp sau khi trả về tập kết quả. Khi kích thước tập kết quả nằm trong `sort_buffer_size`, sắp xếp được hoàn thành trong bộ nhớ; vượt quá thì phải nhờ đến file tạm trên đĩa. "filesort" là tên gọi còn lại từ lịch sử, không có nghĩa là nhất định sinh ra I/O đĩa.
+- **Using temporary**: MySQL cần tạo bảng tạm để lưu kết quả truy vấn, thường gặp trong ORDER BY và GROUP BY.
+- **Using index**: Cho thấy truy vấn đã sử dụng Covering Index, không cần Back to Table, hiệu suất truy vấn rất cao.
+- **Using index condition**: Cho thấy Query Optimizer đã chọn sử dụng tính năng Index Condition Pushdown.
+- **Using where**: Tầng MySQL Server áp dụng lọc điều kiện WHERE bổ sung cho các dòng do Storage Engine trả về. Ngay cả khi đã sử dụng Index (như `type=ref`), nếu Index chỉ thỏa mãn một phần điều kiện truy vấn, các điều kiện còn lại vẫn cần được lọc ở tầng Server, khi đó cũng sẽ xuất hiện `Using where`.
+- **Using join buffer (Block Nested Loop)**: Khi truy vấn JOIN, bảng được điều khiển không sử dụng Index, MySQL sẽ đọc dữ liệu bảng điều khiển vào JOIN buffer trước, sau đó duyệt qua bảng được điều khiển để khớp (độ phức tạp O(N×M)).
+- **Using join buffer (hash join)**: MySQL 8.0.18 giới thiệu thuật toán Hash Join, **chỉ dùng cho JOIN đẳng trị** (như `t1.id = t2.id`), từ 8.0.20 mặc định thay thế BNL. Độ phức tạp của Hash Join là giai đoạn xây dựng O(N) + giai đoạn dò tìm O(M), hiệu quả hơn O(N×M) của BNL.
 
-  **例外场景**（仍会退回 BNL）：
+  **Tình huống ngoại lệ** (vẫn quay về BNL):
 
-  - 非等值 JOIN（如 `t1.id > t2.id`）
-  - JOIN 条件包含函数或表达式
-  - 被驱动表上有索引可用时（此时会使用 Index Nested Loop）
+  - JOIN không đẳng trị (như `t1.id > t2.id`)
+  - Điều kiện JOIN chứa hàm hoặc biểu thức
+  - Khi bảng được điều khiển có Index khả dụng (khi đó sẽ sử dụng Index Nested Loop)
 
-这里提醒下，当 Extra 列包含 Using filesort 或 Using temporary 时，MySQL 的性能可能会存在问题，需要尽可能避免。
+Nhắc nhở ở đây, khi cột Extra chứa Using filesort hoặc Using temporary, hiệu năng của MySQL có thể gặp vấn đề, cần hạn chế tối đa.
 
-## 参考
+## Tham khảo
 
 - <https://dev.mysql.com/doc/refman/8.0/en/explain-output.html>
 - <https://dev.mysql.com/doc/refman/8.0/en/explain.html>

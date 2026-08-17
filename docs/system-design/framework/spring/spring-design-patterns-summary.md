@@ -1,6 +1,6 @@
 ---
-title: Spring 中的设计模式详解
-description: Spring框架设计模式详解，涵盖工厂模式、代理模式、单例模式、模板方法等在Spring源码中的应用实践。
+title: Giải thích chi tiết về Design Pattern trong Spring
+description: Giải thích chi tiết về Design Pattern trong Spring Framework, bao gồm Factory Pattern, Proxy Pattern, Singleton Pattern, Template Method và các ứng dụng thực tế trong mã nguồn Spring.
 category: 框架
 tag:
   - Spring
@@ -10,44 +10,44 @@ head:
       content: Spring设计模式,工厂模式,代理模式,模板方法,单例,策略模式,适配器模式,Spring源码
 ---
 
-“JDK 中用到了哪些设计模式? Spring 中用到了哪些设计模式? ”这两个问题，在面试中比较常见。
+"Hai câu hỏi 'JDK sử dụng những Design Pattern nào? Spring sử dụng những Design Pattern nào?' khá phổ biến trong các buổi phỏng vấn."
 
-我在网上搜索了一下关于 Spring 中设计模式的讲解几乎都是千篇一律，而且大部分都年代久远。所以，花了几天时间自己总结了一下。
+Tôi đã tìm kiếm trên mạng về các bài giảng giải thích Design Pattern trong Spring, hầu hết đều na ná nhau và phần lớn đã cũ. Vì vậy, tôi đã dành vài ngày để tự tổng hợp lại.
 
-由于我的个人能力有限，文中如有任何错误各位都可以指出。另外，文章篇幅有限，对于设计模式以及一些源码的解读我只是一笔带过，这篇文章的主要目的是回顾一下 Spring 中的设计模式。
+Do năng lực cá nhân có hạn, nếu có bất kỳ sai sót nào trong bài viết, mong mọi người góp ý. Ngoài ra, bài viết có giới hạn về độ dài, nên đối với Design Pattern cũng như một số phần giải thích mã nguồn, tôi chỉ đề cập sơ lược. Mục đích chính của bài viết này là ôn lại các Design Pattern được sử dụng trong Spring.
 
-## 控制反转(IoC)和依赖注入(DI)
+## Inversion of Control (IoC) và Dependency Injection (DI)
 
-**IoC(Inversion of Control,控制反转)** 是 Spring 中一个非常非常重要的概念，它不是什么技术，而是一种解耦的设计思想。IoC 的主要目的是借助于“第三方”(Spring 中的 IoC 容器) 实现具有依赖关系的对象之间的解耦(IOC 容器管理对象，你只管使用即可)，从而降低代码之间的耦合度。
+**IoC (Inversion of Control - Đảo ngược điều khiển)** là một khái niệm cực kỳ quan trọng trong Spring, nó không phải là một công nghệ, mà là một tư tưởng thiết kế nhằm giảm sự phụ thuộc (decoupling). Mục đích chính của IoC là sử dụng một "bên thứ ba" (IoC Container trong Spring) để thực hiện việc giảm sự phụ thuộc giữa các đối tượng có quan hệ phụ thuộc lẫn nhau (IoC Container quản lý các đối tượng, bạn chỉ cần sử dụng chúng), từ đó giảm độ kết dính (coupling) giữa các đoạn mã.
 
-**IoC 是一个原则，而不是一个模式，以下模式（但不限于）实现了 IoC 原则。**
+**IoC là một nguyên tắc (principle), không phải là một pattern. Các pattern dưới đây (nhưng không giới hạn) là những pattern triển khai nguyên tắc IoC.**
 
 ![ioc-patterns](https://oss.javaguide.cn/github/javaguide/ioc-patterns.png)
 
-**Spring IoC 容器就像是一个工厂一样，当我们需要创建一个对象的时候，只需要配置好配置文件/注解即可，完全不用考虑对象是如何被创建出来的。** IoC 容器负责创建对象，将对象连接在一起，配置这些对象，并从创建中处理这些对象的整个生命周期，直到它们被完全销毁。
+**Spring IoC Container giống như một nhà máy (factory), khi chúng ta cần tạo một đối tượng, chỉ cần cấu hình tệp cấu hình/annotation là xong, hoàn toàn không cần quan tâm đến việc đối tượng được tạo ra như thế nào.** IoC Container chịu trách nhiệm tạo đối tượng, kết nối các đối tượng lại với nhau, cấu hình các đối tượng đó, và quản lý toàn bộ vòng đời của các đối tượng này từ khi tạo ra cho đến khi chúng bị hủy hoàn toàn.
 
-在实际项目中一个 Service 类如果有几百甚至上千个类作为它的底层，我们需要实例化这个 Service，你可能要每次都要搞清这个 Service 所有底层类的构造函数，这可能会把人逼疯。如果利用 IOC 的话，你只需要配置好，然后在需要的地方引用就行了，这大大增加了项目的可维护性且降低了开发难度。
+Trong một dự án thực tế, nếu một lớp Service có hàng trăm thậm chí hàng nghìn lớp làm nền tảng cho nó, chúng ta cần khởi tạo Service này, bạn có thể phải tìm hiểu tất cả các hàm khởi tạo (constructor) của các lớp nền tảng của Service đó mỗi lần, điều này có thể khiến người ta phát điên. Nếu sử dụng IoC, bạn chỉ cần cấu hình xong, sau đó tham chiếu đến nó ở nơi cần dùng là được, điều này giúp tăng đáng kể khả năng bảo trì của dự án và giảm độ khó khi phát triển.
 
-> 关于 Spring IOC 的理解，推荐看这一下知乎的一个回答：<https://www.zhihu.com/question/23277575/answer/169698662> ，非常不错。
+> Về cách hiểu Spring IoC, bạn nên xem câu trả lời này trên Zhihu: <https://www.zhihu.com/question/23277575/answer/169698662> , rất hay.
 
-**控制反转怎么理解呢?** 举个例子："对象 a 依赖了对象 b，当对象 a 需要使用 对象 b 的时候必须自己去创建。但是当系统引入了 IOC 容器后， 对象 a 和对象 b 之间就失去了直接的联系。这个时候，当对象 a 需要使用 对象 b 的时候， 我们可以指定 IOC 容器去创建一个对象 b 注入到对象 a 中"。 对象 a 获得依赖对象 b 的过程,由主动行为变为了被动行为，控制权反转，这就是控制反转名字的由来。
+**Hiểu Inversion of Control như thế nào?** Lấy một ví dụ: "Đối tượng a phụ thuộc vào đối tượng b, khi đối tượng a cần sử dụng đối tượng b thì phải tự mình tạo ra nó. Nhưng khi hệ thống đưa vào IoC Container, đối tượng a và đối tượng b mất đi liên kết trực tiếp. Lúc này, khi đối tượng a cần sử dụng đối tượng b, chúng ta có thể yêu cầu IoC Container tạo một đối tượng b và tiêm (inject) vào đối tượng a." Quá trình đối tượng a nhận được đối tượng phụ thuộc b, từ hành vi chủ động trở thành hành vi bị động, quyền điều khiển bị đảo ngược, đó chính là nguồn gốc của cái tên Inversion of Control (Đảo ngược điều khiển).
 
-**DI(Dependency Inject,依赖注入)是实现控制反转的一种设计模式，依赖注入就是将实例变量传入到一个对象中去。**
+**DI (Dependency Injection - Tiêm phụ thuộc) là một Design Pattern để thực hiện Inversion of Control, Dependency Injection chính là việc truyền biến instance (instance variable) vào trong một đối tượng.**
 
-## 工厂设计模式
+## Factory Design Pattern (Mẫu thiết kế Nhà máy)
 
-Spring 使用工厂模式可以通过 `BeanFactory` 或 `ApplicationContext` 创建 bean 对象。
+Spring sử dụng Factory Pattern thông qua `BeanFactory` hoặc `ApplicationContext` để tạo các đối tượng bean.
 
-**两者对比：**
+**So sánh hai loại:**
 
-- `BeanFactory`：提供 Spring IoC 容器的基础能力。直接使用基础 `BeanFactory` 时，容器通常不会主动预实例化所有单例 Bean，而是在第一次请求 Bean 时创建。
-- `ApplicationContext`：扩展了 `BeanFactory`，增加了事件发布、国际化、资源加载等能力，并默认在容器启动阶段预实例化非懒加载的单例 Bean；`prototype` Bean 和标记为 lazy 的 Bean 不会因此被一次性全部创建。
+- `BeanFactory`: Cung cấp các khả năng cơ bản của Spring IoC Container. Khi sử dụng trực tiếp `BeanFactory` cơ bản, container thường không chủ động khởi tạo trước tất cả các singleton bean, mà chỉ tạo bean khi có yêu cầu đầu tiên.
+- `ApplicationContext`: Mở rộng từ `BeanFactory`, bổ sung thêm các khả năng như phát hành sự kiện (event publishing), quốc tế hóa (i18n), nạp tài nguyên (resource loading), và mặc định sẽ khởi tạo trước các singleton bean không lười (non-lazy) trong giai đoạn khởi động container; các `prototype` bean và các bean được đánh dấu lazy sẽ không bị tạo toàn bộ cùng một lúc vì lý do này.
 
-`ApplicationContext` 的三个常见实现类：
+Ba lớp triển khai phổ biến của `ApplicationContext`:
 
-1. `ClassPathXmlApplicationContext`：把上下文文件当成类路径资源。
-2. `FileSystemXmlApplicationContext`：从文件系统中的 XML 文件载入上下文定义信息。
-3. `XmlWebApplicationContext`：从 Web 系统中的 XML 文件载入上下文定义信息。
+1. `ClassPathXmlApplicationContext`: Coi tệp ngữ cảnh như là tài nguyên classpath.
+2. `FileSystemXmlApplicationContext`: Nạp thông tin định nghĩa ngữ cảnh từ tệp XML trong hệ thống tệp.
+3. `XmlWebApplicationContext`: Nạp thông tin định nghĩa ngữ cảnh từ tệp XML trong hệ thống Web.
 
 Example:
 
@@ -66,26 +66,26 @@ public class App {
 }
 ```
 
-## 单例设计模式
+## Singleton Design Pattern (Mẫu thiết kế Đơn nhất)
 
-在我们的系统中，有一些对象其实我们只需要一个，比如说：线程池、缓存、对话框、注册表、日志对象、充当打印机、显卡等设备驱动程序的对象。事实上，这一类对象只能有一个实例，如果制造出多个实例就可能会导致一些问题的产生，比如：程序的行为异常、资源使用过量、或者不一致性的结果。
+Trong hệ thống của chúng ta, có một số đối tượng mà chúng ta chỉ cần duy nhất một instance, ví dụ như: thread pool, cache, hộp thoại (dialog), registry, đối tượng log, driver cho các thiết bị như máy in, card đồ họa. Thực tế, những loại đối tượng này chỉ có thể có một instance duy nhất, nếu tạo ra nhiều instance có thể dẫn đến một số vấn đề, chẳng hạn như: hành vi chương trình bất thường, sử dụng tài nguyên quá mức hoặc kết quả không nhất quán.
 
-**使用单例模式的好处** :
+**Lợi ích của việc sử dụng Singleton Pattern:**
 
-- 对于频繁使用的对象，可以省略创建对象所花费的时间，这对于那些重量级对象而言，是非常可观的一笔系统开销；
-- 由于 new 操作的次数减少，因而对系统内存的使用频率也会降低，这将减轻 GC 压力，缩短 GC 停顿时间。
+- Đối với các đối tượng được sử dụng thường xuyên, có thể bỏ qua thời gian tạo đối tượng, đối với những đối tượng nặng (heavyweight object), đây là một khoản tiết kiệm chi phí hệ thống rất đáng kể;
+- Do số lần thực hiện thao tác `new` giảm đi, tần suất sử dụng bộ nhớ hệ thống cũng giảm theo, điều này sẽ giảm áp lực cho GC (Garbage Collection) và rút ngắn thời gian tạm dừng GC.
 
-**Spring 中 bean 的默认作用域就是 singleton(单例)的。** 除了 singleton 作用域，Spring 中 bean 还有下面几种作用域：
+**Phạm vi (scope) mặc định của bean trong Spring chính là singleton (đơn nhất).** Ngoài phạm vi singleton, bean trong Spring còn có các phạm vi sau:
 
-- **prototype** : 每次获取都会创建一个新的 bean 实例。也就是说，连续 `getBean()` 两次，得到的是不同的 Bean 实例。
-- **request** （仅 Web 应用可用）: 每一次 HTTP 请求都会产生一个新的 bean（请求 bean），该 bean 仅在当前 HTTP request 内有效。
-- **session** （仅 Web 应用可用） : 每一次来自新 session 的 HTTP 请求都会产生一个新的 bean（会话 bean），该 bean 仅在当前 HTTP session 内有效。
-- **application** （仅 Web 应用可用）：每个 `ServletContext` 对应一个 Bean 实例，该 bean 仅在当前 Web 应用生命周期内有效。旧版 Spring 还为 Portlet 应用提供过独立的 `globalSession` 作用域，它不属于当前标准作用域列表。
-- **websocket** （仅 Web 应用可用）：每一次 WebSocket 会话产生一个新的 bean。
+- **prototype** : Mỗi lần lấy sẽ tạo ra một instance bean mới. Nói cách khác, gọi `getBean()` hai lần liên tiếp sẽ nhận được hai instance Bean khác nhau.
+- **request** (chỉ khả dụng trong Web Application) : Mỗi HTTP request sẽ tạo ra một bean mới (request bean), bean đó chỉ có hiệu lực trong phạm vi HTTP request hiện tại.
+- **session** (chỉ khả dụng trong Web Application) : Mỗi HTTP request đến từ một session mới sẽ tạo ra một bean mới (session bean), bean đó chỉ có hiệu lực trong phạm vi HTTP session hiện tại.
+- **application** (chỉ khả dụng trong Web Application): Mỗi `ServletContext` tương ứng với một instance Bean, bean đó chỉ có hiệu lực trong vòng đời của Web Application hiện tại. Các phiên bản Spring cũ còn cung cấp phạm vi `globalSession` độc lập cho ứng dụng Portlet, phạm vi này không thuộc danh sách phạm vi tiêu chuẩn hiện tại.
+- **websocket** (chỉ khả dụng trong Web Application): Mỗi phiên WebSocket sẽ tạo ra một bean mới.
 
-Spring 通过 `ConcurrentHashMap` 实现单例注册表的特殊方式实现单例模式。
+Spring triển khai Singleton Pattern thông qua một phương thức đặc biệt là sử dụng `ConcurrentHashMap` để tạo ra singleton registry (bảng đăng ký đơn nhất).
 
-Spring 实现单例的核心代码如下：
+Mã nguồn cốt lõi triển khai Singleton trong Spring:
 
 ```java
 // 通过 ConcurrentHashMap（线程安全） 实现单例注册表
@@ -118,42 +118,42 @@ public Object getSingleton(String beanName, ObjectFactory<?> singletonFactory) {
 }
 ```
 
-**单例 Bean 存在线程安全问题吗？**
+**Singleton Bean có tồn tại vấn đề thread safety (an toàn luồng) không?**
 
-大部分时候我们并没有在项目中使用多线程，所以很少有人会关注这个问题。单例 Bean 存在线程问题，主要是因为当多个线程操作同一个对象的时候是存在资源竞争的。
+Phần lớn thời gian chúng ta không sử dụng đa luồng (multi-threading) trong dự án, nên ít người quan tâm đến vấn đề này. Singleton Bean tồn tại vấn đề thread safety, chủ yếu là vì khi nhiều luồng cùng thao tác trên cùng một đối tượng sẽ tồn tại cạnh tranh tài nguyên (resource contention).
 
-常见的有两种解决办法：
+Có hai cách giải quyết phổ biến:
 
-1. 在 Bean 中尽量避免定义可变的成员变量。
-2. 在类中定义一个 `ThreadLocal` 成员变量，将需要的可变成员变量保存在 `ThreadLocal` 中（推荐的一种方式）。
+1. Trong Bean, cố gắng tránh định nghĩa các biến thành viên (member variable) có thể thay đổi (mutable).
+2. Định nghĩa một biến thành viên `ThreadLocal` trong lớp, lưu các biến thành viên có thể thay đổi cần thiết vào trong `ThreadLocal` (cách được khuyến nghị).
 
-不过，大部分 Bean 实际都是无状态（没有实例变量）的（比如 Dao、Service），这种情况下， Bean 是线程安全的。
+Tuy nhiên, phần lớn Bean thực tế đều là stateless (không có biến instance - instance variable) (ví dụ như Dao, Service), trong trường hợp này, Bean là thread-safe.
 
-## 代理设计模式
+## Proxy Design Pattern (Mẫu thiết kế Ủy nhiệm)
 
-### 代理模式在 AOP 中的应用
+### Ứng dụng của Proxy Pattern trong AOP
 
-**AOP(Aspect-Oriented Programming，面向切面编程)** 能够将那些与业务无关，却为业务模块所共同调用的逻辑或责任（例如事务处理、日志管理、权限控制等）封装起来，便于减少系统的重复代码，降低模块间的耦合度，并有利于未来的可拓展性和可维护性。
+**AOP (Aspect-Oriented Programming - Lập trình hướng khía cạnh)** có thể đóng gói những logic hoặc trách nhiệm không liên quan đến nghiệp vụ, nhưng được các module nghiệp vụ gọi chung (ví dụ như xử lý transaction, quản lý log, kiểm soát quyền truy cập), giúp giảm mã trùng lặp trong hệ thống, giảm độ kết dính giữa các module, và có lợi cho khả năng mở rộng cũng như bảo trì trong tương lai.
 
-Spring AOP 就是基于动态代理的，如果要代理的对象，实现了某个接口，那么 Spring AOP 会使用 **JDK Proxy**，去创建代理对象，而对于没有实现接口的对象，就无法使用 JDK Proxy 去进行代理了，这时候 Spring AOP 会使用 **Cglib** 生成一个被代理对象的子类来作为代理，如下图所示：
+Spring AOP được xây dựng dựa trên Dynamic Proxy (Ủy nhiệm động), nếu đối tượng cần ủy nhiệm (proxy) đã triển khai một interface nào đó, thì Spring AOP sẽ sử dụng **JDK Proxy** để tạo đối tượng proxy, còn đối với những đối tượng không triển khai interface, không thể sử dụng JDK Proxy để ủy nhiệm, lúc này Spring AOP sẽ sử dụng **Cglib** để tạo ra một lớp con của đối tượng bị ủy nhiệm làm proxy, như hình dưới đây:
 
 ![SpringAOPProcess](https://oss.javaguide.cn/github/javaguide/SpringAOPProcess.jpg)
 
-当然，你也可以使用 AspectJ ,Spring AOP 已经集成了 AspectJ ，AspectJ 应该算的上是 Java 生态系统中最完整的 AOP 框架了。
+Tất nhiên, bạn cũng có thể sử dụng AspectJ, Spring AOP đã tích hợp AspectJ, AspectJ có thể coi là framework AOP hoàn chỉnh nhất trong hệ sinh thái Java.
 
-使用 AOP 之后我们可以把一些通用功能抽象出来，在需要用到的地方直接使用即可，这样大大简化了代码量。我们需要增加新功能时也方便，这样也提高了系统扩展性。日志功能、事务管理等等场景都用到了 AOP 。
+Sau khi sử dụng AOP, chúng ta có thể trừu tượng hóa một số chức năng chung, và sử dụng trực tiếp ở những nơi cần dùng, điều này giúp đơn giản hóa đáng kể lượng mã. Khi cần thêm chức năng mới cũng rất thuận tiện, điều này cũng cải thiện khả năng mở rộng của hệ thống. Các tình huống như chức năng log, quản lý transaction... đều sử dụng AOP.
 
-### Spring AOP 和 AspectJ AOP 有什么区别?
+### Spring AOP và AspectJ AOP có gì khác nhau?
 
-**Spring AOP 属于运行时增强，而 AspectJ 是编译时增强。** Spring AOP 基于代理(Proxying)，而 AspectJ 基于字节码操作(Bytecode Manipulation)。
+**Spring AOP thuộc loại enhancement (tăng cường) lúc chạy (runtime), còn AspectJ là enhancement lúc biên dịch (compile-time).** Spring AOP dựa trên Proxy (Proxying), còn AspectJ dựa trên thao tác bytecode (Bytecode Manipulation).
 
-Spring AOP 已经集成了 AspectJ ，AspectJ 应该算的上是 Java 生态系统中最完整的 AOP 框架了。AspectJ 相比于 Spring AOP 功能更加强大，但是 Spring AOP 相对来说更简单。
+Spring AOP đã tích hợp AspectJ, AspectJ có thể coi là framework AOP hoàn chỉnh nhất trong hệ sinh thái Java. AspectJ so với Spring AOP có chức năng mạnh mẽ hơn, nhưng Spring AOP thì tương đối đơn giản hơn.
 
-如果我们的切面比较少，那么两者性能差异不大。但是，当切面太多的话，最好选择 AspectJ ，它比 Spring AOP 快很多。
+Nếu số lượng aspect (khía cạnh) của chúng ta ít, thì sự khác biệt về hiệu năng giữa hai loại là không lớn. Nhưng khi có quá nhiều aspect, tốt nhất nên chọn AspectJ, nó nhanh hơn Spring AOP rất nhiều.
 
-## 模板方法
+## Template Method (Mẫu thiết kế Phương thức Khuôn mẫu)
 
-模板方法模式是一种行为设计模式，它定义一个操作中的算法的骨架，而将一些步骤延迟到子类中。 模板方法使得子类可以不改变一个算法的结构即可重定义该算法的某些特定步骤的实现方式。
+Template Method Pattern là một Behavioral Design Pattern (Mẫu thiết kế Hành vi), nó định nghĩa khung xương (skeleton) của một thuật toán trong một thao tác, và trì hoãn một số bước cho các lớp con. Template Method cho phép lớp con định nghĩa lại cách triển khai của một số bước cụ thể trong thuật toán mà không thay đổi cấu trúc của thuật toán đó.
 
 ```java
 public abstract class Template {
@@ -188,30 +188,30 @@ public class TemplateImpl extends Template {
 
 ```
 
-Spring 中 `JdbcTemplate`、`HibernateTemplate` 等以 Template 结尾的对数据库操作的类，它们就使用到了模板模式。一般情况下，我们都是使用继承的方式来实现模板模式，但是 Spring 并没有使用这种方式，而是使用 Callback 模式与模板方法模式配合，既达到了代码复用的效果，同时增加了灵活性。
+Trong Spring, các lớp thao tác với cơ sở dữ liệu có hậu tố Template như `JdbcTemplate`, `HibernateTemplate`... đều sử dụng Template Method Pattern. Thông thường, chúng ta sử dụng kế thừa (inheritance) để triển khai Template Method Pattern, nhưng Spring không sử dụng cách này, mà sử dụng Callback Pattern kết hợp với Template Method Pattern, vừa đạt được hiệu quả tái sử dụng mã, đồng thời tăng tính linh hoạt.
 
-## 观察者模式
+## Observer Pattern (Mẫu thiết kế Quan sát viên)
 
-观察者模式是一种对象行为型模式。它表示的是一种对象与对象之间具有依赖关系，当一个对象发生改变的时候，依赖这个对象的所有对象也会做出反应。Spring 事件驱动模型就是观察者模式很经典的一个应用。Spring 事件驱动模型非常有用，在很多场景都可以解耦我们的代码。比如我们每次添加商品的时候都需要重新更新商品索引，这个时候就可以利用观察者模式来解决这个问题。
+Observer Pattern là một Object Behavioral Pattern (Mẫu thiết kế Hành vi Đối tượng). Nó thể hiện mối quan hệ phụ thuộc giữa các đối tượng, khi một đối tượng thay đổi, tất cả các đối tượng phụ thuộc vào nó cũng sẽ phản ứng lại. Mô hình Spring Event-Driven (Sự kiện điều khiển) chính là một ứng dụng kinh điển của Observer Pattern. Mô hình Spring Event-Driven rất hữu ích, có thể giảm sự kết dính (decouple) mã của chúng ta trong nhiều tình huống. Ví dụ như mỗi lần thêm sản phẩm, chúng ta đều cần cập nhật lại chỉ mục sản phẩm, lúc này có thể sử dụng Observer Pattern để giải quyết vấn đề này.
 
-### Spring 事件驱动模型中的三种角色
+### Ba vai trò trong mô hình Spring Event-Driven
 
-#### 事件角色
+#### Vai trò Event (Sự kiện)
 
-`ApplicationEvent` (`org.springframework.context`包下)充当事件的角色,这是一个抽象类，它继承了`java.util.EventObject`并实现了 `java.io.Serializable`接口。
+`ApplicationEvent` (trong package `org.springframework.context`) đóng vai trò là event, đây là một abstract class, nó kế thừa từ `java.util.EventObject` và triển khai interface `java.io.Serializable`.
 
-Spring 中默认存在以下事件，他们都是对 `ApplicationContextEvent` 的实现(继承自`ApplicationContextEvent`)：
+Spring mặc định tồn tại các event sau, chúng đều là các lớp triển khai của `ApplicationContextEvent` (kế thừa từ `ApplicationContextEvent`):
 
-- `ContextStartedEvent`：`ApplicationContext` 启动后触发的事件;
-- `ContextStoppedEvent`：`ApplicationContext` 停止后触发的事件;
-- `ContextRefreshedEvent`：`ApplicationContext` 初始化或刷新完成后触发的事件;
-- `ContextClosedEvent`：`ApplicationContext` 关闭后触发的事件。
+- `ContextStartedEvent`: Event được kích hoạt sau khi `ApplicationContext` khởi động;
+- `ContextStoppedEvent`: Event được kích hoạt sau khi `ApplicationContext` dừng;
+- `ContextRefreshedEvent`: Event được kích hoạt sau khi `ApplicationContext` khởi tạo hoặc làm mới (refresh) hoàn tất;
+- `ContextClosedEvent`: Event được kích hoạt sau khi `ApplicationContext` đóng.
 
 ![ApplicationEvent-Subclass](https://oss.javaguide.cn/github/javaguide/ApplicationEvent-Subclass.png)
 
-#### 事件监听者角色
+#### Vai trò Event Listener (Trình lắng nghe sự kiện)
 
-`ApplicationListener` 充当了事件监听者角色，它是一个接口，里面只定义了一个 `onApplicationEvent()`方法来处理`ApplicationEvent`。`ApplicationListener`接口类源码如下，可以看出接口定义看出接口中的事件只要实现了 `ApplicationEvent`就可以了。所以，在 Spring 中我们只要实现 `ApplicationListener` 接口的 `onApplicationEvent()` 方法即可完成监听事件
+`ApplicationListener` đóng vai trò là event listener, nó là một interface, bên trong chỉ định nghĩa một phương thức `onApplicationEvent()` để xử lý `ApplicationEvent`. Mã nguồn của interface `ApplicationListener` như sau, có thể thấy từ định nghĩa interface, event trong interface chỉ cần triển khai `ApplicationEvent` là được. Vì vậy, trong Spring, chúng ta chỉ cần triển khai phương thức `onApplicationEvent()` của interface `ApplicationListener` là có thể hoàn thành việc lắng nghe event.
 
 ```java
 package org.springframework.context;
@@ -222,9 +222,9 @@ public interface ApplicationListener<E extends ApplicationEvent> extends EventLi
 }
 ```
 
-#### 事件发布者角色
+#### Vai trò Event Publisher (Trình phát hành sự kiện)
 
-`ApplicationEventPublisher` 充当了事件的发布者，它也是一个接口。
+`ApplicationEventPublisher` đóng vai trò là event publisher, nó cũng là một interface.
 
 ```java
 @FunctionalInterface
@@ -238,13 +238,13 @@ public interface ApplicationEventPublisher {
 
 ```
 
-`ApplicationEventPublisher` 接口的`publishEvent()`这个方法在`AbstractApplicationContext`类中被实现，阅读这个方法的实现，你会发现实际上事件真正是通过`ApplicationEventMulticaster`来广播出去的。具体内容过多，就不在这里分析了，后面可能会单独写一篇文章提到。
+Phương thức `publishEvent()` của interface `ApplicationEventPublisher` được triển khai trong lớp `AbstractApplicationContext`, đọc phần triển khai của phương thức này, bạn sẽ phát hiện ra rằng thực tế event được phát tán (broadcast) ra ngoài thông qua `ApplicationEventMulticaster`. Nội dung cụ thể quá nhiều, sẽ không phân tích ở đây, có thể sẽ có một bài viết riêng đề cập đến sau.
 
-### Spring 的事件流程总结
+### Tóm tắt quy trình Event trong Spring
 
-1. 定义一个事件: 实现一个继承自 `ApplicationEvent`，并且写相应的构造函数；
-2. 定义一个事件监听者：实现 `ApplicationListener` 接口，重写 `onApplicationEvent()` 方法；
-3. 使用事件发布者发布消息: 可以通过 `ApplicationEventPublisher` 的 `publishEvent()` 方法发布消息。
+1. Định nghĩa một event: Triển khai một lớp kế thừa từ `ApplicationEvent`, và viết constructor tương ứng;
+2. Định nghĩa một event listener: Triển khai interface `ApplicationListener`, ghi đè phương thức `onApplicationEvent()`;
+3. Sử dụng event publisher để phát hành message: Có thể phát hành message thông qua phương thức `publishEvent()` của `ApplicationEventPublisher`.
 
 Example:
 
@@ -292,27 +292,27 @@ public class DemoPublisher {
 
 ```
 
-当调用 `DemoPublisher` 的 `publish()` 方法的时候，比如 `demoPublisher.publish("你好")` ，控制台就会打印出:`接收到的信息是：你好` 。
+Khi gọi phương thức `publish()` của `DemoPublisher`, ví dụ như `demoPublisher.publish("你好")` , console sẽ in ra: `接收到的信息是：你好` .
 
-## 适配器模式
+## Adapter Pattern (Mẫu thiết kế Bộ chuyển đổi)
 
-适配器模式(Adapter Pattern) 将一个接口转换成客户希望的另一个接口，适配器模式使接口不兼容的那些类可以一起工作。
+Adapter Pattern chuyển đổi một interface thành một interface khác mà phía client mong muốn, Adapter Pattern giúp các lớp có interface không tương thích có thể làm việc cùng nhau.
 
-### Spring AOP 中的适配器模式
+### Adapter Pattern trong Spring AOP
 
-我们知道 Spring AOP 的实现是基于代理模式，但是 Spring AOP 的增强或通知(Advice)使用到了适配器模式，与之相关的接口是`AdvisorAdapter` 。
+Chúng ta biết rằng Spring AOP được triển khai dựa trên Proxy Pattern, nhưng phần enhancement (tăng cường) hay Advice (thông báo) của Spring AOP sử dụng Adapter Pattern, interface liên quan là `AdvisorAdapter`.
 
-Advice 常用的类型有：`BeforeAdvice`（目标方法调用前,前置通知）、`AfterAdvice`（目标方法调用后,后置通知）、`AfterReturningAdvice`(目标方法执行结束后，return 之前)等等。每个类型 Advice（通知）都有对应的拦截器:`MethodBeforeAdviceInterceptor`、`AfterReturningAdviceInterceptor`、`ThrowsAdviceInterceptor` 等等。
+Các loại Advice thường dùng gồm: `BeforeAdvice` (trước khi phương thức mục tiêu được gọi, thông báo trước - Before Advice), `AfterAdvice` (sau khi phương thức mục tiêu được gọi, thông báo sau - After Advice), `AfterReturningAdvice` (sau khi phương thức mục tiêu thực thi xong, trước khi return) v.v. Mỗi loại Advice đều có interceptor (bộ đánh chặn) tương ứng: `MethodBeforeAdviceInterceptor`, `AfterReturningAdviceInterceptor`, `ThrowsAdviceInterceptor` v.v.
 
-Spring 预定义的通知要通过对应的适配器，适配成 `MethodInterceptor` 接口(方法拦截器)类型的对象（如：`MethodBeforeAdviceAdapter` 通过调用 `getInterceptor` 方法，将 `MethodBeforeAdvice` 适配成 `MethodBeforeAdviceInterceptor` ）。
+Các Advice được định nghĩa sẵn trong Spring cần thông qua adapter tương ứng để chuyển đổi thành đối tượng kiểu `MethodInterceptor` (Method Interceptor - bộ đánh chặn phương thức) (ví dụ: `MethodBeforeAdviceAdapter` thông qua việc gọi phương thức `getInterceptor`, chuyển đổi `MethodBeforeAdvice` thành `MethodBeforeAdviceInterceptor`).
 
-### Spring MVC 中的适配器模式
+### Adapter Pattern trong Spring MVC
 
-在 Spring MVC 中，`DispatcherServlet` 根据请求信息调用 `HandlerMapping`，解析请求对应的 `Handler`。解析到对应的 `Handler`（也就是我们平常说的 `Controller` 控制器）后，开始由`HandlerAdapter` 适配器处理。`HandlerAdapter` 作为期望接口，具体的适配器实现类用于对目标类进行适配，`Controller` 作为需要适配的类。
+Trong Spring MVC, `DispatcherServlet` dựa vào thông tin request để gọi `HandlerMapping`, phân tích `Handler` tương ứng với request. Sau khi phân tích được `Handler` tương ứng (cũng chính là `Controller` mà chúng ta thường nói), bắt đầu được xử lý bởi `HandlerAdapter`. `HandlerAdapter` đóng vai trò là interface mong đợi, các lớp triển khai adapter cụ thể dùng để thích ứng với lớp mục tiêu, `Controller` đóng vai trò là lớp cần được thích ứng.
 
-**为什么要在 Spring MVC 中使用适配器模式？**
+**Tại sao cần sử dụng Adapter Pattern trong Spring MVC?**
 
-Spring MVC 中的 `Controller` 种类众多，不同类型的 `Controller` 通过不同的方法来对请求进行处理。如果不利用适配器模式的话，`DispatcherServlet` 直接获取对应类型的 `Controller`，需要的自行来判断，像下面这段代码一样：
+Trong Spring MVC, `Controller` có rất nhiều loại, các loại `Controller` khác nhau xử lý request thông qua các phương thức khác nhau. Nếu không sử dụng Adapter Pattern, `DispatcherServlet` sẽ trực tiếp lấy `Controller` thuộc loại tương ứng, cần phải tự mình phán đoán, giống như đoạn mã dưới đây:
 
 ```java
 if(mappedHandler.getHandler() instanceof MultiActionController){
@@ -324,27 +324,27 @@ if(mappedHandler.getHandler() instanceof MultiActionController){
 }
 ```
 
-假如我们再增加一个 `Controller`类型就要在上面代码中再加入一行 判断语句，这种形式就使得程序难以维护，也违反了设计模式中的开闭原则 – 对扩展开放，对修改关闭。
+Giả sử chúng ta thêm một loại `Controller` mới thì sẽ phải thêm một dòng câu lệnh if vào đoạn mã trên, cách làm này khiến chương trình khó bảo trì, đồng thời vi phạm nguyên tắc Open-Closed Principle (Nguyên tắc Đóng-Mở) trong Design Pattern – mở cho mở rộng, đóng cho sửa đổi.
 
-## 装饰者模式
+## Decorator Pattern (Mẫu thiết kế Trang trí)
 
-装饰者模式可以动态地给对象添加一些额外的属性或行为。相比于使用继承，装饰者模式更加灵活。简单点儿说就是当我们需要修改原有的功能，但我们又不愿直接去修改原有的代码时，设计一个 Decorator 套在原有代码外面。其实在 JDK 中就有很多地方用到了装饰者模式，比如 `InputStream`家族，`InputStream` 类下有 `FileInputStream` (读取文件)、`BufferedInputStream` (增加缓存,使读取文件速度大大提升)等子类都在不修改`InputStream` 代码的情况下扩展了它的功能。
+Decorator Pattern có thể động (dynamically) thêm một số thuộc tính hoặc hành vi bổ sung cho đối tượng. So với việc sử dụng kế thừa, Decorator Pattern linh hoạt hơn. Nói một cách đơn giản, khi chúng ta cần sửa đổi chức năng hiện có, nhưng không muốn trực tiếp sửa đổi mã nguồn gốc, hãy thiết kế một Decorator bọc bên ngoài mã nguồn gốc. Thực tế trong JDK có rất nhiều nơi sử dụng Decorator Pattern, ví dụ như họ `InputStream`, dưới lớp `InputStream` có các lớp con như `FileInputStream` (đọc tệp), `BufferedInputStream` (thêm bộ đệm, giúp tăng tốc độ đọc tệp đáng kể)... đều mở rộng chức năng của nó mà không sửa đổi mã nguồn của `InputStream`.
 
 ![装饰者模式示意图](https://oss.javaguide.cn/github/javaguide/Decorator.jpg)
 
-## 总结
+## Tổng kết
 
-Spring 框架中用到了哪些设计模式？
+Spring Framework đã sử dụng những Design Pattern nào?
 
-- **工厂设计模式** : Spring 使用工厂模式通过 `BeanFactory`、`ApplicationContext` 创建 bean 对象。
-- **代理设计模式** : Spring AOP 功能的实现。
-- **单例设计模式** : Spring 中的 Bean 默认都是单例的。
-- **模板方法模式** : Spring 中 `jdbcTemplate`、`hibernateTemplate` 等以 Template 结尾的对数据库操作的类，它们就使用到了模板模式。
-- **观察者模式:** Spring 事件驱动模型就是观察者模式很经典的一个应用。
-- **适配器模式** :Spring AOP 的增强或通知(Advice)使用到了适配器模式、spring MVC 中也是用到了适配器模式适配`Controller`。
+- **Factory Design Pattern** : Spring sử dụng Factory Pattern thông qua `BeanFactory`, `ApplicationContext` để tạo các đối tượng bean.
+- **Proxy Design Pattern** : Triển khai chức năng Spring AOP.
+- **Singleton Design Pattern** : Bean trong Spring mặc định đều là singleton.
+- **Template Method Pattern** : Trong Spring, các lớp thao tác với cơ sở dữ liệu có hậu tố Template như `jdbcTemplate`, `hibernateTemplate`... đều sử dụng Template Method Pattern.
+- **Observer Pattern:** Mô hình Spring Event-Driven chính là một ứng dụng kinh điển của Observer Pattern.
+- **Adapter Pattern** : Phần enhancement (tăng cường) hay Advice (thông báo) của Spring AOP sử dụng Adapter Pattern, trong Spring MVC cũng sử dụng Adapter Pattern để thích ứng `Controller`.
 - ……
 
-## 参考
+## Tham khảo
 
 - 《Spring 技术内幕》
 - <https://blog.eduonix.com/java-programming-2/learn-design-patterns-used-spring-framework/>

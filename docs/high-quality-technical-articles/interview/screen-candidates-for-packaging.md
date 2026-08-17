@@ -1,6 +1,6 @@
 ---
-title: 如何甄别应聘者的包装程度
-description: "如何甄别应聘者的包装程度：围绕技术知识与面试总结梳理关键概念、常见问题与实践要点，帮助你高效学习与备战面试。"
+title: Cách nhận diện mức độ "làm đẹp hồ sơ" của ứng viên
+description: "Cách nhận diện mức độ làm đẹp hồ sơ của ứng viên: tổng hợp các khái niệm then chốt, câu hỏi thường gặp và điểm thực hành xoay quanh kiến thức kỹ thuật và phỏng vấn, giúp bạn học tập hiệu quả và chuẩn bị phỏng vấn."
 category: 技术文章精选集
 author: Coody
 tag:
@@ -11,113 +11,113 @@ head:
       content: 简历包装,面试官视角,简历甄别,技术面试,培训机构,项目经验,技术深度,面试技巧
 ---
 
-> **推荐语**：经常听到培训班待过的朋友给我说他们的老师是怎么教他们“包装”自己的，不光是培训班，我认识的很多朋友也都会在面试之前“包装”一下自己，所以这个现象是普遍存在的。但是面试官也不都是傻子，通过下面这篇文章来看看面试官是如何甄别应聘者的包装程度。
+> **Lời giới thiệu**: Tôi thường nghe những người bạn từng học ở trung tâm đào tạo kể rằng giáo viên của họ đã dạy họ cách "tự làm đẹp" hồ sơ như thế nào. Không chỉ riêng các trung tâm đào tạo, rất nhiều người bạn tôi quen cũng sẽ "làm đẹp" bản thân một chút trước buổi phỏng vấn, nên hiện tượng này khá phổ biến. Nhưng nhà tuyển dụng cũng không phải ai cũng ngây thơ, hãy xem qua bài viết dưới đây để hiểu cách nhà tuyển dụng nhận diện mức độ "làm đẹp" hồ sơ của ứng viên.
 >
-> **原文地址**：<https://my.oschina.net/hooker/blog/3014656>
+> **Địa chỉ bài viết gốc**: <https://my.oschina.net/hooker/blog/3014656>
 
-## 前言
+## Lời mở đầu
 
-上到职场干将下到职场萌新，都会接触到包装简历这个词语。当你简历投到心仪的公司，公司内负责求职的工作人员是如何甄别简历的包装程度的？我根据自己的经验写下了这篇文章，谁都不是天才，包装无可厚非，切勿对号入座!
+Từ những "cao thủ" trong nghề cho đến những người mới vào nghề (newbie), ai cũng từng tiếp xúc với khái niệm "làm đẹp hồ sơ". Khi bạn gửi hồ sơ đến công ty mơ ước, những người phụ trách tuyển dụng trong công ty sẽ nhận diện mức độ làm đẹp hồ sơ của bạn như thế nào? Dựa trên kinh nghiệm của bản thân, tôi viết bài viết này. Ai cũng không phải thiên tài, làm đẹp hồ sơ cũng là điều dễ hiểu, đừng vội "đối chiếu vào bản thân" nhé!
 
-## 正文
+## Nội dung chính
 
-在互联网极速膨胀的社会背景下，各行各业涌入互联网的 IT 民工日益增大。
+Trong bối cảnh xã hội internet bùng nổ với tốc độ chóng mặt, đội quân IT từ mọi ngành nghề đổ xô vào internet ngày càng đông đảo.
 
-早在 2016 年，我司发布了 Java、Ios 工程师的招聘信息，就 Java 工程师单个岗位而言，日收简历近 200 份，Ios 日收简历近一千份。
+Ngay từ năm 2016, công ty tôi đã đăng tin tuyển dụng kỹ sư Java, Ios. Chỉ riêng vị trí kỹ sư Java, mỗi ngày nhận gần 200 hồ sơ, còn vị trí Ios mỗi ngày nhận gần một nghìn hồ sơ.
 
-没错，这就是当年培训机构对 Ios 工程师这个岗位发起的市场讨伐。而随着近几年的发展，市场供大于求现象日益严重。人员摸底成为用人单位对人才考核的重大难题。
+Đúng vậy, đó chính là cuộc "tấn công thị trường" mà các trung tâm đào tạo phát động nhắm vào vị trí kỹ sư Ios năm đó. Còn qua sự phát triển trong những năm gần đây, hiện tượng cung vượt cầu trên thị trường ngày càng nghiêm trọng. Việc thẩm tra nhân sự đã trở thành bài toán lớn cho các nhà tuyển dụng trong việc đánh giá nhân tài.
 
-笔者初次与求职者以面试的形式进行沟通是 2015 年 6 月。由于当时笔者从业时间短，经验不够丰富，错过了一些优秀的求职者。
+Lần đầu tiên tôi trao đổi với ứng viên dưới hình thức phỏng vấn là vào tháng 6 năm 2015. Vì khi đó thời gian làm việc của tôi còn ngắn, kinh nghiệm chưa đủ phong phú, nên tôi đã bỏ lỡ một số ứng viên xuất sắc.
 
-三年后的，今天，笔者再次因公司规模扩大而深入与求职者进行沟通。
+Ba năm sau, hôm nay, tôi lại tiếp xúc sâu với ứng viên vì quy mô công ty mở rộng.
 
-### 1.初选如何鉴别劣质简历
+### 1. Cách nhận diện hồ sơ kém chất lượng ở vòng sơ loại
 
-培训机构除了提供技术培训，往往还提供**简历编写指导**、**面试指导**。很多潜移默化的东西，我们很难甄别。但培训机构包装的简历，存在千遍一律的特征。
+Các trung tâm đào tạo ngoài việc cung cấp đào tạo kỹ thuật, thường còn cung cấp **hướng dẫn viết hồ sơ** và **hướng dẫn phỏng vấn**. Nhiều thứ "ngấm dần" kiểu như vậy rất khó để chúng ta nhận diện. Nhưng hồ sơ được các trung tâm đào tạo làm đẹp thường mang những đặc điểm na ná giống nhau.
 
-**年龄较小却具备高级文凭**
+**Tuổi còn trẻ nhưng lại có bằng cấp cao**
 
-年龄较小却具备高级文凭，这个或许不能作为一项标准，但是大部分的应聘者，均符合传统文凭的市场情况。个别技术爱好者可能通过自考获得文凭，这种情况需提供独有的技术亮点。
+Tuổi còn trẻ nhưng lại có bằng cấp cao, điều này có lẽ không thể được coi là một tiêu chuẩn, nhưng phần lớn ứng viên đều phù hợp với tình hình thị trường về bằng cấp truyền thống. Một số người yêu thích kỹ thuật có thể tự học để lấy bằng (自考), trong trường hợp này cần có những điểm sáng kỹ thuật riêng biệt.
 
-**年龄较大却几乎不具备技术经验**
+**Tuổi đã lớn nhưng gần như không có kinh nghiệm kỹ thuật**
 
-年龄较大却几乎不具备技术经验，相对前一点，这个问题就比较严重了。大家都知道，一个正常的人，对新事物的接受能力会随着年龄的增长而降低，互联网技术也包括其内。如果一个人年龄较大不具备技术经验，那么只有两种情况：
+Tuổi đã lớn nhưng gần như không có kinh nghiệm kỹ thuật, so với điểm trước, vấn đề này nghiêm trọng hơn. Ai cũng biết rằng, một người bình thường, khả năng tiếp nhận cái mới sẽ giảm dần theo tuổi tác, công nghệ internet cũng nằm trong số đó. Nếu một người lớn tuổi mà không có kinh nghiệm kỹ thuật, thì chỉ có hai khả năng:
 
-1. 中途转行(通过培训、自学等方式强行入行)。
-2. 由于能力问题，已有的经验不敢写入简历中(能力与经验/薪资不符)。
+1. Chuyển ngành giữa chừng (cưỡng ép gia nhập ngành thông qua hình thức đào tạo, tự học...).
+2. Do vấn đề năng lực, không dám ghi những kinh nghiệm đã có vào hồ sơ (năng lực không tương xứng với kinh nghiệm/mức lương).
 
-**项目经验多为管理系统**
+**Kinh nghiệm dự án chủ yếu là các hệ thống quản lý**
 
-项目经验，这一项用来评估应聘者的水平太合适不过了。随着互联网的发展迭代，每一年都会出来很多创新型的互联网公司和新兴行业。笔者最近发布的招聘需求里面。CRM 系统、商城、XX 管理系统、问卷系统、课堂系统占了 90%的份额。试问现在 2019 年，内部管理系统这么火爆么。言归正传，我们对于简历的评估，应当多考虑“确有其事”的项目。比如说该人员当时就职于 XX 公司，该公司当时的背景下确实研发了该项目（外包除外）。
+Kinh nghiệm dự án là một hạng mục rất phù hợp để đánh giá trình độ của ứng viên. Cùng với sự phát triển và thay đổi liên tục của internet, mỗi năm đều xuất hiện nhiều công ty internet sáng tạo và ngành nghề mới nổi. Trong các nhu cầu tuyển dụng mà tôi vừa đăng, hệ thống CRM, trang thương mại điện tử, hệ thống quản lý XX, hệ thống khảo sát, hệ thống lớp học chiếm tới 90% tỷ trọng. Thử hỏi bây giờ là năm 2019, hệ thống quản lý nội bộ có thực sự "hot" đến vậy không? Trở lại vấn đề chính, khi đánh giá hồ sơ, chúng ta nên ưu tiên xem xét những dự án "có thực". Ví dụ như người đó khi đó làm tại công ty XX, trong bối cảnh của công ty đó thì họ quả thực đã phát triển dự án này (trừ các dự án gia công bên ngoài).
 
-**项目的背景不符合互联网发展背景**
+**Bối cảnh dự án không phù hợp với bối cảnh phát triển của internet**
 
-项目背景，每年的市场走向不同，从早些年的电商、彩票风波，到后来的 O2O、夺宝、直播、新零售。每个系列的产品的出现，都符合市场的定义。如果简历中出现 18 年、19 年才刚立项做彩票(15 年政府禁止互联网彩票)、O2O、商城、夺宝(17 年初禁止夺宝类产品)、直播等产品。显然是非常不符合市场需求的。这种情况下需考虑具体情况是否存在理解空间。
+Bối cảnh dự án, mỗi năm xu hướng thị trường mỗi khác, từ thương mại điện tử, cơn sóng xổ số những năm trước, đến O2O, "đoạt bảo", phát trực tiếp (livestream), bán lẻ mới (new retail). Sự xuất hiện của mỗi dòng sản phẩm đều phù hợp với quy luật của thị trường. Nếu trong hồ sơ xuất hiện các sản phẩm như xổ số (năm 15 chính phủ đã cấm xổ số internet), O2O, trang thương mại điện tử, "đoạt bảo" (đầu năm 17 cấm các sản phẩm dạng đoạt bảo), phát trực tiếp... mà mãi đến năm 18, 19 mới bắt đầu lập dự án, thì rõ ràng là rất không phù hợp với nhu cầu thị trường. Trường hợp này cần xem xét xem tình huống cụ thể có chỗ cho sự hợp lý nào không.
 
-**缺乏新意**
+**Thiếu tính mới mẻ**
 
-不同工作经验下多个项目技术架构或项目结构一致，缺乏新意。一般情况而言，不同的公司技术栈不同，甚至产品的走向和模式完全不同。故此，当一个应聘者多家公司的多个项目中写到的技术千遍一律，业务流程异曲同工。看似整洁，实则更加缺乏说服力。
+Dưới các kinh nghiệm làm việc khác nhau mà kiến trúc kỹ thuật hoặc cấu trúc dự án của nhiều dự án lại giống nhau, thiếu tính mới mẻ. Nói chung, các công ty khác nhau có bộ công nghệ (tech stack) khác nhau, thậm chí hướng đi và mô hình sản phẩm hoàn toàn khác nhau. Vì vậy, khi một ứng viên ghi các công nghệ na ná giống nhau trong nhiều dự án ở nhiều công ty, còn quy trình nghiệp vụ thì "một công đôi việc" giống hệt nhau. Nhìn qua có vẻ gọn gàng, nhưng thực chất lại càng kém thuyết phục.
 
-**技术过于新颖，对旧技术却只字不提**
+**Công nghệ quá mới mẻ, nhưng không hề nhắc đến công nghệ cũ**
 
-技术过于新颖，根据互联网技术发展的走向来看，我们在不断向新型技术靠拢。但是任何企业作为资历深厚的 CTO、架构师来说。往往会选择更稳定、更成熟、学习成本更低的已有技术。对新技术的追求不会过于明显。而培训机构则是“哪项技术火我们就教哪项”。故此，出现了很多走入互联网行业的新人对旧技术一窍不通。甚至很多技术都没听过。
+Công nghệ quá mới mẻ, theo xu hướng phát triển của công nghệ internet, chúng ta đang ngày càng tiến gần đến các công nghệ mới. Nhưng bất kỳ doanh nghiệp nào, với vai trò CTO, kiến trúc sư dày dạn kinh nghiệm, thường sẽ chọn những công nghệ hiện có ổn định hơn, trưởng thành hơn, chi phí học tập thấp hơn. Sự theo đuổi công nghệ mới sẽ không quá rõ ràng. Còn các trung tâm đào tạo thì "công nghệ nào hot thì chúng tôi dạy công nghệ đó". Vì vậy, xuất hiện không ít người mới bước vào ngành internet mà không biết gì về công nghệ cũ, thậm chí nhiều công nghệ còn chưa từng nghe qua.
 
-**工作经验较丰富，但从事的工作较低级。**
+**Kinh nghiệm làm việc khá phong phú, nhưng công việc đảm nhận lại khá đơn giản**
 
-工作经验比较丰富，单从事的工作比较低级，这里存在很大的问题，要么就是原公司没法提供合理的舞台给该人员更好的发展空间，要么就是该人员能力不够，没法完成更高级的工作。当然，还有一种情况就是该人员包装过多的经验导致简历中不和谐。这种情况需要评估公司规模和背景。
+Kinh nghiệm làm việc khá phong phú, nhưng công việc đảm nhận lại khá đơn giản, đây là một vấn đề lớn. Hoặc là công ty cũ không thể tạo ra "sân khấu" hợp lý để người này có không gian phát triển tốt hơn, hoặc là năng lực của người này không đủ, không thể hoàn thành các công việc cao cấp hơn. Tất nhiên, còn một trường hợp nữa là người này làm đẹp hồ sơ quá mức dẫn đến sự thiếu nhất quán trong hồ sơ. Trường hợp này cần đánh giá quy mô và bối cảnh của công ty.
 
-**公司背景跨省跨市**
+**Bối cảnh công ty nằm ở tỉnh/thành phố khác**
 
-可能很多用人单位和鄙人一样，最近接受到的简历，90%为跨市跳槽的人员。其中武汉占了 60%以上。均为武汉 XX 网络科技有限公司。公司规模均小于 50 人。也有厦门、宁波、南京等等。这个问题笔者就不提了，大家都懂的。跨地区跳槽不好查证。
+Có lẽ nhiều nhà tuyển dụng cũng giống như tôi, những hồ sơ nhận được gần đây có tới 90% là người nhảy việc từ thành phố khác. Trong đó Vũ Hán (Wuhan) chiếm hơn 60%. Đều là Công ty TNHH Công nghệ mạng XX Vũ Hán. Quy mô công ty đều dưới 50 người. Cũng có Hạ Môn (Xiamen), Ninh Ba (Ningbo), Nam Kinh (Nanjing), v.v. Vấn đề này tôi không tiện nói thêm, ai cũng hiểu. Nhảy việc qua vùng khác rất khó xác minh.
 
-**缺少业余热情于技术的证明**
+**Thiếu bằng chứng thể hiện niềm đam mê kỹ thuật ngoài giờ làm việc**
 
-有些眼高手低的技术员，做了几个管理系统。用到的技术确是各种分布式、集群、高并发、大数据、消息队列、搜索引擎、镜像容器、多数据库、数据中心等等。期望的薪资也高于行业标准。一个对技术很热情的人，业余时间肯定在技术方面花费过不少时间。那么可以从该人员的博客、git 地址入手。甚至可以通过手机号、邮箱、昵称、马甲。去搜索引擎进行搜集，核实该人员是否在论坛、贴吧、开源组织有过技术背景。
+Một số kỹ thuật viên "mắt cao tay thấp", chỉ làm vài hệ thống quản lý. Nhưng công nghệ sử dụng lại đủ loại như phân tán (distributed), cụm (cluster), chịu tải cao (high concurrency), dữ liệu lớn (big data), hàng đợi tin nhắn (message queue), công cụ tìm kiếm, container ảnh (image container), đa cơ sở dữ liệu, trung tâm dữ liệu (data center), v.v. Mức lương mong muốn cũng cao hơn tiêu chuẩn của ngành. Một người thực sự đam mê kỹ thuật, ngoài giờ làm việc chắc chắn sẽ dành không ít thời gian cho kỹ thuật. Vậy nên có thể tìm hiểu từ blog, địa chỉ git của người đó. Thậm chí có thể dùng số điện thoại, email, biệt danh, tài khoản ẩn (马甲) để tìm kiếm trên các công cụ tìm kiếm, xác minh xem người đó có từng có nền tảng kỹ thuật ở các diễn đàn, Tieba, tổ chức mã nguồn mở hay không.
 
-### 2. 进入面试阶段，如何甄别对方的水分
+### 2. Vào vòng phỏng vấn, cách nhận diện mức độ thổi phồng của ứng viên
 
-在甄别对方水分这一块，并没有明确的标准，但是笔者可以提几个点。这也是笔者在实际面试中惯用的做法。
+Về việc nhận diện mức độ thổi phồng của ứng viên, không có tiêu chuẩn rõ ràng nào, nhưng tôi có thể nêu ra vài điểm. Đây cũng là cách làm quen thuộc mà tôi thường áp dụng trong các buổi phỏng vấn thực tế.
 
-**通过公司规模、团队规模、人员分配是否合理、人员合作方式来判断对方是否具备工作经验**
+**Đánh giá ứng viên có kinh nghiệm làm việc hay không qua quy mô công ty, quy mô đội nhóm, sự hợp lý trong phân bổ nhân sự và cách thức hợp tác**
 
-当招聘初级、初中级 IT 人员的时候，可以询问一些问题，比如公司有多少人、产品团队多少人、产品、技术、后端、前端、客户端、UI、测试各多少人。工作中如何合作的、产品做了多少时间、何时上线的、上线后多长时间迭代一个版本、多长时间迭代一个活动、发展至今多少用户(后端)、多大并发等等(后端)。根据笔者的经验，如果一个人没有任何从业周期，面对这些问题的时候，或多或少答非所问或者给出的答案非常不合理。
+Khi tuyển nhân sự IT cấp đầu vào, đầu vào-trung cấp, có thể hỏi một số câu như: công ty có bao nhiêu người, đội ngũ sản phẩm có bao nhiêu người, sản phẩm, kỹ thuật, backend, frontend, client, UI, kiểm thử mỗi mảng bao nhiêu người. Trong công việc hợp tác với nhau như thế nào, sản phẩm làm trong bao lâu, khi nào lên sóng (go-live), sau khi lên sóng bao lâu thì iterate (cập nhật phiên bản) một version, bao lâu thì iterate một hoạt động, tính đến nay có bao nhiêu người dùng (backend), độ chịu tải (concurrency) lớn cỡ nào, v.v. (backend). Theo kinh nghiệm của tôi, nếu một người không có bất kỳ quá trình làm việc thực tế nào, khi đối mặt với những câu hỏi này sẽ ít nhiều trả lời không đúng trọng tâm hoặc đưa ra câu trả lời rất phi lý.
 
-**背景公司入职时间、项目立项实现、完工时间、产品技术栈、迭代流程的核实**
+**Xác minh thời gian vào công ty, thời điểm lập dự án, thời gian hoàn thành, bộ công nghệ sản phẩm và quy trình iterate**
 
-很多应聘者对于简历过于包装，只为了追求更高的薪资。当我们问起：你是 xx 年 xx 月入职的该公司？你们项目是 xx 年 xx 月上线的？你们项目使用到 xx 技术？你们每次上线前夕是如何评审的。面对这些问题，应聘者给出的答案经常与简历不符合。这样问题就来了。关于项目使用到的技术，很多项目我们可以通过搜索该项目的地址、APP。通过 HTTP 协议、技术特征、抛出异常特征来大致判别对方使用到的技术。如果应聘者给出的答案明显与之不匹配，嘿嘿。
+Nhiều ứng viên làm đẹp hồ sơ quá mức chỉ để theo đuổi mức lương cao hơn. Khi chúng ta hỏi: Bạn vào công ty này tháng xx năm xx? Dự án của các bạn lên sóng tháng xx năm xx? Dự án của các bạn dùng công nghệ xx? Mỗi lần trước khi lên sóng các bạn review như thế nào. Đối mặt với những câu hỏi này, câu trả lời của ứng viên thường không khớp với hồ sơ. Vấn đề từ đó phát sinh. Về công nghệ dùng trong dự án, nhiều dự án chúng ta có thể tìm kiếm địa chỉ website, app của dự án đó. Thông qua giao thức HTTP, đặc điểm kỹ thuật, đặc điểm exception bị ném ra để phán đoán sơ bộ công nghệ mà đối phương sử dụng. Nếu câu trả lời của ứng viên rõ ràng không khớp với điều đó, he he.
 
-**通过技术深度，甄别对方的技术水平**
+**Nhận diện trình độ kỹ thuật của ứng viên thông qua độ sâu kỹ thuật**
 
-1. 确定对方的技术栈，如：你做过最满意的项目是哪个，为什么？你最喜欢使用的技术是哪些，为什么？
+1. Xác định bộ công nghệ (tech stack) của ứng viên, ví dụ: dự án bạn làm tâm đắc nhất là dự án nào, tại sao? Công nghệ bạn thích sử dụng nhất là gì, tại sao?
 
-2. 确定对方项目的发展程度，如：你们产品做了多久，迭代了多久，发布了多少版本，发展到了多少用户，带来多大并发，多少流水？
+2. Xác định mức độ phát triển của dự án của ứng viên, ví dụ: sản phẩm của các bạn làm bao lâu, iterate bao lâu, phát hành bao nhiêu version, phát triển đến bao nhiêu người dùng, mang lại độ chịu tải bao nhiêu, doanh thu (流水) bao nhiêu?
 
-3. 确定对方的技术属性，如：平时你会通过什么渠道跟其他技术人形成技术沟通与交流，主要交流过哪些技术？
+3. Xác định đặc tính kỹ thuật của ứng viên, ví dụ: bình thường bạn qua kênh nào để giao lưu, trao đổi kỹ thuật với những người làm kỹ thuật khác, chủ yếu đã trao đổi về những công nghệ gì?
 
-笔者最近接待的面试者，很多面试者的简历上，写着层出不穷的各种技术，为了不跨越求职者的技术栈，笔者专门挑应聘者简历写到或用到的技术来进行询问。笔者举几个例子。
+Những ứng viên tôi tiếp nhận gần đây, nhiều người trong hồ sơ ghi vô số công nghệ đủ loại. Để không vượt ra ngoài bộ công nghệ của ứng viên, tôi cố ý chọn những công nghệ mà ứng viên ghi trong hồ sơ hoặc sử dụng để hỏi. Tôi xin nêu vài ví dụ.
 
-**1)某求职者简历上写着熟练使用 Redis。**
+**1) Một ứng viên ghi trong hồ sơ là thành thạo sử dụng Redis.**
 
-1. 介绍一下你使用过 Redis 的哪些数据结构，并描述一下使用的业务场景；
-2. 介绍一下你操作 Redis 用到的是什么插件；
-3. 介绍一下你们使用的序列化方式；
-4. 介绍一下你们使用 Redis 遇到过给你印象较深的问题；
+1. Hãy giới thiệu bạn đã dùng những cấu trúc dữ liệu (data structure) nào của Redis, và mô tả bối cảnh nghiệp vụ đã sử dụng;
+2. Hãy giới thiệu plugin bạn dùng để thao tác với Redis là gì;
+3. Hãy giới thiệu cách thức tuần tự hóa (serialization) mà các bạn sử dụng;
+4. Hãy giới thiệu vấn đề nào khi sử dụng Redis để lại ấn tượng sâu sắc với bạn;
 
-**2)某求职者声称熟练 HTTP 协议并编写过爬虫。**
+**2) Một ứng viên tuyên bố thành thạo giao thức HTTP và từng viết crawler.**
 
-1. 介绍一下你所了解的几个 HTTP head 头并描述其用途；
-2. 如果前端提交成功，后端无法接受数据，这时候你将如何排查问题；
-3. 描述一下 HTTP 基本报文结构;
-4. 如果服务器返回 Cookie，存储在响应内容里面 head 头的字段叫做什么;
-5. 当服务端返回 Transfer-Encoding：chunked 代表什么含义
-6. 是否了解分段加载并描述下其技术流程。
+1. Giới thiệu vài HTTP header bạn từng biết và mô tả công dụng của chúng;
+2. Nếu frontend submit thành công nhưng backend không nhận được dữ liệu, lúc đó bạn sẽ điều tra (troubleshoot) vấn đề như thế nào;
+3. Mô tả cấu trúc bản tin (message) cơ bản của HTTP;
+4. Nếu server trả về Cookie, tên của field nằm trong header ở phần nội dung phản hồi là gì;
+5. Khi server trả về Transfer-Encoding: chunked có nghĩa là gì;
+6. Bạn có hiểu về tải theo phân đoạn không, hãy mô tả quy trình kỹ thuật của nó.
 
-当然，面向不同的技术，对应的技术深度自然也不一样。
+Tất nhiên, đối với các công nghệ khác nhau, độ sâu kỹ thuật tương ứng cũng sẽ khác nhau.
 
-大体上的套路便是如此：你说你杀过猪。那么你杀过几头猪，分别是啥时候，杀过多大的猪，有啥毛色。事实上对方可能给你的回答是：杀过、十几头、杀过五十斤的、杀过绿色、黄色、红色、蓝色的猪。那么问题就来了。
+Đại thể cách hỏi vặn là như vậy: Bạn nói bạn từng giết lợn. Vậy bạn giết mấy con lợn, giết vào những lúc nào, con lợn to nặng bao nhiêu, lông màu gì. Thực tế câu trả lời của đối phương có thể là: từng giết, hơn mười con, giết con nặng 50 cân, giết cả lợn xanh, vàng, đỏ, xanh dương. Vấn đề từ đó phát sinh.
 
-然而笔者碰到的问题是：使用 Git 两年却不知道 GitHub、使用 Redis 一年却不知道数据结构也不知道序列化、专业做爬虫却不懂 `content-type` 含义、使用搜索引擎技术却说不出两个分词插件、使用数据库读写分离却不知道同步延时等等。
+Tuy nhiên những vấn đề tôi gặp phải là: dùng Git hai năm nhưng không biết GitHub, dùng Redis một năm nhưng không biết cấu trúc dữ liệu cũng không biết tuần tự hóa, chuyên làm crawler nhưng không hiểu ý nghĩa của `content-type`, dùng công nghệ máy tìm kiếm nhưng nói không ra hai plugin tách từ, dùng tách đọc-ghi cơ sở dữ liệu (read-write splitting) nhưng không biết độ trễ đồng bộ (đồng bộ hóa), v.v.
 
-写在最后，笔者认为在招聘途中，并不是不允许求职者包装，但是尽可能满足能筹平衡。虽然这篇文章没有完美的结尾，但是笔者提供了面试失败的各种经验。笔者最终招到了如意的小伙伴。也希望所有技术面试官早日找到符合自己产品发展的 IT 伙伴。
+Viết ở cuối bài, tôi cho rằng trong quá trình tuyển dụng, không phải không cho phép ứng viên làm đẹp hồ sơ, nhưng hãy cố gắng giữ được sự cân bằng. Dù bài viết này không có một cái kết hoàn hảo, nhưng tôi đã cung cấp đủ loại kinh nghiệm về các buổi phỏng vấn thất bại. Cuối cùng tôi cũng tuyển được những người bạn đồng hành như ý. Cũng mong tất cả các nhà tuyển dụng kỹ thuật sớm tìm được những người bạn IT phù hợp với sự phát triển sản phẩm của mình.
 
 <!-- @include: @article-footer.snippet.md -->

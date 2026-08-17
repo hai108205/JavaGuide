@@ -1,6 +1,6 @@
 ---
-title: JWT 基础概念详解
-description: JWT基础概念详解，涵盖JSON Web Token的组成结构、签名算法、工作原理及在登录鉴权中的应用。
+title: Giải thích chi tiết khái niệm cơ bản về JWT
+description: Giải thích chi tiết khái niệm cơ bản về JWT, bao gồm cấu trúc thành phần, thuật toán chữ ký, nguyên lý hoạt động và ứng dụng trong đăng nhập - xác thực của JSON Web Token.
 category: 系统设计
 tag:
   - 安全
@@ -12,35 +12,35 @@ head:
 
 <!-- @include: @article-header.snippet.md -->
 
-## 什么是 JWT?
+## JWT là gì?
 
-JWT （JSON Web Token） 是目前最流行的跨域认证解决方案，是一种基于 Token 的认证授权机制。 从 JWT 的全称可以看出，JWT 本身也是 Token，一种规范化之后的 JSON 结构的 Token。
+JWT (JSON Web Token) hiện là giải pháp xác thực cross-domain phổ biến nhất, là một cơ chế xác thực - ủy quyền dựa trên Token. Từ tên đầy đủ của JWT có thể thấy, bản thân JWT cũng là Token, một loại Token được chuẩn hóa theo cấu trúc JSON.
 
-JWT 自身包含了身份验证所需要的所有信息，因此，我们的服务器不需要存储 Session 信息。这显然增加了系统的可用性和伸缩性，大大减轻了服务端的压力。
+JWT tự chứa tất cả thông tin cần thiết cho việc xác minh danh tính, do đó, server của chúng ta không cần lưu trữ thông tin Session. Điều này rõ ràng làm tăng tính sẵn sàng (availability) và khả năng mở rộng (scalability) của hệ thống, giảm đáng kể áp lực lên phía server.
 
-可以看出，**JWT 更符合设计 RESTful API 时的「Stateless（无状态）」原则** 。
+Có thể thấy, **JWT phù hợp hơn với nguyên tắc "Stateless (phi trạng thái)" khi thiết kế RESTful API**.
 
-如果客户端把 JWT 作为 Bearer Token 显式放入 `Authorization` Header，浏览器不会像 Cookie 那样自动附带它，因此可以降低传统 CSRF 风险。不过，这取决于凭据的传输和存储方式，而不是 JWT 格式本身；如果把 JWT 放在 Cookie 中，仍然需要 CSRF 防护。
+Nếu client đặt JWT như Bearer Token hiển thị đưa vào `Authorization` Header, trình duyệt sẽ không tự động đính kèm nó như Cookie, do đó có thể giảm rủi ro CSRF truyền thống. Tuy nhiên, điều này phụ thuộc vào cách truyền tải và lưu trữ thông tin xác thực, chứ không phải bản thân định dạng JWT; nếu đặt JWT vào Cookie, vẫn cần phòng chống CSRF.
 
-我在 [JWT 优缺点分析](./advantages-and-disadvantages-of-jwt.md)这篇文章中有详细介绍到使用 JWT 做身份认证的优势和劣势。
+Tôi có giới thiệu chi tiết về ưu điểm và nhược điểm của việc sử dụng JWT để xác thực danh tính trong bài viết [Phân tích ưu nhược điểm của JWT](./advantages-and-disadvantages-of-jwt.md).
 
-下面是 [RFC 7519](https://tools.ietf.org/html/rfc7519) 对 JWT 做的较为正式的定义。
+Dưới đây là định nghĩa tương đối chính thức về JWT từ [RFC 7519](https://tools.ietf.org/html/rfc7519).
 
 > JSON Web Token (JWT) is a compact, URL-safe means of representing claims to be transferred between two parties. The claims in a JWT are encoded as a JSON object that is used as the payload of a JSON Web Signature (JWS) structure or as the plaintext of a JSON Web Encryption (JWE) structure, enabling the claims to be digitally signed or integrity protected with a Message Authentication Code (MAC) and/or encrypted. ——[JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7519)
 
-## JWT 由哪些部分组成？
+## JWT gồm những phần nào?
 
-![JWT 组成](https://oss.javaguide.cn/javaguide/system-design/jwt/jwt-composition.png)
+![Cấu thành JWT](https://oss.javaguide.cn/javaguide/system-design/jwt/jwt-composition.png)
 
-JWT 本质上就是一组字串，通过（`.`）切分成三个为 Base64 编码的部分：
+JWT về bản chất là một chuỗi ký tự, được phân tách bằng dấu (`.`) thành ba phần được mã hóa Base64:
 
-- **Header（头部）** : 描述 JWT 的元数据，定义了生成签名的算法以及 `Token` 的类型。Header 被 Base64Url 编码后成为 JWT 的第一部分。
-- **Payload（载荷）** : 用来存放实际需要传递的数据，包含声明（Claims），如`sub`（subject，主题）、`jti`（JWT ID）。Payload 被 Base64Url 编码后成为 JWT 的第二部分。
-- **Signature（签名）**：服务器通过 Payload、Header 和一个密钥(Secret)使用 Header 里面指定的签名算法（默认是 HMAC SHA256）生成。生成的签名会成为 JWT 的第三部分。
+- **Header (Phần đầu)**: Mô tả metadata của JWT, định nghĩa thuật toán tạo chữ ký và loại `Token`. Header được mã hóa Base64Url và trở thành phần đầu tiên của JWT.
+- **Payload (Phần tải)**: Dùng để chứa dữ liệu thực tế cần truyền tải, bao gồm các Claim (khai báo), như `sub` (subject, chủ đề), `jti` (JWT ID). Payload được mã hóa Base64Url và trở thành phần thứ hai của JWT.
+- **Signature (Chữ ký)**: Server tạo ra thông qua Payload, Header và một khóa bí mật (Secret) sử dụng thuật toán chữ ký được chỉ định trong Header (mặc định là HMAC SHA256). Chữ ký được tạo ra sẽ trở thành phần thứ ba của JWT.
 
-JWT 通常是这样的：`xxxxx.yyyyy.zzzzz`。
+JWT thường có dạng: `xxxxx.yyyyy.zzzzz`.
 
-示例：
+Ví dụ:
 
 ```plain
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
@@ -48,20 +48,20 @@ eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
 SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
 ```
 
-你可以在 [jwt.io](https://jwt.io/) 这个网站上对其 JWT 进行解码，解码之后得到的就是 Header、Payload、Signature 这三部分。
+Bạn có thể giải mã JWT trên trang web [jwt.io](https://jwt.io/), sau khi giải mã sẽ nhận được ba phần: Header, Payload, Signature.
 
-Header 和 Payload 都是 JSON 格式的数据，Signature 由 Payload、Header 和 Secret(密钥)通过特定的计算公式和加密算法得到。
+Header và Payload đều là dữ liệu định dạng JSON, Signature được tạo ra từ Payload, Header và Secret (khóa bí mật) thông qua công thức tính toán và thuật toán mã hóa cụ thể.
 
 ![](https://oss.javaguide.cn/javaguide/system-design/jwt/jwt.io.png)
 
 ### Header
 
-Header 通常由两部分组成：
+Header thường gồm hai phần:
 
-- `typ`（Type）：令牌类型，也就是 JWT。
-- `alg`（Algorithm）：签名算法，比如 HS256。
+- `typ` (Type): Loại token, tức là JWT.
+- `alg` (Algorithm): Thuật toán chữ ký, ví dụ HS256.
 
-示例：
+Ví dụ:
 
 ```json
 {
@@ -70,29 +70,29 @@ Header 通常由两部分组成：
 }
 ```
 
-JSON 形式的 Header 被转换成 Base64 编码，成为 JWT 的第一部分。
+Header dạng JSON được chuyển đổi thành mã hóa Base64, trở thành phần đầu tiên của JWT.
 
 ### Payload
 
-Payload 也是 JSON 格式数据，其中包含了 Claims(声明，包含 JWT 的相关信息)。
+Payload cũng là dữ liệu định dạng JSON, trong đó chứa các Claim (khai báo, chứa thông tin liên quan đến JWT).
 
-Claims 分为三种类型：
+Claim được chia thành ba loại:
 
-- **Registered Claims（注册声明）**：预定义的一些声明，建议使用，但不是强制性的。
-- **Public Claims（公有声明）**：JWT 签发方可以自定义的声明，但是为了避免冲突，应该在 [IANA JSON Web Token Registry](https://www.iana.org/assignments/jwt/jwt.xhtml) 中定义它们。
-- **Private Claims（私有声明）**：JWT 签发方因为项目需要而自定义的声明，更符合实际项目场景使用。
+- **Registered Claims (Khai báo đã đăng ký)**: Một số khai báo được định nghĩa trước, khuyến nghị sử dụng, nhưng không bắt buộc.
+- **Public Claims (Khai báo công khai)**: Các khai báo mà bên phát hành JWT có thể tự định nghĩa, nhưng để tránh xung đột, nên định nghĩa chúng trong [IANA JSON Web Token Registry](https://www.iana.org/assignments/jwt/jwt.xhtml).
+- **Private Claims (Khai báo riêng tư)**: Các khai báo mà bên phát hành JWT tự định nghĩa do nhu cầu dự án, phù hợp hơn với tình huống dự án thực tế.
 
-下面是一些常见的注册声明：
+Dưới đây là một số Registered Claim phổ biến:
 
-- `iss`（issuer）：JWT 签发方。
-- `iat`（issued at time）：JWT 签发时间。
-- `sub`（subject）：JWT 主题。
-- `aud`（audience）：JWT 接收方。
-- `exp`（expiration time）：JWT 的过期时间。
-- `nbf`（not before time）：JWT 生效时间，早于该定义的时间的 JWT 不能被接受处理。
-- `jti`（JWT ID）：JWT 唯一标识。
+- `iss` (issuer): Bên phát hành JWT.
+- `iat` (issued at time): Thời gian phát hành JWT.
+- `sub` (subject): Chủ đề JWT.
+- `aud` (audience): Bên nhận JWT.
+- `exp` (expiration time): Thời gian hết hạn của JWT.
+- `nbf` (not before time): Thời gian có hiệu lực của JWT, JWT có thời gian sớm hơn thời gian đã định nghĩa này sẽ không được chấp nhận xử lý.
+- `jti` (JWT ID): Định danh duy nhất của JWT.
 
-示例：
+Ví dụ:
 
 ```json
 {
@@ -105,21 +105,21 @@ Claims 分为三种类型：
 }
 ```
 
-Payload 部分默认是不加密的，**一定不要将隐私信息存放在 Payload 当中！！！**
+Phần Payload mặc định là không được mã hóa, **nhất định không được lưu thông tin riêng tư vào trong Payload!!!**
 
-JSON 形式的 Payload 被转换成 Base64 编码，成为 JWT 的第二部分。
+Payload dạng JSON được chuyển đổi thành mã hóa Base64, trở thành phần thứ hai của JWT.
 
 ### Signature
 
-Signature 部分是对前两部分的签名，作用是防止 JWT（主要是 payload） 被篡改。
+Phần Signature là chữ ký cho hai phần đầu, tác dụng là ngăn chặn JWT (chủ yếu là payload) bị giả mạo.
 
-这个签名的生成需要用到：
+Việc tạo chữ ký này cần sử dụng:
 
-- Header + Payload。
-- 存放在服务端的密钥(一定不要泄露出去)。
-- 签名算法。
+- Header + Payload.
+- Khóa bí mật được lưu ở phía server (nhất định không được để rò rỉ).
+- Thuật toán chữ ký.
 
-签名的计算公式如下：
+Công thức tính chữ ký như sau:
 
 ```plain
 HMACSHA256(
@@ -128,47 +128,47 @@ HMACSHA256(
   secret)
 ```
 
-算出签名以后，把 Header、Payload、Signature 三个部分拼成一个字符串，每个部分之间用"点"（`.`）分隔，这个字符串就是 JWT 。
+Sau khi tính ra chữ ký, ghép ba phần Header, Payload, Signature thành một chuỗi, mỗi phần được phân cách bằng dấu "chấm" (`.`), chuỗi này chính là JWT.
 
-## 如何基于 JWT 进行身份验证？
+## Làm thế nào để xác thực danh tính dựa trên JWT?
 
-在基于 JWT 进行身份验证的应用程序中，服务器通过 Payload、Header 和密钥创建 JWT 并将 JWT 发送给客户端。客户端需要根据应用形态和威胁模型安全地保存令牌，以后发出的请求会携带这个令牌。
+Trong ứng dụng xác thực danh tính dựa trên JWT, server tạo JWT thông qua Payload, Header và khóa bí mật rồi gửi JWT cho client. Client cần lưu token một cách an toàn tùy theo hình thức ứng dụng và mô hình mối đe dọa (threat model), các request sau đó sẽ mang theo token này.
 
-![ JWT 身份验证示意图](https://oss.javaguide.cn/github/javaguide/system-design/jwt/jwt-authentication%20process.png)
+![Sơ đồ xác thực danh tính JWT](https://oss.javaguide.cn/github/javaguide/system-design/jwt/jwt-authentication%20process.png)
 
-简化后的步骤如下：
+Các bước được đơn giản hóa như sau:
 
-1. 用户向服务器发送用户名、密码以及验证码用于登陆系统；
-2. 如果用户用户名、密码以及验证码校验正确的话，服务端会返回已经签名的 Token，也就是 JWT；
-3. 客户端收到 Token 后安全保存；浏览器应用可以使用 BFF 把令牌保留在服务端，或者根据场景使用受保护的 Cookie；
-4. 用户以后每次向后端发请求都在 Header 中带上这个 JWT ；
-5. 服务端检查 JWT 并从中获取用户相关信息。
+1. Người dùng gửi tên người dùng, mật khẩu và mã xác nhận đến server để đăng nhập hệ thống;
+2. Nếu tên người dùng, mật khẩu và mã xác nhận được kiểm tra chính xác, server sẽ trả về Token đã ký, tức là JWT;
+3. Client nhận Token và lưu trữ an toàn; ứng dụng trình duyệt có thể sử dụng BFF để giữ token ở phía server, hoặc tùy theo tình huống sử dụng Cookie được bảo vệ;
+4. Mỗi lần sau đó người dùng gửi request đến backend đều mang theo JWT này trong Header;
+5. Server kiểm tra JWT và lấy thông tin liên quan đến người dùng từ đó.
 
-两点建议：
+Hai gợi ý:
 
-1. 不要默认把 JWT 存放在 `localStorage` 或 `sessionStorage` 中。同源页面中的任意恶意脚本都能读取 Web Storage，一处 XSS 漏洞就可能泄露令牌。使用 Cookie 时，应设置 `HttpOnly`、`Secure` 和合适的 `SameSite` 属性，并同时做好 CSRF 防护。
-2. 非 Cookie 方案携带 JWT 的常见做法是将其放在 HTTP Header 的 `Authorization` 字段中（`Authorization: Bearer Token`）。
+1. Đừng mặc định lưu JWT trong `localStorage` hoặc `sessionStorage`. Bất kỳ mã độc nào trong trang cùng nguồn (same-origin) đều có thể đọc Web Storage, một lỗ hổng XSS có thể làm rò rỉ token. Khi sử dụng Cookie, nên thiết lập `HttpOnly`, `Secure` và thuộc tính `SameSite` phù hợp, đồng thời làm tốt phòng chống CSRF.
+2. Cách làm phổ biến để mang JWT trong phương án không dùng Cookie là đặt nó vào trường `Authorization` của HTTP Header (`Authorization: Bearer Token`).
 
-**[spring-security-jwt-guide](https://github.com/Snailclimb/spring-security-jwt-guide)** 就是一个基于 JWT 来做身份认证的简单案例，感兴趣的可以看看。
+**[spring-security-jwt-guide](https://github.com/Snailclimb/spring-security-jwt-guide)** chính là một ví dụ đơn giản về xác thực danh tính dựa trên JWT, bạn nào quan tâm có thể xem thử.
 
-## 如何防止 JWT 被篡改？
+## Làm thế nào để ngăn JWT bị giả mạo?
 
-有了正确校验的签名之后，即使 JWT 被泄露或者截获，攻击者也无法在不知道签名密钥的情况下修改 Header 或 Payload 并生成有效签名。但签名不提供保密性，也不能阻止攻击者直接重放被盗的有效 JWT。
+Khi có chữ ký được kiểm tra chính xác, ngay cả khi JWT bị rò rỉ hoặc bị chặn bắt, kẻ tấn công cũng không thể sửa đổi Header hoặc Payload và tạo ra chữ ký hợp lệ nếu không biết khóa ký. Nhưng chữ ký không cung cấp tính bảo mật (confidentiality), cũng không thể ngăn kẻ tấn công trực tiếp phát lại (replay) JWT hợp lệ bị đánh cắp.
 
-这是为什么呢？因为服务端拿到 JWT 之后，会解析出其中包含的 Header、Payload 以及 Signature 。服务端会根据 Header、Payload、密钥再次生成一个 Signature。拿新生成的 Signature 和 JWT 中的 Signature 作对比，如果一样就说明 Header 和 Payload 没有被修改。
+Tại sao vậy? Bởi vì sau khi server nhận được JWT, nó sẽ phân tích ra Header, Payload và Signature chứa trong đó. Server sẽ dựa vào Header, Payload, khóa bí mật để tạo lại một Signature. So sánh Signature mới tạo với Signature trong JWT, nếu giống nhau thì chứng tỏ Header và Payload không bị sửa đổi.
 
-不过，如果服务端的秘钥也被泄露的话，黑客就可以同时篡改 Signature、Header、Payload 了。黑客直接修改了 Header 和 Payload 之后，再重新生成一个 Signature 就可以了。
+Tuy nhiên, nếu khóa bí mật phía server cũng bị rò rỉ, hacker có thể đồng thời giả mạo Signature, Header, Payload. Hacker trực tiếp sửa đổi Header và Payload xong, rồi tạo lại một Signature là được.
 
-**密钥一定保管好，一定不要泄露出去。JWT 安全的核心在于签名，签名安全的核心在密钥。**
+**Nhất định phải giữ gìn khóa bí mật cẩn thận, nhất định không được để rò rỉ. Cốt lõi của bảo mật JWT nằm ở chữ ký, cốt lõi của an toàn chữ ký nằm ở khóa bí mật.**
 
-## 如何加强 JWT 的安全性？
+## Làm thế nào để tăng cường tính bảo mật của JWT?
 
-1. 使用成熟的开源库，不要自己实现 JWT 加解密和校验逻辑。
-2. 服务端固定允许的算法集合，不能直接信任 JWT Header 中的 `alg` 选择验证算法；HMAC 密钥要有足够的随机性和长度。
-3. 验证所有与当前应用有关的声明，包括 `iss`、`aud`、`exp` 和 `nbf`，并为允许的时钟偏差设置明确上限。
-4. 对 ID Token、Access Token 等不同用途的 JWT 使用显式 `typ` 和互斥的校验规则，防止一种令牌被替换到另一种场景。
-5. 一定不要将隐私信息存放在未加密的 Payload 当中，也不能把收到但尚未验证的 Claim 当作可信输入。
-6. 根据客户端类型选择安全的令牌存储方式，限制令牌有效期、权限范围和接收方；高风险场景还要考虑撤销、重放检测或发送者约束。
-7. 密钥必须妥善保管并支持轮换。更完整的安全要求可以参考 [RFC 8725：JSON Web Token Best Current Practices](https://www.rfc-editor.org/rfc/rfc8725.html)。
+1. Sử dụng thư viện mã nguồn mở trưởng thành, đừng tự hiện thực logic mã hóa - giải mã và kiểm tra JWT.
+2. Server cố định tập thuật toán được phép, không thể trực tiếp tin tưởng `alg` trong JWT Header để chọn thuật toán xác minh; khóa HMAC phải có đủ độ ngẫu nhiên và độ dài.
+3. Xác minh tất cả các claim liên quan đến ứng dụng hiện tại, bao gồm `iss`, `aud`, `exp` và `nbf`, đồng thời thiết lập giới hạn rõ ràng cho độ lệch đồng hồ (clock skew) được phép.
+4. Đối với các JWT có mục đích khác nhau như ID Token, Access Token, sử dụng `typ` hiển thị và quy tắc kiểm tra loại trừ lẫn nhau, ngăn một loại token bị thay thế sang tình huống khác.
+5. Nhất định không được lưu thông tin riêng tư trong Payload chưa được mã hóa, cũng không được coi Claim đã nhận nhưng chưa được xác minh là đầu vào đáng tin cậy.
+6. Chọn phương thức lưu trữ token an toàn tùy theo loại client, giới hạn thời gian hiệu lực, phạm vi quyền và bên nhận của token; các tình huống rủi ro cao còn cần xem xét thu hồi (revocation), phát hiện phát lại (replay detection) hoặc ràng buộc người gửi (sender constraint).
+7. Khóa bí mật phải được giữ gìn cẩn thận và hỗ trợ luân chuyển (rotation). Yêu cầu bảo mật đầy đủ hơn có thể tham khảo [RFC 8725: JSON Web Token Best Current Practices](https://www.rfc-editor.org/rfc/rfc8725.html).
 
 <!-- @include: @article-footer.snippet.md -->

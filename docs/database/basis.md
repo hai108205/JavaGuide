@@ -1,6 +1,6 @@
 ---
-title: 数据库基础常见面试题总结
-description: 数据库基础面试题和知识点总结，包括数据库、DBMS、数据库系统、DBA的概念区别，DBMS核心功能，元组、码、主键外键等关系型数据库核心概念，以及ER图的使用方法。
+title: Tổng hợp các câu hỏi phỏng vấn cơ bản về database
+description: Tổng hợp các câu hỏi và kiến thức cơ bản về database, bao gồm sự khác biệt khái niệm giữa database, DBMS, database system, DBA, chức năng cốt lõi của DBMS, các khái niệm cốt lõi của relational database như tuple, key, primary key, foreign key, cũng như cách sử dụng biểu đồ ER.
 category: 数据库
 tag:
   - 数据库基础
@@ -12,43 +12,43 @@ head:
 
 <!-- @include: @small-advertisement.snippet.md -->
 
-数据库知识基础，这部分内容一定要理解记忆。虽然这部分内容只是理论知识，但是非常重要，这是后面学习 MySQL 数据库的基础。PS: 这部分内容由于涉及太多概念性内容，所以参考了维基百科和百度百科相应的介绍。
+Kiến thức cơ bản về database, phần nội dung này nhất định phải hiểu và ghi nhớ. Mặc dù phần nội dung này chỉ là kiến thức lý thuyết, nhưng nó rất quan trọng, đây là nền tảng cho việc học database MySQL sau này. PS: vì phần nội dung này liên quan đến quá nhiều nội dung mang tính khái niệm, nên đã tham khảo phần giới thiệu tương ứng của Wikipedia và Baidu Baike.
 
-## 什么是数据库, 数据库管理系统, 数据库系统, 数据库管理员?
+## Database, Database Management System, Database System, Database Administrator là gì?
 
-这四个概念描述了从数据本身到管理整个体系的不同层次，我们常用一个图书馆的例子来把它们串联起来理解。
+Bốn khái niệm này mô tả các tầng khác nhau từ bản thân dữ liệu đến việc quản lý toàn bộ hệ thống, chúng ta thường dùng một ví dụ về thư viện để nối chúng lại với nhau mà hiểu.
 
-- **数据库 (Database - DB):** 它就像是图书馆里，书架上存放的所有书籍和资料。从技术上讲，数据库就是按照一定数据模型组织、描述和储存起来的、可以被各种用户共享的结构化数据的集合。它就是我们最终要存取的核心——信息本身。
-- **数据库管理系统 (Database Management System - DBMS):** 它就像是整个图书馆的管理系统，包括图书的分类编目规则、借阅归还流程、安全检查系统等等。从技术上讲，DBMS 是一种大型软件，比如我们常用的 MySQL、Oracle、PostgreSQL 软件。它的核心职责是科学地组织和存储数据、高效地获取和维护数据；为我们屏蔽了底层文件操作的复杂性，提供了一套标准接口（如 SQL）来操纵数据，并负责并发控制、事务管理、权限控制等复杂问题。
-- **数据库系统 (Database System - DBS):** 它就是整个正常运转的图书馆。这是一个更大的概念，不仅包括书(DB)和管理系统(DBMS)，还包括了硬件、应用和使用的人。
-- **数据库管理员 (Database Administrator - DBA ):** 他就是图书馆的馆长，负责整个数据库系统正常运行。他的职责非常广泛，包括数据库的设计、安装、监控、性能调优、备份与恢复、安全管理等等，确保整个系统的稳定、高效和安全。
+- **Database (DB):** nó giống như trong thư viện, tất cả sách và tài liệu được lưu trên giá sách. Về mặt kỹ thuật, database là tập hợp dữ liệu có cấu trúc được tổ chức, mô tả và lưu trữ theo một mô hình dữ liệu (data model) nhất định, có thể được chia sẻ bởi nhiều người dùng khác nhau. Nó chính là thứ cốt lõi cuối cùng mà chúng ta phải lưu trữ và truy xuất — bản thân thông tin.
+- **Database Management System (DBMS):** nó giống như hệ thống quản lý của toàn bộ thư viện, bao gồm quy tắc phân loại biên mục sách, quy trình mượn-trả, hệ thống kiểm tra an ninh, v.v. Về mặt kỹ thuật, DBMS là một phần mềm cỡ lớn, ví dụ như MySQL, Oracle, PostgreSQL mà chúng ta thường dùng. Trách nhiệm cốt lõi của nó là tổ chức và lưu trữ dữ liệu một cách khoa học, thu thập và duy trì dữ liệu hiệu quả; nó che giấu sự phức tạp của thao tác tệp cấp thấp, cung cấp một bộ interface chuẩn (như SQL) để điều khiển dữ liệu, và chịu trách nhiệm về các vấn đề phức tạp như concurrent control, transaction management, permission control.
+- **Database System (DBS):** nó chính là thư viện đang hoạt động bình thường hoàn chỉnh. Đây là một khái niệm lớn hơn, không chỉ bao gồm sách (DB) và hệ thống quản lý (DBMS), mà còn bao gồm cả phần cứng, ứng dụng và con người sử dụng.
+- **Database Administrator (DBA):** anh ấy chính là giám đốc thư viện, phụ trách toàn bộ database system hoạt động bình thường. Trách nhiệm của anh ấy rất rộng, bao gồm thiết kế, cài đặt, giám sát, tinh chỉnh hiệu năng, sao lưu và khôi phục database, quản lý an toàn, v.v., đảm bảo hệ thống ổn định, hiệu quả và an toàn.
 
-DB 和 DBMS 我们通常会搞混，这里再简单提一下：**通常我们说“用 MySQL 数据库”，其实是用 MySQL（DBMS）来管理一个或多个数据库（DB）。**
+DB và DBMS chúng ta thường hay nhầm lẫn, ở đây nhắc lại đơn giản: **thường khi chúng ta nói "dùng MySQL database", thực ra là dùng MySQL (DBMS) để quản lý một hoặc nhiều database (DB).**
 
-## DBMS 有哪些主要的功能
+## DBMS có những chức năng chính nào
 
 ```mermaid
 graph TD
-    DBMS["🗄️ DBMS<br/><b>数据库管理系统</b>"]
+    DBMS["🗄️ DBMS<br/><b>Hệ quản trị cơ sở dữ liệu</b>"]
 
-    subgraph define["数据定义"]
+    subgraph define["Định nghĩa dữ liệu"]
         DDL["📐 DDL<br/>Data Definition Language"]
-        DDL_Items["• 创建/修改/删除对象<br/>• 定义表结构<br/>• 定义视图、索引<br/>• 定义触发器<br/>• 定义存储过程"]
+        DDL_Items["• Tạo/Sửa/Xóa đối tượng<br/>• Định nghĩa cấu trúc bảng<br/>• Định nghĩa view, index<br/>• Định nghĩa trigger<br/>• Định nghĩa stored procedure"]
     end
 
-    subgraph operate["数据操作"]
+    subgraph operate["Thao tác dữ liệu"]
         DML["⚡ DML<br/>Data Manipulation Language"]
-        CRUD["<b>CRUD 操作</b><br/>• Create 创建<br/>• Read 读取<br/>• Update 更新<br/>• Delete 删除"]
+        CRUD["<b>Thao tác CRUD</b><br/>• Create Tạo<br/>• Read Đọc<br/>• Update Cập nhật<br/>• Delete Xóa"]
     end
 
-    subgraph control["数据控制"]
-        DCL["🔐 数据控制功能"]
-        Control_Items["• 并发控制<br/>• 事务管理<br/>• 完整性约束<br/>• 权限控制<br/>• 安全性限制"]
+    subgraph control["Kiểm soát dữ liệu"]
+        DCL["🔐 Chức năng kiểm soát dữ liệu"]
+        Control_Items["• Kiểm soát đồng thời<br/>• Quản lý transaction<br/>• Ràng buộc toàn vẹn<br/>• Kiểm soát quyền<br/>• Giới hạn an toàn"]
     end
 
-    subgraph maintain["数据库维护"]
-        Maintenance["🛠️ 维护功能"]
-        Maintain_Items["• 数据导入/导出<br/>• 备份与恢复<br/>• 性能监控与分析<br/>• 系统日志管理"]
+    subgraph maintain["Bảo trì database"]
+        Maintenance["🛠️ Chức năng bảo trì"]
+        Maintain_Items["• Import/Export dữ liệu<br/>• Sao lưu và khôi phục<br/>• Giám sát và phân tích hiệu năng<br/>• Quản lý system log"]
     end
 
     DBMS --> DDL
@@ -81,91 +81,91 @@ graph TD
     style maintain fill:#E4C189,stroke:#E99151,stroke-width:2px,stroke-dasharray: 5 5,opacity:0.3
 ```
 
-DBMS 通常提供四大核心功能：
+DBMS thường cung cấp bốn chức năng cốt lõi:
 
-1. **数据定义：** 这是 DBMS 的基础。它提供了一套数据定义语言（Data Definition Language - DDL），让我们能够创建、修改和删除数据库中的各种对象。这不仅仅是定义表的结构（比如字段名、数据类型），还包括定义视图、索引、触发器、存储过程等。
-2. **数据操作：** 这是我们作为开发者日常使用最多的功能。它提供了一套数据操作语言（Data Manipulation Language - DML），核心就是我们熟悉的增、删、改、查（CRUD）操作。它让我们能够方便地对数据库中的数据进行操作和检索。
-3. **数据控制：** 这是保证数据正确、安全、可靠的关键。通常包含并发控制、事务管理、完整性约束、权限控制、安全性限制等功能。
-4. **数据库维护：** 这部分功能是为了保障数据库系统的长期稳定运行。它包括了数据的导入导出、数据库的备份与恢复、性能监控与分析、以及系统日志管理等。
+1. **Data definition (định nghĩa dữ liệu):** đây là nền tảng của DBMS. Nó cung cấp một bộ ngôn ngữ định nghĩa dữ liệu (Data Definition Language - DDL), giúp chúng ta có thể tạo, sửa đổi và xóa các đối tượng khác nhau trong database. Điều này không chỉ là định nghĩa cấu trúc bảng (ví dụ tên field, kiểu dữ liệu), mà còn bao gồm định nghĩa view, index, trigger, stored procedure, v.v.
+2. **Data manipulation (thao tác dữ liệu):** đây là chức năng mà chúng ta với tư cách developer sử dụng nhiều nhất hằng ngày. Nó cung cấp một bộ ngôn ngữ thao tác dữ liệu (Data Manipulation Language - DML), cốt lõi chính là thêm, xóa, sửa, tra (CRUD) mà chúng ta quen thuộc. Nó giúp chúng ta thuận tiện thao tác và truy xuất dữ liệu trong database.
+3. **Data control (kiểm soát dữ liệu):** đây là yếu tố then chốt đảm bảo dữ liệu đúng đắn, an toàn, tin cậy. Thường bao gồm concurrent control, transaction management, integrity constraint, permission control, giới hạn an toàn, v.v.
+4. **Database maintenance (bảo trì database):** phần chức năng này nhằm đảm bảo database system vận hành ổn định lâu dài. Nó bao gồm import/export dữ liệu, sao lưu và khôi phục database, giám sát và phân tích hiệu năng, cũng như quản lý system log, v.v.
 
-## 你知道哪些类型的 DBMS？
+## Bạn biết những loại DBMS nào?
 
-### 关系型数据库
+### Relational database
 
-除了我们最常用的关系型数据库（RDBMS），比如 MySQL（开源首选）、PostgreSQL（功能最全）、Oracle（企业级），它们基于严格的表结构和 SQL，非常适合结构化数据和需要事务保证的场景，例如银行交易、订单系统。
+Ngoài relational database (RDBMS) thường dùng nhất, ví dụ MySQL (lựa chọn mã nguồn mở hàng đầu), PostgreSQL (đầy đủ chức năng nhất), Oracle (cấp doanh nghiệp), chúng dựa trên cấu trúc bảng và SQL chặt chẽ, rất phù hợp với dữ liệu có cấu trúc và các kịch bản cần transaction, ví dụ giao dịch ngân hàng, hệ thống đơn hàng.
 
-近年来，为了应对互联网应用带来的海量数据、高并发和多样化数据结构的需求，涌现出了一大批 NoSQL 和 NewSQL 数据库。
+Trong những năm gần đây, để đáp ứng nhu cầu dữ liệu khổng lồ, độ đồng thời cao và cấu trúc dữ liệu đa dạng do ứng dụng internet mang lại, một loạt database NoSQL và NewSQL đã xuất hiện.
 
-### NoSQL 数据库
+### NoSQL database
 
-它们的共同特点是为了极致的性能和水平扩展能力，在某些方面（通常是事务）做了妥协。
+Đặc điểm chung của chúng là để đạt được hiệu năng tối đa và khả năng mở rộng ngang (horizontal scaling), đã thỏa hiệp ở một số khía cạnh nhất định (thường là transaction).
 
-**1. 键值数据库，代表是 Redis。**
+**1. Key-value database, đại diện là Redis.**
 
-- **特点：** 数据模型极其简单，就是一个巨大的 Map，通过 Key 来存取 Value。内存操作，性能极高。
-- **适用场景：** 非常适合做缓存、会话存储、计数器等对读写性能要求极高的场景。
+- **Đặc điểm:** mô hình dữ liệu cực kỳ đơn giản, chính là một Map khổng lồ, thông qua Key để lưu-trữ và truy xuất Value. Hoạt động trên bộ nhớ, hiệu năng cực cao.
+- **Kịch bản áp dụng:** rất phù hợp làm cache, session storage, counter và các kịch bản yêu cầu hiệu năng đọc-ghi cực cao.
 
-**2. 文档数据库，代表是 MongoDB。**
+**2. Document database, đại diện là MongoDB.**
 
-- **特点：** 它存储的是半结构化的文档（比如 JSON/BSON），结构灵活，不需要预先定义表结构。
-- **适用场景：** 特别适合那些数据结构多变、快速迭代的业务，比如用户画像、内容管理系统、日志存储等。
+- **Đặc điểm:** nó lưu trữ các tài liệu bán cấu trúc (ví dụ JSON/BSON), cấu trúc linh hoạt, không cần định nghĩa trước cấu trúc bảng.
+- **Kịch bản áp dụng:** đặc biệt phù hợp với các nghiệp vụ có cấu trúc dữ liệu thay đổi nhiều, lặp nhanh, ví dụ user profile, content management system, log storage, v.v.
 
-**3. 列式数据库，代表是 HBase, Cassandra。**
+**3. Columnar database, đại diện là HBase, Cassandra.**
 
-- **特点：** 数据是按列族而不是按行来存储的。这使得它在对大量行进行少量列的读取时，性能极高。
-- **适用场景：** 专为海量数据存储和分析设计，非常适合做大数据分析、监控数据存储、推荐系统等需要高吞吐量写入和范围扫描的场景。
+- **Đặc điểm:** dữ liệu được lưu trữ theo column family chứ không phải theo hàng. Điều này khiến nó có hiệu năng cực cao khi đọc một số ít cột trên một lượng lớn hàng.
+- **Kịch bản áp dụng:** được thiết kế riêng cho việc lưu trữ và phân tích dữ liệu khổng lồ, rất phù hợp cho phân tích dữ liệu lớn, lưu trữ dữ liệu giám sát, hệ thống gợi ý và các kịch bản cần thông lượng ghi cao và quét theo dải (range scan).
 
-**4. 图形数据库，代表是 Neo4j。**
+**4. Graph database, đại diện là Neo4j.**
 
-- **特点：** 数据模型是节点（Nodes）和边（Edges），专门用来存储和查询实体之间的复杂关系。
-- **适用场景：** 在社交网络（好友关系）、推荐引擎（用户-商品关系）、知识图谱、欺诈检测（资金流动关系）等场景下，表现远超关系型数据库。
+- **Đặc điểm:** mô hình dữ liệu là Nodes (nút) và Edges (cạnh), chuyên dùng để lưu trữ và truy vấn các mối quan hệ phức tạp giữa các thực thể.
+- **Kịch bản áp dụng:** trong các kịch bản như mạng xã hội (mối quan hệ bạn bè), recommendation engine (mối quan hệ user-sản phẩm), knowledge graph, phát hiện gian lận (mối quan hệ dòng tiền), hiệu năng vượt xa relational database.
 
-### NewSQL 数据库
+### NewSQL database
 
-由于 NoSQL 不支持事务，很多对于数据安全要求非常高的系统（比如财务系统、订单系统、交易系统）就不太适合使用了。不过，这类系统往往有存储大量数据的需求。
+Vì NoSQL không hỗ trợ transaction, nên nhiều hệ thống yêu cầu rất cao về an toàn dữ liệu (ví dụ hệ thống tài chính, hệ thống đơn hàng, hệ thống giao dịch) không còn phù hợp để sử dụng. Tuy nhiên, loại hệ thống này thường có nhu cầu lưu trữ lượng lớn dữ liệu.
 
-这些系统往往只能通过购买性能更强大的计算机，或者通过数据库中间件来提高存储能力。不过，前者的金钱成本太高，后者的开发成本太高。
+Những hệ thống này thường chỉ có thể thông qua việc mua máy tính có hiệu năng mạnh hơn, hoặc thông qua database middleware để nâng cao khả năng lưu trữ. Tuy nhiên, chi phí tiền bạc của loại trước quá cao, chi phí phát triển của loại sau quá cao.
 
-于是，**NewSQL** 就来了！
+Thế là, **NewSQL** đã xuất hiện!
 
-简单来说，NewSQL 就是：**分布式存储+SQL+事务** 。NewSQL 不仅具有 NoSQL 对海量数据的存储管理能力，还保持了传统数据库支持 ACID 和 SQL 等特性。因此，NewSQL 也可以称为 **分布式关系型数据库**。
+Nói một cách đơn giản, NewSQL chính là: **distributed storage + SQL + transaction**. NewSQL không chỉ có khả năng quản lý lưu trữ dữ liệu khổng lồ của NoSQL, mà còn giữ nguyên các đặc tính như hỗ trợ ACID và SQL của database truyền thống. Vì vậy, NewSQL cũng có thể gọi là **distributed relational database**.
 
-NewSQL 数据库设计的一些目标：
+Một số mục tiêu thiết kế của NewSQL database:
 
-1. 横向扩展（Scale Out） ： 通过增加机器的方式来提高系统的负载能力。与之类似的是 Scale Up(纵向扩展)，升级硬件设备的方式来提高系统的负载能力。
-2. 强一致性（Strict Consistency）：在任意时刻，所有节点中的数据是一样的。
-3. 高可用（High Availability）：系统几乎可以一直提供服务。
-4. 支持标准 SQL（Structured Query Language） ：PostgreSQL、MySQL、Oracle 等关系型数据库都支持 SQL 。
-5. 事务（ACID） ： 原子性（Atomicity）、一致性（Consistency）、 隔离性（Isolation）; 持久性（Durability）。
-6. 兼容主流关系型数据库 ： 兼容 MySQL、Oracle、PostgreSQL 等常用关系型数据库。
-7. 云原生 （Cloud Native）：可在公有云、私有云、混合云中实现部署工具化、自动化。
-8. HTAP（Hybrid Transactional/Analytical Processing） ：支持 OLTP 和 OLAP 混合处理。
+1. Mở rộng ngang (Scale Out): nâng cao khả năng chịu tải của hệ thống bằng cách tăng số lượng máy. Tương tự là Scale Up (mở rộng dọc), nâng cao khả năng chịu tải của hệ thống bằng cách nâng cấp thiết bị phần cứng.
+2. Tính nhất quán mạnh (Strict Consistency): tại bất kỳ thời điểm nào, dữ liệu trong tất cả các nút đều giống nhau.
+3. Tính sẵn sàng cao (High Availability): hệ thống gần như có thể liên tục cung cấp dịch vụ.
+4. Hỗ trợ SQL chuẩn (Structured Query Language): các relational database như PostgreSQL, MySQL, Oracle đều hỗ trợ SQL.
+5. Transaction (ACID): Atomicity (tính nguyên tử), Consistency (tính nhất quán), Isolation (tính cô lập); Durability (tính bền vững).
+6. Tương thích với các relational database chủ đạo: tương thích các relational database phổ biến như MySQL, Oracle, PostgreSQL.
+7. Cloud Native: có thể triển khai công cụ hóa, tự động hóa trên public cloud, private cloud, hybrid cloud.
+8. HTAP (Hybrid Transactional/Analytical Processing): hỗ trợ xử lý kết hợp OLTP và OLAP.
 
-NewSQL 数据库代表：Google 的 F1/Spanner、阿里的 [OceanBase](https://open.oceanbase.com/)、PingCAP 的 [TiDB](https://pingcap.com/zh/product-community/) 。
+Đại diện NewSQL database: F1/Spanner của Google, [OceanBase](https://open.oceanbase.com/) của Alibaba, [TiDB](https://pingcap.com/zh/product-community/) của PingCAP.
 
-## 什么是元组, 码, 候选码, 主码, 外码, 主属性, 非主属性？
+## Tuple, Key, Candidate Key, Primary Key, Foreign Key, Prime Attribute, Non-prime Attribute là gì?
 
-在关系型数据库理论中，理解元组、码、候选码、主码、外码、主属性和非主属性这些核心概念，对于数据库设计和规范化至关重要。这些概念构成了关系数据库的理论基础。
+Trong lý thuyết relational database, việc hiểu các khái niệm cốt lõi như tuple, key, candidate key, primary key, foreign key, prime attribute và non-prime attribute là vô cùng quan trọng đối với việc thiết kế và chuẩn hóa database. Các khái niệm này tạo thành nền tảng lý thuyết của relational database.
 
 ```mermaid
 graph TD
-    A[关系数据库概念] --> B[数据组织]
-    A --> C[码的类型]
-    A --> D[属性分类]
+    A[Khái niệm relational database] --> B[Tổ chức dữ liệu]
+    A --> C[Loại key]
+    A --> D[Phân loại thuộc tính]
 
-    B --> B1[元组<br/>表中的行记录]
-    B --> B2[属性<br/>表中的列]
+    B --> B1[Tuple<br/>Bản ghi hàng trong bảng]
+    B --> B2[Thuộc tính<br/>Cột trong bảng]
 
-    C --> C1[码<br/>唯一标识]
-    C1 --> C2[候选码<br/>最小唯一标识集]
-    C2 --> C3[主码<br/>选定的候选码]
-    C1 --> C4[外码<br/>引用其他表主码]
+    C --> C1[Key<br/>Định danh duy nhất]
+    C1 --> C2[Candidate Key<br/>Tập định danh duy nhất nhỏ nhất]
+    C2 --> C3[Primary Key<br/>Candidate Key được chọn]
+    C1 --> C4[Foreign Key<br/>Tham chiếu Primary Key bảng khác]
 
-    D --> D1[主属性<br/>候选码中的属性]
-    D --> D2[非主属性<br/>不在候选码中的属性]
+    D --> D1[Prime Attribute<br/>Thuộc tính trong Candidate Key]
+    D --> D2[Non-prime Attribute<br/>Thuộc tính ngoài Candidate Key]
 
-    C3 -.关联.-> C4
-    C2 -.构成.-> D1
+    C3 -.Liên kết.-> C4
+    C2 -.Cấu thành.-> D1
 
     style A fill:#4CA497,stroke:#00838F,stroke-width:3px,color:#fff
     style B fill:#00838F,stroke:#005D7B,stroke-width:2px,color:#fff
@@ -184,162 +184,162 @@ graph TD
     style D2 fill:#E4C189,stroke:#005D7B,stroke-width:1px
 ```
 
-### 基础概念
+### Khái niệm cơ bản
 
-- **元组（Tuple）：** 元组是关系数据库中的基本单位，在二维表中对应一行记录。每个元组包含了一个实体的完整信息。例如，在学生表中，每个学生的完整信息（学号、姓名、年龄等）构成一个元组。
-- **码（Key）：** 码是能够唯一标识关系中元组的一个或多个属性的集合。码的主要作用是保证数据的唯一性和完整性。
+- **Tuple (元组):** tuple là đơn vị cơ bản trong relational database, trong bảng hai chiều tương ứng với một bản ghi hàng. Mỗi tuple chứa thông tin hoàn chỉnh của một thực thể. Ví dụ, trong bảng sinh viên, thông tin hoàn chỉnh của mỗi sinh viên (mã sinh viên, họ tên, tuổi, v.v.) tạo thành một tuple.
+- **Key (码):** key là tập hợp một hoặc nhiều thuộc tính có thể xác định duy nhất tuple trong quan hệ. Tác dụng chính của key là đảm bảo tính duy nhất và tính toàn vẹn của dữ liệu.
 
-### 码的分类
+### Phân loại key
 
-- **候选码（Candidate Key）：** 候选码是能够唯一标识元组的最小属性集合，其任何真子集都不能唯一标识元组。一个关系可能有多个候选码。例如，在学生表中，如果"学号"能唯一标识学生，同时"身份证号"也能唯一标识学生，那么{学号}和{身份证号}都是候选码。
-- **主码/主键（Primary Key）：** 主码是从候选码中选择的一个，用于唯一标识关系中的元组。每个关系只能有一个主码，但可以有多个候选码。选择主码时通常考虑：简单性、稳定性、无业务含义等因素。
-- **外码/外键（Foreign Key）：** 外码是一个关系中的属性或属性组，它对应另一个关系的主码。外码用于建立和维护两个关系之间的联系，是实现参照完整性的重要机制。例如，在选课表中的"学号"如果引用学生表的主码"学号"，则选课表中的"学号"就是外码。
+- **Candidate Key (候选码):** candidate key là tập hợp thuộc tính nhỏ nhất có thể xác định duy nhất tuple, bất kỳ tập con thực sự nào của nó đều không thể xác định duy nhất tuple. Một quan hệ có thể có nhiều candidate key. Ví dụ, trong bảng sinh viên, nếu "mã sinh viên" có thể xác định duy nhất sinh viên, đồng thời "số CMND" cũng có thể xác định duy nhất sinh viên, thì {mã sinh viên} và {số CMND} đều là candidate key.
+- **Primary Key (主码/主键):** primary key là một key được chọn từ các candidate key, dùng để xác định duy nhất tuple trong quan hệ. Mỗi quan hệ chỉ có thể có một primary key, nhưng có thể có nhiều candidate key. Khi chọn primary key thường xem xét: tính đơn giản, tính ổn định, không mang ý nghĩa nghiệp vụ, v.v.
+- **Foreign Key (外码/外键):** foreign key là một thuộc tính hoặc nhóm thuộc tính trong một quan hệ, nó tương ứng với primary key của một quan hệ khác. Foreign key dùng để thiết lập và duy trì mối liên hệ giữa hai quan hệ, là cơ chế quan trọng để thực hiện referential integrity (tính toàn vẹn tham chiếu). Ví dụ, trong bảng đăng ký môn học, nếu "mã sinh viên" tham chiếu primary key "mã sinh viên" của bảng sinh viên, thì "mã sinh viên" trong bảng đăng ký môn học chính là foreign key.
 
-### 属性分类
+### Phân loại thuộc tính
 
-- **主属性（Prime Attribute）：** 主属性是包含在任何一个候选码中的属性。如果一个关系有多个候选码，那么这些候选码中出现的所有属性都是主属性。例如，工人关系（工号，身份证号，姓名，性别，部门）中，如果{工号}和{身份证号}都是候选码，那么"工号"和"身份证号"都是主属性。
-- **非主属性（Non-prime Attribute）：** 非主属性是不包含在任何候选码中的属性。这些属性完全依赖于候选码来确定其值。在上述工人关系中，"姓名"、"性别"、"部门"都是非主属性。
+- **Prime Attribute (主属性):** prime attribute là thuộc tính được chứa trong bất kỳ candidate key nào. Nếu một quan hệ có nhiều candidate key, thì tất cả thuộc tính xuất hiện trong các candidate key đó đều là prime attribute. Ví dụ, trong quan hệ công nhân (mã công nhân, số CMND, họ tên, giới tính, bộ phận), nếu {mã công nhân} và {số CMND} đều là candidate key, thì "mã công nhân" và "số CMND" đều là prime attribute.
+- **Non-prime Attribute (非主属性):** non-prime attribute là thuộc tính không được chứa trong bất kỳ candidate key nào. Các thuộc tính này hoàn toàn phụ thuộc vào candidate key để xác định giá trị của mình. Trong quan hệ công nhân nêu trên, "họ tên", "giới tính", "bộ phận" đều là non-prime attribute.
 
-## 什么是 ER 图？
+## ER diagram là gì?
 
-我们做一个项目的时候一定要试着画 ER 图来捋清数据库设计，这个也是面试官问你项目的时候经常会被问到的。
+Khi làm một dự án, chúng ta nhất định phải thử vẽ ER diagram để làm rõ thiết kế database, đây cũng là thứ mà interviewer thường hỏi khi hỏi về dự án của bạn.
 
-**ER 图** 全称是 Entity Relationship Diagram（实体联系图），提供了表示实体类型、属性和联系的方法。
+**ER diagram** tên đầy đủ là Entity Relationship Diagram (biểu đồ quan hệ thực thể), cung cấp phương pháp biểu diễn loại thực thể, thuộc tính và mối liên hệ.
 
-ER 图由下面 3 个要素组成：
+ER diagram được cấu thành từ 3 yếu tố dưới đây:
 
-- **实体**：通常是现实世界的业务对象，当然使用一些逻辑对象也可以。比如对于一个校园管理系统，会涉及学生、教师、课程、班级等等实体。在 ER 图中，实体使用矩形框表示。
-- **属性**：即某个实体拥有的属性，属性用来描述组成实体的要素，对于产品设计来说可以理解为字段。在 ER 图中，属性使用椭圆形表示。
-- **联系**：即实体与实体之间的关系，在 ER 图中用菱形表示，这个关系不仅有业务关联关系，还能通过数字表示实体之间的数量对照关系。例如，一个班级会有多个学生就是一种实体间的联系。
+- **Thực thể (Entity):** thường là đối tượng nghiệp vụ trong thế giới thực, tất nhiên dùng một số đối tượng logic cũng được. Ví dụ đối với một hệ thống quản lý khuôn viên, sẽ liên quan đến các thực thể như sinh viên, giáo viên, môn học, lớp học, v.v. Trong ER diagram, thực thể được biểu diễn bằng khung hình chữ nhật.
+- **Thuộc tính (Attribute):** tức là thuộc tính mà một thực thể sở hữu, thuộc tính dùng để mô tả các yếu tố cấu thành thực thể, đối với thiết kế sản phẩm có thể hiểu là field. Trong ER diagram, thuộc tính được biểu diễn bằng hình elip.
+- **Mối liên hệ (Relationship):** tức là mối quan hệ giữa thực thể và thực thể, trong ER diagram được biểu diễn bằng hình thoi, mối quan hệ này không chỉ có mối quan hệ ràng buộc nghiệp vụ, mà còn có thể thông qua con số để biểu thị mối quan hệ tương ứng về số lượng giữa các thực thể. Ví dụ, một lớp học sẽ có nhiều sinh viên chính là một mối liên hệ giữa các thực thể.
 
-下图是一个学生选课的 ER 图，每个学生可以选若干门课程，同一门课程也可以被若干人选择，所以它们之间的关系是多对多（M: N）。另外，还有其他两种实体之间的关系是：1 对 1（1:1）、1 对多（1: N）。
+Hình dưới đây là ER diagram sinh viên đăng ký môn học, mỗi sinh viên có thể chọn nhiều môn học, cùng một môn học cũng có thể được nhiều người chọn, vì vậy mối quan hệ giữa chúng là nhiều-nhiều (M: N). Ngoài ra, còn có hai loại mối quan hệ khác giữa các thực thể: 1 với 1 (1:1), 1 với nhiều (1: N).
 
 ```mermaid
 erDiagram
     STUDENT {
-        string student_id PK "学号"
-        string name "姓名"
-        string gender "性别"
-        date birth_date "出生日期"
-        string department "学院名称"
+        string student_id PK "Mã sinh viên"
+        string name "Họ tên"
+        string gender "Giới tính"
+        date birth_date "Ngày sinh"
+        string department "Tên khoa"
     }
 
     COURSE {
-        string course_id PK "课程编号"
-        string course_name "课程名称"
-        string location "课程地点"
-        string instructor "开课教师"
-        float credits "成绩"
+        string course_id PK "Mã môn học"
+        string course_name "Tên môn học"
+        string location "Địa điểm học"
+        string instructor "Giảng viên"
+        float credits "Số tín chỉ"
     }
 
     ENROLLMENT {
-        string student_id FK "学号"
-        string course_id FK "课程编号"
-        float grade "成绩"
+        string student_id FK "Mã sinh viên"
+        string course_id FK "Mã môn học"
+        float grade "Điểm"
     }
 
-    STUDENT ||--o{ ENROLLMENT : "选课"
-    COURSE ||--o{ ENROLLMENT : "被选"
+    STUDENT ||--o{ ENROLLMENT : "Đăng ký"
+    COURSE ||--o{ ENROLLMENT : "Được đăng ký"
 
     style STUDENT fill:#4CA497,stroke:#00838F,stroke-width:2px
     style COURSE fill:#005D7B,stroke:#00838F,stroke-width:2px
     style ENROLLMENT fill:#E99151,stroke:#C44545,stroke-width:2px
 ```
 
-## 数据库范式了解吗?
+## Bạn có biết về database normalization form (chuẩn hóa database) không?
 
-数据库范式有 3 种：
+Database normalization form có 3 loại:
 
-- 1NF(第一范式)：属性不可再分。
-- 2NF(第二范式)：1NF 的基础之上，消除了非主属性对于码的部分函数依赖。
-- 3NF(第三范式)：3NF 在 2NF 的基础之上，消除了非主属性对于码的传递函数依赖 。
+- 1NF (First Normal Form): thuộc tính không thể chia nhỏ thêm nữa.
+- 2NF (Second Normal Form): trên cơ sở 1NF, loại bỏ sự phụ thuộc hàm cục bộ (partial functional dependency) của thuộc tính không khóa (non-prime attribute) đối với mã.
+- 3NF (Third Normal Form): 3NF trên cơ sở 2NF, loại bỏ sự phụ thuộc hàm truyền (transitive functional dependency) của non-prime attribute đối với mã.
 
-### 1NF(第一范式)
+### 1NF (First Normal Form)
 
-属性（对应于表中的字段）不能再被分割，也就是这个字段只能是一个值，不能再分为多个其他的字段了。**1NF 是所有关系型数据库的最基本要求** ，也就是说关系型数据库中创建的表一定满足第一范式。
+Thuộc tính (tương ứng với field trong bảng) không thể bị chia nhỏ nữa, tức là field này chỉ có thể là một giá trị, không thể chia thành nhiều field khác nữa. **1NF là yêu cầu cơ bản nhất của mọi relational database**, tức là bảng được tạo trong relational database nhất định phải thỏa mãn first normal form.
 
-### 2NF(第二范式)
+### 2NF (Second Normal Form)
 
-2NF 在 1NF 的基础之上，消除了非主属性对于码的部分函数依赖。如下图所示，展示了第一范式到第二范式的过渡。第二范式在第一范式的基础上增加了一个列，这个列称为主键，非主属性都依赖于主键。
+2NF trên cơ sở 1NF, loại bỏ sự phụ thuộc hàm cục bộ của non-prime attribute đối với mã. Như hình dưới đây, thể hiện sự chuyển tiếp từ first normal form sang second normal form. Second normal form trên cơ sở first normal form thêm một cột, cột này gọi là primary key, các non-prime attribute đều phụ thuộc vào primary key.
 
 ![第二范式](https://oss.javaguide.cn/github/javaguide/csdn/bd1d31be3779342427fc9e462bf7f05c.png)
 
-一些重要的概念：
+Một số khái niệm quan trọng:
 
-- **函数依赖（functional dependency）**：若在一张表中，在属性（或属性组）X 的值确定的情况下，必定能确定属性 Y 的值，那么就可以说 Y 函数依赖于 X，写作 X → Y。
-- **部分函数依赖（partial functional dependency）**：如果 X→Y，并且存在 X 的一个真子集 X0，使得 X0→Y，则称 Y 对 X 部分函数依赖。比如学生基本信息表 R 中（学号，身份证号，姓名）当然学号属性取值是唯一的，在 R 关系中，（学号，身份证号）->（姓名），（学号）->（姓名），（身份证号）->（姓名）；所以姓名部分函数依赖于（学号，身份证号）；
-- **完全函数依赖(Full functional dependency)**：在一个关系中，若某个非主属性数据项依赖于全部关键字称之为完全函数依赖。比如学生基本信息表 R（学号，班级，姓名）假设不同的班级学号有相同的，班级内学号不能相同，在 R 关系中，（学号，班级）->（姓名），但是（学号）->(姓名)不成立，（班级）->(姓名)不成立，所以姓名完全函数依赖与（学号，班级）；
-- **传递函数依赖**：在关系模式 R(U)中，设 X，Y，Z 是 U 的不同的属性子集，如果 X 确定 Y、Y 确定 Z，且有 X 不包含 Y，Y 不确定 X，（X∪Y）∩Z=空集合，则称 Z 传递函数依赖(transitive functional dependency) 于 X。传递函数依赖会导致数据冗余和异常。传递函数依赖的 Y 和 Z 子集往往同属于某一个事物，因此可将其合并放到一个表中。比如在关系 R(学号 , 姓名, 系名，系主任)中，学号 → 系名，系名 → 系主任，所以存在非主属性系主任对于学号的传递函数依赖。
+- **Functional dependency (phụ thuộc hàm):** nếu trong một bảng, khi giá trị của thuộc tính (hoặc nhóm thuộc tính) X được xác định, nhất định có thể xác định được giá trị của thuộc tính Y, thì có thể nói Y phụ thuộc hàm vào X, viết là X → Y.
+- **Partial functional dependency (phụ thuộc hàm cục bộ):** nếu X→Y, và tồn tại một tập con thực sự X0 của X, khiến X0→Y, thì gọi là Y phụ thuộc hàm cục bộ vào X. Ví dụ trong bảng thông tin cơ bản sinh viên R (学号, 身份证号, 姓名), tất nhiên giá trị thuộc tính "学号" là duy nhất, trong quan hệ R, (学号, 身份证号)->(姓名), (学号)->(姓名), (身份证号)->(姓名); vì vậy 姓名 phụ thuộc hàm cục bộ vào (学号, 身份证号);
+- **Full functional dependency (phụ thuộc hàm đầy đủ):** trong một quan hệ, nếu một mục dữ liệu thuộc tính không khóa nào đó phụ thuộc vào toàn bộ key thì gọi là full functional dependency. Ví dụ bảng thông tin cơ bản sinh viên R (学号, 班级, 姓名) giả sử các lớp khác nhau có thể có mã sinh viên giống nhau, trong cùng một lớp mã sinh viên không thể giống nhau, trong quan hệ R, (学号, 班级)->(姓名), nhưng (学号)->(姓名) không đúng, (班级)->(姓名) không đúng, vì vậy 姓名 phụ thuộc hàm đầy đủ vào (学号, 班级);
+- **Transitive functional dependency (phụ thuộc hàm truyền):** trong relation schema R(U), giả sử X, Y, Z là các tập con thuộc tính khác nhau của U, nếu X xác định Y, Y xác định Z, và X không chứa Y, Y không xác định X, (X∪Y)∩Z = tập rỗng, thì gọi là Z phụ thuộc hàm truyền vào X. Transitive functional dependency sẽ gây ra dư thừa và bất thường dữ liệu. Các tập con Y và Z của transitive functional dependency thường cùng thuộc về một sự vật nào đó, vì vậy có thể gộp chúng lại đặt vào một bảng. Ví dụ trong quan hệ R(学号, 姓名, 系名, 系主任), 学号 → 系名, 系名 → 系主任, vì vậy tồn tại non-prime attribute 系主任 phụ thuộc hàm truyền vào 学号.
 
-### 3NF(第三范式)
+### 3NF (Third Normal Form)
 
-3NF 在 2NF 的基础之上，消除了非主属性对于码的传递函数依赖 。符合 3NF 要求的数据库设计，**基本**上解决了数据冗余过大，插入异常，修改异常，删除异常的问题。比如在关系 R(学号 , 姓名, 系名，系主任)中，学号 → 系名，系名 → 系主任，所以存在非主属性系主任对于学号的传递函数依赖，所以该表的设计，不符合 3NF 的要求。
+3NF trên cơ sở 2NF, loại bỏ sự phụ thuộc hàm truyền của non-prime attribute đối với mã. Thiết kế database đáp ứng yêu cầu 3NF, **về cơ bản** đã giải quyết các vấn đề dư thừa dữ liệu quá lớn, bất thường khi chèn, bất thường khi sửa đổi, bất thường khi xóa. Ví dụ trong quan hệ R(学号, 姓名, 系名, 系主任), 学号 → 系名, 系名 → 系主任, vì vậy tồn tại non-prime attribute 系主任 phụ thuộc hàm truyền vào 学号, do đó thiết kế của bảng này không đáp ứng yêu cầu 3NF.
 
-## 主键和外键有什么区别?
+## Primary key và foreign key khác nhau ở điểm nào?
 
-从定义和属性上看，它们的区别是：
+Từ định nghĩa và thuộc tính, sự khác biệt của chúng là:
 
-- **主键 (Primary Key):** 它的核心作用是唯一标识表中的每一行数据。因此，主键列的值必须是唯一的 (Unique) 且不能为空 (Not Null)。一张表只能有一个主键。主键保证了实体完整性。
-- **外键 (Foreign Key):** 它的核心作用是建立并强制两张表之间的关联关系。一张表中的外键列，其值必须对应另一张表中某行的候选键值（通常是主键，也可以是唯一键），或者是一个 NULL 值。因此，外键的值可以重复，也可以为空。一张表可以有多个外键，分别关联到不同的表。外键保证了引用完整性。
+- **Primary Key (主键):** tác dụng cốt lõi của nó là xác định duy nhất mỗi hàng dữ liệu trong bảng. Vì vậy, giá trị của cột primary key phải là duy nhất (Unique) và không được rỗng (Not Null). Một bảng chỉ có thể có một primary key. Primary key đảm bảo entity integrity (tính toàn vẹn thực thể).
+- **Foreign Key (外键):** tác dụng cốt lõi của nó là thiết lập và ép buộc mối quan hệ liên kết giữa hai bảng. Giá trị của cột foreign key trong một bảng, phải tương ứng với giá trị candidate key của một hàng trong bảng khác (thường là primary key, cũng có thể là unique key), hoặc là một giá trị NULL. Vì vậy, giá trị của foreign key có thể lặp lại, cũng có thể rỗng. Một bảng có thể có nhiều foreign key, lần lượt liên kết đến các bảng khác nhau. Foreign key đảm bảo referential integrity (tính toàn vẹn tham chiếu).
 
-用一个简单的电商例子来说明：假设我们有两张表：`users` (用户表) 和 `orders` (订单表)。
+Dùng một ví dụ thương mại điện tử đơn giản để minh họa: giả sử chúng ta có hai bảng: `users` (bảng người dùng) và `orders` (bảng đơn hàng).
 
-- 在 `users` 表中，`user_id` 列是**主键**。每个用户的 `user_id` 都是独一无二的，我们用它来区分张三和李四。
-- 在 `orders` 表中，`order_id` 是它自己的**主键**。同时，它会有一个 `user_id` 列，这个列就是一个**外键**，它引用了 `users` 表的 `user_id` 主键。
+- Trong bảng `users`, cột `user_id` là **primary key**. `user_id` của mỗi người dùng là duy nhất, chúng ta dùng nó để phân biệt Trương Tam và Lý Tứ.
+- Trong bảng `orders`, `order_id` là **primary key** của chính nó. Đồng thời, nó sẽ có một cột `user_id`, cột này chính là một **foreign key**, nó tham chiếu primary key `user_id` của bảng `users`.
 
-这个外键约束就保证了：
+Ràng buộc foreign key này đảm bảo:
 
-1. 你不能创建一个不属于任何已知用户的订单（ `user_id` 在 `users` 表中不存在）。
-2. 你不能删除一个已经下了订单的用户（除非设置了级联删除等特殊规则）。
+1. Bạn không thể tạo một đơn hàng không thuộc về bất kỳ người dùng đã biết nào (`user_id` không tồn tại trong bảng `users`).
+2. Bạn không thể xóa một người dùng đã đặt hàng (trừ khi thiết lập các quy tắc đặc biệt như cascade delete).
 
-## 为什么不推荐使用外键与级联？
+## Tại sao không khuyến khích sử dụng foreign key và cascade?
 
-对于外键和级联，阿里巴巴开发手册这样说到：
+Đối với foreign key và cascade, sổ tay phát triển Alibaba đã nói như thế này:
 
-> 【强制】不得使用外键与级联，一切外键概念必须在应用层解决。
+> 【Bắt buộc】không được dùng foreign key và cascade, mọi khái niệm foreign key phải được giải quyết ở tầng ứng dụng.
 >
-> 说明: 以学生和成绩的关系为例，学生表中的 student_id 是主键，那么成绩表中的 student_id 则为外键。如果更新学生表中的 student_id，同时触发成绩表中的 student_id 更新，即为级联更新。外键与级联更新适用于单机低并发，不适合分布式、高并发集群；级联更新是强阻塞，存在数据库更新风暴的风险；外键影响数据库的插入速度
+> Giải thích: lấy mối quan hệ giữa sinh viên và điểm số làm ví dụ, student_id trong bảng sinh viên là primary key, thì student_id trong bảng điểm số là foreign key. Nếu cập nhật student_id trong bảng sinh viên, đồng thời kích hoạt cập nhật student_id trong bảng điểm số, đó là cascade update. Foreign key và cascade update phù hợp với máy đơn độc lập, độ đồng thời thấp, không phù hợp với distributed (phân tán), cụm độ đồng thời cao; cascade update là blocking mạnh, có rủi ro database update storm (bão cập nhật); foreign key ảnh hưởng đến tốc độ chèn của database.
 
-为什么不要用外键呢？大部分人可能会这样回答：
+Tại sao không nên dùng foreign key? Hầu hết mọi người có thể trả lời như thế này:
 
-1. **增加了复杂性：** a. 每次做 DELETE 或者 UPDATE 都必须考虑外键约束，会导致开发的时候很痛苦, 测试数据极为不方便; b. 外键的主从关系是定的，假如哪天需求有变化，数据库中的这个字段根本不需要和其他表有关联的话就会增加很多麻烦。
-2. **增加了额外工作**：数据库需要增加维护外键的工作，比如当我们做一些涉及外键字段的增，删，更新操作之后，需要触发相关操作去检查，保证数据的一致性和正确性，这样会不得不消耗数据库资源。如果在应用层面去维护的话，可以减小数据库压力；
-3. **对分库分表不友好**：因为分库分表下外键是无法生效的。
+1. **Làm tăng độ phức tạp:** a. mỗi lần làm DELETE hoặc UPDATE đều phải xem xét ràng buộc foreign key, sẽ khiến việc phát triển rất đau khổ, việc test dữ liệu cực kỳ bất tiện; b. mối quan hệ chủ-tớ của foreign key là cố định, giả sử ngày nào đó yêu cầu thay đổi, field này trong database căn bản không cần liên quan đến các bảng khác nữa thì sẽ thêm nhiều phiền phức.
+2. **Tăng khối lượng công việc thêm:** database cần thêm công việc bảo trì foreign key, ví dụ khi chúng ta thực hiện các thao tác thêm, xóa, cập nhật liên quan đến foreign key field, cần kích hoạt các thao tác liên quan để kiểm tra, đảm bảo tính nhất quán và đúng đắn của dữ liệu, như vậy sẽ không thể không tiêu hao tài nguyên database. Nếu duy trì ở tầng ứng dụng, có thể giảm áp lực database;
+3. **Không thân thiện với sharding (phân mảnh bảng):** vì dưới sharding, foreign key không thể có hiệu lực.
 4. ……
 
-我个人觉得上面这种回答不是特别的全面，只是说了外键存在的一个常见的问题。实际上，我们知道外键也是有很多好处的，比如：
+Cá nhân tôi cảm thấy cách trả lời trên không đặc biệt toàn diện, chỉ nói về một vấn đề phổ biến mà foreign key tồn tại. Trên thực tế, chúng ta biết foreign key cũng có rất nhiều lợi ích, ví dụ:
 
-1. 保证了数据库数据的一致性和完整性；
-2. 级联操作方便，减轻了程序代码量；
+1. Đảm bảo tính nhất quán và toàn vẹn của dữ liệu database;
+2. Thao tác cascade tiện lợi, giảm nhẹ khối lượng code chương trình;
 3. ……
 
-所以说，不要一股脑的就抛弃了外键这个概念，既然它存在就有它存在的道理，如果系统不涉及分库分表，并发量不是很高的情况还是可以考虑使用外键的。
+Cho nên, đừng nhất loạt vứt bỏ khái niệm foreign key này đi, nó tồn tại tất nhiên có lý do tồn tại của nó, nếu hệ thống không liên quan đến sharding, mức độ đồng thời không quá cao thì vẫn có thể cân nhắc sử dụng foreign key.
 
-## 什么是存储过程?
+## Stored procedure là gì?
 
 ```mermaid
 graph LR
-    A[存储过程] --> B[定义特征]
-    A --> C[优势]
-    A --> D[劣势]
-    A --> E[应用现状]
+    A[Stored Procedure] --> B[Đặc điểm định nghĩa]
+    A --> C[Ưu điểm]
+    A --> D[Nhược điểm]
+    A --> E[Thực trạng ứng dụng]
 
-    B --> B1[SQL语句集合]
-    B --> B2[包含逻辑控制]
-    B --> B3[预编译机制]
+    B --> B1[Tập hợp câu lệnh SQL]
+    B --> B2[Bao gồm điều khiển logic]
+    B --> B3[Cơ chế biên dịch trước]
 
-    C --> C1[执行速度快]
-    C --> C2[运行稳定]
-    C --> C3[简化复杂操作]
+    C --> C1[Tốc độ thực thi nhanh]
+    C --> C2[Chạy ổn định]
+    C --> C3[Đơn giản hóa thao tác phức tạp]
 
-    D --> D1[调试困难]
-    D --> D2[扩展性差]
-    D --> D3[无移植性]
-    D --> D4[占用数据库资源]
+    D --> D1[Gỡ lỗi khó]
+    D --> D2[Khả năng mở rộng kém]
+    D --> D3[Không khả chuyển]
+    D --> D4[Chiếm dụng tài nguyên database]
 
-    E --> E1[传统企业<br/>使用较多]
-    E --> E2[互联网公司<br/>很少使用]
-    E --> E3[阿里规范<br/>明确禁用]
+    E --> E1[Doanh nghiệp truyền thống<br/>sử dụng nhiều]
+    E --> E2[Công ty internet<br/>hiếm khi sử dụng]
+    E --> E3[Quy chuẩn Alibaba<br/>cấm rõ ràng]
 
     style A fill:#4CA497,stroke:#00838F,stroke-width:3px,color:#fff
     style B fill:#00838F,stroke:#005D7B,stroke-width:2px,color:#fff
@@ -365,100 +365,100 @@ graph LR
     style E3 fill:#E4C189,stroke:#005D7B,stroke-width:1px
 ```
 
-存储过程是数据库中预编译的SQL语句集合，它将多条SQL语句和程序逻辑控制语句（如IF-ELSE、WHILE循环等）封装在一起，形成一个可重复调用的数据库对象。
+Stored procedure là tập hợp các câu lệnh SQL đã được biên dịch sẵn trong database, nó đóng gói nhiều câu lệnh SQL và các câu lệnh điều khiển logic chương trình (như IF-ELSE, vòng lặp WHILE, v.v.) lại với nhau, tạo thành một đối tượng database có thể gọi lặp lại được.
 
-**存储过程的优势：**
+**Ưu điểm của stored procedure:**
 
-在传统企业级应用中，存储过程具有一定的实用价值。当业务逻辑复杂时，需要执行大量SQL语句才能完成一个业务操作，此时可以将这些语句封装成存储过程，简化调用过程。由于存储过程在创建时就已经编译并存储在数据库中，执行时无需重新编译，因此相比动态SQL语句具有更好的执行性能。同时，一旦存储过程调试完成，其运行相对稳定可靠。
+Trong các ứng dụng cấp doanh nghiệp truyền thống, stored procedure có một giá trị thực dụng nhất định. Khi logic nghiệp vụ phức tạp, cần thực thi một lượng lớn câu lệnh SQL mới hoàn thành được một thao tác nghiệp vụ, lúc này có thể đóng gói các câu lệnh này thành stored procedure, đơn giản hóa quy trình gọi. Vì stored procedure đã được biên dịch và lưu trữ trong database tại thời điểm tạo, khi thực thi không cần biên dịch lại, vì vậy so với câu lệnh SQL động có hiệu năng thực thi tốt hơn. Đồng thời, một khi stored procedure đã gỡ lỗi xong, sự chạy của nó tương đối ổn định và tin cậy.
 
-**存储过程的局限性：**
+**Hạn chế của stored procedure:**
 
-然而，在现代互联网架构中，存储过程的使用越来越少。主要原因包括：调试困难，缺乏成熟的调试工具；扩展性差，修改业务逻辑需要直接修改数据库对象；移植性差，不同数据库系统的存储过程语法差异较大；占用数据库资源，增加数据库服务器负担；版本管理困难，不便于进行代码版本控制。
+Tuy nhiên, trong kiến trúc internet hiện đại, việc sử dụng stored procedure ngày càng ít. Nguyên nhân chính bao gồm: khó gỡ lỗi, thiếu công cụ gỡ lỗi hoàn thiện; khả năng mở rộng kém, sửa đổi logic nghiệp vụ cần trực tiếp sửa đổi đối tượng database; tính khả chuyển kém, cú pháp stored procedure của các hệ thống database khác nhau khác biệt khá lớn; chiếm dụng tài nguyên database, tăng gánh nặng cho máy chủ database; khó quản lý version, bất tiện cho việc kiểm soát version code.
 
-**行业规范：**
+**Chuẩn mực ngành:**
 
-基于以上原因，许多互联网公司的开发规范中明确限制或禁止使用存储过程。例如，《阿里巴巴Java开发手册》中明确规定禁止使用存储过程，推荐将业务逻辑放在应用层实现，保持数据库的简单和高效。
+Dựa trên các nguyên nhân trên, quy định phát triển của nhiều công ty internet rõ ràng hạn chế hoặc cấm sử dụng stored procedure. Ví dụ, 《Sổ tay phát triển Java Alibaba》 quy định rõ ràng cấm sử dụng stored procedure, khuyến nghị đặt logic nghiệp vụ ở tầng ứng dụng để thực hiện, giữ cho database đơn giản và hiệu quả.
 
 ![阿里巴巴Java开发手册: 禁止存储过程](https://oss.javaguide.cn/github/javaguide/csdn/0fa082bc4d4f919065767476a41b2156.png)
 
-## DROP、DELETE、TRUNCATE 有什么区别？
+## DROP、DELETE、TRUNCATE khác nhau ở điểm nào?
 
-在数据库操作中，`DROP`、`DELETE` 和 `TRUNCATE` 是三个常用的数据删除命令，它们在功能、性能和使用场景上存在显著差异。
+Trong thao tác database, `DROP`,`DELETE` và `TRUNCATE` là ba lệnh xóa dữ liệu thường dùng, chúng có sự khác biệt rõ rệt về chức năng, hiệu năng và kịch bản sử dụng.
 
-**DROP命令：**
+**Lệnh DROP:**
 
-- 语法：`DROP TABLE 表名`
-- 作用：完全删除整个表，包括表结构、数据、索引、触发器、约束等所有相关对象
-- 使用场景：当表不再需要时使用
+- Cú pháp: `DROP TABLE 表名`
+- Tác dụng: xóa hoàn toàn toàn bộ bảng, bao gồm cấu trúc bảng, dữ liệu, index, trigger, constraint và tất cả các đối tượng liên quan khác
+- Kịch bản sử dụng: sử dụng khi bảng không còn cần thiết nữa
 
-**TRUNCATE命令：**
+**Lệnh TRUNCATE:**
 
-- 语法：`TRUNCATE TABLE 表名`
-- 作用：清空表中所有数据，但保留表结构
-- 特点：自增长字段（AUTO_INCREMENT）会重置为初始值（通常为1）
-- 使用场景：需要快速清空表数据但保留表结构时使用
+- Cú pháp: `TRUNCATE TABLE 表名`
+- Tác dụng: xóa sạch toàn bộ dữ liệu trong bảng, nhưng giữ lại cấu trúc bảng
+- Đặc điểm: trường tự tăng (AUTO_INCREMENT) sẽ được đặt lại về giá trị khởi tạo (thường là 1)
+- Kịch bản sử dụng: sử dụng khi cần nhanh chóng xóa sạch dữ liệu bảng nhưng giữ lại cấu trúc bảng
 
-**DELETE命令：**
+**Lệnh DELETE:**
 
-- 语法：`DELETE FROM 表名 WHERE 条件`
-- 作用：删除满足条件的数据行，不带WHERE子句时删除所有数据
-- 特点：自增长字段不会重置，继续从之前的值递增
-- 使用场景：需要有选择地删除部分数据时使用
+- Cú pháp: `DELETE FROM 表名 WHERE 条件`
+- Tác dụng: xóa các hàng dữ liệu thỏa mãn điều kiện, không có mệnh đề WHERE thì xóa toàn bộ dữ liệu
+- Đặc điểm: trường tự tăng không bị đặt lại, tiếp tục tăng từ giá trị trước đó
+- Kịch bản sử dụng: sử dụng khi cần xóa một cách có chọn lọc một phần dữ liệu
 
-`TRUNCATE` 和不带 `WHERE`子句的 `DELETE`、以及 `DROP` 都会删除表内的数据，但是 **`TRUNCATE` 和 `DELETE` 只删除数据不删除表的结构(定义)，执行 `DROP` 语句，此表的结构也会删除，也就是执行`DROP` 之后对应的表不复存在。**
+`TRUNCATE` và `DELETE` không có mệnh đề `WHERE`, cùng với `DROP` đều sẽ xóa dữ liệu trong bảng, nhưng **`TRUNCATE` và `DELETE` chỉ xóa dữ liệu không xóa cấu trúc (định nghĩa) của bảng, còn thực thi câu lệnh `DROP` thì cấu trúc của bảng này cũng sẽ bị xóa, tức là sau khi thực thi `DROP` thì bảng tương ứng không còn tồn tại nữa.**
 
-### 对表结构的影响
+### Ảnh hưởng đến cấu trúc bảng
 
-- `DROP`：删除表结构和所有数据，表将不复存在
-- `TRUNCATE`：仅删除数据，保留表结构和定义
-- `DELETE`：仅删除数据，保留表结构和定义
+- `DROP`: xóa cấu trúc bảng và toàn bộ dữ liệu, bảng sẽ không còn tồn tại
+- `TRUNCATE`: chỉ xóa dữ liệu, giữ lại cấu trúc và định nghĩa bảng
+- `DELETE`: chỉ xóa dữ liệu, giữ lại cấu trúc và định nghĩa bảng
 
-### 触发器
+### Trigger
 
-- `DELETE` 操作会触发相关的DELETE触发器
-- `TRUNCATE` 和 `DROP` 不会触发DELETE触发器
+- Thao tác `DELETE` sẽ kích hoạt trigger DELETE liên quan
+- `TRUNCATE` và `DROP` không kích hoạt trigger DELETE
 
-### 事务和回滚
+### Transaction và rollback
 
-- `DROP` 和 `TRUNCATE` 属于DDL操作，执行后立即生效，不能回滚
-- `DELETE` 属于DML操作，可以回滚（在事务中）
+- `DROP` và `TRUNCATE` thuộc về thao tác DDL, sau khi thực thi có hiệu lực ngay, không thể rollback
+- `DELETE` thuộc về thao tác DML, có thể rollback (trong transaction)
 
-### 执行速度
+### Tốc độ thực thi
 
-一般来说：`DROP` > `TRUNCATE` > `DELETE`（这个我没有实际测试过）。
+Nói chung: `DROP` > `TRUNCATE` > `DELETE` (điều này tôi chưa thực sự test qua).
 
-- `DELETE`命令执行的时候会产生数据库的`binlog`日志，而日志记录是需要消耗时间的，但是也有个好处方便数据回滚恢复。
-- `TRUNCATE`命令执行的时候不会产生数据库日志，因此比`DELETE`要快。除此之外，还会把表的自增值重置和索引恢复到初始大小等。
-- `DROP`命令会把表占用的空间全部释放掉。
+- Khi lệnh `DELETE` thực thi sẽ tạo ra log `binlog` của database, mà việc ghi log cần tiêu hao thời gian, nhưng cũng có lợi là tiện cho việc rollback và khôi phục dữ liệu.
+- Khi lệnh `TRUNCATE` thực thi sẽ không tạo ra log database, vì vậy nhanh hơn `DELETE`. Ngoài ra, nó còn đặt lại giá trị tự tăng của bảng và khôi phục index về kích thước ban đầu, v.v.
+- Lệnh `DROP` sẽ giải phóng toàn bộ không gian mà bảng chiếm dụng.
 
-Tips：你应该更多地关注在使用场景上，而不是执行效率。
+Tips: bạn nên quan tâm nhiều hơn đến kịch bản sử dụng, thay vì hiệu quả thực thi.
 
-## DML 语句和 DDL 语句区别是？
+## Câu lệnh DML và câu lệnh DDL khác nhau ở điểm nào?
 
-- DML 是数据库操作语言（Data Manipulation Language）的缩写，是指对数据库中表记录的操作，主要包括表记录的插入、更新、删除和查询，是开发人员日常使用最频繁的操作。
-- DDL （Data Definition Language）是数据定义语言的缩写，简单来说，就是对数据库内部的对象进行创建、删除、修改的操作语言。它和 DML 语言的最大区别是 DML 只是对表内部数据的操作，而不涉及到表的定义、结构的修改，更不会涉及到其他对象。DDL 语句更多的被数据库管理员（DBA）所使用，一般的开发人员很少使用。
+- DML là viết tắt của Data Manipulation Language (ngôn ngữ thao tác dữ liệu), chỉ thao tác trên các bản ghi của bảng trong database, chủ yếu bao gồm chèn, cập nhật, xóa và truy vấn bản ghi trong bảng, là thao tác mà developer sử dụng thường xuyên nhất hằng ngày.
+- DDL (Data Definition Language) là viết tắt của Data Definition Language (ngôn ngữ định nghĩa dữ liệu), nói một cách đơn giản, là ngôn ngữ thao tác để tạo, xóa, sửa đổi các đối tượng bên trong database. Sự khác biệt lớn nhất giữa nó và ngôn ngữ DML là DML chỉ thao tác trên dữ liệu bên trong bảng, không liên quan đến việc định nghĩa bảng, sửa đổi cấu trúc, càng không liên quan đến các đối tượng khác. Câu lệnh DDL được sử dụng nhiều hơn bởi database administrator (DBA), developer thông thường ít khi sử dụng.
 
-另外，由于`SELECT`不会对表进行破坏，所以有的地方也会把`SELECT`单独区分开叫做数据库查询语言 DQL（Data Query Language）。
+Ngoài ra, vì `SELECT` không phá hoại bảng, nên có nơi còn tách riêng `SELECT` ra gọi là database query language DQL (Data Query Language).
 
-## 数据库设计通常分为哪几步?
+## Thiết kế database thường được chia thành những bước nào?
 
 ```mermaid
 graph TD
-    A[数据库设计流程] --> B[1.需求分析]
-    B --> C[2.概念结构设计]
-    C --> D[3.逻辑结构设计]
-    D --> E[4.物理结构设计]
-    E --> F[5.数据库实施]
-    F --> G[6.运行和维护]
+    A[Quy trình thiết kế database] --> B[1. Phân tích yêu cầu]
+    B --> C[2. Thiết kế cấu trúc khái niệm]
+    C --> D[3. Thiết kế cấu trúc logic]
+    D --> E[4. Thiết kế cấu trúc vật lý]
+    E --> F[5. Triển khai database]
+    F --> G[6. Vận hành và bảo trì]
 
-    B --> B1[数据需求<br/>功能需求<br/>性能需求]
-    C --> C1[E-R建模<br/>实体关系图]
-    D --> D1[关系模型<br/>表结构设计<br/>规范化]
-    E --> E1[存储结构<br/>索引设计<br/>分区策略]
-    F --> F1[编程开发<br/>测试部署<br/>数据迁移]
-    G --> G1[性能监控<br/>备份恢复<br/>优化调整]
+    B --> B1[Nhu cầu dữ liệu<br/>Nhu cầu chức năng<br/>Nhu cầu hiệu năng]
+    C --> C1[Mô hình E-R<br/>Biểu đồ thực thể-quan hệ]
+    D --> D1[Mô hình quan hệ<br/>Thiết kế cấu trúc bảng<br/>Chuẩn hóa]
+    E --> E1[Cấu trúc lưu trữ<br/>Thiết kế index<br/>Chiến lược phân vùng]
+    F --> F1[Phát triển lập trình<br/>Test triển khai<br/>Di trú dữ liệu]
+    G --> G1[Giám sát hiệu năng<br/>Sao lưu khôi phục<br/>Tối ưu điều chỉnh]
 
-    G -.反馈.-> B
+    G -.Phản hồi.-> B
 
     style A fill:#4CA497,stroke:#00838F,stroke-width:3px,color:#fff
     style B fill:#00838F,stroke:#005D7B,stroke-width:2px,color:#fff
@@ -476,82 +476,82 @@ graph TD
     style G1 fill:#E4C189,stroke:#00838F,stroke-width:1px
 ```
 
-### 1. 需求分析阶段
+### 1. Giai đoạn phân tích yêu cầu
 
-**目标：** 深入了解和分析用户需求，明确系统边界
-**主要工作：**
+**Mục tiêu:** tìm hiểu và phân tích sâu nhu cầu của người dùng, xác định rõ ranh giới hệ thống
+**Công việc chính:**
 
-- 收集和分析数据需求：确定需要存储哪些数据，数据量大小，数据更新频率
-- 明确功能需求：系统需要支持哪些业务操作，各操作的优先级
-- 定义性能需求：响应时间要求，并发用户数，数据吞吐量
-- 确定安全需求：数据访问权限，加密要求，审计要求
-  **产出物：** 需求规格说明书、数据字典初稿
+- Thu thập và phân tích nhu cầu dữ liệu: xác định cần lưu trữ những dữ liệu nào, kích thước dữ liệu, tần suất cập nhật dữ liệu
+- Làm rõ nhu cầu chức năng: hệ thống cần hỗ trợ những thao tác nghiệp vụ nào, thứ tự ưu tiên của từng thao tác
+- Định nghĩa nhu cầu hiệu năng: yêu cầu thời gian phản hồi, số lượng người dùng đồng thời, thông lượng dữ liệu
+- Xác định nhu cầu an toàn: quyền truy cập dữ liệu, yêu cầu mã hóa, yêu cầu kiểm toán
+  **Sản phẩm tạo ra:** tài liệu đặc tả yêu cầu, bản nháp data dictionary (từ điển dữ liệu)
 
-### 2. 概念结构设计阶段
+### 2. Giai đoạn thiết kế cấu trúc khái niệm
 
-**目标：** 将需求转化为信息世界的概念模型
-**主要工作：**
+**Mục tiêu:** chuyển nhu cầu thành mô hình khái niệm của thế giới thông tin
+**Công việc chính:**
 
-- 识别实体：确定系统中的主要对象
-- 定义属性：明确每个实体的特征
-- 建立联系：确定实体之间的关系（一对一、一对多、多对多）
-- 绘制E-R图（实体-关系图）
-  **产出物：** E-R图、概念数据模型文档
+- Nhận diện thực thể: xác định các đối tượng chính trong hệ thống
+- Định nghĩa thuộc tính: làm rõ đặc điểm của mỗi thực thể
+- Thiết lập mối liên hệ: xác định mối quan hệ giữa các thực thể (một-một, một-nhiều, nhiều-nhiều)
+- Vẽ biểu đồ E-R (biểu đồ thực thể-quan hệ)
+  **Sản phẩm tạo ra:** biểu đồ E-R, tài liệu mô hình dữ liệu khái niệm
 
-### 3. 逻辑结构设计阶段
+### 3. Giai đoạn thiết kế cấu trúc logic
 
-**目标：** 将概念模型转换为特定DBMS支持的逻辑模型
-**主要工作：**
+**Mục tiêu:** chuyển mô hình khái niệm thành mô hình logic mà DBMS cụ thể hỗ trợ
+**Công việc chính:**
 
-- E-R图向关系模型转换：将实体转换为表，属性转换为字段
-- 规范化处理：通过范式化消除数据冗余和更新异常（通常达到3NF）
-- 定义完整性约束：主键、外键、唯一性约束、检查约束
-- 优化模型：根据性能需求进行适当的反规范化
-  **产出物：** 逻辑数据模型、表结构设计文档
+- Chuyển biểu đồ E-R sang mô hình quan hệ: chuyển thực thể thành bảng, thuộc tính thành field
+- Xử lý chuẩn hóa: thông qua normalization (chuẩn hóa) để loại bỏ dư thừa dữ liệu và bất thường cập nhật (thường đạt đến 3NF)
+- Định nghĩa ràng buộc toàn vẹn: primary key, foreign key, ràng buộc duy nhất, ràng buộc kiểm tra
+- Tối ưu hóa mô hình: theo nhu cầu hiệu năng tiến hành denormalization (phi chuẩn hóa) thích hợp
+  **Sản phẩm tạo ra:** mô hình dữ liệu logic, tài liệu thiết kế cấu trúc bảng
 
-### 4. 物理结构设计阶段
+### 4. Giai đoạn thiết kế cấu trúc vật lý
 
-**目标：** 确定数据的物理存储方案和访问方法
-**主要工作：**
+**Mục tiêu:** xác định phương án lưu trữ vật lý và phương thức truy cập của dữ liệu
+**Công việc chính:**
 
-- 选择存储引擎：如MySQL的InnoDB、MyISAM等
-- 设计索引策略：确定需要建立的索引类型和字段
-- 分区设计：对大表进行分区以提高性能
-- 确定存储参数：表空间大小、数据文件位置、缓冲区配置
-- 制定备份策略：全量备份、增量备份的频率和方式
-  **产出物：** 物理设计文档、索引设计方案
+- Chọn storage engine: ví dụ InnoDB, MyISAM của MySQL, v.v.
+- Thiết kế chiến lược index: xác định loại index và field cần thiết lập
+- Thiết kế phân vùng: phân vùng các bảng lớn để nâng cao hiệu năng
+- Xác định tham số lưu trữ: kích thước tablespace, vị trí file dữ liệu, cấu hình buffer
+- Xây dựng chiến lược sao lưu: tần suất và cách thức sao lưu toàn bộ, sao lưu gia tăng
+  **Sản phẩm tạo ra:** tài liệu thiết kế vật lý, phương án thiết kế index
 
-### 5. 数据库实施阶段
+### 5. Giai đoạn triển khai database
 
-**目标：** 将设计转化为实际运行的数据库系统
-**主要工作：**
+**Mục tiêu:** chuyển thiết kế thành database system chạy thực tế
+**Công việc chính:**
 
-- 创建数据库和表结构：编写和执行DDL语句
-- 开发存储过程和触发器（如需要）
-- 编写应用程序接口
-- 导入初始数据
-- 系统集成测试：功能测试、性能测试、压力测试
-- 用户培训和文档编写
-  **产出物：** 数据库脚本、测试报告、用户手册
+- Tạo database và cấu trúc bảng: viết và thực thi câu lệnh DDL
+- Phát triển stored procedure và trigger (nếu cần)
+- Viết interface ứng dụng
+- Nhập dữ liệu ban đầu
+- Kiểm thử tích hợp hệ thống: kiểm thử chức năng, kiểm thử hiệu năng, kiểm thử áp lực
+- Đào tạo người dùng và viết tài liệu
+  **Sản phẩm tạo ra:** script database, báo cáo kiểm thử, sổ tay người dùng
 
-### 6. 运行和维护阶段
+### 6. Giai đoạn vận hành và bảo trì
 
-**目标：** 确保数据库系统稳定高效运行
-**主要工作：**
+**Mục tiêu:** đảm bảo database system vận hành ổn định và hiệu quả
+**Công việc chính:**
 
-- 日常监控：性能监控、空间监控、错误日志分析
-- 性能优化：查询优化、索引调整、参数调优
-- 数据备份和恢复：定期备份、恢复演练
-- 安全管理：权限管理、安全补丁更新、审计
-- 容量规划：预测数据增长，提前扩容
-- 变更管理：需求变更的评估和实施
-  **产出物：** 运维报告、优化方案、变更记录
+- Giám sát hằng ngày: giám sát hiệu năng, giám sát không gian, phân tích error log
+- Tối ưu hóa hiệu năng: tối ưu hóa truy vấn, điều chỉnh index, tinh chỉnh tham số
+- Sao lưu và khôi phục dữ liệu: sao lưu định kỳ, diễn tập khôi phục
+- Quản lý an toàn: quản lý quyền, cập nhật bản vá an toàn, kiểm toán
+- Lập kế hoạch dung lượng: dự đoán tăng trưởng dữ liệu, mở rộng trước
+- Quản lý thay đổi: đánh giá và triển khai các thay đổi yêu cầu
+  **Sản phẩm tạo ra:** báo cáo vận hành, phương án tối ưu hóa, bản ghi thay đổi
 
-### 设计原则
+### Nguyên tắc thiết kế
 
-在整个设计过程中应遵循：数据独立性原则、完整性原则、安全性原则、可扩展性原则和标准化原则。
+Trong toàn bộ quá trình thiết kế nên tuân theo: nguyên tắc độc lập dữ liệu, nguyên tắc toàn vẹn, nguyên tắc an toàn, nguyên tắc khả năng mở rộng và nguyên tắc chuẩn hóa.
 
-## 参考
+## Tham khảo
 
 - <https://blog.csdn.net/rl529014/article/details/48391465>
 - <https://www.zhihu.com/question/24696366/answer/29189700>

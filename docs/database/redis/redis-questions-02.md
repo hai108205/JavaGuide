@@ -1,32 +1,32 @@
 ---
-title: Redis常见面试题总结(下)
-description: 最新Redis面试题总结（下）：深度剖析Redis事务原理、性能优化（pipeline/Lua/bigkey/hotkey）、缓存穿透/击穿/雪崩解决方案、慢查询与内存碎片、Redis Sentinel与Cluster集群详解。助你轻松应对后端技术面试！
-category: 数据库
+title: Tổng hợp câu hỏi phỏng vấn Redis thường gặp (Phần 2)
+description: "Tổng hợp câu hỏi phỏng vấn Redis mới nhất (Phần 2): Phân tích chuyên sâu về nguyên lý Redis Transaction, tối ưu hiệu năng (pipeline/Lua/bigkey/hotkey), giải pháp cho Cache Penetration/Cache Breakdown/Cache Avalanche, Slow Query và Memory Fragmentation, giải thích chi tiết Redis Sentinel và Redis Cluster. Giúp bạn dễ dàng vượt qua phỏng vấn kỹ thuật Backend!"
+category: Cơ sở dữ liệu
 tag:
   - Redis
 head:
   - - meta
     - name: keywords
-      content: Redis面试题,Redis事务,Redis性能优化,Redis缓存穿透,Redis缓存击穿,Redis缓存雪崩,Redis bigkey,Redis hotkey,Redis慢查询,Redis内存碎片,Redis集群,Redis Sentinel,Redis Cluster,Redis pipeline,Redis Lua脚本
+      content: Câu hỏi phỏng vấn Redis,Redis Transaction,Redis tối ưu hiệu năng,Redis Cache Penetration,Redis Cache Breakdown,Redis Cache Avalanche,Redis bigkey,Redis hotkey,Redis Slow Query,Redis Memory Fragmentation,Redis Cluster,Redis Sentinel,Redis Cluster,Redis pipeline,Redis Lua script
 ---
 
 <!-- @include: @article-header.snippet.md -->
 
-## Redis 事务
+## Redis Transaction (Giao dịch)
 
-### 什么是 Redis 事务？
+### Redis Transaction là gì?
 
-你可以将 Redis 中的事务理解为：**Redis 事务提供了一种将多个命令请求打包的功能。然后，再按顺序执行打包的所有命令，并且不会被中途打断。**
+Bạn có thể hiểu Redis Transaction trong Redis như sau: **Redis Transaction cung cấp một tính năng cho phép đóng gói nhiều yêu cầu lệnh lại với nhau. Sau đó, tất cả các lệnh đã đóng gói được thực thi theo thứ tự và không bị gián đoạn giữa chừng.**
 
-Redis 事务实际开发中使用的非常少，功能比较鸡肋，不要将其和我们平时理解的关系型数据库的事务混淆了。
+Redis Transaction thực tế rất ít được sử dụng trong phát triển thực tế, tính năng khá hạn chế, đừng nhầm lẫn nó với Transaction của cơ sở dữ liệu quan hệ mà chúng ta thường hiểu.
 
-除了不满足原子性和持久性之外，事务中的每条命令都会与 Redis 服务器进行网络交互，这是比较浪费资源的行为。明明一次批量执行多个命令就可以了，这种操作实在是看不懂。
+Ngoài việc không đáp ứng được tính nguyên tử (Atomicity) và tính bền vững (Durability), mỗi lệnh trong Transaction đều tương tác mạng với máy chủ Redis, đây là hành vi khá lãng phí tài nguyên. Rõ ràng chỉ cần thực thi hàng loạt lệnh một lần là xong, cách làm này thật khó hiểu.
 
-因此，Redis 事务是不建议在日常开发中使用的。
+Vì vậy, không nên sử dụng Redis Transaction trong phát triển hằng ngày.
 
-### 如何使用 Redis 事务？
+### Sử dụng Redis Transaction như thế nào?
 
-Redis 可以通过 **`MULTI`、`EXEC`、`DISCARD` 和 `WATCH`** 等命令来实现事务（Transaction）功能。
+Redis có thể triển khai tính năng Transaction (Giao dịch) thông qua các lệnh **`MULTI`, `EXEC`, `DISCARD` và `WATCH`**.
 
 ```bash
 > MULTI
@@ -40,15 +40,15 @@ QUEUED
 2) "JavaGuide"
 ```
 
-[`MULTI`](https://redis.io/commands/multi) 命令后可以输入多个命令，Redis 不会立即执行这些命令，而是将它们放到队列，当调用了 [`EXEC`](https://redis.io/commands/exec) 命令后，再执行所有的命令。
+Sau lệnh [`MULTI`](https://redis.io/commands/multi) có thể nhập nhiều lệnh, Redis sẽ không thực thi các lệnh này ngay lập tức mà đưa chúng vào hàng đợi, khi gọi lệnh [`EXEC`](https://redis.io/commands/exec) thì tất cả các lệnh mới được thực thi.
 
-这个过程是这样的：
+Quá trình này diễn ra như sau:
 
-1. 开始事务（`MULTI`）；
-2. 命令入队（批量操作 Redis 的命令，先进先出（FIFO）的顺序执行）；
-3. 执行事务（`EXEC`）。
+1. Bắt đầu Transaction (`MULTI`);
+2. Đưa lệnh vào hàng đợi (các lệnh thao tác hàng loạt với Redis được thực thi theo thứ tự vào trước ra trước (FIFO));
+3. Thực thi Transaction (`EXEC`).
 
-你也可以通过 [`DISCARD`](https://redis.io/commands/discard) 命令取消一个事务，它会清空事务队列中保存的所有命令。
+Bạn cũng có thể hủy một Transaction bằng lệnh [`DISCARD`](https://redis.io/commands/discard), lệnh này sẽ xóa tất cả các lệnh được lưu trong hàng đợi của Transaction.
 
 ```bash
 > MULTI
@@ -61,10 +61,10 @@ QUEUED
 OK
 ```
 
-你可以通过[`WATCH`](https://redis.io/commands/watch) 命令监听指定的 Key，当调用 `EXEC` 命令执行事务时，如果一个被 `WATCH` 命令监视的 Key 被 **其他客户端/Session** 修改的话，整个事务都不会被执行。
+Bạn có thể dùng lệnh [`WATCH`](https://redis.io/commands/watch) để theo dõi một Key chỉ định, khi gọi lệnh `EXEC` để thực thi Transaction, nếu một Key đang được lệnh `WATCH` theo dõi bị **client/Session khác** sửa đổi thì toàn bộ Transaction sẽ không được thực thi.
 
 ```bash
-# 客户端 1
+# Client 1
 > SET PROJECT "RustGuide"
 OK
 > WATCH PROJECT
@@ -74,21 +74,21 @@ OK
 > SET PROJECT "JavaGuide"
 QUEUED
 
-# 客户端 2
-# 在客户端 1 执行 EXEC 命令提交事务之前修改 PROJECT 的值
+# Client 2
+# Sửa giá trị của PROJECT trước khi Client 1 thực thi lệnh EXEC để commit Transaction
 > SET PROJECT "GoGuide"
 
-# 客户端 1
-# 修改失败，因为 PROJECT 的值被客户端2修改了
+# Client 1
+# Sửa thất bại, vì giá trị của PROJECT đã bị Client 2 sửa đổi
 > EXEC
 (nil)
 > GET PROJECT
 "GoGuide"
 ```
 
-不过，如果 **WATCH** 与 **事务** 在同一个 Session 里，并且被 **WATCH** 监视的 Key 被修改的操作发生在事务内部，这个事务是可以被执行成功的（相关 issue：[WATCH 命令碰到 MULTI 命令时的不同效果](https://github.com/Snailclimb/JavaGuide/issues/1714)）。
+Tuy nhiên, nếu **WATCH** và **Transaction** nằm trong cùng một Session, và thao tác sửa đổi Key được **WATCH** theo dõi xảy ra bên trong Transaction, thì Transaction này vẫn có thể được thực thi thành công (issue liên quan: [Hiệu ứng khác nhau khi lệnh WATCH gặp lệnh MULTI](https://github.com/Snailclimb/JavaGuide/issues/1714)).
 
-事务内部修改 WATCH 监视的 Key：
+Sửa Key được WATCH theo dõi bên trong Transaction:
 
 ```bash
 > SET PROJECT "JavaGuide"
@@ -111,7 +111,7 @@ QUEUED
 "JavaGuide3"
 ```
 
-事务外部修改 WATCH 监视的 Key：
+Sửa Key được WATCH theo dõi bên ngoài Transaction:
 
 ```bash
 > SET PROJECT "JavaGuide"
@@ -128,188 +128,188 @@ QUEUED
 (nil)
 ```
 
-Redis 官网相关介绍 [https://redis.io/topics/transactions](https://redis.io/topics/transactions) 如下：
+Giới thiệu liên quan trên trang chủ Redis tại [https://redis.io/topics/transactions](https://redis.io/topics/transactions) như sau:
 
-![Redis 事务](https://oss.javaguide.cn/github/javaguide/database/redis/redis-transactions.png)
+![Redis Transaction](https://oss.javaguide.cn/github/javaguide/database/redis/redis-transactions.png)
 
-### Redis 事务支持原子性吗？
+### Redis Transaction có hỗ trợ tính nguyên tử không?
 
-Redis 的事务和我们平时理解的关系型数据库的事务不同。我们知道事务具有四大特性：**1. 原子性**，**2. 隔离性**，**3. 持久性**，**4. 一致性**。
+Transaction của Redis khác với Transaction của cơ sở dữ liệu quan hệ mà chúng ta thường hiểu. Chúng ta biết rằng Transaction có bốn đặc tính lớn: **1. Tính nguyên tử (Atomicity)**, **2. Tính cô lập (Isolation)**, **3. Tính bền vững (Durability)**, **4. Tính nhất quán (Consistency)**.
 
-1. **原子性（Atomicity）**：事务是最小的执行单位，不允许分割。事务的原子性确保动作要么全部完成，要么完全不起作用；
-2. **隔离性（Isolation）**：并发访问数据库时，一个用户的事务不被其他事务所干扰，各并发事务之间数据库是独立的；
-3. **持久性（Durability）**：一个事务被提交之后。它对数据库中数据的改变是持久的，即使数据库发生故障也不应该对其有任何影响；
-4. **一致性（Consistency）**：执行事务前后，数据保持一致，多个事务对同一个数据读取的结果是相同的。
+1. **Tính nguyên tử (Atomicity)**: Transaction là đơn vị thực thi nhỏ nhất, không được phép phân tách. Tính nguyên tử của Transaction đảm bảo các thao tác hoặc hoàn thành tất cả, hoặc hoàn toàn không có tác dụng;
+2. **Tính cô lập (Isolation)**: Khi truy cập cơ sở dữ liệu đồng thời, Transaction của một người dùng không bị các Transaction khác can thiệp, giữa các Transaction đồng thời thì cơ sở dữ liệu là độc lập;
+3. **Tính bền vững (Durability)**: Sau khi một Transaction được commit, những thay đổi của nó đối với dữ liệu trong cơ sở dữ liệu là bền vững, ngay cả khi cơ sở dữ liệu gặp sự cố thì cũng không bị ảnh hưởng;
+4. **Tính nhất quán (Consistency)**: Trước và sau khi thực thi Transaction, dữ liệu giữ nguyên trạng thái nhất quán, nhiều Transaction đọc cùng một dữ liệu sẽ cho kết quả giống nhau.
 
-Redis 事务在运行错误的情况下，除了执行过程中出现错误的命令外，其他命令都能正常执行。并且，Redis 事务是不支持回滚（roll back）操作的。因此，Redis 事务其实是不满足原子性的。
+Redis Transaction trong trường hợp gặp lỗi khi chạy, ngoài các lệnh bị lỗi trong quá trình thực thi, các lệnh khác vẫn thực thi bình thường. Hơn nữa, Redis Transaction không hỗ trợ thao tác rollback (hoàn tác). Vì vậy, Redis Transaction thực chất không đáp ứng tính nguyên tử.
 
-Redis 官网也解释了自己为啥不支持回滚。简单来说就是 Redis 开发者们觉得没必要支持回滚，这样更简单便捷并且性能更好。Redis 开发者觉得即使命令执行错误也应该在开发过程中就被发现而不是生产过程中。
+Trang chủ Redis cũng giải thích lý do không hỗ trợ rollback. Nói đơn giản là các nhà phát triển Redis cho rằng không cần thiết hỗ trợ rollback, như vậy đơn giản, tiện lợi hơn và hiệu năng tốt hơn. Nhà phát triển Redis cho rằng ngay cả khi lệnh thực thi bị lỗi thì cũng nên được phát hiện trong quá trình phát triển chứ không phải trong môi trường production.
 
-![Redis 为什么不支持回滚](https://oss.javaguide.cn/github/javaguide/database/redis/redis-rollback.png)
+![Tại sao Redis không hỗ trợ rollback](https://oss.javaguide.cn/github/javaguide/database/redis/redis-rollback.png)
 
-**相关 issue**：
+**Issue liên quan**:
 
-- [issue#452: 关于 Redis 事务不满足原子性的问题](https://github.com/Snailclimb/JavaGuide/issues/452)。
-- [Issue#491:关于 Redis 没有事务回滚？](https://github.com/Snailclimb/JavaGuide/issues/491)。
+- [issue#452: Về vấn đề Redis Transaction không đáp ứng tính nguyên tử](https://github.com/Snailclimb/JavaGuide/issues/452).
+- [Issue#491: Về việc Redis không có Transaction rollback?](https://github.com/Snailclimb/JavaGuide/issues/491).
 
-### Redis 事务支持持久性吗？
+### Redis Transaction có hỗ trợ tính bền vững không?
 
-Redis 不同于 Memcached 的很重要一点就是，Redis 支持持久化，而且支持 3 种持久化方式：
+Một điểm khác biệt quan trọng giữa Redis và Memcached là Redis hỗ trợ Persistence (Lưu trữ bền vững), hơn nữa hỗ trợ 3 phương thức Persistence:
 
-- 快照（snapshotting，RDB）；
-- 只追加文件（append-only file，AOF）；
-- RDB 和 AOF 的混合持久化（Redis 4.0 新增）。
+- Snapshot (RDB);
+- Append-only file (AOF);
+- Persistence hỗn hợp RDB và AOF (mới có từ Redis 4.0).
 
-与 RDB 持久化相比，AOF 持久化的实时性更好。在 Redis 的配置文件中存在三种不同的 AOF 持久化方式（`fsync` 策略），它们分别是：
+So với RDB Persistence, AOF Persistence có tính thời gian thực tốt hơn. Trong file cấu hình của Redis có ba phương thức AOF Persistence khác nhau (chiến lược `fsync`), lần lượt là:
 
 ```bash
-appendfsync always    #每次有数据修改发生时，主线程直接调用fsync同步AOF文件（刷盘），fsync完成后返回。always由主线程执行而非后台线程，严重降低Redis性能
-appendfsync everysec  #每秒钟调用fsync函数同步一次AOF文件
-appendfsync no        #让操作系统决定何时进行同步，一般为30秒一次
+appendfsync always    #Mỗi khi có dữ liệu bị sửa đổi, main thread trực tiếp gọi fsync để đồng bộ file AOF (flush xuống đĩa), sau khi fsync hoàn thành mới trả về. always do main thread thực thi chứ không phải background thread, làm giảm nghiêm trọng hiệu năng của Redis
+appendfsync everysec  #Mỗi giây gọi hàm fsync một lần để đồng bộ file AOF
+appendfsync no        #Để hệ điều hành quyết định khi nào đồng bộ, thường là 30 giây một lần
 ```
 
-AOF 持久化的 `fsync` 策略为 no、everysec 时都会存在数据丢失的情况。always 下可以基本是可以满足持久性要求的，但性能太差，实际开发过程中不会使用。
+Khi chiến lược `fsync` của AOF Persistence là no hoặc everysec đều có thể xảy ra mất dữ liệu. Với always thì về cơ bản có thể đáp ứng yêu cầu về tính bền vững, nhưng hiệu năng quá kém, trong phát triển thực tế sẽ không sử dụng.
 
-因此，Redis 事务的持久性也是没办法保证的。
+Vì vậy, tính bền vững của Redis Transaction cũng không thể đảm bảo được.
 
-### 如何解决 Redis 事务的缺陷？
+### Giải quyết các khiếm khuyết của Redis Transaction như thế nào?
 
-Redis 从 2.6 版本开始支持执行 Lua 脚本，它的功能和事务非常类似。我们可以利用 Lua 脚本来批量执行多条 Redis 命令，这些 Redis 命令会被提交到 Redis 服务器一次性执行完成，大幅减小了网络开销。
+Redis bắt đầu hỗ trợ thực thi Lua script từ phiên bản 2.6, tính năng của nó rất giống với Transaction. Chúng ta có thể dùng Lua script để thực thi hàng loạt nhiều lệnh Redis, các lệnh Redis này sẽ được gửi đến máy chủ Redis và thực thi hoàn tất trong một lần, giảm đáng kể chi phí mạng.
 
-一段 Lua 脚本可以视作一条命令执行，一段 Lua 脚本执行过程中不会有其他脚本或 Redis 命令同时执行，保证了操作不会被其他指令插入或打扰。
+Một đoạn Lua script có thể được xem như một lệnh để thực thi, trong quá trình thực thi một đoạn Lua script sẽ không có script hay lệnh Redis nào khác được thực thi đồng thời, đảm bảo thao tác không bị lệnh khác xen vào hoặc làm phiền.
 
-不过，如果 Lua 脚本运行时出错并中途结束，出错之后的命令是不会被执行的。并且，出错之前执行的命令是无法被撤销的，无法实现类似关系型数据库执行失败可以回滚的那种原子性效果。因此，**严格来说的话，通过 Lua 脚本来批量执行 Redis 命令实际也是不完全满足原子性的。**
+Tuy nhiên, nếu Lua script gặp lỗi khi chạy và kết thúc giữa chừng, các lệnh sau đó sẽ không được thực thi. Hơn nữa, các lệnh đã thực thi trước khi lỗi xảy ra không thể bị hủy bỏ, không thể đạt được hiệu ứng nguyên tử giống như việc thực thi thất bại trong cơ sở dữ liệu quan hệ có thể rollback. Vì vậy, **nói một cách nghiêm ngặt, việc dùng Lua script để thực thi hàng loạt lệnh Redis thực tế cũng không hoàn toàn đáp ứng tính nguyên tử.**
 
-如果想要让 Lua 脚本中的命令全部执行，必须保证语句语法和命令都是对的。
+Nếu muốn tất cả các lệnh trong Lua script đều được thực thi, phải đảm bảo cú pháp câu lệnh và các lệnh đều đúng.
 
-另外，Redis 7.0 新增了 [Redis functions](https://redis.io/docs/latest/develop/programmability/functions-intro/) 特性，你可以将 Redis functions 看作是比 Lua 更强大的脚本。
+Ngoài ra, Redis 7.0 đã bổ sung tính năng [Redis functions](https://redis.io/docs/latest/develop/programmability/functions-intro/), bạn có thể xem Redis functions như một loại script mạnh hơn Lua.
 
-## ⭐️Redis 性能优化（重要）
+## ⭐️Tối ưu hiệu năng Redis (Quan trọng)
 
-除了下面介绍的内容之外，再推荐两篇不错的文章：
+Ngoài nội dung giới thiệu dưới đây, xin giới thiệu thêm hai bài viết hay:
 
-- [你的 Redis 真的变慢了吗？性能优化如何做 - 阿里开发者](https://mp.weixin.qq.com/s/nNEuYw0NlYGhuKKKKoWfcQ)。
-- [Redis 常见阻塞原因总结 - JavaGuide](https://javaguide.cn/database/redis/redis-common-blocking-problems-summary.html)。
+- [Redis của bạn thực sự chậm đi rồi sao? Tối ưu hiệu năng như thế nào - Alibaba Developer](https://mp.weixin.qq.com/s/nNEuYw0NlYGhuKKKKoWfcQ).
+- [Tổng hợp các nguyên nhân thường gặp khiến Redis bị block - JavaGuide](https://javaguide.cn/database/redis/redis-common-blocking-problems-summary.html).
 
-### 使用批量操作减少网络传输
+### Sử dụng thao tác hàng loạt để giảm truyền tải mạng
 
-一个 Redis 命令的执行可以简化为以下 4 步：
+Việc thực thi một lệnh Redis có thể được đơn giản hóa thành 4 bước sau:
 
-1. 发送命令；
-2. 命令排队；
-3. 命令执行；
-4. 返回结果。
+1. Gửi lệnh;
+2. Lệnh vào hàng đợi;
+3. Thực thi lệnh;
+4. Trả về kết quả.
 
-其中，第 1 步和第 4 步耗费时间之和称为 **Round Trip Time（RTT，往返时间）**，也就是数据在网络上传输的时间。
+Trong đó, tổng thời gian tiêu tốn của bước 1 và bước 4 được gọi là **Round Trip Time (RTT, thời gian khứ hồi)**, tức là thời gian dữ liệu truyền tải trên mạng.
 
-使用批量操作可以减少网络传输次数，进而有效减小网络开销，大幅减少 RTT。
+Sử dụng thao tác hàng loạt có thể giảm số lần truyền tải mạng, từ đó giảm hiệu quả chi phí mạng, giảm đáng kể RTT.
 
-另外，除了能减少 RTT 之外，发送一次命令的 socket I/O 成本也比较高（涉及上下文切换，存在 `read()` 和 `write()` 系统调用），批量操作还可以减少 socket I/O 成本。这个在官方对 pipeline 的介绍中有提到：<https://redis.io/docs/manual/pipelining/>。
+Ngoài ra, ngoài việc giảm RTT, chi phí socket I/O của một lần gửi lệnh cũng khá cao (liên quan đến chuyển đổi ngữ cảnh, có các system call `read()` và `write()`), thao tác hàng loạt còn có thể giảm chi phí socket I/O. Điều này được đề cập trong phần giới thiệu về pipeline của trang chủ: <https://redis.io/docs/manual/pipelining/>.
 
-#### 原生批量操作命令
+#### Lệnh thao tác hàng loạt nguyên bản
 
-Redis 中有一些原生支持批量操作的命令，比如：
+Trong Redis có một số lệnh nguyên bản hỗ trợ thao tác hàng loạt, ví dụ:
 
-- `MGET`（获取一个或多个指定 key 的值）、`MSET`（设置一个或多个指定 key 的值）、
-- `HMGET`（获取指定哈希表中一个或者多个指定字段的值）、`HMSET`（同时将一个或多个 field-value 对设置到指定哈希表中）、
-- `SADD`（向指定集合添加一个或多个元素）
+- `MGET` (lấy giá trị của một hoặc nhiều key chỉ định), `MSET` (đặt giá trị cho một hoặc nhiều key chỉ định),
+- `HMGET` (lấy giá trị của một hoặc nhiều field chỉ định trong Hash chỉ định), `HMSET` (đặt đồng thời một hoặc nhiều cặp field-value vào Hash chỉ định),
+- `SADD` (thêm một hoặc nhiều phần tử vào Set chỉ định)
 - ……
 
-不过，在 Redis 官方提供的分片集群解决方案 Redis Cluster 下，使用这些原生批量操作命令可能会存在一些小问题需要解决。就比如说 `MGET` 无法保证所有的 key 都在同一个 **hash slot（哈希槽）** 上，`MGET`可能还是需要多次网络传输，原子操作也无法保证了。不过，相较于非批量操作，还是可以节省不少网络传输次数。
+Tuy nhiên, trong giải pháp Redis Cluster phân mảnh do Redis cung cấp, việc sử dụng các lệnh thao tác hàng loạt nguyên bản này có thể tồn tại một số vấn đề nhỏ cần giải quyết. Ví dụ như `MGET` không thể đảm bảo tất cả các key đều nằm trên cùng một **hash slot**, `MGET` có thể vẫn cần nhiều lần truyền tải mạng, thao tác nguyên tử cũng không thể đảm bảo được. Tuy nhiên, so với thao tác không hàng loạt, vẫn có thể tiết kiệm khá nhiều số lần truyền tải mạng.
 
-整个步骤的简化版如下（通常由 Redis 客户端实现，无需我们自己再手动实现）：
+Các bước đơn giản hóa của toàn bộ quá trình như sau (thường do Redis client triển khai, không cần chúng ta tự triển khai thủ công):
 
-1. 找到 key 对应的所有 hash slot；
-2. 分别向对应的 Redis 节点发起 `MGET` 请求获取数据；
-3. 等待所有请求执行结束，重新组装结果数据，保持跟入参 key 的顺序一致，然后返回结果。
+1. Tìm tất cả các hash slot tương ứng với key;
+2. Lần lượt gửi yêu cầu `MGET` đến các Redis node tương ứng để lấy dữ liệu;
+3. Chờ tất cả các yêu cầu thực thi xong, tổ hợp lại dữ liệu kết quả, giữ thứ tự nhất quán với thứ tự key của tham số đầu vào, sau đó trả về kết quả.
 
-如果想要解决这个多次网络传输的问题，比较常用的办法是自己维护 key 与 slot 的关系。不过这样不太灵活，虽然带来了性能提升，但同样让系统复杂性提升。
+Nếu muốn giải quyết vấn đề truyền tải mạng nhiều lần này, cách thường dùng là tự duy trì mối quan hệ giữa key và slot. Tuy nhiên cách này không linh hoạt lắm, tuy mang lại cải thiện hiệu năng nhưng cũng làm tăng tính phức tạp của hệ thống.
 
-> Redis Cluster 并没有使用一致性哈希，采用的是 **哈希槽分区**，每一个键值对都属于一个 **hash slot（哈希槽）**。当客户端发送命令请求的时候，需要先根据 key 通过上面的计算公式找到的对应的哈希槽，然后再查询哈希槽和节点的映射关系，即可找到目标 Redis 节点。
+> Redis Cluster không sử dụng Consistent Hashing mà áp dụng **phân vùng theo hash slot**, mỗi cặp key-value đều thuộc về một **hash slot**. Khi client gửi yêu cầu lệnh, trước tiên cần dựa vào key để tìm hash slot tương ứng theo công thức tính toán ở trên, sau đó tra cứu mối quan hệ ánh xạ giữa hash slot và node, là có thể tìm được Redis node mục tiêu.
 >
-> 我在 [Redis 集群详解（付费）](https://javaguide.cn/database/redis/redis-cluster.html) 这篇文章中详细介绍了 Redis Cluster 这部分的内容，感兴趣地可以看看。
+> Tôi đã giới thiệu chi tiết nội dung phần này về Redis Cluster trong bài viết [Giải thích chi tiết Redis Cluster (trả phí)](https://javaguide.cn/database/redis/redis-cluster.html), ai quan tâm có thể xem qua.
 
 #### pipeline
 
-对于不支持批量操作的命令，我们可以利用 **pipeline（流水线）** 将一批 Redis 命令封装成一组，这些 Redis 命令会被一次性提交到 Redis 服务器，只需要一次网络传输。不过，需要注意控制一次批量操作的 **元素个数**（例如 500 以内，实际也和元素字节数有关），避免网络传输的数据量过大。
+Đối với các lệnh không hỗ trợ thao tác hàng loạt, chúng ta có thể dùng **pipeline** để đóng gói một loạt lệnh Redis thành một nhóm, các lệnh Redis này sẽ được gửi đến máy chủ Redis trong một lần, chỉ cần một lần truyền tải mạng. Tuy nhiên, cần chú ý kiểm soát **số lượng phần tử** của một lần thao tác hàng loạt (ví dụ dưới 500, thực tế còn liên quan đến số byte của phần tử), tránh lượng dữ liệu truyền tải trên mạng quá lớn.
 
-与 `MGET`、`MSET` 等原生批量操作命令一样，pipeline 同样在 Redis Cluster 上使用会存在一些小问题。原因类似，无法保证所有的 key 都在同一个 **hash slot（哈希槽）** 上。如果想要使用的话，客户端需要自己维护 key 与 slot 的关系。
+Giống như các lệnh thao tác hàng loạt nguyên bản `MGET`, `MSET` và các lệnh khác, pipeline khi sử dụng trên Redis Cluster cũng tồn tại một số vấn đề nhỏ. Nguyên nhân tương tự, không thể đảm bảo tất cả các key đều nằm trên cùng một **hash slot**. Nếu muốn sử dụng, client cần tự duy trì mối quan hệ giữa key và slot.
 
-原生批量操作命令和 pipeline 的是有区别的，使用的时候需要注意：
+Lệnh thao tác hàng loạt nguyên bản và pipeline có sự khác biệt, khi sử dụng cần chú ý:
 
-- 原生批量操作命令是原子操作，pipeline 是非原子操作。
-- pipeline 可以打包不同的命令，原生批量操作命令不可以。
-- 原生批量操作命令是 Redis 服务端支持实现的，而 pipeline 需要服务端和客户端的共同实现。
+- Lệnh thao tác hàng loạt nguyên bản là thao tác nguyên tử, pipeline là thao tác không nguyên tử.
+- pipeline có thể đóng gói các lệnh khác nhau, lệnh thao tác hàng loạt nguyên bản thì không.
+- Lệnh thao tác hàng loạt nguyên bản được hỗ trợ triển khai ở phía server của Redis, còn pipeline cần sự triển khai chung của cả server và client.
 
-顺带补充一下 pipeline 和 Redis 事务的对比：
+Nhân tiện bổ sung thêm so sánh giữa pipeline và Redis Transaction:
 
-- 事务是原子操作，pipeline 是非原子操作。两个不同的事务不会同时运行，而 pipeline 可以同时以交错方式执行。
-- Redis 事务中每个命令都需要发送到服务端，而 Pipeline 只需要发送一次，请求次数更少。
+- Transaction là thao tác nguyên tử, pipeline là thao tác không nguyên tử. Hai Transaction khác nhau sẽ không chạy đồng thời, còn pipeline có thể được thực thi đồng thời theo cách xen kẽ.
+- Mỗi lệnh trong Redis Transaction đều cần gửi đến server, còn Pipeline chỉ cần gửi một lần, số lần yêu cầu ít hơn.
 
-> 事务可以看作是一个原子操作，但其实并不满足原子性。当我们提到 Redis 中的原子操作时，主要指的是这个操作（比如事务、Lua 脚本）不会被其他操作（比如其他事务、Lua 脚本）打扰，并不能完全保证这个操作中的所有写命令要么都执行要么都不执行。这主要也是因为 Redis 是不支持回滚操作。
+> Transaction có thể được xem như một thao tác nguyên tử, nhưng thực chất không đáp ứng tính nguyên tử. Khi chúng ta nói đến thao tác nguyên tử trong Redis, chủ yếu là chỉ thao tác này (ví dụ Transaction, Lua script) sẽ không bị các thao tác khác (ví dụ Transaction khác, Lua script) làm phiền, chứ không thể đảm bảo hoàn toàn rằng tất cả các lệnh ghi trong thao tác này hoặc đều được thực thi hoặc đều không được thực thi. Nguyên nhân chủ yếu cũng là vì Redis không hỗ trợ thao tác rollback.
 
 ![](https://oss.javaguide.cn/github/javaguide/database/redis/redis-pipeline-vs-transaction.png)
 
-另外，pipeline 不适用于执行顺序有依赖关系的一批命令。就比如说，你需要将前一个命令的结果给后续的命令使用，pipeline 就没办法满足你的需求了。对于这种需求，我们可以使用 **Lua 脚本**。
+Ngoài ra, pipeline không phù hợp để thực thi một loạt lệnh có quan hệ phụ thuộc về thứ tự. Ví dụ, bạn cần dùng kết quả của lệnh trước đó cho các lệnh tiếp theo, pipeline không thể đáp ứng nhu cầu này. Đối với loại nhu cầu này, chúng ta có thể sử dụng **Lua script**.
 
-#### Lua 脚本
+#### Lua script
 
-Lua 脚本同样支持批量操作多条命令。一段 Lua 脚本可以视作一条命令执行，可以看作是 **原子操作**。也就是说，一段 Lua 脚本执行过程中不会有其他脚本或 Redis 命令同时执行，保证了操作不会被其他指令插入或打扰，这是 pipeline 所不具备的。
+Lua script cũng hỗ trợ thao tác hàng loạt nhiều lệnh. Một đoạn Lua script có thể được xem như một lệnh để thực thi, có thể được coi là **thao tác nguyên tử**. Nghĩa là, trong quá trình thực thi một đoạn Lua script sẽ không có script hay lệnh Redis nào khác được thực thi đồng thời, đảm bảo thao tác không bị lệnh khác xen vào hoặc làm phiền, đây là điều mà pipeline không có được.
 
-并且，Lua 脚本中支持一些简单的逻辑处理比如使用命令读取值并在 Lua 脚本中进行处理，这同样是 pipeline 所不具备的。
+Hơn nữa, trong Lua script hỗ trợ một số xử lý logic đơn giản, ví dụ như dùng lệnh để đọc giá trị và xử lý trong Lua script, đây cũng là điều mà pipeline không có được.
 
-不过， Lua 脚本依然存在下面这些缺陷：
+Tuy nhiên, Lua script vẫn tồn tại những khiếm khuyết sau:
 
-- 如果 Lua 脚本运行时出错并中途结束，之后的操作不会进行，但是之前已经发生的写操作不会撤销，所以即使使用了 Lua 脚本，也不能实现类似数据库回滚的原子性。
-- Redis Cluster 下 Lua 脚本的原子操作也无法保证了，原因同样是无法保证所有的 key 都在同一个 **hash slot（哈希槽）** 上。
+- Nếu Lua script gặp lỗi khi chạy và kết thúc giữa chừng, các thao tác sau đó sẽ không được tiến hành, nhưng các thao tác ghi đã xảy ra trước đó sẽ không bị hủy bỏ, vì vậy ngay cả khi sử dụng Lua script cũng không thể đạt được tính nguyên tử giống như rollback của cơ sở dữ liệu.
+- Trong Redis Cluster, thao tác nguyên tử của Lua script cũng không thể đảm bảo được, nguyên nhân tương tự là không thể đảm bảo tất cả các key đều nằm trên cùng một **hash slot**.
 
-### 大量 key 集中过期问题
+### Vấn đề nhiều key hết hạn cùng lúc
 
-我在前面提到过：对于过期 key，Redis 采用的是 **定期删除+惰性/懒汉式删除** 策略。
+Tôi đã đề cập ở phần trước: đối với key hết hạn, Redis áp dụng chiến lược **xóa định kỳ + xóa trì hoãn/lazy deletion**.
 
-定期删除执行过程中，如果突然遇到大量过期 key 的话，客户端请求必须等待定期清理过期 key 任务线程执行完成，因为这个这个定期任务线程是在 Redis 主线程中执行的。这就导致客户端请求没办法被及时处理，响应速度会比较慢。
+Trong quá trình thực thi xóa định kỳ, nếu đột nhiên gặp một lượng lớn key hết hạn, yêu cầu của client phải chờ thread của tác vụ dọn dẹp key hết hạn định kỳ thực thi xong, vì thread tác vụ định kỳ này được thực thi trong main thread của Redis. Điều này dẫn đến yêu cầu của client không được xử lý kịp thời, tốc độ phản hồi sẽ khá chậm.
 
-**如何解决呢？** 下面是两种常见的方法：
+**Giải quyết như thế nào?** Dưới đây là hai phương pháp thường gặp:
 
-1. 给 key 设置随机过期时间。
-2. 开启 lazy-free（惰性删除/延迟释放）。lazy-free 特性是 Redis 4.0 开始引入的，指的是让 Redis 采用异步方式延迟释放 key 使用的内存，将该操作交给单独的子线程处理，避免阻塞主线程。
+1. Đặt thời gian hết hạn ngẫu nhiên cho key.
+2. Bật lazy-free (xóa trì hoãn/giải phóng trễ). Tính năng lazy-free được Redis đưa vào từ phiên bản 4.0, nghĩa là để Redis áp dụng cách bất đồng bộ để giải phóng trễ bộ nhớ mà key sử dụng, giao thao tác này cho một sub-thread riêng xử lý, tránh block main thread.
 
-个人建议不管是否开启 lazy-free，我们都尽量给 key 设置随机过期时间。
+Theo cá nhân tôi, bất kể có bật lazy-free hay không, chúng ta đều nên đặt thời gian hết hạn ngẫu nhiên cho key.
 
-### Redis bigkey（大 Key）
+### Redis bigkey (Key lớn)
 
-#### 什么是 bigkey？
+#### bigkey là gì?
 
-简单来说，如果一个 key 对应的 value 所占用的内存比较大，那这个 key 就可以看作是 bigkey。具体多大才算大呢？有一个不是特别精确的参考标准：
+Nói đơn giản, nếu value tương ứng với một key chiếm dụng bộ nhớ khá lớn, thì key đó có thể được xem là bigkey. Cụ thể bao nhiêu mới được coi là lớn? Có một tiêu chuẩn tham khảo không hoàn toàn chính xác:
 
-- String 类型的 value 超过 1MB
-- 复合类型（List、Hash、Set、Sorted Set 等）的 value 包含的元素超过 5000 个（不过，对于复合类型的 value 来说，不一定包含的元素越多，占用的内存就越多）。
+- Value kiểu String vượt quá 1MB
+- Value kiểu phức hợp (List, Hash, Set, Sorted Set, v.v.) chứa số phần tử vượt quá 5000 (tuy nhiên, đối với value kiểu phức hợp, không nhất thiết chứa càng nhiều phần tử thì chiếm dụng càng nhiều bộ nhớ).
 
-![bigkey 判定标准](https://oss.javaguide.cn/github/javaguide/database/redis/bigkey-criterion.png)
+![Tiêu chuẩn xác định bigkey](https://oss.javaguide.cn/github/javaguide/database/redis/bigkey-criterion.png)
 
-#### bigkey 是怎么产生的？有什么危害？
+#### bigkey được tạo ra như thế nào? Có tác hại gì?
 
-bigkey 通常是由于下面这些原因产生的：
+bigkey thường được tạo ra do những nguyên nhân sau:
 
-- 程序设计不当，比如直接使用 String 类型存储较大的文件对应的二进制数据。
-- 对于业务的数据规模考虑不周到，比如使用集合类型的时候没有考虑到数据量的快速增长。
-- 未及时清理垃圾数据，比如哈希中冗余了大量的无用键值对。
+- Thiết kế chương trình không hợp lý, ví dụ trực tiếp dùng kiểu String để lưu dữ liệu nhị phân của file lớn.
+- Không cân nhắc kỹ quy mô dữ liệu của nghiệp vụ, ví dụ khi sử dụng kiểu tập hợp không tính đến việc dữ liệu tăng nhanh.
+- Không kịp thời dọn dẹp dữ liệu rác, ví dụ trong Hash tồn đọng nhiều cặp key-value vô dụng.
 
-bigkey 除了会消耗更多的内存空间和带宽，还会对性能造成比较大的影响。
+bigkey ngoài việc tiêu tốn nhiều bộ nhớ và băng thông hơn, còn gây ảnh hưởng khá lớn đến hiệu năng.
 
-在 [Redis 常见阻塞原因总结](./redis-common-blocking-problems-summary.md) 这篇文章中我们提到：大 key 还会造成阻塞问题。具体来说，主要体现在下面三个方面：
+Trong bài viết [Tổng hợp các nguyên nhân thường gặp khiến Redis bị block](./redis-common-blocking-problems-summary.md) chúng tôi đã đề cập: key lớn còn gây ra vấn đề block. Cụ thể, chủ yếu thể hiện ở ba khía cạnh sau:
 
-1. 客户端超时阻塞：由于 Redis 执行命令是单线程处理，然后在操作大 key 时会比较耗时，那么就会阻塞 Redis，从客户端这一视角看，就是很久很久都没有响应。
-2. 网络阻塞：每次获取大 key 产生的网络流量较大，如果一个 key 的大小是 1 MB，每秒访问量为 1000，那么每秒会产生 1000MB 的流量，这对于普通千兆网卡的服务器来说是灾难性的。
-3. 工作线程阻塞：如果使用 del 删除大 key 时，会阻塞工作线程，这样就没办法处理后续的命令。
+1. Client bị block do timeout: Do Redis thực thi lệnh bằng single thread, khi thao tác với key lớn sẽ khá tốn thời gian, sẽ block Redis, từ góc nhìn của client thì rất lâu không có phản hồi.
+2. Block mạng: Mỗi lần lấy key lớn tạo ra lưu lượng mạng khá lớn, nếu một key có kích thước 1 MB, mỗi giây truy cập 1000 lần, thì mỗi giây sẽ tạo ra lưu lượng 1000MB, điều này là thảm họa đối với máy chủ có card mạng gigabit thông thường.
+3. Block worker thread: Nếu dùng del để xóa key lớn, sẽ block worker thread, như vậy không thể xử lý các lệnh tiếp theo.
 
-大 key 造成的阻塞问题还会进一步影响到主从同步和集群扩容。
+Vấn đề block do key lớn gây ra còn ảnh hưởng tiếp đến đồng bộ master-slave và mở rộng Cluster.
 
-综上，大 key 带来的潜在问题是非常多的，我们应该尽量避免 Redis 中存在 bigkey。
+Tổng kết lại, các vấn đề tiềm ẩn do key lớn gây ra là rất nhiều, chúng ta nên cố gắng tránh để tồn tại bigkey trong Redis.
 
-#### 如何发现 bigkey？
+#### Phát hiện bigkey như thế nào?
 
-**1、使用 Redis 自带的 `--bigkeys` 参数来查找。**
+**1. Sử dụng tham số `--bigkeys` có sẵn của Redis để tìm kiếm.**
 
 ```bash
 # redis-cli -p 6379 --bigkeys
@@ -337,71 +337,71 @@ Biggest string found '"ballcat:oauth:refresh_auth:f6cdb384-9a9d-4f2f-af01-dc3f28
 0 zsets with 0 members (00.00% of keys, avg size 0.00
 ```
 
-从这个命令的运行结果，我们可以看出：这个命令会扫描（Scan）Redis 中的所有 key，会对 Redis 的性能有一点影响。并且，这种方式只能找出每种数据结构 top 1 bigkey（占用内存最大的 String 数据类型，包含元素最多的复合数据类型）。然而，一个 key 的元素多并不代表占用内存也多，需要我们根据具体的业务情况来进一步判断。
+Từ kết quả chạy của lệnh này, chúng ta có thể thấy: lệnh này sẽ quét (Scan) tất cả các key trong Redis, sẽ có một chút ảnh hưởng đến hiệu năng của Redis. Hơn nữa, cách này chỉ có thể tìm ra top 1 bigkey của mỗi kiểu cấu trúc dữ liệu (kiểu dữ liệu String chiếm bộ nhớ lớn nhất, kiểu dữ liệu phức hợp chứa nhiều phần tử nhất). Tuy nhiên, một key có nhiều phần tử không có nghĩa là chiếm dụng nhiều bộ nhớ, cần dựa vào tình huống nghiệp vụ cụ thể để phán đoán thêm.
 
-在线上执行该命令时，为了降低对 Redis 的影响，需要指定 `-i` 参数控制扫描的频率。`redis-cli -p 6379 --bigkeys -i 3` 表示扫描过程中每次扫描后休息的时间间隔为 3 秒。
+Khi thực thi lệnh này trên môi trường production, để giảm ảnh hưởng đến Redis, cần chỉ định tham số `-i` để kiểm soát tần suất quét. `redis-cli -p 6379 --bigkeys -i 3` nghĩa là trong quá trình quét, thời gian nghỉ sau mỗi lần quét là 3 giây.
 
-**2、使用 Redis 自带的 SCAN 命令**
+**2. Sử dụng lệnh SCAN có sẵn của Redis**
 
-`SCAN` 命令可以按照一定的模式和数量返回匹配的 key。获取了 key 之后，可以利用 `STRLEN`、`HLEN`、`LLEN` 等命令返回其长度或成员数量。
+Lệnh `SCAN` có thể trả về các key khớp theo một pattern và số lượng nhất định. Sau khi lấy được key, có thể dùng các lệnh như `STRLEN`, `HLEN`, `LLEN` để trả về độ dài hoặc số lượng phần tử của nó.
 
-| 数据结构   | 命令   | 复杂度 | 结果（对应 key）   |
-| ---------- | ------ | ------ | ------------------ |
-| String     | STRLEN | O(1)   | 字符串值的长度     |
-| Hash       | HLEN   | O(1)   | 哈希表中字段的数量 |
-| List       | LLEN   | O(1)   | 列表元素数量       |
-| Set        | SCARD  | O(1)   | 集合元素数量       |
-| Sorted Set | ZCARD  | O(1)   | 有序集合的元素数量 |
+| Cấu trúc dữ liệu | Lệnh   | Độ phức tạp | Kết quả (tương ứng với key)     |
+| ---------------- | ------ | ----------- | ------------------------------- |
+| String           | STRLEN | O(1)        | Độ dài của giá trị chuỗi        |
+| Hash             | HLEN   | O(1)        | Số lượng field trong Hash       |
+| List             | LLEN   | O(1)        | Số lượng phần tử của List       |
+| Set              | SCARD  | O(1)        | Số lượng phần tử của Set        |
+| Sorted Set       | ZCARD  | O(1)        | Số lượng phần tử của Sorted Set |
 
-对于集合类型还可以使用 `MEMORY USAGE` 命令（Redis 4.0+），这个命令会返回键值对占用的内存空间。
+Đối với kiểu tập hợp còn có thể dùng lệnh `MEMORY USAGE` (Redis 4.0+), lệnh này trả về không gian bộ nhớ mà cặp key-value chiếm dụng.
 
-**3、借助开源工具分析 RDB 文件。**
+**3. Dùng công cụ mã nguồn mở để phân tích file RDB.**
 
-通过分析 RDB 文件来找出 big key。这种方案的前提是你的 Redis 采用的是 RDB 持久化。
+Thông qua phân tích file RDB để tìm ra big key. Tiền đề của phương án này là Redis của bạn áp dụng RDB Persistence.
 
-网上有现成的代码/工具可以直接拿来使用：
+Trên mạng có sẵn code/công cụ có thể dùng trực tiếp:
 
-- [redis-rdb-tools](https://github.com/sripathikrishnan/redis-rdb-tools)：Python 语言写的用来分析 Redis 的 RDB 快照文件用的工具。
-- [rdb_bigkeys](https://github.com/weiyanwei412/rdb_bigkeys)：Go 语言写的用来分析 Redis 的 RDB 快照文件用的工具，性能更好。
+- [redis-rdb-tools](https://github.com/sripathikrishnan/redis-rdb-tools): Công cụ viết bằng Python dùng để phân tích file snapshot RDB của Redis.
+- [rdb_bigkeys](https://github.com/weiyanwei412/rdb_bigkeys): Công cụ viết bằng Go dùng để phân tích file snapshot RDB của Redis, hiệu năng tốt hơn.
 
-**4、借助公有云的 Redis 分析服务。**
+**4. Dùng dịch vụ phân tích Redis của cloud công cộng.**
 
-如果你用的是公有云的 Redis 服务的话，可以看看其是否提供了 key 分析功能（一般都提供了）。
+Nếu bạn dùng dịch vụ Redis của cloud công cộng, có thể xem liệu nó có cung cấp tính năng phân tích key hay không (thường đều có).
 
-这里以阿里云 Redis 为例说明，它支持 bigkey 实时分析、发现，文档地址：<https://www.alibabacloud.com/help/zh/apsaradb-for-redis/latest/use-the-real-time-key-statistics-feature>。
+Ở đây lấy Redis của Alibaba Cloud làm ví dụ, nó hỗ trợ phân tích, phát hiện bigkey theo thời gian thực, địa chỉ tài liệu: <https://www.alibabacloud.com/help/zh/apsaradb-for-redis/latest/use-the-real-time-key-statistics-feature>.
 
-![阿里云Key分析](https://oss.javaguide.cn/github/javaguide/database/redis/aliyun-key-analysis.png)
+![Phân tích Key của Alibaba Cloud](https://oss.javaguide.cn/github/javaguide/database/redis/aliyun-key-analysis.png)
 
-#### 如何处理 bigkey？
+#### Xử lý bigkey như thế nào?
 
-bigkey 的常见处理以及优化办法如下（这些方法可以配合起来使用）：
+Các phương pháp xử lý và tối ưu bigkey thường gặp như sau (các phương pháp này có thể kết hợp sử dụng):
 
-- **分割 bigkey**：将一个 bigkey 分割为多个小 key。例如，将一个含有上万字段数量的 Hash 按照一定策略（比如二次哈希）拆分为多个 Hash。
-- **手动清理**：Redis 4.0+ 可以使用 `UNLINK` 命令来异步删除一个或多个指定的 key。Redis 4.0 以下可以考虑使用 `SCAN` 命令结合 `DEL` 命令来分批次删除。
-- **采用合适的数据结构**：例如，文件二进制数据不使用 String 保存、使用 HyperLogLog 统计页面 UV、Bitmap 保存状态信息（0/1）。
-- **开启 lazy-free（惰性删除/延迟释放）**：lazy-free 特性是 Redis 4.0 开始引入的，指的是让 Redis 采用异步方式延迟释放 key 使用的内存，将该操作交给单独的子线程处理，避免阻塞主线程。
+- **Chia nhỏ bigkey**: Chia một bigkey thành nhiều key nhỏ. Ví dụ, chia một Hash có số lượng field lên đến hàng vạn thành nhiều Hash theo một chiến lược nhất định (ví dụ hash lần hai).
+- **Dọn dẹp thủ công**: Redis 4.0+ có thể dùng lệnh `UNLINK` để xóa bất đồng bộ một hoặc nhiều key chỉ định. Dưới Redis 4.0 có thể cân nhắc dùng lệnh `SCAN` kết hợp lệnh `DEL` để xóa theo từng đợt.
+- **Áp dụng cấu trúc dữ liệu phù hợp**: Ví dụ, dữ liệu nhị phân của file không dùng String để lưu, dùng HyperLogLog để thống kê UV của trang, dùng Bitmap để lưu thông tin trạng thái (0/1).
+- **Bật lazy-free (xóa trì hoãn/giải phóng trễ)**: Tính năng lazy-free được Redis đưa vào từ phiên bản 4.0, nghĩa là để Redis áp dụng cách bất đồng bộ để giải phóng trễ bộ nhớ mà key sử dụng, giao thao tác này cho một sub-thread riêng xử lý, tránh block main thread.
 
-### Redis hotkey（热 Key）
+### Redis hotkey (Key nóng)
 
-#### 什么是 hotkey？
+#### hotkey là gì?
 
-如果一个 key 的访问次数比较多且明显多于其他 key 的话，那这个 key 就可以看作是 **hotkey（热 Key）**。例如在 Redis 实例的每秒处理请求达到 5000 次，而其中某个 key 的每秒访问量就高达 2000 次，那这个 key 就可以看作是 hotkey。
+Nếu một key có số lần truy cập khá nhiều và rõ ràng nhiều hơn các key khác, thì key đó có thể được xem là **hotkey (Key nóng)**. Ví dụ, khi số yêu cầu xử lý mỗi giây của một Redis instance đạt 5000 lần, mà trong đó một key nào đó có số lần truy cập mỗi giây lên đến 2000 lần, thì key đó có thể được xem là hotkey.
 
-hotkey 出现的原因主要是某个热点数据访问量暴增，如重大的热搜事件、参与秒杀的商品。
+Nguyên nhân xuất hiện hotkey chủ yếu là do dữ liệu hot nào đó có số truy cập tăng đột biến, như sự kiện hot search lớn, sản phẩm tham gia flash sale.
 
-#### hotkey 有什么危害？
+#### hotkey có tác hại gì?
 
-处理 hotkey 会占用大量的 CPU 和带宽，可能会影响 Redis 实例对其他请求的正常处理。此外，如果突然访问 hotkey 的请求超出了 Redis 的处理能力，Redis 就会直接宕机。这种情况下，大量请求将落到后面的数据库上，可能会导致数据库崩溃。
+Xử lý hotkey sẽ chiếm dụng nhiều CPU và băng thông, có thể ảnh hưởng đến việc xử lý bình thường các yêu cầu khác của Redis instance. Ngoài ra, nếu số yêu cầu truy cập hotkey đột ngột vượt quá khả năng xử lý của Redis, Redis sẽ bị sập trực tiếp. Trong tình huống này, lượng lớn yêu cầu sẽ đổ dồn xuống database phía sau, có thể khiến database bị crash.
 
-因此，hotkey 很可能成为系统性能的瓶颈点，需要单独对其进行优化，以确保系统的高可用性和稳定性。
+Vì vậy, hotkey rất có thể trở thành điểm nghẽn hiệu năng của hệ thống, cần tối ưu riêng cho nó để đảm bảo tính sẵn sàng cao và tính ổn định của hệ thống.
 
-#### 如何发现 hotkey？
+#### Phát hiện hotkey như thế nào?
 
-**1、使用 Redis 自带的 `--hotkeys` 参数来查找。**
+**1. Sử dụng tham số `--hotkeys` có sẵn của Redis để tìm kiếm.**
 
-Redis 4.0.3 版本中新增了 `hotkeys` 参数，该参数能够返回所有 key 的被访问次数。
+Phiên bản Redis 4.0.3 đã bổ sung tham số `hotkeys`, tham số này có thể trả về số lần được truy cập của tất cả các key.
 
-使用该方案的前提条件是 Redis Server 的 `maxmemory-policy` 参数设置为 LFU 算法，不然就会出现如下所示的错误。
+Tiền đề để sử dụng phương án này là tham số `maxmemory-policy` của Redis Server được đặt thành thuật toán LFU, nếu không sẽ xuất hiện lỗi như dưới đây.
 
 ```bash
 # redis-cli -p 6379 --hotkeys
@@ -413,28 +413,28 @@ Redis 4.0.3 版本中新增了 `hotkeys` 参数，该参数能够返回所有 ke
 Error: ERR An LFU maxmemory policy is not selected, access frequency not tracked. Please note that when switching between policies at runtime LRU and LFU data will take some time to adjust.
 ```
 
-Redis 中有两种 LFU 算法：
+Trong Redis có hai loại thuật toán LFU:
 
-1. **volatile-lfu（least frequently used）**：从已设置过期时间的数据集（`server.db[i].expires`）中挑选最不经常使用的数据淘汰。
-2. **allkeys-lfu（least frequently used）**：当内存不足以容纳新写入数据时，在键空间中，移除最不经常使用的 key。
+1. **volatile-lfu (least frequently used)**: Chọn dữ liệu ít được sử dụng nhất từ tập dữ liệu đã đặt thời gian hết hạn (`server.db[i].expires`) để loại bỏ.
+2. **allkeys-lfu (least frequently used)**: Khi bộ nhớ không đủ để chứa dữ liệu ghi mới, trong không gian key, loại bỏ key ít được sử dụng nhất.
 
-以下是配置文件 `redis.conf` 中的示例：
+Dưới đây là ví dụ trong file cấu hình `redis.conf`:
 
 ```properties
-# 使用 volatile-lfu 策略
+# Sử dụng chiến lược volatile-lfu
 maxmemory-policy volatile-lfu
 
-# 或者使用 allkeys-lfu 策略
+# Hoặc sử dụng chiến lược allkeys-lfu
 maxmemory-policy allkeys-lfu
 ```
 
-需要注意的是，`hotkeys` 参数命令也会增加 Redis 实例的 CPU 和内存消耗（全局扫描），因此需要谨慎使用。
+Cần chú ý là, lệnh tham số `hotkeys` cũng sẽ làm tăng mức tiêu thụ CPU và bộ nhớ của Redis instance (quét toàn cục), vì vậy cần thận trọng khi sử dụng.
 
-**2、使用 `MONITOR` 命令。**
+**2. Sử dụng lệnh `MONITOR`.**
 
-`MONITOR` 命令是 Redis 提供的一种实时查看 Redis 的所有操作的方式，可以用于临时监控 Redis 实例的操作情况，包括读写、删除等操作。
+Lệnh `MONITOR` là một cách do Redis cung cấp để xem tất cả các thao tác của Redis theo thời gian thực, có thể dùng để giám sát tạm thời tình hình thao tác của Redis instance, bao gồm đọc, ghi, xóa và các thao tác khác.
 
-由于该命令对 Redis 性能的影响比较大，因此禁止长时间开启 `MONITOR`（生产环境中建议谨慎使用该命令）。
+Do lệnh này có ảnh hưởng khá lớn đến hiệu năng của Redis, nên cấm bật `MONITOR` trong thời gian dài (trong môi trường production nên thận trọng khi sử dụng lệnh này).
 
 ```bash
 # redis-cli
@@ -451,87 +451,87 @@ OK
 1683638276.327234 [0 172.17.0.1:61518] "smembers" "mySet"
 ```
 
-在发生紧急情况时，我们可以选择在合适的时机短暂执行 `MONITOR` 命令并将输出重定向至文件，在关闭 `MONITOR` 命令后通过对文件中请求进行归类分析即可找出这段时间中的 hotkey。
+Khi xảy ra tình huống khẩn cấp, chúng ta có thể chọn thời điểm thích hợp để thực thi ngắn gọn lệnh `MONITOR` và chuyển hướng output vào file, sau khi tắt lệnh `MONITOR`, thông qua việc phân loại phân tích các yêu cầu trong file là có thể tìm ra hotkey trong khoảng thời gian đó.
 
-**3、借助开源项目。**
+**3. Dùng dự án mã nguồn mở.**
 
-京东零售的 [hotkey](https://gitee.com/jd-platform-opensource/hotkey) 这个项目不光支持 hotkey 的发现，还支持 hotkey 的处理。
+Dự án [hotkey](https://gitee.com/jd-platform-opensource/hotkey) của JD Retail không chỉ hỗ trợ phát hiện hotkey mà còn hỗ trợ xử lý hotkey.
 
-![京东零售开源的 hotkey](https://oss.javaguide.cn/github/javaguide/database/redis/jd-hotkey.png)
+![hotkey do JD Retail open source](https://oss.javaguide.cn/github/javaguide/database/redis/jd-hotkey.png)
 
-**4、根据业务情况提前预估。**
+**4. Dựa vào tình hình nghiệp vụ để ước tính trước.**
 
-可以根据业务情况来预估一些 hotkey，比如参与秒杀活动的商品数据等。不过，我们无法预估所有 hotkey 的出现，比如突发的热点新闻事件等。
+Có thể dựa vào tình hình nghiệp vụ để ước tính trước một số hotkey, ví dụ dữ liệu sản phẩm tham gia hoạt động flash sale, v.v. Tuy nhiên, chúng ta không thể ước tính trước sự xuất hiện của tất cả hotkey, ví dụ sự kiện tin tức nóng đột ngột, v.v.
 
-**5、业务代码中记录分析。**
+**5. Ghi chép và phân tích trong code nghiệp vụ.**
 
-在业务代码中添加相应的逻辑对 key 的访问情况进行记录分析。不过，这种方式会让业务代码的复杂性增加，一般也不会采用。
+Thêm logic tương ứng trong code nghiệp vụ để ghi chép và phân tích tình hình truy cập key. Tuy nhiên, cách này sẽ làm tăng độ phức tạp của code nghiệp vụ, thường cũng không được áp dụng.
 
-**6、借助公有云的 Redis 分析服务。**
+**6. Dùng dịch vụ phân tích Redis của cloud công cộng.**
 
-如果你用的是公有云的 Redis 服务的话，可以看看其是否提供了 key 分析功能（一般都提供了）。
+Nếu bạn dùng dịch vụ Redis của cloud công cộng, có thể xem liệu nó có cung cấp tính năng phân tích key hay không (thường đều có).
 
-这里以阿里云 Redis 为例说明，它支持 hotkey 实时分析、发现，文档地址：<https://www.alibabacloud.com/help/zh/apsaradb-for-redis/latest/use-the-real-time-key-statistics-feature>。
+Ở đây lấy Redis của Alibaba Cloud làm ví dụ, nó hỗ trợ phân tích, phát hiện hotkey theo thời gian thực, địa chỉ tài liệu: <https://www.alibabacloud.com/help/zh/apsaradb-for-redis/latest/use-the-real-time-key-statistics-feature>.
 
-![阿里云Key分析](https://oss.javaguide.cn/github/javaguide/database/redis/aliyun-key-analysis.png)
+![Phân tích Key của Alibaba Cloud](https://oss.javaguide.cn/github/javaguide/database/redis/aliyun-key-analysis.png)
 
-#### 如何解决 hotkey？
+#### Giải quyết hotkey như thế nào?
 
-hotkey 的常见处理以及优化办法如下（这些方法可以配合起来使用）：
+Các phương pháp xử lý và tối ưu hotkey thường gặp như sau (các phương pháp này có thể kết hợp sử dụng):
 
-- **读写分离**：主节点处理写请求，从节点处理读请求。
-- **使用 Redis Cluster**：将热点数据分散存储在多个 Redis 节点上。
-- **二级缓存**：hotkey 采用二级缓存的方式进行处理，将 hotkey 存放一份到 JVM 本地内存中（可以用 Caffeine）。
+- **Read-write separation (đọc ghi tách biệt)**: Master node xử lý yêu cầu ghi, slave node xử lý yêu cầu đọc.
+- **Sử dụng Redis Cluster**: Lưu trữ phân tán dữ liệu hot trên nhiều Redis node.
+- **Cache hai cấp**: hotkey được xử lý theo cách cache hai cấp, lưu một bản hotkey vào bộ nhớ cục bộ của JVM (có thể dùng Caffeine).
 
-除了这些方法之外，如果你使用的公有云的 Redis 服务话，还可以留意其提供的开箱即用的解决方案。
+Ngoài các phương pháp này, nếu bạn dùng dịch vụ Redis của cloud công cộng, còn có thể chú ý đến các giải pháp có sẵn mà nó cung cấp.
 
-这里以阿里云 Redis 为例说明，它支持通过代理查询缓存功能（Proxy Query Cache）优化热点 Key 问题。
+Ở đây lấy Redis của Alibaba Cloud làm ví dụ, nó hỗ trợ tối ưu vấn đề Key nóng thông qua tính năng cache truy vấn qua proxy (Proxy Query Cache).
 
-![通过阿里云的Proxy Query Cache优化热点Key问题](https://oss.javaguide.cn/github/javaguide/database/redis/aliyun-hotkey-proxy-query-cache.png)
+![Tối ưu vấn đề Key nóng bằng Proxy Query Cache của Alibaba Cloud](https://oss.javaguide.cn/github/javaguide/database/redis/aliyun-hotkey-proxy-query-cache.png)
 
-### 慢查询命令
+### Lệnh truy vấn chậm (Slow Query)
 
-#### 为什么会有慢查询命令？
+#### Tại sao có lệnh truy vấn chậm?
 
-我们知道一个 Redis 命令的执行可以简化为以下 4 步：
+Chúng ta biết rằng việc thực thi một lệnh Redis có thể được đơn giản hóa thành 4 bước sau:
 
-1. 发送命令；
-2. 命令排队；
-3. 命令执行；
-4. 返回结果。
+1. Gửi lệnh;
+2. Lệnh vào hàng đợi;
+3. Thực thi lệnh;
+4. Trả về kết quả.
 
-Redis 慢查询统计的是命令执行这一步骤的耗时，慢查询命令也就是那些命令执行时间较长的命令。
+Thống kê truy vấn chậm của Redis là thời gian tiêu tốn của bước thực thi lệnh, lệnh truy vấn chậm chính là những lệnh có thời gian thực thi lâu.
 
-Redis 为什么会有慢查询命令呢？
+Tại sao Redis lại có lệnh truy vấn chậm?
 
-Redis 中的大部分命令都是 O(1) 时间复杂度，但也有少部分 O(n) 时间复杂度的命令，例如：
+Phần lớn các lệnh trong Redis đều có độ phức tạp thời gian O(1), nhưng cũng có một số ít lệnh có độ phức tạp thời gian O(n), ví dụ:
 
-- `KEYS *`：会返回所有符合规则的 key。
-- `HGETALL`：会返回一个 Hash 中所有的键值对。
-- `LRANGE`：会返回 List 中指定范围内的元素。
-- `SMEMBERS`：返回 Set 中的所有元素。
-- `SINTER`/`SUNION`/`SDIFF`：计算多个 Set 的交集/并集/差集。
+- `KEYS *`: Trả về tất cả các key khớp với quy tắc.
+- `HGETALL`: Trả về tất cả các cặp key-value trong một Hash.
+- `LRANGE`: Trả về các phần tử trong phạm vi chỉ định của List.
+- `SMEMBERS`: Trả về tất cả các phần tử trong Set.
+- `SINTER`/`SUNION`/`SDIFF`: Tính giao/hợp/hiệu của nhiều Set.
 - ……
 
-由于这些命令时间复杂度是 O(n)，有时候也会全表扫描，随着 n 的增大，执行耗时也会越长。不过， 这些命令并不是一定不能使用，但是需要明确 N 的值。另外，有遍历的需求可以使用 `HSCAN`、`SSCAN`、`ZSCAN` 代替。
+Do độ phức tạp thời gian của các lệnh này là O(n), đôi khi còn quét toàn bộ bảng, khi n tăng lên thì thời gian thực thi cũng càng dài. Tuy nhiên, các lệnh này không phải nhất định không được sử dụng, nhưng cần xác định rõ giá trị N. Ngoài ra, nếu có nhu cầu duyệt thì có thể dùng `HSCAN`, `SSCAN`, `ZSCAN` để thay thế.
 
-除了这些 O(n) 时间复杂度的命令可能会导致慢查询之外，还有一些时间复杂度可能在 O(N) 以上的命令，例如：
+Ngoài các lệnh có độ phức tạp thời gian O(n) này có thể dẫn đến truy vấn chậm, còn có một số lệnh có độ phức tạp thời gian có thể trên O(N), ví dụ:
 
-- `ZRANGE`/`ZREVRANGE`：返回指定 Sorted Set 中指定排名范围内的所有元素。时间复杂度为 O(log(n)+m)，n 为所有元素的数量，m 为返回的元素数量，当 m 和 n 相当大时，O(n) 的时间复杂度更小。
-- `ZREMRANGEBYRANK`/`ZREMRANGEBYSCORE`：移除 Sorted Set 中指定排名范围/指定 score 范围内的所有元素。时间复杂度为 O(log(n)+m)，n 为所有元素的数量，m 被删除元素的数量，当 m 和 n 相当大时，O(n) 的时间复杂度更小。
+- `ZRANGE`/`ZREVRANGE`: Trả về tất cả các phần tử trong phạm vi ranking chỉ định của Sorted Set chỉ định. Độ phức tạp thời gian là O(log(n)+m), n là số lượng tất cả phần tử, m là số lượng phần tử trả về, khi m và n khá lớn thì độ phức tạp thời gian O(n) nhỏ hơn.
+- `ZREMRANGEBYRANK`/`ZREMRANGEBYSCORE`: Loại bỏ tất cả các phần tử trong phạm vi ranking chỉ định/phạm vi score chỉ định của Sorted Set. Độ phức tạp thời gian là O(log(n)+m), n là số lượng tất cả phần tử, m là số lượng phần tử bị xóa, khi m và n khá lớn thì độ phức tạp thời gian O(n) nhỏ hơn.
 - ……
 
-#### 如何找到慢查询命令？
+#### Tìm lệnh truy vấn chậm như thế nào?
 
-Redis 提供了一个内置的**慢查询日志 (Slow Log)** 功能，专门用来记录执行时间超过指定阈值的命令。这对于排查性能瓶颈、找出导致 Redis 阻塞的“慢”操作非常有帮助，原理和 MySQL 的慢查询日志类似。
+Redis cung cấp một tính năng **Slow Log (nhật ký truy vấn chậm)** tích hợp sẵn, chuyên dùng để ghi lại các lệnh có thời gian thực thi vượt quá ngưỡng chỉ định. Điều này rất hữu ích cho việc tìm kiếm nút thắt hiệu năng, tìm ra thao tác "chậm" khiến Redis bị block, nguyên lý tương tự như nhật ký truy vấn chậm của MySQL.
 
-在 `redis.conf` 文件中，我们可以使用 `slowlog-log-slower-than` 参数设置耗时命令的阈值，并使用 `slowlog-max-len` 参数设置耗时命令的最大记录条数。
+Trong file `redis.conf`, chúng ta có thể dùng tham số `slowlog-log-slower-than` để đặt ngưỡng cho lệnh tốn thời gian, và dùng tham số `slowlog-max-len` để đặt số bản ghi tối đa của lệnh tốn thời gian.
 
-当 Redis 服务器检测到执行时间超过 `slowlog-log-slower-than` 阈值的命令时，就会将该命令记录在慢查询日志（slow log）中，这点和 MySQL 记录慢查询语句类似。当慢查询日志超过设定的最大记录条数之后，Redis 会把最早的执行命令依次舍弃。
+Khi máy chủ Redis phát hiện lệnh có thời gian thực thi vượt quá ngưỡng `slowlog-log-slower-than`, sẽ ghi lệnh đó vào slow log, điểm này tương tự như việc MySQL ghi lại câu lệnh truy vấn chậm. Khi slow log vượt quá số bản ghi tối đa đã đặt, Redis sẽ lần lượt loại bỏ các lệnh thực thi sớm nhất.
 
-⚠️ 注意：由于慢查询日志会占用一定内存空间，如果设置最大记录条数过大，可能会导致内存占用过高的问题。
+⚠️ Chú ý: Do slow log chiếm dụng một không gian bộ nhớ nhất định, nếu đặt số bản ghi tối đa quá lớn, có thể dẫn đến vấn đề chiếm dụng bộ nhớ quá cao.
 
-`slowlog-log-slower-than` 和 `slowlog-max-len` 的默认配置如下（可以自行修改）：
+Cấu hình mặc định của `slowlog-log-slower-than` và `slowlog-max-len` như sau (có thể tự sửa đổi):
 
 ```properties
 # The following time is expressed in microseconds, so 1000000 is equivalent
@@ -544,19 +544,19 @@ slowlog-log-slower-than 10000
 slowlog-max-len 128
 ```
 
-除了修改配置文件之外，你也可以直接通过 `CONFIG` 命令直接设置：
+Ngoài việc sửa file cấu hình, bạn cũng có thể trực tiếp đặt thông qua lệnh `CONFIG`:
 
 ```bash
-# 命令执行耗时超过 10000 微妙（即10毫秒）就会被记录
+# Lệnh thực thi tốn hơn 10000 micro giây (tức 10 mili giây) sẽ được ghi lại
 CONFIG SET slowlog-log-slower-than 10000
-# 只保留最近 128 条耗时命令
+# Chỉ giữ lại 128 lệnh tốn thời gian gần nhất
 CONFIG SET slowlog-max-len 128
 ```
 
-获取慢查询日志的内容很简单，直接使用 `SLOWLOG GET` 命令即可。
+Lấy nội dung của slow log rất đơn giản, trực tiếp dùng lệnh `SLOWLOG GET` là được.
 
 ```bash
-127.0.0.1:6379> SLOWLOG GET #慢日志查询
+127.0.0.1:6379> SLOWLOG GET #Truy vấn slow log
  1) 1) (integer) 5
    2) (integer) 1684326682
    3) (integer) 12000
@@ -567,74 +567,74 @@ CONFIG SET slowlog-max-len 128
   // ...
 ```
 
-慢查询日志中的每个条目都由以下六个值组成：
+Mỗi entry trong slow log được cấu thành từ sáu giá trị sau:
 
-1. **唯一 ID**: 日志条目的唯一标识符。
-2. **时间戳 (Timestamp)**: 命令执行完成时的 Unix 时间戳。
-3. **耗时 (Duration)**: 命令执行所花费的时间，单位是**微秒**。
-4. **命令及参数 (Command)**: 执行的具体命令及其参数数组。
-5. **客户端信息 (Client IP:Port)**: 执行命令的客户端地址和端口。
-6. **客户端名称 (Client Name)**: 如果客户端设置了名称 (CLIENT SETNAME)。
+1. **ID duy nhất**: Định danh duy nhất của entry nhật ký.
+2. **Timestamp**: Unix timestamp tại thời điểm lệnh thực thi xong.
+3. **Thời gian tiêu tốn (Duration)**: Thời gian tiêu tốn để thực thi lệnh, đơn vị là **micro giây**.
+4. **Lệnh và tham số (Command)**: Lệnh cụ thể đã thực thi và mảng tham số của nó.
+5. **Thông tin client (Client IP:Port)**: Địa chỉ và port của client thực thi lệnh.
+6. **Tên client (Client Name)**: Nếu client đã đặt tên (CLIENT SETNAME).
 
-`SLOWLOG GET` 命令默认返回最近 10 条的慢查询命令，你也自己可以指定返回的慢查询命令的数量 `SLOWLOG GET N`。
+Lệnh `SLOWLOG GET` mặc định trả về 10 lệnh truy vấn chậm gần nhất, bạn cũng có thể tự chỉ định số lượng lệnh truy vấn chậm trả về bằng `SLOWLOG GET N`.
 
-下面是其他比较常用的慢查询相关的命令：
+Dưới đây là các lệnh khác khá thường dùng liên quan đến truy vấn chậm:
 
 ```bash
-# 返回慢查询命令的数量
+# Trả về số lượng lệnh truy vấn chậm
 127.0.0.1:6379> SLOWLOG LEN
 (integer) 128
-# 清空慢查询命令
+# Xóa sạch lệnh truy vấn chậm
 127.0.0.1:6379> SLOWLOG RESET
 OK
 ```
 
-### Redis 内存碎片
+### Redis Memory Fragmentation (Phân mảnh bộ nhớ)
 
-**相关问题**：
+**Câu hỏi liên quan**:
 
-1. 什么是内存碎片？为什么会有 Redis 内存碎片？
-2. 如何清理 Redis 内存碎片？
+1. Memory Fragmentation là gì? Tại sao lại có Redis Memory Fragmentation?
+2. Làm thế nào để dọn dẹp Redis Memory Fragmentation?
 
-**参考答案**：[Redis 内存碎片详解](https://javaguide.cn/database/redis/redis-memory-fragmentation.html)。
+**Đáp án tham khảo**: [Giải thích chi tiết Redis Memory Fragmentation](https://javaguide.cn/database/redis/redis-memory-fragmentation.html).
 
-## ⭐️Redis 生产问题（重要）
+## ⭐️Vấn đề Redis trong production (Quan trọng)
 
-### 缓存穿透
+### Cache Penetration (Xuyên thủng Cache)
 
-#### 什么是缓存穿透？
+#### Cache Penetration là gì?
 
-缓存穿透说简单点就是大量请求的 key 是不合理的，**根本不存在于缓存中，也不存在于数据库中**。这就导致这些请求直接到了数据库上，根本没有经过缓存这一层，对数据库造成了巨大的压力，可能直接就被这么多请求弄宕机了。
+Nói đơn giản, Cache Penetration là khi key của lượng lớn yêu cầu không hợp lý, **hoàn toàn không tồn tại trong Cache, cũng không tồn tại trong database**. Điều này dẫn đến các yêu cầu này đi thẳng xuống database, hoàn toàn không qua tầng Cache, gây áp lực khổng lồ cho database, có thể trực tiếp khiến database bị sập bởi nhiều yêu cầu như vậy.
 
-![缓存穿透](https://oss.javaguide.cn/github/javaguide/database/redis/redis-cache-penetration.png)
+![Cache Penetration](https://oss.javaguide.cn/github/javaguide/database/redis/redis-cache-penetration.png)
 
-举个例子：某个黑客故意制造一些非法的 key 发起大量请求，导致大量请求落到数据库，结果数据库上也没有查到对应的数据。也就是说这些请求最终都落到了数据库上，对数据库造成了巨大的压力。
+Ví dụ: Một hacker nào đó cố tình tạo ra một số key bất hợp pháp để phát động lượng lớn yêu cầu, dẫn đến lượng lớn yêu cầu đổ xuống database, kết quả là trong database cũng không tra được dữ liệu tương ứng. Nghĩa là các yêu cầu này cuối cùng đều đổ xuống database, gây áp lực khổng lồ cho database.
 
-#### 有哪些解决办法？
+#### Có những cách giải quyết nào?
 
-最基本的就是首先做好参数校验，一些不合法的参数请求直接抛出异常信息返回给客户端。比如查询的数据库 id 不能小于 0、传入的邮箱格式不对的时候直接返回错误消息给客户端等等。
+Cơ bản nhất là trước tiên phải kiểm tra tham số thật tốt, một số yêu cầu tham số không hợp lệ thì trực tiếp ném ra thông tin lỗi trả về cho client. Ví dụ id database truy vấn không được nhỏ hơn 0, khi định dạng email truyền vào không đúng thì trực tiếp trả về thông báo lỗi cho client, v.v.
 
-**1）缓存无效 key**
+**1) Cache key không hợp lệ**
 
-如果缓存和数据库都查不到某个 key 的数据，就写一个到 Redis 中去并设置过期时间，具体命令如下：`SET key value EX 10086`。这种方式可以解决请求的 key 变化不频繁的情况，如果黑客恶意攻击，每次构建不同的请求 key，会导致 Redis 中缓存大量无效的 key。很明显，这种方案并不能从根本上解决此问题。如果非要用这种方式来解决穿透问题的话，尽量将无效的 key 的过期时间设置短一点，比如 1 分钟。
+Nếu cả Cache và database đều không tra được dữ liệu của một key nào đó, thì ghi một bản vào Redis và đặt thời gian hết hạn, lệnh cụ thể như sau: `SET key value EX 10086`. Cách này có thể giải quyết tình huống key yêu cầu không thay đổi thường xuyên, nếu hacker tấn công ác ý, mỗi lần tạo key yêu cầu khác nhau, sẽ khiến Redis cache lượng lớn key không hợp lệ. Rõ ràng, phương án này không thể giải quyết triệt để vấn đề. Nếu nhất định phải dùng cách này để giải quyết vấn đề xuyên thủng, hãy cố gắng đặt thời gian hết hạn của key không hợp lệ ngắn một chút, ví dụ 1 phút.
 
-另外，这里多说一嘴，一般情况下我们是这样设计 key 的：`表名:列名:主键名:主键值`。
+Ngoài ra, nói thêm một chút, thông thường chúng ta thiết kế key như sau: `tên_bảng:tên_cột:tên_khóa_chính:giá_trị_khóa_chính`.
 
-如果用 Java 代码展示的话，差不多是下面这样的：
+Nếu thể hiện bằng code Java thì đại khái như sau:
 
 ```java
 public Object getObjectInclNullById(Integer id) {
-    // 从缓存中获取数据
+    // Lấy dữ liệu từ Cache
     Object cacheValue = cache.get(id);
-    // 缓存为空
+    // Cache trống
     if (cacheValue == null) {
-        // 从数据库中获取
+        // Lấy từ database
         Object storageValue = storage.get(key);
-        // 缓存空对象
+        // Cache đối tượng null
         cache.set(key, storageValue);
-        // 如果存储数据为空，需要设置一个过期时间(300秒)
+        // Nếu dữ liệu lưu trữ là null, cần đặt thời gian hết hạn (300 giây)
         if (storageValue == null) {
-            // 必须设置过期时间，否则有被攻击的风险
+            // Bắt buộc phải đặt thời gian hết hạn, nếu không có nguy cơ bị tấn công
             cache.expire(key, 60 * 5);
         }
         return storageValue;
@@ -643,181 +643,181 @@ public Object getObjectInclNullById(Integer id) {
 }
 ```
 
-**2）布隆过滤器**
+**2) Bloom Filter (Bộ lọc Bloom)**
 
-布隆过滤器是一个非常神奇的数据结构，通过它我们可以非常方便地判断一个给定数据是否存在于海量数据中。我们可以把它看作由二进制向量（或者说位数组）和一系列随机映射函数（哈希函数）两部分组成的数据结构。相比于我们平时常用的 List、Map、Set 等数据结构，它占用空间更少并且效率更高，但是缺点是其返回的结果是概率性的，而不是非常准确的。理论情况下添加到集合中的元素越多，误报的可能性就越大。并且，存放在布隆过滤器的数据不容易删除。
+Bloom Filter là một cấu trúc dữ liệu rất kỳ diệu, thông qua nó chúng ta có thể phán đoán rất tiện lợi xem một dữ liệu cho trước có tồn tại trong khối dữ liệu khổng lồ hay không. Chúng ta có thể xem nó như một cấu trúc dữ liệu gồm hai phần: vector nhị phân (hay nói cách khác là mảng bit) và một loạt hàm ánh xạ ngẫu nhiên (hàm hash). So với các cấu trúc dữ liệu thường dùng như List, Map, Set, nó chiếm ít không gian hơn và hiệu quả cao hơn, nhưng nhược điểm là kết quả nó trả về mang tính xác suất, chứ không phải hoàn toàn chính xác. Về mặt lý thuyết, số phần tử thêm vào tập hợp càng nhiều thì khả năng dương tính giả càng lớn. Hơn nữa, dữ liệu lưu trong Bloom Filter không dễ xóa.
 
-![Bloom Filter 的简单原理示意图](https://oss.javaguide.cn/github/javaguide/cs-basics/algorithms/bloom-filter-simple-schematic-diagram.png)
+![Sơ đồ nguyên lý đơn giản của Bloom Filter](https://oss.javaguide.cn/github/javaguide/cs-basics/algorithms/bloom-filter-simple-schematic-diagram.png)
 
-Bloom Filter 会使用一个较大的 bit 数组来保存所有的数据，数组中的每个元素都只占用 1 bit ，并且每个元素只能是 0 或者 1（代表 false 或者 true），这也是 Bloom Filter 节省内存的核心所在。这样来算的话，申请一个 100w 个元素的位数组只占用 1000000Bit / 8 = 125000 Byte = 125000/1024 KB ≈ 122KB 的空间。
+Bloom Filter sử dụng một mảng bit khá lớn để lưu tất cả dữ liệu, mỗi phần tử trong mảng chỉ chiếm 1 bit, và mỗi phần tử chỉ có thể là 0 hoặc 1 (đại diện cho false hoặc true), đây cũng là cốt lõi giúp Bloom Filter tiết kiệm bộ nhớ. Tính như vậy thì việc xin cấp phát một mảng bit 100 vạn phần tử chỉ chiếm 1000000Bit / 8 = 125000 Byte = 125000/1024 KB ≈ 122KB không gian.
 
-![位数组](https://oss.javaguide.cn/github/javaguide/cs-basics/algorithms/bloom-filter-bit-table.png)
+![Mảng bit](https://oss.javaguide.cn/github/javaguide/cs-basics/algorithms/bloom-filter-bit-table.png)
 
-具体是这样做的：把所有可能存在的请求的值都存放在布隆过滤器中，当用户请求过来，先判断用户发来的请求的值是否存在于布隆过滤器中。不存在的话，直接返回请求参数错误信息给客户端，存在的话才会走下面的流程。
+Cụ thể làm như sau: lưu tất cả các giá trị yêu cầu có thể tồn tại vào Bloom Filter, khi yêu cầu của người dùng gửi đến, trước tiên phán đoán xem giá trị yêu cầu người dùng gửi có tồn tại trong Bloom Filter hay không. Nếu không tồn tại, trực tiếp trả về thông tin lỗi tham số yêu cầu cho client, nếu tồn tại thì mới đi vào quy trình bên dưới.
 
-加入布隆过滤器之后的缓存处理流程图如下：
+Sơ đồ quy trình xử lý Cache sau khi thêm Bloom Filter như sau:
 
-![加入布隆过滤器之后的缓存处理流程图](https://oss.javaguide.cn/github/javaguide/database/redis/redis-cache-penetration-bloom-filter.png)
+![Sơ đồ quy trình xử lý Cache sau khi thêm Bloom Filter](https://oss.javaguide.cn/github/javaguide/database/redis/redis-cache-penetration-bloom-filter.png)
 
-更多关于布隆过滤器的详细介绍可以看看我的这篇原创：[不了解布隆过滤器？一文给你整的明明白白！](https://javaguide.cn/cs-basics/data-structure/bloom-filter.html)，强烈推荐。
+Giới thiệu chi tiết hơn về Bloom Filter có thể xem bài viết gốc này của tôi: [Không hiểu Bloom Filter? Một bài viết giúp bạn hiểu rõ ràng!](https://javaguide.cn/cs-basics/data-structure/bloom-filter.html), cực kỳ khuyến nghị.
 
-**3）接口限流**
+**3) Rate limiting (giới hạn tần suất) interface**
 
-根据用户或者 IP 对接口进行限流，对于异常频繁的访问行为，还可以采取黑名单机制，例如将异常 IP 列入黑名单。
+Dựa vào người dùng hoặc IP để rate limit interface, đối với hành vi truy cập bất thường quá thường xuyên, còn có thể áp dụng cơ chế blacklist, ví dụ đưa IP bất thường vào blacklist.
 
-后面提到的缓存击穿和雪崩都可以配合接口限流来解决，毕竟这些问题的关键都是有很多请求落到了数据库上造成数据库压力过大。
+Cache Breakdown và Cache Avalanche được đề cập phía sau đều có thể kết hợp với rate limiting interface để giải quyết, vì mấu chốt của các vấn đề này đều là có nhiều yêu cầu đổ xuống database khiến database chịu áp lực quá lớn.
 
-限流的具体方案可以参考这篇文章：[服务限流详解](https://javaguide.cn/high-availability/limit-request.html)。
+Phương án cụ thể của rate limiting có thể tham khảo bài viết này: [Giải thích chi tiết rate limiting dịch vụ](https://javaguide.cn/high-availability/limit-request.html).
 
-### 缓存击穿
+### Cache Breakdown (Thủng Cache)
 
-#### 什么是缓存击穿？
+#### Cache Breakdown là gì?
 
-缓存击穿中，请求的 key 对应的是 **热点数据**，该数据 **存在于数据库中，但不存在于缓存中（通常是因为缓存中的那份数据已经过期）**。这就可能会导致瞬时大量的请求直接打到了数据库上，对数据库造成了巨大的压力，可能直接就被这么多请求弄宕机了。
+Trong Cache Breakdown, key của yêu cầu tương ứng với **dữ liệu hot**, dữ liệu này **tồn tại trong database, nhưng không tồn tại trong Cache (thường là do dữ liệu đó trong Cache đã hết hạn)**. Điều này có thể dẫn đến lượng lớn yêu cầu tức thời đánh thẳng vào database, gây áp lực khổng lồ cho database, có thể trực tiếp khiến database bị sập bởi nhiều yêu cầu như vậy.
 
-![缓存击穿](https://oss.javaguide.cn/github/javaguide/database/redis/redis-cache-breakdown.png)
+![Cache Breakdown](https://oss.javaguide.cn/github/javaguide/database/redis/redis-cache-breakdown.png)
 
-举个例子：秒杀进行过程中，缓存中的某个秒杀商品的数据突然过期，这就导致瞬时大量对该商品的请求直接落到数据库上，对数据库造成了巨大的压力。
+Ví dụ: Trong quá trình diễn ra flash sale, dữ liệu của một sản phẩm flash sale nào đó trong Cache đột nhiên hết hạn, điều này dẫn đến lượng lớn yêu cầu tức thời đối với sản phẩm đó đổ thẳng xuống database, gây áp lực khổng lồ cho database.
 
-#### 有哪些解决办法？
+#### Có những cách giải quyết nào?
 
-1. **永不过期**（不推荐）：设置热点数据永不过期或者过期时间比较长。
-2. **提前预热**（推荐）：针对热点数据提前预热，将其存入缓存中并设置合理的过期时间比如秒杀场景下的数据在秒杀结束之前不过期。
-3. **加锁**（看情况）：在缓存失效后，通过设置互斥锁确保只有一个请求去查询数据库并更新缓存。
+1. **Không bao giờ hết hạn** (không khuyến nghị): Đặt dữ liệu hot không bao giờ hết hạn hoặc thời gian hết hạn tương đối dài.
+2. **Warm-up (làm nóng) trước** (khuyến nghị): Làm nóng trước dữ liệu hot, lưu vào Cache và đặt thời gian hết hạn hợp lý, ví dụ dữ liệu trong kịch bản flash sale không hết hạn trước khi flash sale kết thúc.
+3. **Thêm khóa** (tùy tình huống): Sau khi Cache mất hiệu lực, thông qua việc đặt mutex lock để đảm bảo chỉ có một yêu cầu truy vấn database và cập nhật Cache.
 
-#### 缓存穿透和缓存击穿有什么区别？
+#### Cache Penetration và Cache Breakdown khác nhau như thế nào?
 
-缓存穿透中，请求的 key 既不存在于缓存中，也不存在于数据库中。
+Trong Cache Penetration, key của yêu cầu không tồn tại trong Cache, cũng không tồn tại trong database.
 
-缓存击穿中，请求的 key 对应的是 **热点数据** ，该数据 **存在于数据库中，但不存在于缓存中（通常是因为缓存中的那份数据已经过期）** 。
+Trong Cache Breakdown, key của yêu cầu tương ứng với **dữ liệu hot**, dữ liệu này **tồn tại trong database, nhưng không tồn tại trong Cache (thường là do dữ liệu đó trong Cache đã hết hạn)**.
 
-### 缓存雪崩
+### Cache Avalanche (Sụp đổ Cache)
 
-#### 什么是缓存雪崩？
+#### Cache Avalanche là gì?
 
-我发现缓存雪崩这名字起的有点意思，哈哈。
+Tôi thấy cái tên Cache Avalanche đặt khá thú vị, haha.
 
-实际上，缓存雪崩描述的就是这样一个简单的场景：**缓存在同一时间大面积的失效，导致大量的请求都直接落到了数据库上，对数据库造成了巨大的压力。** 这就好比雪崩一样，摧枯拉朽之势，数据库的压力可想而知，可能直接就被这么多请求弄宕机了。
+Thực tế, Cache Avalanche mô tả chính là một kịch bản đơn giản như vậy: **Cache mất hiệu lực trên diện rộng trong cùng một thời điểm, dẫn đến lượng lớn yêu cầu đều đổ thẳng xuống database, gây áp lực khổng lồ cho database.** Giống như tuyết lở, với thế cuốn phăng tất cả, áp lực của database có thể tưởng tượng được, có thể trực tiếp bị sập bởi nhiều yêu cầu như vậy.
 
-另外，缓存服务宕机也会导致缓存雪崩现象，导致所有的请求都落到了数据库上。
+Ngoài ra, dịch vụ Cache bị sập cũng dẫn đến hiện tượng Cache Avalanche, khiến tất cả yêu cầu đều đổ xuống database.
 
-![缓存雪崩](https://oss.javaguide.cn/github/javaguide/database/redis/redis-cache-avalanche.png)
+![Cache Avalanche](https://oss.javaguide.cn/github/javaguide/database/redis/redis-cache-avalanche.png)
 
-举个例子：缓存中的大量数据在同一时间过期，这个时候突然有大量的请求需要访问这些过期的数据。这就导致大量的请求直接落到数据库上，对数据库造成了巨大的压力。
+Ví dụ: Lượng lớn dữ liệu trong Cache hết hạn trong cùng một thời điểm, lúc này đột nhiên có lượng lớn yêu cầu cần truy cập các dữ liệu đã hết hạn này. Điều này dẫn đến lượng lớn yêu cầu đổ thẳng xuống database, gây áp lực khổng lồ cho database.
 
-#### 有哪些解决办法？
+#### Có những cách giải quyết nào?
 
-**针对 Redis 服务不可用的情况**：
+**Đối với tình huống dịch vụ Redis không khả dụng**:
 
-1. **Redis 集群**：采用 Redis 集群，避免单机出现问题整个缓存服务都没办法使用。Redis Cluster 和 Redis Sentinel 是两种最常用的 Redis 集群实现方案，详细介绍可以参考：[Redis 集群详解(付费)](https://javaguide.cn/database/redis/redis-cluster.html)。
-2. **多级缓存**：设置多级缓存，例如本地缓存+Redis 缓存的二级缓存组合，当 Redis 缓存出现问题时，还可以从本地缓存中获取到部分数据。
+1. **Redis Cluster**: Áp dụng Redis Cluster, tránh trường hợp một máy gặp sự cố khiến toàn bộ dịch vụ Cache không thể sử dụng. Redis Cluster và Redis Sentinel là hai phương án triển khai Redis Cluster thường dùng nhất, giới thiệu chi tiết có thể tham khảo: [Giải thích chi tiết Redis Cluster (trả phí)](https://javaguide.cn/database/redis/redis-cluster.html).
+2. **Cache đa cấp**: Đặt Cache đa cấp, ví dụ tổ hợp Cache hai cấp gồm Cache cục bộ + Redis Cache, khi Redis Cache gặp vấn đề, vẫn có thể lấy được một phần dữ liệu từ Cache cục bộ.
 
-**针对大量缓存同时失效的情况**：
+**Đối với tình huống lượng lớn Cache đồng thời mất hiệu lực**:
 
-1. **设置随机失效时间**（可选）：为缓存设置随机的失效时间，例如在固定过期时间的基础上加上一个随机值，这样可以避免大量缓存同时到期，从而减少缓存雪崩的风险。
-2. **提前预热**（推荐）：针对热点数据提前预热，将其存入缓存中并设置合理的过期时间，比如秒杀场景下的数据在秒杀结束之前不过期。
-3. **持久缓存策略**（看情况）：虽然一般不推荐设置缓存永不过期，但对于某些关键性和变化不频繁的数据，可以考虑这种策略。
+1. **Đặt thời gian hết hạn ngẫu nhiên** (tùy chọn): Đặt thời gian hết hạn ngẫu nhiên cho Cache, ví dụ thêm một giá trị ngẫu nhiên trên cơ sở thời gian hết hạn cố định, như vậy có thể tránh lượng lớn Cache đồng thời đến hạn, từ đó giảm rủi ro Cache Avalanche.
+2. **Warm-up trước** (khuyến nghị): Làm nóng trước dữ liệu hot, lưu vào Cache và đặt thời gian hết hạn hợp lý, ví dụ dữ liệu trong kịch bản flash sale không hết hạn trước khi flash sale kết thúc.
+3. **Chiến lược Cache vĩnh viễn** (tùy tình huống): Tuy thường không khuyến nghị đặt Cache không bao giờ hết hạn, nhưng đối với một số dữ liệu quan trọng và ít thay đổi, có thể cân nhắc chiến lược này.
 
-#### 缓存预热如何实现？
+#### Thực hiện warm-up Cache như thế nào?
 
-常见的缓存预热方式有两种：
+Có hai cách warm-up Cache thường gặp:
 
-1. 使用定时任务，比如 xxl-job，来定时触发缓存预热的逻辑，将数据库中的热点数据查询出来并存入缓存中。
-2. 使用消息队列，比如 Kafka，来异步地进行缓存预热，将数据库中的热点数据的主键或者 ID 发送到消息队列中，然后由缓存服务消费消息队列中的数据，根据主键或者 ID 查询数据库并更新缓存。
+1. Sử dụng scheduled task, ví dụ xxl-job, để kích hoạt định kỳ logic warm-up Cache, truy vấn dữ liệu hot trong database ra và lưu vào Cache.
+2. Sử dụng message queue, ví dụ Kafka, để warm-up Cache một cách bất đồng bộ, gửi khóa chính hoặc ID của dữ liệu hot trong database vào message queue, sau đó dịch vụ Cache tiêu thụ dữ liệu trong message queue, dựa vào khóa chính hoặc ID để truy vấn database và cập nhật Cache.
 
-#### 缓存雪崩和缓存击穿有什么区别？
+#### Cache Avalanche và Cache Breakdown khác nhau như thế nào?
 
-缓存雪崩和缓存击穿比较像，但缓存雪崩导致的原因是缓存中的大量或者所有数据失效，缓存击穿导致的原因主要是某个热点数据不存在于缓存中（通常是因为缓存中的那份数据已经过期）。
+Cache Avalanche và Cache Breakdown khá giống nhau, nhưng nguyên nhân do Cache Avalanche gây ra là lượng lớn hoặc tất cả dữ liệu trong Cache mất hiệu lực, nguyên nhân do Cache Breakdown gây ra chủ yếu là một dữ liệu hot nào đó không tồn tại trong Cache (thường là do dữ liệu đó trong Cache đã hết hạn).
 
-### 如何保证缓存和数据库数据的一致性？
+### Làm thế nào để đảm bảo tính nhất quán giữa Cache và database?
 
-缓存和数据库一致性是个挺常见的技术挑战。引入缓存主要是为了提升性能、减轻数据库压力，但确实会带来数据不一致的风险。绝对的一致性往往意味着更高的系统复杂度和性能开销，所以实践中我们通常会根据业务场景选择合适的策略，在性能和一致性之间找到一个平衡点。
+Tính nhất quán giữa Cache và database là một thách thức kỹ thuật khá phổ biến. Đưa Cache vào chủ yếu để nâng cao hiệu năng, giảm áp lực cho database, nhưng quả thực sẽ mang lại rủi ro dữ liệu không nhất quán. Tính nhất quán tuyệt đối thường đồng nghĩa với độ phức tạp hệ thống và chi phí hiệu năng cao hơn, vì vậy trong thực tế chúng ta thường dựa vào kịch bản nghiệp vụ để chọn chiến lược phù hợp, tìm điểm cân bằng giữa hiệu năng và tính nhất quán.
 
-下面单独对 **Cache Aside Pattern（旁路缓存模式）** 来聊聊。这是非常常用的一种缓存读写策略，它的读写逻辑是这样的：
+Dưới đây nói riêng về **Cache Aside Pattern (chế độ Cache bên cạnh)**. Đây là chiến lược đọc ghi Cache rất thường dùng, logic đọc ghi của nó như sau:
 
-- **读操作**：
-  1. 先尝试从缓存读取数据。
-  2. 如果缓存命中，直接返回数据。
-  3. 如果缓存未命中，从数据库查询数据，将查到的数据放入缓存并返回数据。
-- **写操作**：
-  1. 先更新数据库。
-  2. 再直接删除缓存中对应的数据。
+- **Thao tác đọc**:
+  1. Trước tiên thử đọc dữ liệu từ Cache.
+  2. Nếu Cache hit, trực tiếp trả về dữ liệu.
+  3. Nếu Cache miss, truy vấn dữ liệu từ database, đặt dữ liệu tra được vào Cache và trả về dữ liệu.
+- **Thao tác ghi**:
+  1. Trước tiên cập nhật database.
+  2. Sau đó trực tiếp xóa dữ liệu tương ứng trong Cache.
 
-图解如下：
+Minh họa như sau:
 
 ![](https://oss.javaguide.cn/github/javaguide/database/redis/cache-aside-write.png)
 
 ![](https://oss.javaguide.cn/github/javaguide/database/redis/cache-aside-read.png)
 
-如果更新数据库成功，而删除缓存这一步失败的情况的话，简单说有两个解决方案：
+Nếu cập nhật database thành công, mà bước xóa Cache lại thất bại, nói đơn giản có hai phương án giải quyết:
 
-1. **缓存失效时间（TTL - Time To Live）变短**（不推荐，治标不治本）：我们让缓存数据的过期时间变短，这样的话缓存就会从数据库中加载数据。另外，这种解决办法对于先操作缓存后操作数据库的场景不适用。
-2. **增加缓存更新重试机制**（常用）：如果缓存服务当前不可用导致缓存删除失败的话，我们就隔一段时间进行重试，重试次数可以自己定。不过，这里更适合引入消息队列实现异步重试，将删除缓存重试的消息投递到消息队列，然后由专门的消费者来重试，直到成功。虽然说多引入了一个消息队列，但其整体带来的收益还是要更高一些。
+1. **Rút ngắn thời gian hết hạn của Cache (TTL - Time To Live)** (không khuyến nghị, trị triệu chứng không trị tận gốc): Chúng ta rút ngắn thời gian hết hạn của dữ liệu Cache, như vậy Cache sẽ tải lại dữ liệu từ database. Ngoài ra, cách giải quyết này không áp dụng được cho kịch bản thao tác Cache trước rồi thao tác database sau.
+2. **Thêm cơ chế retry cập nhật Cache** (thường dùng): Nếu dịch vụ Cache hiện không khả dụng dẫn đến xóa Cache thất bại, chúng ta cách một khoảng thời gian sẽ retry, số lần retry có thể tự định. Tuy nhiên, ở đây phù hợp hơn là đưa message queue vào để thực hiện retry bất đồng bộ, gửi message retry xóa Cache vào message queue, sau đó một consumer chuyên dụng sẽ retry cho đến khi thành công. Tuy có đưa thêm một message queue, nhưng lợi ích tổng thể mà nó mang lại vẫn cao hơn.
 
-相关文章推荐：[缓存和数据库一致性问题，看这篇就够了 - 水滴与银弹](https://mp.weixin.qq.com/s?__biz=MzIyOTYxNDI5OA==&mid=2247487312&idx=1&sn=fa19566f5729d6598155b5c676eee62d&chksm=e8beb8e5dfc931f3e35655da9da0b61c79f2843101c130cf38996446975014f958a6481aacf1&scene=178&cur_album_id=1699766580538032128#rd)。
+Bài viết liên quan khuyến nghị: [Vấn đề nhất quán giữa Cache và database, xem bài này là đủ - Water Drop and Silver Bullet](https://mp.weixin.qq.com/s?__biz=MzIyOTYxNDI5OA==&mid=2247487312&idx=1&sn=fa19566f5729d6598155b5c676eee62d&chksm=e8beb8e5dfc931f3e35655da9da0b61c79f2843101c130cf38996446975014f958a6481aacf1&scene=178&cur_album_id=1699766580538032128#rd).
 
-### 哪些情况可能会导致 Redis 阻塞？
+### Những tình huống nào có thể khiến Redis bị block?
 
-常见的导致 Redis 阻塞原因有：
+Các nguyên nhân thường gặp khiến Redis bị block gồm:
 
-- `O(n)` 复杂度命令执行（如 `KEYS *`、`HGETALL`、`LRANGE`、`SMEMBERS` 等），随着数据量增大导致执行时间过长。
-- 执行 `SAVE` 命令生成 RDB 快照时同步阻塞主线程，而 `BGSAVE` 通过 `fork` 子进程避免阻塞。
-- AOF 记录日志在主线程中进行，可能因命令执行后写日志而阻塞后续命令。
-- AOF 刷盘（fsync）时后台线程同步到磁盘，磁盘压力大导致 `fsync` 阻塞，进而阻塞主线程 `write` 操作，尤其在 `appendfsync always` 或 `everysec` 配置下明显。
-- AOF 重写过程中将重写缓冲区内容追加到新 AOF 文件时产生阻塞。
-- 操作大 key（string > 1MB 或复合类型元素 > 5000）导致客户端超时、网络阻塞和工作线程阻塞。
-- 使用 `flushdb` 或 `flushall` 清空数据库时涉及大量键值对删除和内存释放，造成主线程阻塞。
-- 集群扩容缩容时数据迁移为同步操作，大 key 迁移导致两端节点长时间阻塞，可能触发故障转移
-- 内存不足触发 Swap，操作系统将 Redis 内存换出到硬盘，读写性能急剧下降。
-- 其他进程过度占用 CPU 导致 Redis 吞吐量下降。
-- 网络问题如连接拒绝、延迟高、网卡软中断等导致 Redis 阻塞。
+- Thực thi lệnh có độ phức tạp `O(n)` (như `KEYS *`, `HGETALL`, `LRANGE`, `SMEMBERS`, v.v.), khi lượng dữ liệu tăng lên dẫn đến thời gian thực thi quá dài.
+- Khi thực thi lệnh `SAVE` để tạo RDB snapshot thì block đồng bộ main thread, còn `BGSAVE` thông qua `fork` tiến trình con để tránh block.
+- Việc ghi log AOF được thực hiện trong main thread, có thể block các lệnh tiếp theo do ghi log sau khi thực thi lệnh.
+- Khi AOF flush xuống đĩa (fsync), background thread đồng bộ xuống đĩa, áp lực đĩa lớn dẫn đến `fsync` bị block, từ đó block thao tác `write` của main thread, đặc biệt rõ ràng với cấu hình `appendfsync always` hoặc `everysec`.
+- Trong quá trình rewrite AOF, khi thêm nội dung của rewrite buffer vào file AOF mới sẽ phát sinh block.
+- Thao tác key lớn (string > 1MB hoặc phần tử kiểu phức hợp > 5000) dẫn đến client timeout, block mạng và block worker thread.
+- Khi dùng `flushdb` hoặc `flushall` để xóa sạch database, liên quan đến việc xóa lượng lớn cặp key-value và giải phóng bộ nhớ, gây block main thread.
+- Khi mở rộng/thu hẹp Cluster, việc di chuyển dữ liệu là thao tác đồng bộ, di chuyển key lớn dẫn đến cả hai đầu node bị block trong thời gian dài, có thể kích hoạt failover.
+- Thiếu bộ nhớ kích hoạt Swap, hệ điều hành đổi bộ nhớ của Redis ra đĩa, hiệu năng đọc ghi giảm mạnh.
+- Tiến trình khác chiếm dụng CPU quá mức dẫn đến throughput của Redis giảm.
+- Vấn đề mạng như từ chối kết nối, độ trễ cao, soft interrupt của card mạng, v.v. dẫn đến Redis bị block.
 
-详细介绍可以阅读这篇文章：[Redis 常见阻塞原因总结](https://javaguide.cn/database/redis/redis-common-blocking-problems-summary.html)。
+Giới thiệu chi tiết có thể đọc bài viết này: [Tổng hợp các nguyên nhân thường gặp khiến Redis bị block](https://javaguide.cn/database/redis/redis-common-blocking-problems-summary.html).
 
-## Redis 集群
+## Redis Cluster (Cụm Redis)
 
-**Redis Sentinel**：
+**Redis Sentinel**:
 
-1. 什么是 Sentinel？ 有什么用？
-2. Sentinel 如何检测节点是否下线？主观下线与客观下线的区别？
-3. Sentinel 是如何实现故障转移的？
-4. 为什么建议部署多个 sentinel 节点（哨兵集群）？
-5. Sentinel 如何选择出新的 master（选举机制）？
-6. 如何从 Sentinel 集群中选择出 Leader？
-7. Sentinel 可以防止脑裂吗？
+1. Sentinel là gì? Có tác dụng gì?
+2. Sentinel phát hiện node có offline hay không như thế nào? Sự khác nhau giữa subjective downtime (chủ quan) và objective downtime (khách quan)?
+3. Sentinel thực hiện failover như thế nào?
+4. Tại sao nên triển khai nhiều node sentinel (Sentinel Cluster)?
+5. Sentinel chọn master mới như thế nào (cơ chế bầu chọn)?
+6. Chọn Leader từ Sentinel Cluster như thế nào?
+7. Sentinel có thể ngăn chặn split-brain không?
 
-**Redis Cluster**：
+**Redis Cluster**:
 
-1. 为什么需要 Redis Cluster？解决了什么问题？有什么优势？
-2. Redis Cluster 是如何分片的？
-3. 为什么 Redis Cluster 的哈希槽是 16384 个？
-4. 如何确定给定 key 的应该分布到哪个哈希槽中？
-5. Redis Cluster 支持重新分配哈希槽吗？
-6. Redis Cluster 扩容缩容期间可以提供服务吗？
-7. Redis Cluster 中的节点是怎么进行通信的？
+1. Tại sao cần Redis Cluster? Giải quyết vấn đề gì? Có ưu thế gì?
+2. Redis Cluster phân mảnh như thế nào?
+3. Tại sao hash slot của Redis Cluster là 16384?
+4. Làm thế nào để xác định key cho trước nên được phân vào hash slot nào?
+5. Redis Cluster có hỗ trợ phân bổ lại hash slot không?
+6. Trong thời gian mở rộng/thu hẹp Redis Cluster có thể cung cấp dịch vụ không?
+7. Các node trong Redis Cluster giao tiếp với nhau như thế nào?
 
-**参考答案**：[Redis 集群详解（付费）](https://javaguide.cn/database/redis/redis-cluster.html)。
+**Đáp án tham khảo**: [Giải thích chi tiết Redis Cluster (trả phí)](https://javaguide.cn/database/redis/redis-cluster.html).
 
-## Redis 使用规范
+## Quy phạm sử dụng Redis
 
-实际使用 Redis 的过程中，我们尽量要准守一些常见的规范，比如：
+Trong quá trình sử dụng Redis thực tế, chúng ta nên tuân thủ một số quy phạm thường gặp, ví dụ:
 
-1. 使用连接池：避免频繁创建关闭客户端连接。
-2. 尽量不使用 O(n) 指令，使用 O(n) 命令时要关注 n 的数量：像 `KEYS *`、`HGETALL`、`LRANGE`、`SMEMBERS`、`SINTER`/`SUNION`/`SDIFF` 等 O(n) 命令并非不能使用，但是需要明确 n 的值。另外，有遍历的需求可以使用 `HSCAN`、`SSCAN`、`ZSCAN` 代替。
-3. 使用批量操作减少网络传输：原生批量操作命令（比如 `MGET`、`MSET` 等等）、pipeline、Lua 脚本。
-4. 尽量不使用 Redis 事务：Redis 事务实现的功能比较鸡肋，可以使用 Lua 脚本代替。
-5. 禁止长时间开启 monitor：对性能影响比较大。
-6. 控制 key 的生命周期：避免 Redis 中存放了太多不经常被访问的数据。
+1. Sử dụng connection pool: Tránh tạo và đóng kết nối client thường xuyên.
+2. Cố gắng không sử dụng lệnh O(n), khi dùng lệnh O(n) phải chú ý số lượng n: Các lệnh O(n) như `KEYS *`, `HGETALL`, `LRANGE`, `SMEMBERS`, `SINTER`/`SUNION`/`SDIFF` không phải không được sử dụng, nhưng cần xác định rõ giá trị n. Ngoài ra, nếu có nhu cầu duyệt thì có thể dùng `HSCAN`, `SSCAN`, `ZSCAN` để thay thế.
+3. Sử dụng thao tác hàng loạt để giảm truyền tải mạng: Lệnh thao tác hàng loạt nguyên bản (ví dụ `MGET`, `MSET`, v.v.), pipeline, Lua script.
+4. Cố gắng không sử dụng Redis Transaction: Tính năng mà Redis Transaction triển khai khá hạn chế, có thể dùng Lua script để thay thế.
+5. Cấm bật monitor trong thời gian dài: Ảnh hưởng khá lớn đến hiệu năng.
+6. Kiểm soát vòng đời của key: Tránh lưu quá nhiều dữ liệu ít được truy cập trong Redis.
 7. ……
 
-## 参考
+## Tham khảo
 
-- 《Redis 开发与运维》
-- 《Redis 设计与实现》
-- Redis Transactions：<https://redis.io/docs/manual/transactions/>
-- What is Redis Pipeline：<https://buildatscale.tech/what-is-redis-pipeline/>
-- 一文详解 Redis 中 BigKey、HotKey 的发现与处理：<https://mp.weixin.qq.com/s/FPYE1B839_8Yk1-YSiW-1Q>
-- Bigkey 问题的解决思路与方式探索：<https://mp.weixin.qq.com/s/Sej7D9TpdAobcCmdYdMIyA>
-- Redis 延迟问题全面排障指南：<https://mp.weixin.qq.com/s/mIc6a9mfEGdaNDD3MmfFsg>
+- 《Redis 开发与运维》(Phát triển và vận hành Redis)
+- 《Redis 设计与实现》(Thiết kế và triển khai Redis)
+- Redis Transactions: <https://redis.io/docs/manual/transactions/>
+- What is Redis Pipeline: <https://buildatscale.tech/what-is-redis-pipeline/>
+- Một bài viết giải thích chi tiết việc phát hiện và xử lý BigKey, HotKey trong Redis: <https://mp.weixin.qq.com/s/FPYE1B839_8Yk1-YSiW-1Q>
+- Khám phá hướng giải quyết và phương pháp cho vấn đề Bigkey: <https://mp.weixin.qq.com/s/Sej7D9TpdAobcCmdYdMIyA>
+- Hướng dẫn xử lý toàn diện vấn đề độ trễ của Redis: <https://mp.weixin.qq.com/s/mIc6a9mfEGdaNDD3MmfFsg>
 
 <!-- @include: @article-footer.snippet.md -->

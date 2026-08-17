@@ -1,6 +1,6 @@
 ---
-title: 糟糕程序员的 20 个坏习惯
-description: "糟糕程序员的 20 个坏习惯：围绕技术知识与面试总结梳理关键概念、常见问题与实践要点，帮助你高效学习与备战面试。"
+title: 20 thói quen xấu của lập trình viên kém
+description: "20 thói quen xấu của lập trình viên kém: tổng hợp các khái niệm then chốt, câu hỏi thường gặp và điểm thực hành liên quan đến kiến thức kỹ thuật và tổng kết phỏng vấn, giúp bạn học tập hiệu quả và chuẩn bị cho phỏng vấn."
 category: 技术文章精选集
 author: Kaito
 tag:
@@ -11,141 +11,141 @@ head:
       content: 程序员坏习惯,编程规范,代码注释,技术文档,团队协作,代码提交,职业素养,编程修养
 ---
 
-> **推荐语**：Kaito 大佬的一篇文章，很实用的建议！
+> **Lời giới thiệu**: Một bài viết của đại ca Kaito, những lời khuyên rất hữu ích!
 >
-> **原文地址：** <https://mp.weixin.qq.com/s/6hUU6SZsxGPWAIIByq93Rw>
+> **Địa chỉ bài gốc:** <https://mp.weixin.qq.com/s/6hUU6SZsxGPWAIIByq93Rw>
 
-我想你肯定遇到过这样一类程序员：**他们无论是写代码，还是写文档，又或是和别人沟通，都显得特别专业**。每次遇到这类人，我都在想，他们到底是怎么做到的？
+Chắc chắn bạn đã từng gặp một kiểu lập trình viên như thế này: **dù là viết code, viết tài liệu hay giao tiếp với người khác, họ đều trông cực kỳ chuyên nghiệp**. Mỗi lần gặp những người như vậy, tôi đều tự hỏi, rốt cuộc họ làm được điều đó bằng cách nào?
 
-随着工作时间的增长，渐渐地我也总结出一些经验，他们身上都保持着一些看似很微小的优秀习惯，但正是因为这些习惯，体现出了一个优秀程序员的基本素养。
+Càng đi làm lâu, dần dần tôi cũng rút ra được một số kinh nghiệm: trên người họ đều duy trì một số thói quen tốt tưởng chừng rất nhỏ nhặt, nhưng chính những thói quen này lại thể hiện tố chất cơ bản của một lập trình viên giỏi.
 
-但今天我们来换个角度，来看看一个糟糕程序员有哪些坏习惯？只要我们都能避开这些问题，就可以逐渐向一个优秀程序员靠近。
+Nhưng hôm nay chúng ta hãy đổi góc nhìn, xem một lập trình viên kém có những thói quen xấu nào? Chỉ cần chúng ta đều tránh được những vấn đề này, là có thể dần tiến gần đến một lập trình viên giỏi.
 
-## 1、技术名词拼写不规范
+## 1. Viết sai chính tả các thuật ngữ kỹ thuật
 
-无论是个人简历，还是技术文档，我经常看到拼写不规范的技术名词，例如 JAVA、javascript、python、MySql、Hbase、restful。
+Dù là CV cá nhân hay tài liệu kỹ thuật, tôi thường bắt gặp các thuật ngữ kỹ thuật viết sai chính tả, ví dụ như JAVA、javascript、python、MySql、Hbase、restful.
 
-正确的拼写应该是 Java、JavaScript、Python、MySQL、HBase、RESTful，不要小看这个问题，很多面试官很有可能因为这一点刷掉你的简历。
+Cách viết đúng phải là Java、JavaScript、Python、MySQL、HBase、RESTful, đừng xem nhẹ vấn đề này, rất nhiều nhà tuyển dụng có thể chỉ vì điểm này mà loại bỏ CV của bạn.
 
-## 2、写文档，中英文混排不规范
+## 2. Viết tài liệu, trộn lẫn Trung-Anh không đúng quy chuẩn
 
-中文描述使用英文标点符号，英文和数字使用了全角字符，中文与英文、数字之间没有空格等等。
+Dùng dấu câu tiếng Anh trong câu tiếng Trung, dùng ký tự full-width cho chữ Anh và số, giữa chữ Trung với chữ Anh, số không có dấu cách, v.v.
 
-其中很多人会忽视中文和英文、数字之间加一个「空格」，这样排版阅读起来会更舒服。之前我的文章排版，都是遵循了这些细节。
+Trong đó nhiều người thường bỏ qua việc thêm một dấu cách giữa chữ Trung với chữ Anh, số, cách sắp xếp như vậy sẽ khiến việc đọc thoải mái hơn. Trước đây bài viết của tôi khi sắp xếp, đều tuân thủ những chi tiết này.
 
-## 3、重要逻辑不写注释，或写得很拖沓
+## 3. Logic quan trọng không viết comment, hoặc viết rất lan man
 
-复杂且重要的逻辑代码，很多程序员不写注释，除了自己能看懂代码逻辑，其他人根本看不懂。或者是注释虽然写了，但写得很拖沓，没有逻辑可言。
+Với những đoạn code logic phức tạp và quan trọng, nhiều lập trình viên không viết comment, ngoài bản thân họ ra không ai đọc hiểu được logic. Hoặc là comment có viết, nhưng viết rất lan man, chẳng có logic gì.
 
-重要的逻辑不止要写注释，还要写得简洁、清晰。如果是一眼就能读懂的简单代码，可以不加注释。
+Logic quan trọng không chỉ cần viết comment, mà còn phải viết gọn gàng, rõ ràng. Nếu là code đơn giản đọc một cái là hiểu ngay, thì có thể không cần thêm comment.
 
-## 4、写复杂冗长的函数
+## 4. Viết những hàm dài dòng phức tạp
 
-一个函数几百行，一个文件上千行代码，复杂函数不做拆分，导致代码变得越来越难维护，最后谁也不敢动。
+Một hàm dài vài trăm dòng, một file dài hơn nghìn dòng code, hàm phức tạp không tách nhỏ, khiến code ngày càng khó bảo trì, cuối cùng chẳng ai dám động vào.
 
-基本的设计模式还是要遵守的，例如单一职责，一个函数只做一件事，开闭原则，对扩展开放，对修改关闭。
+Các nguyên tắc thiết kế cơ bản vẫn nên tuân thủ, ví dụ như nguyên tắc đơn trách nhiệm (single responsibility), một hàm chỉ làm một việc, nguyên tắc mở-đóng (open-closed principle), mở rộng cho việc mở rộng, đóng cho việc sửa đổi.
 
-如果函数逻辑确实复杂，也至少要保证主干逻辑足够清晰。
+Nếu logic của hàm thực sự phức tạp, thì ít nhất cũng phải đảm bảo logic nhánh chính đủ rõ ràng.
 
-## 5、不看官方文档，只看垃圾博客
+## 5. Không xem tài liệu chính thức, chỉ thích đọc blog rác
 
-很多人遇到问题不先去看官方文档，而是热衷于去看垃圾博客，这些博客的内容都是互相抄袭，错误百出。
+Nhiều người gặp vấn đề không chịu xem tài liệu chính thức trước, mà lại thích đọc các blog rác, nội dung của những blog này đều là sao chép lẫn nhau, sai sót chồng chất.
 
-其实很多软件官方文档写得已经非常好了，常见问题都能找到答案，认真读一读官方文档，比看垃圾博客强一百倍，要养成看官方文档的好习惯。
+Thực ra tài liệu chính thức của rất nhiều phần mềm đã được viết rất tốt, câu hỏi thường gặp đều có thể tìm thấy câu trả lời, chịu khó đọc kỹ tài liệu chính thức một chút, hay hơn xem blog rác gấp trăm lần, phải hình thành thói quen tốt là đọc tài liệu chính thức.
 
-## 6、宣扬内功无用论
+## 6. Tuyên truyền luận điệu "nội công vô dụng"
 
-有些人天天追求日新月异的开源项目和框架，却不肯花时间去啃一啃底层原理，常见问题虽然可以解决，但遇到稍微深一点的问题就束手无策。
+Có những người ngày ngày theo đuổi các dự án mã nguồn mở và framework mới mẻ không ngừng, nhưng lại không chịu bỏ thời gian đi nghiền ngẫm nguyên lý nền tảng, vấn đề thường gặp thì có thể giải quyết được, nhưng gặp vấn đề hơi sâu một chút là bó tay.
 
-很多高大上的架构设计，思路其实都源于底层。想一想，像计算机体系结构、操作系统、网络协议这些东西，经过多少年演进才变为现在的样子，演进过程中遇到的复杂问题比比皆是，理解了解决这些问题的思路，再看上层技术会变得很简单。
+Rất nhiều thiết kế kiến trúc "cao cấp xa vời", ý tưởng thực ra đều bắt nguồn từ tầng dưới. Cứ thử nghĩ xem, những thứ như kiến trúc hệ thống máy tính, hệ điều hành, giao thức mạng, đã trải qua bao nhiêu năm tiến hóa mới thành dạng như ngày nay, những vấn đề phức tạp gặp phải trong quá trình tiến hóa là vô số, hiểu được tư duy giải quyết những vấn đề này, rồi nhìn các công nghệ tầng trên sẽ thấy rất đơn giản.
 
-## 7、乐于炫技
+## 7. Thích khoe mẽ
 
-有些人天天把「高大上」的技术名词挂在嘴边，生怕别人不知道自己学了什么高深技术，嘴上乐于炫技，但别人一问他细节就会哑口无言。
+Có những người ngày ngày đem các thuật ngữ kỹ thuật "cao cấp xa vời" treo bên miệng, sợ người khác không biết mình đã học được công nghệ cao siêu gì, miệng thì thích khoe mẽ, nhưng người khác vừa hỏi tới chi tiết là á khẩu không nói được gì.
 
-## 8、不接受质疑
+## 8. Không chấp nhận bị hoài nghi
 
-自己设计的方案，别人提出疑问时只会回怼，而不是理性分析利弊，抱着学习的心态交流。
+Phương án do mình thiết kế, khi người khác đặt câu hỏi thì chỉ biết đáp trả, thay vì phân tích lợi hại một cách lý trí, giao tiếp với tâm thế học hỏi.
 
-这些人学了点东西就觉得自己很有本事，殊不知只是自己见识太少。
+Những người này học được chút kiến thức là tưởng mình giỏi lắm, không ngờ rằng chỉ là do mình thấy biết quá ít.
 
-## 9、接口协议不规范
+## 9. Quy ước API không đúng chuẩn
 
-和别人定 API 协议全靠口头沟通，不给规范的文档说明，甚至到了测试联调时会发现，竟然和协商的还不一样，或者改协议了却不通知对接方，合作体验极差。
+Thỏa thuận API với người khác hoàn toàn dựa vào giao tiếp miệng, không đưa ra tài liệu mô tả đúng chuẩn, thậm chí đến lúc test liên kết (联调) mới phát hiện ra, hóa ra lại không giống với những gì đã thống nhất, hoặc đổi giao thức rồi mà không thông báo cho bên đối tác, trải nghiệm hợp tác cực kỳ tệ.
 
-## 10、遇到问题自己死磕
+## 10. Gặp vấn đề cứ tự mình đâm đầu
 
-很初级程序员容易犯的问题，遇到问题只会自己死磕，拖到 deadline 也没有产出，领导来问才知道有问题解决不了。
+Vấn đề mà lập trình viên mới rất dễ mắc phải, gặp vấn đề chỉ biết tự mình đâm đầu, kéo dài đến deadline mà vẫn không có kết quả, đến khi lãnh đạo hỏi mới biết là có vấn đề không giải quyết được.
 
-有问题及时反馈才是对自己负责，对团队负责。
+Có vấn đề thì phản hồi kịp thời mới là có trách nhiệm với bản thân, có trách nhiệm với đội nhóm.
 
-## 11、一说就会，一写就废
+## 11. Hỏi thì biết, viết thì gãy
 
-平时技术方案吹得天花乱坠，一让他写代码就废，典型的眼高手低选手。
+Bình thường kể về phương án kỹ thuật thì thổi phồng lên tận trời, mà bảo viết code thì hỏng bét, đúng kiểu người "mắt cao tay thấp".
 
-## 12、表达没有逻辑，不站在对方角度看问题
+## 12. Diễn đạt không logic, không đứng ở góc nhìn của người khác
 
-讨论问题不交代背景，上来就说自己的方案，别人听得云里雾里，让你从头描述你又讲不明白。
+Khi thảo luận vấn đề không trình bày bối cảnh, vừa lên là nói phương án của mình, người khác nghe thì mù mờ không hiểu gì, bảo bạn mô tả lại từ đầu thì bạn lại chẳng nói rõ được.
 
-学会沟通和表达，是合作的基础。
+Học cách giao tiếp và diễn đạt, là nền tảng của sự hợp tác.
 
-## 13、不主动思考，伸手党
+## 13. Không chủ động suy nghĩ, mở tay xin
 
-遇到问题不去 google，不做思考就向别人提问，喜欢做伸手党。
+Gặp vấn đề không chịu google, không suy nghĩ đã đi hỏi người khác, thích làm "người mở tay xin".
 
-每个人的时间都很宝贵，大家都更喜欢你带着自己的思考来提问，一来可以规避很多低级问题，二来可以提高交流质量。
+Thời gian của mỗi người đều rất quý giá, mọi người đều thích bạn mang theo suy nghĩ của bản thân đến đặt câu hỏi, một mặt có thể tránh được nhiều câu hỏi cấp thấp, mặt khác có thể nâng cao chất lượng trao đổi.
 
-## 14、经常犯重复的错误
+## 14. Thường xuyên phạm những lỗi lặp lại
 
-出问题后说下次会注意，但下次问题依旧，对自己不负责任，说到底是态度问题。
+Sau khi gặp vấn đề thì nói lần sau sẽ chú ý, nhưng lần sau vấn đề vẫn y như cũ, thiếu trách nhiệm với bản thân, nói cho cùng thì đây là vấn đề thái độ.
 
-## 15、加功能不考虑扩展性
+## 15. Thêm tính năng không xét đến khả năng mở rộng
 
-加新功能只关注某一小块业务，不考虑系统整体的扩展性，堆代码行为严重。
+Thêm tính năng mới chỉ quan tâm đến một mảnh nghiệp vụ nhỏ, không xét đến khả năng mở rộng tổng thể của hệ thống, hành vi nhồi code nghiêm trọng.
 
-要学会分析需求和未来可能发生的变化，设计更通用的解决方案，降低后期开发成本。
+Cần học cách phân tích yêu cầu và những thay đổi có thể xảy ra trong tương lai, thiết kế giải pháp tổng quát hơn, giảm chi phí phát triển ở giai đoạn sau.
 
-## 16、接口不自测，出问题不打日志
+## 16. API không tự test, gặp vấn đề không in log
 
-自己开发的接口不自测就和别人联调，出了问题又说没打日志，协作效率极低。
+API do mình phát triển mà không tự test đã đem đi liên kết với người khác, gặp vấn đề lại nói là không in log, hiệu quả hợp tác cực kỳ thấp.
 
-## 17、提交代码不规范
+## 17. Commit code không đúng quy chuẩn
 
-很多人提交代码不写描述，或者写的是无意义的描述，尤其是修改很少代码时，这种情况会导致回溯问题成本变高。
+Nhiều người commit code không viết mô tả, hoặc viết mô tả vô nghĩa, đặc biệt là khi sửa đổi rất ít code, tình huống này sẽ khiến chi phí truy vết vấn đề trở nên cao hơn.
 
-制定代码提交规范，能让你在每一次提交代码时，不会做太随意的代码修改。
+Xây dựng quy chuẩn commit code, có thể giúp bạn mỗi lần commit code đều không sửa đổi code một cách quá tùy tiện.
 
-## 18、手动修改生产环境数据库
+## 18. Tự ý sửa đổi database môi trường production
 
-直连生产环境数据库修改数据，更有 UPDATE / DELETE SQL 忘写 WHERE 条件的情况，产生数据事故。
+Kết nối trực tiếp vào database môi trường production để sửa đổi dữ liệu, thậm chí có trường hợp SQL UPDATE / DELETE quên viết điều kiện WHERE, gây ra sự cố dữ liệu.
 
-修改生产环境数据库一定要谨慎再谨慎，建议操作前先找同事 review 代码再操作。
+Sửa đổi database môi trường production nhất định phải thận trọng rồi lại thận trọng, khuyến nghị trước khi thao tác nên nhờ đồng nghiệp review code rồi mới thao tác.
 
-## 19、没理清需求就直接写代码
+## 19. Chưa nắm rõ yêu cầu đã viết code
 
-很多程序员接到需求后，不怎么思考就开始写代码，需求和自己理解的有偏差，造成无意义返工。
+Nhiều lập trình viên nhận được yêu cầu, không suy nghĩ gì nhiều đã bắt đầu viết code, yêu cầu lệch với hiểu biết của mình, gây ra việc làm lại vô nghĩa.
 
-多花些时间梳理需求，能规避很多不合理的问题。
+Dành thêm chút thời gian để làm rõ yêu cầu, có thể tránh được rất nhiều vấn đề bất hợp lý.
 
-## 20、重要设计不写文档
+## 20. Thiết kế quan trọng không viết tài liệu
 
-重要的设计没有文档输出，和别人交接系统时只做口头描述，丢失关键信息。
+Thiết kế quan trọng không có tài liệu được xuất bản, khi bàn giao hệ thống cho người khác chỉ mô tả bằng lời nói, làm mất đi những thông tin then chốt.
 
-有时候理解一个设计方案，一个好的文档要比看几百行代码更高效。
+Có khi để hiểu một phương án thiết kế, một tài liệu tốt còn hiệu quả hơn xem mấy trăm dòng code.
 
-## 总结
+## Tổng kết
 
-以上这些不良习惯，你命中几个呢？或者你身边有没有碰到这样的人？
+Những thói quen xấu kể trên, bạn trúng phải mấy cái? Hoặc xung quanh bạn có gặp những người như vậy không?
 
-我认为提早规避这些问题，是成为一个优秀程序员必须要做的。这些习惯总结起来大致分为这 4 个方面：
+Tôi cho rằng việc tránh sớm những vấn đề này, là điều bắt buộc phải làm để trở thành một lập trình viên giỏi. Tổng hợp lại những thói quen này đại khái thuộc 4 phương diện sau:
 
-- 良好的编程修养
-- 谦虚的学习心态
-- 良好的沟通和表达
-- 注重团队协作
+- Tố chất lập trình tốt
+- Tâm thế học hỏi khiêm tốn
+- Giao tiếp và diễn đạt tốt
+- Chú trọng hợp tác đội nhóm
 
-优秀程序员的专业技能，我们可能很难在短时间内学会，但这些基本的职业素养，是可以在短期内做到的。
+Kỹ năng chuyên môn của lập trình viên giỏi, chúng ta có thể khó lòng học được trong thời gian ngắn, nhưng những tố chất nghề nghiệp cơ bản này, thì hoàn toàn có thể làm được trong thời gian ngắn.
 
-希望你我可以有则改之，无则加勉。
+Chúc bạn và tôi đều "có thì sửa, không có thì tự răn mình".
 
 <!-- @include: @article-footer.snippet.md -->

@@ -1,109 +1,138 @@
 ---
-title: Java 优质开源 AI 项目
-description: Java优质开源AI项目推荐，涵盖Spring AI、LangChain4j、Deeplearning4j等Java人工智能和机器学习框架介绍。
-category: 开源项目
+title: Dự án AI mã nguồn mở Java chất lượng
+description: Tuyển chọn các dự án AI mã nguồn mở dành cho Java, bao gồm Spring AI, LangChain4j, Deeplearning4j cùng nhiều framework trí tuệ nhân tạo và học máy nổi bật trong hệ sinh thái Java.
+category: Dự án mã nguồn mở
 icon: "mdi:robot-outline"
 ---
 
-很多小伙伴私下问我：现在 AI 这么火，咱们写 Java 的是不是只能在旁边看戏？
+Rất nhiều bạn đã hỏi mình rằng: **AI đang bùng nổ như hiện nay, liệu lập trình viên Java chỉ có thể đứng ngoài cuộc chơi?**
 
-**说实话，以前确实有点难受。** 毕竟主流的 AI 框架大多是 Python 的天下。但现在，时代变了！随着 Spring AI 以及各种 Java AI 框架的爆发，咱们 Java 开发者完全可以像平时写 CRUD 一样，优雅地把大模型集成到应用里。
+**Thành thật mà nói, trước đây đúng là có phần lép vế.** Phần lớn các framework AI đều xoay quanh hệ sinh thái Python. Nhưng giờ thì mọi chuyện đã khác! Với sự phát triển mạnh mẽ của **Spring AI** cùng hàng loạt framework AI dành cho Java, lập trình viên Java giờ đây hoàn toàn có thể tích hợp các mô hình ngôn ngữ lớn (LLM) vào ứng dụng một cách tự nhiên, gần giống như cách chúng ta viết CRUD hằng ngày.
 
-今天就带大家盘点一下，目前 Java 生态里最硬核的几个 AI 框架。
+Hôm nay, hãy cùng điểm qua những framework AI mạnh mẽ và đáng chú ý nhất trong hệ sinh thái Java hiện nay.
 
-## 基础框架
+## Framework nền tảng
 
 ### Spring AI
 
-[Spring AI](https://github.com/spring-projects/spring-ai) 是 Spring 官方亲自下场打造的 AI 应用开发框架 。它的核心哲学非常直观：**将 AI 能力无缝集成到 Spring 生态中** 。
+[Spring AI](https://github.com/spring-projects/spring-ai) là framework phát triển ứng dụng AI được **chính đội ngũ Spring phát triển**. Triết lý cốt lõi của dự án rất rõ ràng:
 
-对于习惯了 Spring Boot 的开发者来说，这玩意儿几乎没有学习门槛。它提供了一套构建 AI 应用所需的“底层原子能力抽象” ：
+**Tích hợp khả năng AI một cách liền mạch vào hệ sinh thái Spring.**
 
-- **模型通信 (ChatClient):** 提供了统一的接口与不同的大语言模型（如 OpenAI GPT、Ollama、Google Gemini）进行对话。
-- **提示词 (Prompt):** 结构化地管理和构建发送给模型的提示词。
-- **检索增强生成 (RAG):** 通过 `VectorStore` 等抽象，方便地实现 RAG 模式，将外部知识库与模型结合，提升回答的准确性和时效性。
-- **工具调用 (Function Calling):** 允许模型调用 Java 应用中定义好的方法，实现与外部世界的交互。
-- **记忆 (ChatMemory):** 管理多轮对话的上下文历史。
+Đối với những ai đã quen với Spring Boot, việc làm quen với Spring AI gần như không có rào cản. Framework này cung cấp một tập hợp các **khối xây dựng (building blocks)** cần thiết để phát triển ứng dụng AI:
 
-官方文档：<https://spring.io/projects/spring-ai#learn>。
+- **Giao tiếp với mô hình (ChatClient):** Cung cấp API thống nhất để làm việc với nhiều mô hình ngôn ngữ lớn như OpenAI GPT, Ollama, Google Gemini...
+- **Prompt:** Quản lý và xây dựng Prompt theo cấu trúc rõ ràng.
+- **RAG (Retrieval-Augmented Generation):** Thông qua các abstraction như `VectorStore`, giúp dễ dàng triển khai RAG để kết hợp tri thức từ cơ sở dữ liệu bên ngoài với mô hình AI, nâng cao độ chính xác và tính cập nhật của câu trả lời.
+- **Function Calling:** Cho phép mô hình AI gọi trực tiếp các phương thức được định nghĩa trong ứng dụng Java để tương tác với hệ thống bên ngoài.
+- **ChatMemory:** Quản lý lịch sử hội thoại và ngữ cảnh của các cuộc trò chuyện nhiều lượt.
+
+Tài liệu chính thức: <https://spring.io/projects/spring-ai#learn>.
 
 ### Spring AI Alibaba
 
-[Spring AI Alibaba](https://github.com/alibaba/spring-ai-alibaba) 集成 Spring AI 生态，它是一个专为多智能体系统和工作流编排设计的项目。项目从架构上包含如下三层：
+[Spring AI Alibaba](https://github.com/alibaba/spring-ai-alibaba) mở rộng hệ sinh thái Spring AI và được thiết kế dành riêng cho các **hệ thống đa tác tử (Multi-Agent)** cùng **Workflow Orchestration**.
 
-![Spring AI Alibaba 架构](https://oss.javaguide.cn/github/javaguide/open-source-project/ai/springai-alibaba-architecture-new.png)
+Kiến trúc của dự án gồm ba tầng chính:
 
-- **Agent Framework**：以 ReactAgent 设计理念为核心的 Agent 开发框架，构建具备自动上下文工程和人机交互能力的 Agent。
-- **Graph**：低级别的工作流和多代理协调框架，是 Agent Framework 的底层运行时基座，帮助实现复杂的应用程序编排。
-- **Augmented LLM**：基于 Spring AI 底层抽象，提供模型、工具、多模态组件（MCP）、向量存储等基础支持。
+![Kiến trúc Spring AI Alibaba](https://oss.javaguide.cn/github/javaguide/open-source-project/ai/springai-alibaba-architecture-new.png)
 
-另外它还有非常“工程化”的组件：
+- **Agent Framework:** Framework phát triển Agent lấy triết lý ReactAgent làm trung tâm, hỗ trợ tự động quản lý ngữ cảnh và tương tác giữa người dùng với AI.
+- **Graph:** Framework cấp thấp dùng để điều phối Workflow và Multi-Agent, đóng vai trò runtime cho Agent Framework, giúp xây dựng các luồng nghiệp vụ phức tạp.
+- **Augmented LLM:** Dựa trên abstraction của Spring AI, cung cấp các thành phần nền tảng như Model, Tool, MCP (Multimodal Components) và Vector Store.
 
-- **Admin**：一站式 Agent 平台，支持可视化开发、可观测、评估、MCP 管理，甚至与 Dify 等低代码平台集成，支持 DSL 迁移。
-- **A2A（Agent-to-Agent）**：支持 Agent 间通信，并可与 Nacos 集成做分布式协调。
+Ngoài ra còn có nhiều thành phần phục vụ phát triển ở quy mô doanh nghiệp:
 
-官方文档：<https://java2ai.com/>。
+- **Admin:** Nền tảng Agent tất cả trong một, hỗ trợ phát triển trực quan, giám sát, đánh giá, quản lý MCP, tích hợp với các nền tảng low-code như Dify và hỗ trợ chuyển đổi DSL.
+- **A2A (Agent-to-Agent):** Cho phép các Agent giao tiếp với nhau và tích hợp với Nacos để điều phối trong môi trường phân tán.
+
+Tài liệu chính thức: <https://java2ai.com/>.
 
 ### LangChain4j
 
-如果说 Spring AI 是官方正规军，那 [LangChain4j](https://github.com/langchain4j/langchain4j) 就是目前社区里非常强势的 Java LLM 框架，它是 LangChain 的 Java 版本。
+Nếu **Spring AI** là "đội quân chính quy" của hệ sinh thái Spring thì [LangChain4j](https://github.com/langchain4j/langchain4j) chính là framework LLM mạnh mẽ nhất trong cộng đồng Java hiện nay. Đây là phiên bản Java của LangChain.
 
-它的优势在于功能全面，各种大模型的适配速度快得离谱，但在 Spring 体系里总有一种“外来客”的违和感。
+Ưu điểm nổi bật của LangChain4j là:
 
-如果你追求“多模型快速切换 + 能力覆盖面广 + 原型推进快”，LangChain4j 通常是第一梯队选择；代价是你需要自己在工程结构、治理、可观测、平台化上多做一点“工程化拼装”。
+- Hỗ trợ rất nhiều mô hình AI và Vector Database.
+- Tốc độ cập nhật các mô hình mới cực nhanh.
+- Hệ sinh thái tính năng rất đầy đủ.
 
-官方文档：<https://docs.langchain4j.dev/>。
+Tuy nhiên, khi sử dụng trong các dự án Spring, đôi khi vẫn mang cảm giác như một framework "ngoại lai".
+
+Nếu mục tiêu của bạn là:
+
+- Chuyển đổi nhanh giữa nhiều mô hình AI.
+- Hỗ trợ nhiều tính năng nhất.
+- Xây dựng prototype trong thời gian ngắn.
+
+thì LangChain4j thường là lựa chọn hàng đầu. Đổi lại, bạn sẽ phải tự đầu tư nhiều hơn vào kiến trúc, khả năng quản trị, quan sát hệ thống và xây dựng nền tảng.
+
+Tài liệu chính thức: <https://docs.langchain4j.dev/>.
 
 ### AgentScope
 
-[AgentScope](https://github.com/agentscope-ai/agentscope-java) 是一个多智能体框架，旨在提供一种简单高效的方式来构建基于大语言模型的智能体应用程序。
+[AgentScope](https://github.com/agentscope-ai/agentscope-java) là framework phát triển **Multi-Agent**, giúp xây dựng các ứng dụng AI dựa trên mô hình ngôn ngữ lớn một cách đơn giản và hiệu quả.
 
-如果说大模型（LLM）是 AI 应用的大脑，那么 AgentScope 就是它的“中枢神经系统”和“手脚”。它不仅提供了多智能体协作的架构，还内置了 ReAct 推理、工具调用、记忆管理等核心能力。
+Nếu LLM là "bộ não" của một ứng dụng AI thì AgentScope chính là **hệ thần kinh trung ương và tay chân** của nó. Framework không chỉ cung cấp kiến trúc Multi-Agent mà còn tích hợp sẵn:
 
-AgentScope 提供了 Python 和 Java 版本，二者核心能力完全对齐！
+- Cơ chế suy luận ReAct.
+- Function Calling.
+- Quản lý bộ nhớ hội thoại.
+- Khả năng phối hợp giữa nhiều Agent.
 
-**AgentScope 也是阿里开源的，那和 Spring AI Alibaba 有何不同呢？**
+AgentScope cung cấp cả phiên bản **Python** và **Java**, với năng lực cốt lõi hoàn toàn tương đương.
 
-- **AgentScope Java**：原生为 **Agentic（智能体）范式**设计。它的核心是“Agent”，强调的是自主性、推理循环（ReAct）和多智能体之间的复杂博弈与协作。
-- **Spring AI Alibaba**：更侧重于 **Workflow（工作流）编排**。它基于 Spring AI 生态，擅长将 AI 能力作为工具融入到预定义的业务流中。
+**AgentScope cũng là dự án mã nguồn mở của Alibaba. Vậy nó khác gì với Spring AI Alibaba?**
 
-官方文档：<https://java.agentscope.io/zh/intro.html>。
+- **AgentScope Java:** Được thiết kế theo triết lý **Agentic AI** ngay từ đầu. Trọng tâm là Agent, nhấn mạnh khả năng tự chủ, vòng lặp suy luận ReAct và sự hợp tác giữa nhiều Agent.
+- **Spring AI Alibaba:** Tập trung nhiều hơn vào **Workflow Orchestration**, tận dụng hệ sinh thái Spring AI để tích hợp AI vào các quy trình nghiệp vụ đã được định nghĩa trước.
 
-### 其他
+Tài liệu chính thức: <https://java.agentscope.io/zh/intro.html>.
 
-- [Solon-AI](https://github.com/opensolon/solon-ai)：Java AI 应用开发框架（支持 LLM，RAG，MCP，Agent），同时兼容 Java8 ~ Java25，支持 SpringBoot、jFinal、Vert.x、Quarkus 等框架。
-- [Agent-Flex](https://github.com/agents-flex/agents-flex)：一个优雅的 LLM（大语言模型）应用开发框架，对标 LangChain、使用 Java 开发、简单、轻量。
-- [Deeplearning4j](https://github.com/eclipse/deeplearning4j)：Deeplearning4j 是第一个为 Java 和 Scala 编写的商业级，开源，分布式深度学习库。
-- [Smile](https://github.com/haifengl/smile)：基于 Java 和 Scala 的机器学习库。
-- [GdxAI](https://github.com/libgdx/gdx-ai)：完全用 Java 编写的人工智能框架，用于使用 libGDX 进行游戏开发。
+### Các framework khác
 
-### 对比
+- [Solon-AI](https://github.com/opensolon/solon-ai)：Framework phát triển ứng dụng AI cho Java, hỗ trợ LLM, RAG, MCP và Agent; tương thích từ Java 8 đến Java 25; tích hợp với Spring Boot, jFinal, Vert.x, Quarkus và nhiều framework khác.
+- [Agent-Flex](https://github.com/agents-flex/agents-flex)：Framework phát triển ứng dụng LLM thanh lịch, nhẹ và đơn giản, được xây dựng bằng Java, định vị tương tự LangChain.
+- [Deeplearning4j](https://github.com/eclipse/deeplearning4j)：Thư viện Deep Learning mã nguồn mở, phân tán và cấp doanh nghiệp đầu tiên dành cho Java và Scala.
+- [Smile](https://github.com/haifengl/smile)：Thư viện Machine Learning dành cho Java và Scala.
+- [GdxAI](https://github.com/libgdx/gdx-ai)：Framework AI viết hoàn toàn bằng Java dành cho phát triển game với libGDX.
 
-| **框架名称**          | **核心特点**                                                                                                       | **适用场景**                                               |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------- |
-| **Spring AI**         | Spring 官方底座：模型/向量库/工具调用/记忆/RAG/可观测/结构化输出；强调可移植与模块化                               | 现有 Spring Boot 企业应用 AI 化                            |
-| **Spring AI Alibaba** | 面向 Agentic/Workflow/Multi-agent 的生产级体系：Agent Framework + Graph Runtime + Admin/Studio；支持 MCP/A2A/Nacos | 多智能体编排、复杂工作流、平台化治理与迁移（含可视化）     |
-| **LangChain4j**       | 社区强势：统一 API 连接多模型/多向量库；Agents/Tools/RAG；支持 MCP；可集成 Spring/Quarkus/Helidon                  | 快速原型、强灵活性、多模型快速切换                         |
-| **Solon-AI**          | Java 8~25 兼容；LLM/RAG/MCP/Agent/Ai Flow 全链路；可嵌入多框架                                                     | 历史系统/多框架场景、追求兼容性与全链路能力                |
-| **Agent-Flex**        | 轻量优雅：LLM/Prompt/Tool/MCP/Memory/Embedding/VectorStore/文档处理；OpenTelemetry 可观测                          | 追求简洁上手、可观测的 LLM 应用开发                        |
-| **AgentScope Java**   | Agentic 原生：ReAct + Tool + Memory + 多 Agent；MCP+A2A（Nacos）；Reactor 响应式 + GraalVM Serverless              | 自主智能体、分布式多 Agent、对生产可控性与性能要求高的场景 |
+### So sánh
 
-## 实战
+| **Framework**         | **Đặc điểm nổi bật**                                                                                                                                                             | **Phù hợp với**                                                                                 |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **Spring AI**         | Framework chính thức của Spring: hỗ trợ Model, Vector Store, Function Calling, Memory, RAG, Structured Output và khả năng quan sát; chú trọng tính mô-đun và khả năng di chuyển. | AI hóa các ứng dụng doanh nghiệp sử dụng Spring Boot.                                           |
+| **Spring AI Alibaba** | Nền tảng sản xuất cho Agentic AI, Workflow và Multi-Agent: Agent Framework + Graph Runtime + Admin/Studio; hỗ trợ MCP, A2A và Nacos.                                             | Điều phối Multi-Agent, Workflow phức tạp, quản trị nền tảng và phát triển trực quan.            |
+| **LangChain4j**       | Framework cộng đồng mạnh mẽ: API thống nhất cho nhiều LLM và Vector Store; hỗ trợ Agent, Tool, RAG, MCP; tích hợp Spring, Quarkus và Helidon.                                    | Prototype nhanh, hỗ trợ nhiều mô hình và yêu cầu tính linh hoạt cao.                            |
+| **Solon-AI**          | Tương thích Java 8–25; hỗ trợ toàn bộ chuỗi LLM, RAG, MCP, Agent và AI Flow; dễ tích hợp với nhiều framework.                                                                    | Hệ thống cũ, môi trường đa framework và yêu cầu khả năng tương thích cao.                       |
+| **Agent-Flex**        | Framework nhẹ, hỗ trợ LLM, Prompt, Tool, MCP, Memory, Embedding, Vector Store và xử lý tài liệu; tích hợp OpenTelemetry.                                                         | Phát triển ứng dụng LLM đơn giản nhưng vẫn có khả năng quan sát hệ thống.                       |
+| **AgentScope Java**   | Thiết kế theo triết lý Agentic: ReAct, Tool, Memory, Multi-Agent; hỗ trợ MCP, A2A (Nacos), Reactor và GraalVM Serverless.                                                        | Hệ thống Agent tự chủ, Multi-Agent phân tán và các môi trường production yêu cầu hiệu năng cao. |
 
-### 智能面试平台
+## Dự án thực chiến
 
-[interview-guide](https://github.com/Snailclimb/interview-guide) 基于 Spring Boot 4.0 + Java 21 + Spring AI + PostgreSQL + pgvector + RustFS + Redis，实现简历智能分析、AI 模拟面试、知识库 RAG 检索等核心功能。非常适合作为学习和简历项目，学习门槛低。
+### Nền tảng phỏng vấn thông minh
 
-**系统架构如下**：
+[interview-guide](https://github.com/Snailclimb/interview-guide) được xây dựng trên **Spring Boot 4.0 + Java 21 + Spring AI + PostgreSQL + pgvector + RustFS + Redis**, cung cấp các chức năng như:
 
-> **提示**：架构图采用 draw.io 绘制，导出为 svg 格式，在 Github Dark 模式下的显示效果会有问题。
+- Phân tích CV bằng AI.
+- Phỏng vấn mô phỏng với AI.
+- Tra cứu tri thức bằng RAG.
 
-![系统架构图](https://oss.javaguide.cn/xingqiu/pratical-project/interview-guide/interview-guide-architecture-diagram.png)
+Đây là một dự án rất phù hợp để học tập và đưa vào CV cá nhân vì dễ tiếp cận nhưng vẫn mang tính thực tế cao.
 
-### AI 工作流编排系统
+**Kiến trúc hệ thống như sau:**
 
-[PaiAgent](https://github.com/itwanger/PaiAgent) 是一个**企业级的 AI 工作流可视化编排平台**，让 AI 能力的组合和调度变得简单高效。通过直观的拖拽式界面，开发者和业务人员都能快速构建复杂的 AI 处理流程，无需编写代码即可实现多种大模型的协同工作。
+> **Lưu ý:** Sơ đồ được vẽ bằng draw.io và xuất sang định dạng SVG. Khi xem trên GitHub ở chế độ Dark Mode có thể hiển thị chưa chính xác.
 
-**系统架构如下**：
+![Sơ đồ kiến trúc hệ thống](https://oss.javaguide.cn/xingqiu/pratical-project/interview-guide/interview-guide-architecture-diagram.png)
+
+### Hệ thống điều phối Workflow AI
+
+[PaiAgent](https://github.com/itwanger/PaiAgent) là **nền tảng điều phối Workflow AI trực quan cấp doanh nghiệp**, giúp việc kết hợp và điều phối các khả năng AI trở nên đơn giản và hiệu quả.
+
+Thông qua giao diện kéo thả trực quan, cả lập trình viên lẫn người dùng nghiệp vụ đều có thể nhanh chóng xây dựng các quy trình AI phức tạp mà gần như không cần viết mã, đồng thời hỗ trợ phối hợp nhiều mô hình ngôn ngữ lớn khác nhau.
+
+**Kiến trúc hệ thống như sau:**
 
 ![](https://oss.javaguide.cn/github/javaguide/open-source-project/ai/paiagent-architecture-diagram.jpg)

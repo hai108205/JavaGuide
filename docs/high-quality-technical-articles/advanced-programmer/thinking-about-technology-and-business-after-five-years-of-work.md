@@ -1,6 +1,6 @@
 ---
-title: 工作五年之后，对技术和业务的思考
-description: "工作五年之后，对技术和业务的思考：围绕技术知识与面试总结梳理关键概念、常见问题与实践要点，帮助你高效学习与备战面试。"
+title: Sau năm năm đi làm, những suy ngẫm về kỹ thuật và nghiệp vụ
+description: "Sau năm năm đi làm, những suy ngẫm về kỹ thuật và nghiệp vụ: xoay quanh kiến thức kỹ thuật và tổng kết phỏng vấn để hệ thống hóa các khái niệm chính, câu hỏi thường gặp và điểm thực hành trọng yếu, giúp bạn học tập hiệu quả và sẵn sàng cho phỏng vấn."
 category: 技术文章精选集
 author: 知了一笑
 tag:
@@ -11,104 +11,104 @@ head:
       content: 程序员五年,技术与业务,职业发展,能力积累,业务思维,技术深度,职场选择,二八原则
 ---
 
-> **推荐语**：这是我在两年前看到的一篇对我触动比较深的文章。确实要学会适应变化，并积累能力。积累解决问题的能力，优化思考方式，拓宽自己的认知。
+> **Lời giới thiệu**: Đây là bài viết tôi đọc được hai năm trước và có sức tác động khá lớn với bản thân. Quả thực phải học cách thích nghi với sự thay đổi và tích lũy năng lực. Tích lũy khả năng giải quyết vấn đề, tối ưu cách tư duy, mở rộng nhận thức của chính mình.
 >
-> **原文地址：** <https://mp.weixin.qq.com/s/CTbEdi0F4-qFoJT05kNlXA>
+> **Địa chỉ bài gốc:** <https://mp.weixin.qq.com/s/CTbEdi0F4-qFoJT05kNlXA>
 
-苦海无边，回头无岸。
+Biển khổ mênh mông vô bờ, ngoảnh đầu lại cũng không thấy bến bờ.
 
-## 01 前言
+## 01 Lời mở đầu
 
-晃晃悠悠的，在互联网行业工作了五年，默然回首，你看哪里像灯火阑珊处？
+Lang thang lơ đễnh, làm việc trong ngành Internet đã năm năm, ngoảnh đầu nhìn lại, bạn có thấy nơi nào như "chốn đèn hoa rực rỡ" không?
 
-初入职场，大部分程序员会觉得苦学技术，以后会顺风顺水升职加薪，这样的想法没有错，但是不算全面，五年后你会不会继续做技术写代码这是核心问题。
+Mới bước vào nghề, phần lớn lập trình viên đều nghĩ rằng chỉ cần khổ công học kỹ thuật, sau này sẽ thuận buồm xuôi gió thăng chức tăng lương. Suy nghĩ này không sai, nhưng chưa toàn diện. Vấn đề cốt lõi là năm năm sau bạn có còn tiếp tục làm kỹ thuật và viết code hay không.
 
-初入职场，会觉得努力加班可以不断提升能力，可以学到技术的公司就算薪水低点也可以接受，但是五年之后会认为加班都是在不断挤压自己的上升空间，薪水低是人生的天花板。
+Mới vào nghề, sẽ nghĩ rằng chăm chỉ tăng ca có thể không ngừng nâng cao năng lực, công ty nào học được kỹ thuật thì dù lương thấp một chút cũng chấp nhận được. Nhưng năm năm sau sẽ nhận ra rằng tăng ca đều đang không ngừng bào mòn không gian thăng tiến của chính mình, còn lương thấp chính là trần nhà của cuộc đời.
 
-这里想说的关键问题就是：初入职场的认知和想法大部分不会再适用于五年后的认知。
+Vấn đề mấu chốt muốn nói ở đây là: phần lớn những nhận thức và suy nghĩ khi mới vào nghề sẽ không còn phù hợp với nhận thức sau năm năm nữa.
 
-工作五年之后面临的最大压力就是选择：职场天花板，技术能力天花板，薪水天花板，三十岁天花板。
+Áp lực lớn nhất sau năm năm đi làm chính là lựa chọn: trần nhà sự nghiệp, trần nhà năng lực kỹ thuật, trần nhà lương, và trần nhà tuổi 30.
 
-如何面对这些问题，是大部分程序员都在思考和纠结的。做选择的唯一参考点就是：利益最大化，这里可以理解为职场更好的升职加薪，顺风顺水。
+Làm thế nào để đối mặt với những vấn đề này, là điều mà phần lớn lập trình viên đang suy nghĩ và trăn trở. Điểm tham chiếu duy nhất khi đưa ra lựa chọn là: tối đa hóa lợi ích, ở đây có thể hiểu là thăng chức tăng lương tốt hơn trong công việc, thuận buồm xuôi gió.
 
-五年，变化最大不是工作经验，能力积累，而是心态，清楚的知道现实和理想之间是存在巨大的差距。
+Năm năm, thay đổi lớn nhất không phải là kinh nghiệm làm việc, tích lũy năng lực, mà là tâm thái — rõ ràng hiểu được rằng giữa hiện thực và lý tưởng tồn tại một khoảng cách vô cùng lớn.
 
-## 02 学会适应变化，并积累能力
+## 02 Học cách thích nghi với sự thay đổi, và tích lũy năng lực
 
-回首自己的职场五年，最认可的一句话就是：学会适应变化，并积累能力。
+Nhìn lại năm năm đi làm của mình, câu nói tôi tâm đắc nhất chính là: học cách thích nghi với sự thay đổi, và tích lũy năng lực.
 
-变化的就是，五年的时间技术框架更新迭代，开发工具的变迁，公司环境队友的更换，甚至是不同城市的流浪，想着能把肉体和灵魂安放在一处，有句很经典的话就是：唯一不变的就是变化本身。
+Cái thay đổi là: năm năm qua framework kỹ thuật không ngừng cập nhật thay thế, các công cụ phát triển biến đổi, môi trường công ty và đồng đội thay đổi, thậm chí là phiêu bạt giữa các thành phố khác nhau. Vẫn nghĩ có thể đặt thân xác và linh hồn tại một chốn, có một câu nói kinh điển: điều duy nhất không thay đổi chính là bản thân sự thay đổi.
 
-要积累的是：解决问题的能力，思考方式，拓宽认知。
+Cái cần tích lũy là: khả năng giải quyết vấn đề, cách tư duy, mở rộng nhận thức.
 
-这种很难直白的描述，属于个人认知的范畴，不同的人有不一样的看法，所以只能站在大众化的角度去思考。
+Những điều này rất khó mô tả một cách trực tiếp, chúng thuộc phạm trù nhận thức cá nhân, mỗi người có quan điểm khác nhau, nên chỉ có thể đứng trên góc độ đại chúng để suy nghĩ.
 
-首先聊聊技术，大部分小白级别的，都希望自己的技术能力不断提高，争取做到架构师级别，但是站在当前的互联网环境中，这种想法实现难度还是偏高，这里既不是打击也不是为了抬杠。
+Trước tiên nói về kỹ thuật. Phần lớn ở cấp độ "newbie" đều mong năng lực kỹ thuật của mình không ngừng được nâng cao, phấn đấu đạt đến cấp độ kiến trúc sư. Nhưng đứng trước môi trường Internet hiện tại, độ khó thực hiện ý nghĩ này vẫn tương đối cao. Nói vậy không phải để dìm hàng, cũng không phải để cãi cùn.
 
-可以观察一下现状，技术团队大的 20-30 人，小的 10-15 人，能有一个架构师去专门管理底层框架都是少有现象。
+Có thể quan sát hiện trạng: team kỹ thuật lớn thì 20-30 người, nhỏ thì 10-15 người, mà có một kiến trúc sư chuyên trách quản lý framework tầng dưới là trường hợp hiếm gặp.
 
-这个问题的原因很多，首先架构师的成本过高，环境架构也不是需要经常升级，说的难听点可能框架比项目生命周期更高。
+Nguyên nhân của vấn đề này rất nhiều. Trước hết, chi phí cho kiến trúc sư quá cao, mà kiến trúc môi trường cũng không cần thường xuyên nâng cấp. Nói thẳng ra, framework có khi còn trường tồn hơn cả vòng đời của dự án.
 
-所以大部分公司的大部分业务，基于现有大部分成熟的开源框架都可以解决，这也就导致架构师这个角色通常由项目主管代替或者级别较高的开发直接负责，这就是现实情况。
+Vì vậy phần lớn nghiệp vụ của phần lớn công ty đều có thể giải quyết dựa trên phần lớn framework mã nguồn mở trưởng thành hiện có, điều này dẫn đến việc vai trò kiến trúc sư thường do project lead đảm nhiệm thay, hoặc do developer cấp cao trực tiếp phụ trách. Đó chính là thực trạng.
 
-这就导致技术框架的选择思路就是：只选对的。即这方面的人才多，开源解决方案多，以此降低技术方面对公司业务发展的影响。
+Điều này dẫn đến tư duy lựa chọn framework kỹ thuật là: chỉ chọn thứ phù hợp. Tức là lĩnh vực đó có nhiều nhân tài, có nhiều giải pháp mã nguồn mở, nhờ đó giảm thiểu ảnh hưởng của kỹ thuật đối với sự phát triển nghiệp vụ của công ty.
 
-那为什么还要不断学习和积累技术能力？如果没有这个能力，程序员岗位可能根本走不了五年之久，需要用技术深度积累不断解决工作中的各种问题，用技术的广度提升自己实现业务需求的认知边界，这是安放肉体的根本保障。
+Vậy thì vì sao vẫn phải không ngừng học tập và tích lũy năng lực kỹ thuật? Nếu không có năng lực này, vị trí lập trình viên có lẽ căn bản không thể đi được đến năm năm. Cần dùng sự tích lũy chiều sâu kỹ thuật để không ngừng giải quyết các vấn đề khác nhau trong công việc, dùng chiều rộng kỹ thuật để nâng cao ranh giới nhận thức của mình khi triển khai nhu cầu nghiệp vụ. Đây là nền tảng căn bản để an thân lập mệnh.
 
-这就是导致很多五年以后的程序员压力陡然升高的原因，走向管理岗的另一个壁垒就是业务思维和认知。
+Đây chính là nguyên nhân khiến nhiều lập trình viên sau năm năm đi làm áp lực tăng vọt. Một rào cản khác trên con đường tiến đến vị trí quản lý chính là tư duy nghiệp vụ và nhận thức.
 
-## 03 提高业务能力的积累
+## 03 Nâng cao tích lũy năng lực nghiệp vụ
 
-程序员该不该用心研究业务，这个问题真的没有纠结的必要，只要不是纯技术型的公司，都需要面对业务。
+Lập trình viên có nên dành tâm sức nghiên cứu nghiệp vụ hay không, câu hỏi này thực sự không cần phải phân vân. Chỉ cần không phải công ty thuần kỹ thuật, thì đều phải đối mặt với nghiệp vụ.
 
-不管技术、运营、产品、管理层，都是在面向业务工作。
+Bất kể là kỹ thuật, vận hành, sản phẩm hay quản lý, tất cả đều đang làm việc hướng về nghiệp vụ.
 
-从自己职场轨迹来看，五年变化最大就是解决业务问题的能力，职场之初面对很多业务场景都不知道如何下手，到几年之后设计业务的解决方案。
+Nhìn lại quỹ đạo sự nghiệp của mình, thay đổi lớn nhất trong năm năm chính là khả năng giải quyết vấn đề nghiệp vụ. Ban đầu khi bước vào nghề, đối mặt với nhiều bối cảnh nghiệp vụ đều không biết bắt đầu từ đâu, đến vài năm sau đã có thể thiết kế giải pháp nghiệp vụ.
 
-这是大部分程序员在职场前五年跳槽就能涨薪的根本原因，面对业务场景，基于积累的经验和现有的开源工具，能快速给出合理的解决思路和实现过程。
+Đây là nguyên nhân căn bản khiến phần lớn lập trình viên trong năm năm đầu sự nghiệp chỉ cần nhảy việc là có thể tăng lương: đối mặt với bối cảnh nghiệp vụ, dựa trên kinh nghiệm đã tích lũy và các công cụ mã nguồn mở hiện có, có thể nhanh chóng đưa ra ý tưởng giải quyết hợp lý và quy trình triển khai.
 
-工作五年可能对技术底层的清晰程度都没有初入职场的小白清楚，但是写的程序却可以避开很多坑坑洼洼，对于业务的审视也是很细节全面。
+Sau năm năm đi làm, có thể độ tỏ tường về tầng nền tảng kỹ thuật còn không bằng những "newbie" mới vào nghề, nhưng chương trình viết ra lại có thể tránh được rất nhiều hố hầm, và việc nhìn nhận nghiệp vụ cũng rất chi tiết toàn diện.
 
-解决业务能力的积累，对于技术视野的宽度需求更甚，比如职场初期对于海量数据的处理束手无策，但是在工作几年之后见识数据行业的技术栈，真的就是技术选型的视野问题。
+Việc tích lũy năng lực giải quyết nghiệp vụ càng đòi hỏi cao về bề rộng tầm nhìn kỹ thuật. Ví dụ ở giai đoạn đầu sự nghiệp, đối mặt với việc xử lý dữ liệu khối lượng lớn thì bó tay, nhưng làm việc vài năm sau khi chứng kiến toàn bộ tech stack của ngành dữ liệu, thì thực sự chỉ là vấn đề tầm nhìn khi lựa chọn kỹ thuật.
 
-什么是衡量技术能力的标准？站在一个共识的角度上看：系统的架构与代码设计能适应业务的不断变化和各种需求。
+Cái gì là tiêu chuẩn để đo lường năng lực kỹ thuật? Đứng trên góc độ một sự đồng thuận: kiến trúc hệ thống và thiết kế code có thể thích ứng với sự thay đổi liên tục của nghiệp vụ và đủ loại nhu cầu.
 
-相对比与技术，业务的变化更加快速频繁，高级工程师或者架构师之所以薪资高，这些角色一方面能适应业务的迭代，并且在工作中具有一定前瞻性，会考虑业务变化的情况下代码复用逻辑，这样的能力是需要一定的技术视野和业务思维的沉淀。
+So với kỹ thuật, nghiệp vụ biến đổi nhanh chóng và thường xuyên hơn. Kỹ sư cấp cao hoặc kiến trúc sư có mức lương cao là vì những vai trò này một mặt có thể thích ứng với sự lặp vòng (iteration) của nghiệp vụ, mặt khác trong công việc có tính tiên phong nhìn xa nhất định, sẽ tính đến logic tái sử dụng code khi nghiệp vụ thay đổi. Năng lực như vậy cần có sự kết tủa của tầm nhìn kỹ thuật và tư duy nghiệp vụ nhất định.
 
-所以职场中：业务能说的井井有条，代码能写的明明白白，得到机会的可能性更大。
+Vì vậy trong công việc: nghiệp vụ trình bày được rành mạch, code viết được rõ ràng minh bạch, thì xác suất có được cơ hội sẽ lớn hơn.
 
-## 04 不同的阶段技术和业务的平衡和选择
+## 04 Sự cân bằng và lựa chọn giữa kỹ thuật và nghiệp vụ ở các giai đoạn khác nhau
 
-从理性的角度看技术和业务两个方面，能让大部分人职场走的平稳顺利，但是不同的阶段对两者的平衡和选择是不一样的。
+Nhìn từ góc độ lý tính về hai mặt kỹ thuật và nghiệp vụ, có thể giúp phần lớn mọi người đi làm một cách vững vàng suôn sẻ, nhưng ở các giai đoạn khác nhau, cách cân bằng và lựa chọn giữa hai thứ này lại không giống nhau.
 
-在思考如何选择的时候，可以参考二八原则的逻辑，即在任何一组东西中，最重要的只占其中一小部分，约 20%，其余 80%尽管是多数，却是次要的，因此又称二八定律。
+Khi suy nghĩ về việc làm thế nào để lựa chọn, có thể tham khảo logic của nguyên tắc 80/20, tức là trong bất kỳ một tập hợp nào, phần quan trọng nhất chỉ chiếm một phần nhỏ, khoảng 20%, còn 80% còn lại tuy là đa số nhưng lại là phần thứ yếu, do đó còn được gọi là định luật 80/20.
 
-个人真的非常喜欢这个原则，大部分人都不是天才，所以很难三心二意同时做好几件事情，在同一时间段内应该集中精力做好一件事件。
+Cá nhân tôi thực sự rất thích nguyên tắc này. Phần lớn mọi người không phải thiên tài, nên rất khó để một lòng hai dạ làm tốt cùng lúc nhiều việc. Trong cùng một khoảng thời gian nên tập trung tinh thần làm tốt một việc.
 
-但是单纯的二八原则模式可能不适应大部分职场初期的人，因为初期要学习很多内容，如何在职场生存：专业能力，职场关系，为人处世，产品设计等等。
+Nhưng mô hình nguyên tắc 80/20 thông thường có thể không phù hợp với phần lớn những người mới vào nghề, vì giai đoạn đầu phải học rất nhiều thứ, làm thế nào để sinh tồn trong công việc: năng lực chuyên môn, các mối quan hệ nơi công sở, cách đối nhân xử thế, thiết kế sản phẩm, v.v.
 
-当然这些东西不是都要用心刻意学习，但是合理安排二二六原则或其他组合是更明智的，首先是专业能力要重点练习，其次可以根据自己的兴趣合理选择一到两个方面去慢慢了解，例如产品，运营，运维，数据等，毕竟三五年以后会不会继续写代码很难说，多给自己留个机会总是有备无患。
+Tất nhiên không phải những thứ này đều cần dành tâm sức học tập một cách có chủ đích, nhưng sắp xếp hợp lý theo nguyên tắc 2-2-6 hoặc một tổ hợp nào đó khác là sáng suốt hơn. Trước hết, năng lực chuyên môn cần được luyện tập trọng điểm; thứ đến, có thể căn cứ vào sở thích của mình để chọn hợp lý một đến hai hướng để tìm hiểu dần dần, ví dụ như product, vận hành, operations (vận hành hệ thống), dữ liệu, v.v. Dù sao ba năm năm năm sau có còn viết code hay không rất khó nói, tự để lại cho mình thêm một cơ hội thì luôn luôn có phòng bị.
 
-在职场初期，基本都是从技术角度去思考问题，如何快速提升自己的编码能力，在公司能稳定是首要目标，因此大部分时间都是在做基础编码和学习规范，这时可能 90%的心思都是放在基础编码上，另外 10%会学习环境架构。
+Ở giai đoạn đầu sự nghiệp, về cơ bản đều suy nghĩ từ góc độ kỹ thuật, làm thế nào để nhanh chóng nâng cao năng lực coding của mình, ổn định trong công ty là mục tiêu hàng đầu, do đó phần lớn thời gian đều dành cho việc coding nền tảng và học các quy chuẩn, lúc này có lẽ 90% tâm sức đều đặt vào coding nền tảng, còn 10% còn lại sẽ học kiến trúc môi trường.
 
-最多一到两年，就会开始独立负责模块需求开发，需要自己设计整个代码思路，这里业务就会进入视野，要懂得业务上下游关联关系，学会思考如何设计代码结构，才能在需求变动的情况下代码改动较少，这个时候可能就会放 20%的心思在业务方面，30%学习架构方式。
+Nhiều nhất một đến hai năm, sẽ bắt đầu độc lập phụ trách phát triển nhu cầu của module, cần tự mình thiết kế toàn bộ ý tưởng code. Lúc này nghiệp vụ sẽ bước vào tầm nhìn, cần hiểu được mối quan hệ liên kết giữa thượng nguồn và hạ nguồn của nghiệp vụ, học cách suy nghĩ làm thế nào để thiết kế cấu trúc code, thì khi nhu cầu thay đổi mới có thể ít thay đổi code. Ở giai đoạn này có thể sẽ đặt 20% tâm sức vào mặt nghiệp vụ, 30% học cách thức kiến trúc.
 
-三到五年这个时间段，是解决问题能力提升最快的时候，因为这个阶段的程序员基本都是在开发核心业务链路，例如交易、支付、结算、智能商业等模块，需要对业务整体有较清晰的把握能力，不然就是给自己挖坑，这个阶段要对业务流付出大量心血思考。
+Giai đoạn ba đến năm năm là thời điểm khả năng giải quyết vấn đề tăng nhanh nhất, vì các lập trình viên ở giai đoạn này về cơ bản đều đang phát triển các chuỗi nghiệp vụ cốt lõi, ví dụ các module như giao dịch, thanh toán, quyết toán, thương mại thông minh, v.v., cần có khả năng nắm bắt tương đối rõ ràng về tổng thể nghiệp vụ, nếu không thì chính là tự đào hố cho mình. Giai đoạn này phải đổ rất nhiều tâm huyết và suy nghĩ vào các luồng nghiệp vụ.
 
-越是核心的业务线，越是容易爆发各种问题，如果在日常工作中不花心思处理各种细节问题，半夜异常自动的消息和邮件总是容易让人憔悴。
+Càng là chuỗi nghiệp vụ cốt lõi, càng dễ bùng phát đủ loại vấn đề. Nếu trong công việc thường ngày không chịu bỏ công xử lý các vấn đề chi tiết, thì những message và email cảnh báo tự động lúc nửa đêm luôn dễ khiến người ta tiều tụy.
 
-所以努力学习技术是提升自己，培养自己的业务认知也同样重要，个人认为这二者的分量平分秋色，只是需要在合适的阶段做出合理的权重划分。
+Vì vậy nỗ lực học kỹ thuật là để nâng cao bản thân, nhưng bồi dưỡng nhận thức nghiệp vụ của mình cũng quan trọng không kém. Theo quan điểm cá nhân, hai thứ này có trọng lượng ngang nhau, chỉ là cần phân chia tỷ trọng hợp lý ở giai đoạn thích hợp.
 
-## 05 学会在职场做选择和生存
+## 05 Học cách lựa chọn và sinh tồn nơi công sở
 
-基于技术能力和业务思维，学会在职场做选择和生存，这些是职场前五年一路走来的最大体会。
+Dựa trên năng lực kỹ thuật và tư duy nghiệp vụ, học cách lựa chọn và sinh tồn nơi công sở — đây là thể nghiệm lớn nhất trong suốt năm năm đầu của sự nghiệp.
 
-不管是技术还是业务，这两个概念依旧是个很大的命题，不容易把握，所以学会理清这两个方面能力中的公共模块是关键。
+Dù là kỹ thuật hay nghiệp vụ, hai khái niệm này dù sao vẫn là những đề tài rất lớn, không dễ nắm bắt, nên then chốt là học cách làm rõ những module chung trong năng lực của hai khía cạnh này.
 
-不管技术还是业务，都不可能从一家公司完全复制到另一家公司，但是可以把一家公司的技术框架，业务解决方案学会，并且带到另一家公司，例如技术领域内的架构、设计、流程、数据管理，业务领域内的思考方式、产品逻辑、分析等，这些是核心能力并且是大部分公司人才招聘的要求，所以这些才是工作中需要重点积累的。
+Dù là kỹ thuật hay nghiệp vụ, đều không thể sao chép nguyên vẹn từ công ty này sang công ty khác, nhưng có thể học được framework kỹ thuật, giải pháp nghiệp vụ của một công ty và mang đến công ty khác. Ví dụ trong lĩnh vực kỹ thuật là kiến trúc, thiết kế, quy trình, quản lý dữ liệu; trong lĩnh vực nghiệp vụ là cách tư duy, logic sản phẩm, phân tích, v.v. Đây mới là những năng lực cốt lõi và cũng là yêu cầu tuyển dụng nhân tài của phần lớn công ty, nên đây mới là những thứ cần được tích lũy trọng điểm trong công việc.
 
-人的精力是有限的，而且面对三十这个天花板，各种事件也会接连而至，在职场中学会合理安排时间并不断提升核心能力，这样才能保证自己的竞争力。
+Năng lượng của con người là có hạn, và đối mặt với cái trần nhà tuổi 30, đủ loại sự kiện cũng sẽ nối tiếp nhau ập đến. Trong công việc cần học cách sắp xếp thời gian hợp lý và không ngừng nâng cao năng lực cốt lõi, như vậy mới đảm bảo được sức cạnh tranh của mình.
 
-职场就像苦海无边，回首望去可能也没有岸边停泊，但是要具有换船的能力或者有个小木筏也就大差不差了。
+Công sở giống như biển khổ mênh mông vô bờ, ngoảnh đầu nhìn lại có lẽ cũng không thấy bờ bến để neo đậu, nhưng chỉ cần có được khả năng đổi thuyền, hoặc có một chiếc bè nhỏ, thì cũng đại khái là đủ rồi.
 
 <!-- @include: @article-footer.snippet.md -->

@@ -1,44 +1,44 @@
 ---
-title: LinkedList 源码分析
-description: LinkedList源码深度解析：剖析双向链表结构、Deque接口实现、头尾插入删除O(1)时间复杂度、与ArrayList性能对比及适用场景。
+title: Phân tích mã nguồn LinkedList
+description: "Phân tích chuyên sâu mã nguồn LinkedList: cấu trúc danh sách liên kết đôi (doubly linked list), triển khai giao diện Deque, độ phức tạp O(1) khi chèn/xóa ở đầu và cuối, so sánh hiệu năng với ArrayList và các tình huống áp dụng."
 category: Java
 tag:
-  - Java集合
+  - Java Collection
 head:
   - - meta
     - name: keywords
-      content: LinkedList源码,双向链表,Deque接口,LinkedList与ArrayList区别,插入删除性能,链表实现
+      content: LinkedList source code, doubly linked list, Deque interface, LinkedList vs ArrayList, insert/delete performance, linked list implementation
 ---
 
 <!-- @include: @article-header.snippet.md -->
 
-## LinkedList 简介
+## Giới thiệu về LinkedList
 
-`LinkedList` 是一个基于双向链表实现的集合类，经常被拿来和 `ArrayList` 做比较。关于 `LinkedList` 和 `ArrayList` 的详细对比，我们 [Java 集合常见面试题总结(上)](./java-collection-questions-01.md)有详细介绍到。
+`LinkedList` là một lớp collection được triển khai dựa trên danh sách liên kết đôi (doubly linked list), thường được đem ra so sánh với `ArrayList`. Về so sánh chi tiết giữa `LinkedList` và `ArrayList`, chúng tôi đã trình bày kỹ trong bài [Tổng hợp câu hỏi phỏng vấn thường gặp về Java Collection (Phần 1)](./java-collection-questions-01.md).
 
-![双向链表](https://oss.javaguide.cn/github/javaguide/cs-basics/data-structure/bidirectional-linkedlist.png)
+![Danh sách liên kết đôi](https://oss.javaguide.cn/github/javaguide/cs-basics/data-structure/bidirectional-linkedlist.png)
 
-不过，我们在项目中一般是不会使用到 `LinkedList` 的，需要用到 `LinkedList` 的场景几乎都可以使用 `ArrayList` 来代替，并且，性能通常会更好！就连 `LinkedList` 的作者约书亚 · 布洛克（Josh Bloch）自己都说从来不会使用 `LinkedList`。
+Tuy nhiên, trong thực tế dự án chúng ta thường không sử dụng `LinkedList`, hầu hết các tình huống cần dùng `LinkedList` đều có thể thay thế bằng `ArrayList`, và hiệu năng thường sẽ tốt hơn! Ngay cả tác giả của `LinkedList` là Joshua Bloch cũng từng nói rằng bản thân ông chưa bao giờ sử dụng `LinkedList`.
 
 ![](https://oss.javaguide.cn/github/javaguide/redisimage-20220412110853807.png)
 
-另外，不要下意识地认为 `LinkedList` 作为链表就最适合元素增删的场景。我在上面也说了，`LinkedList` 仅仅在头尾插入或者删除元素的时候时间复杂度近似 O(1)，其他情况增删元素的平均时间复杂度都是 O(n)。
+Ngoài ra, đừng mặc định cho rằng `LinkedList` với tư cách là danh sách liên kết thì phù hợp nhất cho các tình huống thêm/xóa phần tử. Tôi cũng đã đề cập ở trên, `LinkedList` chỉ có độ phức tạp thời gian xấp xỉ O(1) khi chèn hoặc xóa phần tử ở đầu hoặc cuối, còn các trường hợp thêm/xóa ở vị trí khác đều có độ phức tạp trung bình là O(n).
 
-### LinkedList 插入和删除元素的时间复杂度？
+### Độ phức tạp thời gian khi chèn và xóa phần tử của LinkedList?
 
-- 头部插入/删除：只需要修改头结点的指针即可完成插入/删除操作，因此时间复杂度为 O(1)。
-- 尾部插入/删除：只需要修改尾结点的指针即可完成插入/删除操作，因此时间复杂度为 O(1)。
-- 指定位置插入/删除：需要先移动到指定位置，再修改指定节点的指针完成插入/删除，不过由于有头尾指针，可以从较近的指针出发，因此需要遍历平均 n/4 个元素，时间复杂度为 O(n)。
+- Chèn/xóa ở đầu: chỉ cần sửa con trỏ của nút đầu (head) là có thể hoàn thành thao tác chèn/xóa, do đó độ phức tạp thời gian là O(1).
+- Chèn/xóa ở cuối: chỉ cần sửa con trỏ của nút cuối (tail) là có thể hoàn thành thao tác chèn/xóa, do đó độ phức tạp thời gian là O(1).
+- Chèn/xóa ở vị trí chỉ định: cần di chuyển đến vị trí chỉ định trước, sau đó sửa con trỏ của nút tại vị trí đó để hoàn thành chèn/xóa. Tuy nhiên, do có con trỏ đầu và cuối, có thể xuất phát từ con trỏ gần hơn, nên trung bình cần duyệt qua n/4 phần tử, độ phức tạp thời gian là O(n).
 
-### LinkedList 为什么不能实现 RandomAccess 接口？
+### Tại sao LinkedList không thể triển khai giao diện RandomAccess?
 
-`RandomAccess` 是一个标记接口，用来表明实现该接口的类支持随机访问（即可以通过索引快速访问元素）。由于 `LinkedList` 底层数据结构是链表，内存地址不连续，只能通过指针来定位，不支持随机快速访问，所以不能实现 `RandomAccess` 接口。
+`RandomAccess` là một giao diện đánh dấu (marker interface), dùng để chỉ ra rằng lớp triển khai giao diện này hỗ trợ truy cập ngẫu nhiên (random access), tức có thể truy cập nhanh phần tử thông qua chỉ mục. Do cấu trúc dữ liệu nền tảng của `LinkedList` là danh sách liên kết, địa chỉ bộ nhớ không liên tục, chỉ có thể định vị thông qua con trỏ, không hỗ trợ truy cập ngẫu nhiên nhanh, vì vậy không thể triển khai giao diện `RandomAccess`.
 
-## LinkedList 源码分析
+## Phân tích mã nguồn LinkedList
 
-这里以 JDK1.8 为例，分析一下 `LinkedList` 的底层核心源码。
+Ở đây chúng tôi sử dụng JDK 1.8 làm ví dụ để phân tích mã nguồn lõi của `LinkedList`.
 
-`LinkedList` 的类定义如下：
+Định nghĩa lớp của `LinkedList` như sau:
 
 ```java
 public class LinkedList<E>
@@ -49,28 +49,28 @@ public class LinkedList<E>
 }
 ```
 
-`LinkedList` 继承了 `AbstractSequentialList`，而 `AbstractSequentialList` 又继承于 `AbstractList`。
+`LinkedList` kế thừa `AbstractSequentialList`, và `AbstractSequentialList` lại kế thừa từ `AbstractList`.
 
-阅读过 `ArrayList` 的源码我们就知道，`ArrayList` 同样继承了 `AbstractList`， 所以 `LinkedList` 会有大部分方法和 `ArrayList` 相似。
+Nếu đã đọc qua mã nguồn của `ArrayList` chúng ta sẽ biết, `ArrayList` cũng kế thừa `AbstractList`, vì vậy `LinkedList` sẽ có phần lớn phương thức tương tự với `ArrayList`.
 
-`LinkedList` 实现了以下接口：
+`LinkedList` triển khai các giao diện sau:
 
-- `List` : 表明它是一个列表，支持添加、删除、查找等操作，并且可以通过下标进行访问。
-- `Deque`：继承自 `Queue` 接口，具有双端队列的特性，支持从两端插入和删除元素，方便实现栈和队列等数据结构。需要注意，`Deque` 的发音为 "deck" [dɛk]，这个大部分人都会读错。
-- `Cloneable`：表明它具有拷贝能力，可以进行深拷贝或浅拷贝操作。
-- `Serializable` : 表明它可以进行序列化操作，也就是可以将对象转换为字节流进行持久化存储或网络传输，非常方便。
+- `List`: chỉ ra rằng nó là một danh sách (list), hỗ trợ các thao tác thêm, xóa, tìm kiếm, và có thể truy cập thông qua chỉ mục.
+- `Deque`: kế thừa từ giao diện `Queue`, có đặc tính của hàng đợi hai đầu (double-ended queue), hỗ trợ chèn và xóa phần tử từ cả hai đầu, thuận tiện cho việc triển khai các cấu trúc dữ liệu như stack và queue. Lưu ý, `Deque` được phát âm là "deck" [dɛk], phần lớn mọi người đều đọc sai từ này.
+- `Cloneable`: chỉ ra rằng nó có khả năng sao chép, có thể thực hiện thao tác sao chép sâu (deep copy) hoặc sao chép nông (shallow copy).
+- `Serializable`: chỉ ra rằng nó có thể thực hiện thao tác tuần tự hóa (serialization), tức là có thể chuyển đổi đối tượng thành luồng byte để lưu trữ bền vững hoặc truyền qua mạng, rất tiện lợi.
 
-![LinkedList 类图](https://oss.javaguide.cn/github/javaguide/java/collection/linkedlist--class-diagram.png)
+![Sơ đồ lớp LinkedList](https://oss.javaguide.cn/github/javaguide/java/collection/linkedlist--class-diagram.png)
 
-`LinkedList` 中的元素是通过 `Node` 定义的：
+Các phần tử trong `LinkedList` được định nghĩa thông qua `Node`:
 
 ```java
 private static class Node<E> {
-    E item;// 节点值
-    Node<E> next; // 指向的下一个节点（后继节点）
-    Node<E> prev; // 指向的前一个节点（前驱结点）
+    E item;// giá trị nút
+    Node<E> next; // trỏ đến nút tiếp theo (nút kế sau)
+    Node<E> prev; // trỏ đến nút trước đó (nút kế trước)
 
-    // 初始化参数顺序分别是：前驱结点、本身节点值、后继节点
+    // Thứ tự tham số khởi tạo lần lượt là: nút kế trước, giá trị nút hiện tại, nút kế sau
     Node(Node<E> prev, E element, Node<E> next) {
         this.item = element;
         this.next = next;
@@ -79,105 +79,105 @@ private static class Node<E> {
 }
 ```
 
-### 初始化
+### Khởi tạo
 
-`LinkedList` 中有一个无参构造函数和一个有参构造函数。
+`LinkedList` có một constructor không tham số và một constructor có tham số.
 
 ```java
-// 创建一个空的链表对象
+// Tạo một đối tượng danh sách liên kết rỗng
 public LinkedList() {
 }
 
-// 接收一个集合类型作为参数，会创建一个与传入集合相同元素的链表对象
+// Nhận một kiểu collection làm tham số, sẽ tạo một đối tượng danh sách liên kết có cùng phần tử với collection được truyền vào
 public LinkedList(Collection<? extends E> c) {
     this();
     addAll(c);
 }
 ```
 
-### 插入元素
+### Chèn phần tử
 
-`LinkedList` 除了实现了 `List` 接口相关方法，还实现了 `Deque` 接口的很多方法，所以我们有很多种方式插入元素。
+`LinkedList` ngoài việc triển khai các phương thức liên quan của giao diện `List`, còn triển khai rất nhiều phương thức của giao diện `Deque`, vì vậy chúng ta có nhiều cách để chèn phần tử.
 
-我们这里以 `List` 接口中相关的插入方法为例进行源码讲解，对应的是 `add()` 方法。
+Ở đây chúng tôi lấy các phương thức chèn liên quan trong giao diện `List` làm ví dụ để giải thích mã nguồn, tương ứng là phương thức `add()`.
 
-`add()` 方法有两个版本：
+Phương thức `add()` có hai phiên bản:
 
-- `add(E e)`：用于在 `LinkedList` 的尾部插入元素，即将新元素作为链表的最后一个元素，时间复杂度为 O(1)。
-- `add(int index, E element)`:用于在指定位置插入元素。这种插入方式需要先移动到指定位置，再修改指定节点的指针完成插入/删除，因此需要移动平均 n/4 个元素，时间复杂度为 O(n)。
+- `add(E e)`: dùng để chèn phần tử vào cuối của `LinkedList`, tức là đặt phần tử mới làm phần tử cuối cùng của danh sách liên kết, độ phức tạp thời gian là O(1).
+- `add(int index, E element)`: dùng để chèn phần tử vào vị trí chỉ định. Cách chèn này cần di chuyển đến vị trí chỉ định trước, sau đó sửa con trỏ của nút tại vị trí đó để hoàn thành chèn/xóa, do đó trung bình cần di chuyển n/4 phần tử, độ phức tạp thời gian là O(n).
 
 ```java
-// 在链表尾部插入元素
+// Chèn phần tử vào cuối danh sách liên kết
 public boolean add(E e) {
     linkLast(e);
     return true;
 }
 
-// 在链表指定位置插入元素
+// Chèn phần tử vào vị trí chỉ định trong danh sách liên kết
 public void add(int index, E element) {
-    // 下标越界检查
+    // Kiểm tra chỉ mục vượt quá giới hạn
     checkPositionIndex(index);
 
-    // 判断 index 是不是链表尾部位置
+    // Kiểm tra xem index có phải là vị trí cuối của danh sách liên kết không
     if (index == size)
-        // 如果是就直接调用 linkLast 方法将元素节点插入链表尾部即可
+        // Nếu đúng thì gọi trực tiếp phương thức linkLast để chèn nút phần tử vào cuối danh sách liên kết
         linkLast(element);
     else
-        // 如果不是则调用 linkBefore 方法将其插入指定元素之前
+        // Nếu không thì gọi phương thức linkBefore để chèn vào trước phần tử được chỉ định
         linkBefore(element, node(index));
 }
 
-// 将元素节点插入到链表尾部
+// Chèn nút phần tử vào cuối danh sách liên kết
 void linkLast(E e) {
-    // 将最后一个元素赋值（引用传递）给节点 l
+    // Gán phần tử cuối cùng (truyền tham chiếu) cho nút l
     final Node<E> l = last;
-    // 创建节点，并指定节点前驱为链表尾节点 last，后继引用为空
+    // Tạo nút, và chỉ định nút kế trước của nút là nút cuối last, tham chiếu kế sau là null
     final Node<E> newNode = new Node<>(l, e, null);
-    // 将 last 引用指向新节点
+    // Trỏ tham chiếu last đến nút mới
     last = newNode;
-    // 判断尾节点是否为空
-    // 如果 l 是null 意味着这是第一次添加元素
+    // Kiểm tra xem nút cuối có rỗng không
+    // Nếu l là null nghĩa là đây là lần đầu tiên thêm phần tử
     if (l == null)
-        // 如果是第一次添加，将first赋值为新节点，此时链表只有一个元素
+        // Nếu là lần đầu tiên thêm, gán first cho nút mới, lúc này danh sách liên kết chỉ có một phần tử
         first = newNode;
     else
-        // 如果不是第一次添加，将新节点赋值给l（添加前的最后一个元素）的next
+        // Nếu không phải lần đầu tiên thêm, gán nút mới cho next của l (phần tử cuối cùng trước khi thêm)
         l.next = newNode;
     size++;
     modCount++;
 }
 
-// 在指定元素之前插入元素
+// Chèn phần tử vào trước phần tử được chỉ định
 void linkBefore(E e, Node<E> succ) {
-    // assert succ != null;断言 succ不为 null
-    // 定义一个节点元素保存 succ 的 prev 引用，也就是它的前一节点信息
+    // assert succ != null; khẳng định succ không null
+    // Định nghĩa một biến nút phần tử để lưu tham chiếu prev của succ, tức là thông tin nút kế trước của nó
     final Node<E> pred = succ.prev;
-    // 初始化节点，并指明前驱和后继节点
+    // Khởi tạo nút, và chỉ rõ nút kế trước và nút kế sau
     final Node<E> newNode = new Node<>(pred, e, succ);
-    // 将 succ 节点前驱引用 prev 指向新节点
+    // Trỏ tham chiếu nút kế trước prev của succ đến nút mới
     succ.prev = newNode;
-    // 判断前驱节点是否为空，为空表示 succ 是第一个节点
+    // Kiểm tra xem nút kế trước có rỗng không, rỗng nghĩa là succ là nút đầu tiên
     if (pred == null)
-        // 新节点成为第一个节点
+        // Nút mới trở thành nút đầu tiên
         first = newNode;
     else
-        // succ 节点前驱的后继引用指向新节点
+        // Tham chiếu kế sau của nút kế trước của succ trỏ đến nút mới
         pred.next = newNode;
     size++;
     modCount++;
 }
 ```
 
-### 获取元素
+### Lấy phần tử
 
-`LinkedList` 获取元素相关的方法一共有 3 个：
+`LinkedList` có tổng cộng 3 phương thức liên quan đến lấy phần tử:
 
-1. `getFirst()`：获取链表的第一个元素。
-2. `getLast()`：获取链表的最后一个元素。
-3. `get(int index)`：获取链表指定位置的元素。
+1. `getFirst()`: lấy phần tử đầu tiên của danh sách liên kết.
+2. `getLast()`: lấy phần tử cuối cùng của danh sách liên kết.
+3. `get(int index)`: lấy phần tử tại vị trí chỉ định của danh sách liên kết.
 
 ```java
-// 获取链表的第一个元素
+// Lấy phần tử đầu tiên của danh sách liên kết
 public E getFirst() {
     final Node<E> f = first;
     if (f == null)
@@ -185,7 +185,7 @@ public E getFirst() {
     return f.item;
 }
 
-// 获取链表的最后一个元素
+// Lấy phần tử cuối cùng của danh sách liên kết
 public E getLast() {
     final Node<E> l = last;
     if (l == null)
@@ -193,26 +193,26 @@ public E getLast() {
     return l.item;
 }
 
-// 获取链表指定位置的元素
+// Lấy phần tử tại vị trí chỉ định của danh sách liên kết
 public E get(int index) {
-  // 下标越界检查，如果越界就抛异常
+  // Kiểm tra chỉ mục vượt quá giới hạn, nếu vượt quá thì ném ngoại lệ
   checkElementIndex(index);
-  // 返回链表中对应下标的元素
+  // Trả về phần tử tương ứng với chỉ mục trong danh sách liên kết
   return node(index).item;
 }
 ```
 
-这里的核心在于 `node(int index)` 这个方法：
+Điểm cốt lõi ở đây nằm ở phương thức `node(int index)`:
 
 ```java
-// 返回指定下标的非空节点
+// Trả về nút không rỗng tại chỉ mục được chỉ định
 Node<E> node(int index) {
-    // 断言下标未越界
+    // Khẳng định chỉ mục không vượt quá giới hạn
     // assert isElementIndex(index);
-    // 如果index小于size的二分之一  从前开始查找（向后查找）  反之向前查找
+    // Nếu index nhỏ hơn một nửa của size thì tìm từ đầu (tìm về phía sau), ngược lại tìm về phía trước
     if (index < (size >> 1)) {
         Node<E> x = first;
-        // 遍历，循环向后查找，直至 i == index
+        // Duyệt, lặp tìm về phía sau, cho đến khi i == index
         for (int i = 0; i < index; i++)
             x = x.next;
         return x;
@@ -225,22 +225,22 @@ Node<E> node(int index) {
 }
 ```
 
-`get(int index)` 或 `remove(int index)` 等方法内部都调用了该方法来获取对应的节点。
+Các phương thức như `get(int index)` hoặc `remove(int index)` bên trong đều gọi phương thức này để lấy nút tương ứng.
 
-从这个方法的源码可以看出，该方法通过比较索引值与链表 size 的一半大小来确定从链表头还是尾开始遍历。如果索引值小于 size 的一半，就从链表头开始遍历，反之从链表尾开始遍历。这样可以在较短的时间内找到目标节点，充分利用了双向链表的特性来提高效率。
+Từ mã nguồn của phương thức này có thể thấy, phương thức này xác định nên bắt đầu duyệt từ đầu hay cuối danh sách liên kết bằng cách so sánh giá trị chỉ mục với một nửa size của danh sách liên kết. Nếu giá trị chỉ mục nhỏ hơn một nửa size, sẽ bắt đầu duyệt từ đầu danh sách liên kết, ngược lại sẽ duyệt từ cuối danh sách liên kết. Điều này cho phép tìm thấy nút mục tiêu trong thời gian ngắn hơn, tận dụng tối đa đặc tính của danh sách liên kết đôi để nâng cao hiệu quả.
 
-### 删除元素
+### Xóa phần tử
 
-`LinkedList` 删除元素相关的方法一共有 5 个：
+`LinkedList` có tổng cộng 5 phương thức liên quan đến xóa phần tử:
 
-1. `removeFirst()`：删除并返回链表的第一个元素。
-2. `removeLast()`：删除并返回链表的最后一个元素。
-3. `remove(E e)`：删除链表中首次出现的指定元素，如果不存在该元素则返回 false。
-4. `remove(int index)`：删除指定索引处的元素，并返回该元素的值。
-5. `void clear()`：移除此链表中的所有元素。
+1. `removeFirst()`: xóa và trả về phần tử đầu tiên của danh sách liên kết.
+2. `removeLast()`: xóa và trả về phần tử cuối cùng của danh sách liên kết.
+3. `remove(E e)`: xóa phần tử được chỉ định xuất hiện lần đầu tiên trong danh sách liên kết, nếu không tồn tại phần tử đó thì trả về false.
+4. `remove(int index)`: xóa phần tử tại chỉ mục được chỉ định, và trả về giá trị của phần tử đó.
+5. `void clear()`: xóa tất cả các phần tử trong danh sách liên kết này.
 
 ```java
-// 删除并返回链表的第一个元素
+// Xóa và trả về phần tử đầu tiên của danh sách liên kết
 public E removeFirst() {
     final Node<E> f = first;
     if (f == null)
@@ -248,7 +248,7 @@ public E removeFirst() {
     return unlinkFirst(f);
 }
 
-// 删除并返回链表的最后一个元素
+// Xóa và trả về phần tử cuối cùng của danh sách liên kết
 public E removeLast() {
     final Node<E> l = last;
     if (l == null)
@@ -256,9 +256,9 @@ public E removeLast() {
     return unlinkLast(l);
 }
 
-// 删除链表中首次出现的指定元素，如果不存在该元素则返回 false
+// Xóa phần tử được chỉ định xuất hiện lần đầu tiên trong danh sách liên kết, nếu không tồn tại phần tử đó thì trả về false
 public boolean remove(Object o) {
-    // 如果指定元素为 null，遍历链表找到第一个为 null 的元素进行删除
+    // Nếu phần tử được chỉ định là null, duyệt danh sách liên kết tìm phần tử null đầu tiên để xóa
     if (o == null) {
         for (Node<E> x = first; x != null; x = x.next) {
             if (x.item == null) {
@@ -267,7 +267,7 @@ public boolean remove(Object o) {
             }
         }
     } else {
-        // 如果不为 null ,遍历链表找到要删除的节点
+        // Nếu không phải null, duyệt danh sách liên kết tìm nút cần xóa
         for (Node<E> x = first; x != null; x = x.next) {
             if (o.equals(x.item)) {
                 unlink(x);
@@ -278,50 +278,50 @@ public boolean remove(Object o) {
     return false;
 }
 
-// 删除链表指定位置的元素
+// Xóa phần tử tại vị trí chỉ định trong danh sách liên kết
 public E remove(int index) {
-    // 下标越界检查，如果越界就抛异常
+    // Kiểm tra chỉ mục vượt quá giới hạn, nếu vượt quá thì ném ngoại lệ
     checkElementIndex(index);
     return unlink(node(index));
 }
 ```
 
-这里的核心在于 `unlink(Node<E> x)` 这个方法：
+Điểm cốt lõi ở đây nằm ở phương thức `unlink(Node<E> x)`:
 
 ```java
 E unlink(Node<E> x) {
-    // 断言 x 不为 null
+    // Khẳng định x không null
     // assert x != null;
-    // 获取当前节点（也就是待删除节点）的元素
+    // Lấy phần tử của nút hiện tại (tức là nút cần xóa)
     final E element = x.item;
-    // 获取当前节点的下一个节点
+    // Lấy nút tiếp theo của nút hiện tại
     final Node<E> next = x.next;
-    // 获取当前节点的前一个节点
+    // Lấy nút trước đó của nút hiện tại
     final Node<E> prev = x.prev;
 
-    // 如果前一个节点为空，则说明当前节点是头节点
+    // Nếu nút trước đó rỗng, thì nút hiện tại là nút đầu (head)
     if (prev == null) {
-        // 直接让链表头指向当前节点的下一个节点
+        // Trực tiếp trỏ đầu danh sách liên kết đến nút tiếp theo của nút hiện tại
         first = next;
-    } else { // 如果前一个节点不为空
-        // 将前一个节点的 next 指针指向当前节点的下一个节点
+    } else { // Nếu nút trước đó không rỗng
+        // Trỏ con trỏ next của nút trước đó đến nút tiếp theo của nút hiện tại
         prev.next = next;
-        // 将当前节点的 prev 指针置为 null，，方便 GC 回收
+        // Đặt con trỏ prev của nút hiện tại thành null, để GC dễ thu hồi
         x.prev = null;
     }
 
-    // 如果下一个节点为空，则说明当前节点是尾节点
+    // Nếu nút tiếp theo rỗng, thì nút hiện tại là nút cuối (tail)
     if (next == null) {
-        // 直接让链表尾指向当前节点的前一个节点
+        // Trực tiếp trỏ cuối danh sách liên kết đến nút trước đó của nút hiện tại
         last = prev;
-    } else { // 如果下一个节点不为空
-        // 将下一个节点的 prev 指针指向当前节点的前一个节点
+    } else { // Nếu nút tiếp theo không rỗng
+        // Trỏ con trỏ prev của nút tiếp theo đến nút trước đó của nút hiện tại
         next.prev = prev;
-        // 将当前节点的 next 指针置为 null，方便 GC 回收
+        // Đặt con trỏ next của nút hiện tại thành null, để GC dễ thu hồi
         x.next = null;
     }
 
-    // 将当前节点元素置为 null，方便 GC 回收
+    // Đặt phần tử của nút hiện tại thành null, để GC dễ thu hồi
     x.item = null;
     size--;
     modCount++;
@@ -329,24 +329,24 @@ E unlink(Node<E> x) {
 }
 ```
 
-`unlink()` 方法的逻辑如下：
+Logic của phương thức `unlink()` như sau:
 
-1. 首先获取待删除节点 x 的前驱和后继节点；
-2. 判断待删除节点是否为头节点或尾节点：
-   - 如果 x 是头节点，则将 first 指向 x 的后继节点 next
-   - 如果 x 是尾节点，则将 last 指向 x 的前驱节点 prev
-   - 如果 x 不是头节点也不是尾节点，执行下一步操作
-3. 将待删除节点 x 的前驱的后继指向待删除节点的后继 next，断开 x 和 x.prev 之间的链接；
-4. 将待删除节点 x 的后继的前驱指向待删除节点的前驱 prev，断开 x 和 x.next 之间的链接；
-5. 将待删除节点 x 的元素置空，修改链表长度。
+1. Đầu tiên lấy nút kế trước và nút kế sau của nút cần xóa x;
+2. Kiểm tra xem nút cần xóa có phải là nút đầu hoặc nút cuối không:
+   - Nếu x là nút đầu, thì trỏ first đến nút kế sau next của x
+   - Nếu x là nút cuối, thì trỏ last đến nút kế trước prev của x
+   - Nếu x không phải nút đầu cũng không phải nút cuối, thực hiện bước tiếp theo
+3. Trỏ kế sau của nút kế trước của nút cần xóa x đến nút kế sau next của nút cần xóa, ngắt liên kết giữa x và x.prev;
+4. Trỏ kế trước của nút kế sau của nút cần xóa x đến nút kế trước prev của nút cần xóa, ngắt liên kết giữa x và x.next;
+5. Đặt phần tử của nút cần xóa x thành null, cập nhật độ dài danh sách liên kết.
 
-可以参考下图理解（图源：[LinkedList 源码分析(JDK 1.8)](https://www.tianxiaobo.com/2018/01/31/LinkedList-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-JDK-1-8/)）：
+Có thể tham khảo hình dưới đây để hiểu rõ hơn (nguồn ảnh: [Phân tích mã nguồn LinkedList (JDK 1.8)](https://www.tianxiaobo.com/2018/01/31/LinkedList-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-JDK-1-8/)):
 
-![unlink 方法逻辑](https://oss.javaguide.cn/github/javaguide/java/collection/linkedlist-unlink.jpg)
+![Logic phương thức unlink](https://oss.javaguide.cn/github/javaguide/java/collection/linkedlist-unlink.jpg)
 
-### 遍历链表
+### Duyệt danh sách liên kết
 
-推荐使用 `for-each` 循环来遍历 `LinkedList` 中的元素， `for-each` 循环最终会转换成迭代器形式。
+Khuyến nghị sử dụng vòng lặp `for-each` để duyệt các phần tử trong `LinkedList`, vòng lặp `for-each` cuối cùng sẽ được chuyển đổi thành dạng iterator.
 
 ```java
 LinkedList<String> list = new LinkedList<>();
@@ -359,72 +359,72 @@ for (String fruit : list) {
 }
 ```
 
-`LinkedList` 的遍历的核心就是它的迭代器的实现。
+Cốt lõi của việc duyệt `LinkedList` nằm ở việc triển khai iterator của nó.
 
 ```java
-// 双向迭代器
+// Iterator hai chiều
 private class ListItr implements ListIterator<E> {
-    // 表示上一次调用 next() 或 previous() 方法时经过的节点；
+    // Biểu thị nút đã được duyệt qua trong lần gọi phương thức next() hoặc previous() trước đó;
     private Node<E> lastReturned;
-    // 表示下一个要遍历的节点；
+    // Biểu thị nút tiếp theo sẽ được duyệt;
     private Node<E> next;
-    // 表示下一个要遍历的节点的下标，也就是当前节点的后继节点的下标；
+    // Biểu thị chỉ mục của nút tiếp theo sẽ được duyệt, tức là chỉ mục của nút kế sau của nút hiện tại;
     private int nextIndex;
-    // 表示当前遍历期望的修改计数值，用于和 LinkedList 的 modCount 比较，判断链表是否被其他线程修改过。
+    // Biểu thị giá trị modCount mong đợi trong lần duyệt hiện tại, dùng để so sánh với modCount của LinkedList, kiểm tra xem danh sách liên kết có bị luồng khác sửa đổi hay không.
     private int expectedModCount = modCount;
     …………
 }
 ```
 
-下面我们对迭代器 `ListItr` 中的核心方法进行详细介绍。
+Dưới đây chúng tôi sẽ giới thiệu chi tiết các phương thức cốt lõi trong iterator `ListItr`.
 
-我们先来看下从头到尾方向的迭代：
+Trước tiên hãy xem duyệt theo chiều từ đầu đến cuối:
 
 ```java
-// 判断还有没有下一个节点
+// Kiểm tra xem còn nút tiếp theo không
 public boolean hasNext() {
-    // 判断下一个节点的下标是否小于链表的大小，如果是则表示还有下一个元素可以遍历
+    // Kiểm tra xem chỉ mục của nút tiếp theo có nhỏ hơn size của danh sách liên kết không, nếu có nghĩa là vẫn còn phần tử tiếp theo để duyệt
     return nextIndex < size;
 }
-// 获取下一个节点
+// Lấy nút tiếp theo
 public E next() {
-    // 检查在迭代过程中链表是否被修改过
+    // Kiểm tra xem trong quá trình duyệt danh sách liên kết có bị sửa đổi không
     checkForComodification();
-    // 判断是否还有下一个节点可以遍历，如果没有则抛出 NoSuchElementException 异常
+    // Kiểm tra xem còn nút tiếp theo để duyệt không, nếu không thì ném ngoại lệ NoSuchElementException
     if (!hasNext())
         throw new NoSuchElementException();
-    // 将 lastReturned 指向当前节点
+    // Trỏ lastReturned đến nút hiện tại
     lastReturned = next;
-    // 将 next 指向下一个节点
+    // Trỏ next đến nút tiếp theo
     next = next.next;
     nextIndex++;
     return lastReturned.item;
 }
 ```
 
-再来看一下从尾到头方向的迭代：
+Tiếp theo hãy xem duyệt theo chiều từ cuối đến đầu:
 
 ```java
-// 判断是否还有前一个节点
+// Kiểm tra xem còn nút trước đó không
 public boolean hasPrevious() {
     return nextIndex > 0;
 }
 
-// 获取前一个节点
+// Lấy nút trước đó
 public E previous() {
-    // 检查是否在迭代过程中链表被修改
+    // Kiểm tra xem trong quá trình duyệt danh sách liên kết có bị sửa đổi không
     checkForComodification();
-    // 如果没有前一个节点，则抛出异常
+    // Nếu không có nút trước đó, thì ném ngoại lệ
     if (!hasPrevious())
         throw new NoSuchElementException();
-    // 将 lastReturned 和 next 指针指向上一个节点
+    // Trỏ con trỏ lastReturned và next đến nút trước đó
     lastReturned = next = (next == null) ? last : next.prev;
     nextIndex--;
     return lastReturned.item;
 }
 ```
 
-如果需要删除或插入元素，也可以使用迭代器进行操作。
+Nếu cần xóa hoặc chèn phần tử, cũng có thể sử dụng iterator để thao tác.
 
 ```java
 LinkedList<String> list = new LinkedList<>();
@@ -432,7 +432,7 @@ list.add("apple");
 list.add(null);
 list.add("banana");
 
-//  Collection 接口的 removeIf 方法底层依然是基于迭代器
+// Phương thức removeIf của giao diện Collection bên dưới vẫn dựa trên iterator
 list.removeIf(Objects::isNull);
 
 for (String fruit : list) {
@@ -440,84 +440,84 @@ for (String fruit : list) {
 }
 ```
 
-迭代器对应的移除元素的方法如下：
+Phương thức xóa phần tử tương ứng của iterator như sau:
 
 ```java
-// 从列表中删除上次被返回的元素
+// Xóa phần tử được trả về lần trước khỏi danh sách
 public void remove() {
-    // 检查是否在迭代过程中链表被修改
+    // Kiểm tra xem trong quá trình duyệt danh sách liên kết có bị sửa đổi không
     checkForComodification();
-    // 如果上次返回的节点为空，则抛出异常
+    // Nếu nút được trả về lần trước là null, thì ném ngoại lệ
     if (lastReturned == null)
         throw new IllegalStateException();
 
-    // 获取当前节点的下一个节点
+    // Lấy nút tiếp theo của nút hiện tại
     Node<E> lastNext = lastReturned.next;
-    // 从链表中删除上次返回的节点
+    // Xóa nút được trả về lần trước khỏi danh sách liên kết
     unlink(lastReturned);
-    // 修改指针
+    // Sửa con trỏ
     if (next == lastReturned)
         next = lastNext;
     else
         nextIndex--;
-    // 将上次返回的节点引用置为 null，方便 GC 回收
+    // Đặt tham chiếu nút được trả về lần trước thành null, để GC dễ thu hồi
     lastReturned = null;
     expectedModCount++;
 }
 ```
 
-## LinkedList 常用方法测试
+## Kiểm thử các phương thức thường dùng của LinkedList
 
-代码：
+Mã nguồn:
 
 ```java
-// 创建 LinkedList 对象
+// Tạo đối tượng LinkedList
 LinkedList<String> list = new LinkedList<>();
 
-// 添加元素到链表末尾
+// Thêm phần tử vào cuối danh sách liên kết
 list.add("apple");
 list.add("banana");
 list.add("pear");
-System.out.println("链表内容：" + list);
+System.out.println("Nội dung danh sách liên kết: " + list);
 
-// 在指定位置插入元素
+// Chèn phần tử vào vị trí chỉ định
 list.add(1, "orange");
-System.out.println("链表内容：" + list);
+System.out.println("Nội dung danh sách liên kết: " + list);
 
-// 获取指定位置的元素
+// Lấy phần tử tại vị trí chỉ định
 String fruit = list.get(2);
-System.out.println("索引为 2 的元素：" + fruit);
+System.out.println("Phần tử tại chỉ mục 2: " + fruit);
 
-// 修改指定位置的元素
+// Sửa phần tử tại vị trí chỉ định
 list.set(3, "grape");
-System.out.println("链表内容：" + list);
+System.out.println("Nội dung danh sách liên kết: " + list);
 
-// 删除指定位置的元素
+// Xóa phần tử tại vị trí chỉ định
 list.remove(0);
-System.out.println("链表内容：" + list);
+System.out.println("Nội dung danh sách liên kết: " + list);
 
-// 删除第一个出现的指定元素
+// Xóa phần tử được chỉ định xuất hiện lần đầu tiên
 list.remove("banana");
-System.out.println("链表内容：" + list);
+System.out.println("Nội dung danh sách liên kết: " + list);
 
-// 获取链表的长度
+// Lấy độ dài của danh sách liên kết
 int size = list.size();
-System.out.println("链表长度：" + size);
+System.out.println("Độ dài danh sách liên kết: " + size);
 
-// 清空链表
+// Xóa toàn bộ danh sách liên kết
 list.clear();
-System.out.println("清空后的链表：" + list);
+System.out.println("Danh sách liên kết sau khi xóa toàn bộ: " + list);
 ```
 
-输出：
+Kết quả:
 
 ```plain
-索引为 2 的元素：banana
-链表内容：[apple, orange, banana, grape]
-链表内容：[orange, banana, grape]
-链表内容：[orange, grape]
-链表长度：2
-清空后的链表：[]
+Phần tử tại chỉ mục 2: banana
+Nội dung danh sách liên kết: [apple, orange, banana, grape]
+Nội dung danh sách liên kết: [orange, banana, grape]
+Nội dung danh sách liên kết: [orange, grape]
+Độ dài danh sách liên kết: 2
+Danh sách liên kết sau khi xóa toàn bộ: []
 ```
 
 <!-- @include: @article-footer.snippet.md -->

@@ -1,89 +1,89 @@
 ---
-title: Java 新特性专题：Java 8 到 Java 26 重要特性梳理
-description: Java 新特性学习路线，梳理 Java 8 到 Java 26 的语言特性、标准库增强、JVM 改进、LTS 版本、Lambda、Stream、Record 和虚拟线程。
+title: "Chuyên đề Java New Features: Tổng hợp các tính năng quan trọng từ Java 8 đến Java 26"
+description: "Lộ trình học Java New Features, tổng hợp các tính năng ngôn ngữ, cải tiến Standard Library, JVM, các phiên bản LTS, Lambda, Stream, Record và Virtual Thread từ Java 8 đến Java 26."
 category: Java
 tag:
   - Java
-  - Java新特性
-  - Java面试
+  - Java New Features
+  - Java Interview
 sitemap:
   changefreq: weekly
   priority: 0.9
 head:
   - - meta
     - name: keywords
-      content: Java新特性,Java8新特性,Java11新特性,Java17新特性,Java21新特性,Lambda,Stream,Optional,模块化,var,Record,Switch,虚拟线程,模式匹配
+      content: "Java New Features,Java 8 New Features,Java 11 New Features,Java 17 New Features,Java 21 New Features,Lambda,Stream,Optional,Modularity,var,Record,Switch,Virtual Thread,Pattern Matching"
 ---
 
-Java 新特性不适合按版本机械背诵，更适合抓住“语言表达能力、标准库增强、并发模型、JVM 改进、长期支持版本”这几条主线。日常开发优先掌握 Java 8、11、17、21 等 LTS 版本中的稳定特性，再按需了解后续版本的预览和孵化特性。
+Java New Features không phù hợp với cách học thuộc máy móc theo từng phiên bản. Cách tiếp cận hiệu quả hơn là nắm bắt các tuyến kiến thức chính gồm **khả năng biểu đạt của ngôn ngữ, cải tiến Standard Library, mô hình Concurrency, cải tiến JVM và các phiên bản Long-Term Support**. Trong quá trình phát triển hằng ngày, nên ưu tiên nắm vững các tính năng ổn định trong những phiên bản LTS như **Java 8, 11, 17 và 21**, sau đó tìm hiểu thêm các tính năng Preview và Incubator của những phiên bản mới hơn khi có nhu cầu.
 
-## 适合谁看
+## Đối tượng phù hợp
 
-- 想系统了解 Java 8 之后版本变化的 Java 开发者。
-- 准备 Java 新特性、LTS 版本差异、虚拟线程、Record、模式匹配等面试题的同学。
-- 负责 JDK 升级，需要判断哪些特性会影响项目代码和运行时表现的工程师。
-- 已经熟悉 Java 8，但对 Java 11、17、21 之后变化不够清楚的读者。
+- Java Developer muốn tìm hiểu một cách có hệ thống những thay đổi của Java kể từ Java 8.
+- Người đang chuẩn bị các câu hỏi phỏng vấn về Java New Features, sự khác biệt giữa các phiên bản LTS, Virtual Thread, Record, Pattern Matching và các chủ đề liên quan.
+- Engineer phụ trách nâng cấp JDK, cần đánh giá những tính năng nào có thể ảnh hưởng đến source code và runtime behavior của project.
+- Người đã quen với Java 8 nhưng chưa nắm rõ những thay đổi kể từ Java 11, Java 17, Java 21 và các phiên bản mới hơn.
 
-## 学习重点
+## Trọng tâm học tập
 
-- Java 8 的 Lambda、Stream、Optional、接口默认方法和新日期 API。
-- Java 9 的模块化，以及后续版本对语言语法和标准库的持续增强。
-- Java 11、17、21 等 LTS 版本中更值得优先掌握的稳定能力。
-- var、文本块、Record、Switch 表达式、密封类、模式匹配等语言层变化。
-- 虚拟线程、结构化并发、分代 ZGC、Foreign Function & Memory API 等运行时和并发相关变化。
-- 区分正式特性、预览特性、孵化特性，避免在生产升级中误判风险。
+- Các tính năng Java 8 như **Lambda, Stream, Optional, Default Method của Interface và New Date/Time API**.
+- **Modularity** của Java 9, cùng những cải tiến liên tục về cú pháp ngôn ngữ và Standard Library trong các phiên bản sau.
+- Những tính năng ổn định đáng ưu tiên trong các phiên bản LTS như **Java 11, Java 17 và Java 21**.
+- Các thay đổi ở cấp độ ngôn ngữ như **var, Text Blocks, Record, Switch Expression, Sealed Class và Pattern Matching**.
+- Những thay đổi liên quan đến Runtime và Concurrency như **Virtual Thread, Structured Concurrency, Generational ZGC và Foreign Function & Memory API**.
+- Phân biệt rõ **Final Feature, Preview Feature và Incubator Feature**, tránh đánh giá sai rủi ro khi nâng cấp JDK trong môi trường Production.
 
-## 建议阅读顺序
+## Thứ tự đọc đề xuất
 
-1. [Java8 新特性实战](./java8-common-new-features.md)：先掌握 Lambda、Stream、Optional、接口默认方法和新日期 API。
-2. [Java 9 新特性概览](./java9.md)、[Java 10 新特性概览](./java10.md)：理解模块化和局部变量类型推断等基础变化。
-3. [Java 11 新特性概览（重要）](./java11.md)：重点关注第一个 8 之后被广泛采用的 LTS 版本。
-4. [Java 17 新特性概览（重要）](./java17.md)：掌握 Record、密封类、Switch、模式匹配等现代 Java 语法演进。
-5. [Java 21 新特性概览(重要)](./java21.md)：重点学习虚拟线程、分代 ZGC、模式匹配和字符串模板等变化。
-6. 再按需阅读 [Java 22 & 23 新特性概览](./java22-23.md)、[Java 24 新特性概览](./java24.md)、[Java 25 新特性概览](./java25.md)、[Java 26 新特性概览](./java26.md)。
+1. [Thực hành Java 8 New Features](./java8-common-new-features.md): Trước tiên hãy nắm vững **Lambda, Stream, Optional, Default Method của Interface và New Date/Time API**.
+2. [Tổng quan Java 9 New Features](./java9.md), [Tổng quan Java 10 New Features](./java10.md): Tìm hiểu **Modularity** và **Local Variable Type Inference** cùng những thay đổi nền tảng khác.
+3. [Tổng quan Java 11 New Features (Quan trọng)](./java11.md): Tập trung vào phiên bản LTS đầu tiên sau Java 8 được sử dụng rộng rãi.
+4. [Tổng quan Java 17 New Features (Quan trọng)](./java17.md): Nắm vững sự phát triển của cú pháp Java hiện đại như **Record, Sealed Class, Switch và Pattern Matching**.
+5. [Tổng quan Java 21 New Features (Quan trọng)](./java21.md): Tập trung tìm hiểu **Virtual Thread, Generational ZGC, Pattern Matching và String Templates** cùng các thay đổi quan trọng khác.
+6. Sau đó, tùy nhu cầu có thể đọc thêm [Tổng quan Java 22 & 23 New Features](./java22-23.md), [Tổng quan Java 24 New Features](./java24.md), [Tổng quan Java 25 New Features](./java25.md), [Tổng quan Java 26 New Features](./java26.md).
 
-## 核心文章
+## Các bài viết cốt lõi
 
-### Java 8 基础能力
+### Năng lực nền tảng từ Java 8
 
-- [Java8 新特性实战](./java8-common-new-features.md)：掌握 Lambda、函数式接口、Stream、Optional、接口默认方法和新日期 API。
-- [《Java8 指南》中文翻译](./java8-tutorial-translate.md)：通过更系统的教程理解 Java 8 常用特性。
+- [Thực hành Java 8 New Features](./java8-common-new-features.md): Nắm vững **Lambda, Functional Interface, Stream, Optional, Default Method của Interface và New Date/Time API**.
+- [Bản dịch tiếng Việt của "Java 8 Guide"](./java8-tutorial-translate.md): Thông qua một tutorial có hệ thống hơn để hiểu các tính năng Java 8 thường được sử dụng.
 
-### 重要 LTS 版本
+### Các phiên bản LTS quan trọng
 
-- [Java 11 新特性概览（重要）](./java11.md)：关注 HTTP Client、字符串 API、集合 API、ZGC 实验特性等变化。
-- [Java 17 新特性概览（重要）](./java17.md)：关注 Record、密封类、Switch 表达式、文本块和模式匹配相关能力。
-- [Java 21 新特性概览(重要)](./java21.md)：关注虚拟线程、分代 ZGC、Record Pattern、Pattern Matching for switch 等特性。
+- [Tổng quan Java 11 New Features (Quan trọng)](./java11.md): Tập trung vào **HTTP Client, String API, Collection API, ZGC Experimental Feature** và những thay đổi quan trọng khác.
+- [Tổng quan Java 17 New Features (Quan trọng)](./java17.md): Tập trung vào **Record, Sealed Class, Switch Expression, Text Blocks và Pattern Matching**.
+- [Tổng quan Java 21 New Features (Quan trọng)](./java21.md): Tập trung vào **Virtual Thread, Generational ZGC, Record Pattern và Pattern Matching for switch**.
 
-### 按版本追踪
+### Theo dõi theo từng phiên bản
 
-- [Java 9 新特性概览](./java9.md)：理解模块化系统和 JShell。
-- [Java 10 新特性概览](./java10.md)：了解局部变量类型推断和运行时改进。
-- [Java 12 & 13 新特性概览](./java12-13.md)：了解 Switch 表达式、文本块等变化。
-- [Java 14 & 15 新特性概览](./java14-15.md)：了解 Record、文本块、隐藏类等特性。
-- [Java 16 新特性概览](./java16.md)：了解 Record 正式转正、Pattern Matching for instanceof 等变化。
-- [Java 18 新特性概览](./java18.md)、[Java 19 新特性概览](./java19.md)、[Java 20 新特性概览](./java20.md)：跟进 UTF-8 默认字符集、虚拟线程预览、结构化并发等演进。
-- [Java 22 & 23 新特性概览](./java22-23.md)、[Java 24 新特性概览](./java24.md)、[Java 25 新特性概览](./java25.md)、[Java 26 新特性概览](./java26.md)：了解较新版本中的预览、孵化和正式特性。
+- [Tổng quan Java 9 New Features](./java9.md): Tìm hiểu **Modularity System và JShell**.
+- [Tổng quan Java 10 New Features](./java10.md): Tìm hiểu **Local Variable Type Inference** và những cải tiến Runtime.
+- [Tổng quan Java 12 & 13 New Features](./java12-13.md): Tìm hiểu những thay đổi như **Switch Expression và Text Blocks**.
+- [Tổng quan Java 14 & 15 New Features](./java14-15.md): Tìm hiểu các tính năng như **Record, Text Blocks và Hidden Classes**.
+- [Tổng quan Java 16 New Features](./java16.md): Tìm hiểu **Record trở thành Feature chính thức**, Pattern Matching for `instanceof` và các thay đổi liên quan.
+- [Tổng quan Java 18 New Features](./java18.md), [Tổng quan Java 19 New Features](./java19.md), [Tổng quan Java 20 New Features](./java20.md): Theo dõi những thay đổi như **UTF-8 Default Charset, Virtual Thread Preview và Structured Concurrency**.
+- [Tổng quan Java 22 & 23 New Features](./java22-23.md), [Tổng quan Java 24 New Features](./java24.md), [Tổng quan Java 25 New Features](./java25.md), [Tổng quan Java 26 New Features](./java26.md): Tìm hiểu các **Preview Feature, Incubator Feature và Final Feature** trong những phiên bản Java mới hơn.
 
-## 高频问题
+## Các câu hỏi thường gặp
 
-- Java 8 为什么重要？Lambda 和 Stream 分别解决什么问题？
-- `Optional` 适合用在哪些场景？为什么不建议滥用？
-- Java 9 模块化解决了什么问题？
-- `var` 是动态类型吗？它适合在哪些场景使用？
-- Record 和普通 JavaBean 有什么区别？
-- Switch 表达式和传统 switch 有什么区别？
-- 密封类适合解决什么问题？
-- 模式匹配带来了哪些代码简化？
-- 虚拟线程适合什么场景？和平台线程有什么区别？
-- 生产升级 JDK 时，如何区分正式特性、预览特性和孵化特性？
+- Tại sao Java 8 lại quan trọng? **Lambda và Stream** lần lượt giải quyết những vấn đề gì?
+- `Optional` phù hợp với những scenario nào? Tại sao không nên lạm dụng `Optional`?
+- **Modularity của Java 9** giải quyết những vấn đề gì?
+- `var` có phải là **Dynamic Typing** hay không? Nên sử dụng `var` trong những scenario nào?
+- **Record** khác gì so với JavaBean thông thường?
+- **Switch Expression** khác gì so với `switch` truyền thống?
+- **Sealed Class** phù hợp để giải quyết những vấn đề nào?
+- **Pattern Matching** giúp đơn giản hóa code như thế nào?
+- **Virtual Thread** phù hợp với những scenario nào? Nó khác gì so với **Platform Thread**?
+- Khi nâng cấp JDK trong Production, làm thế nào để phân biệt **Final Feature, Preview Feature và Incubator Feature**?
 
-## 相关专题
+## Chủ đề liên quan
 
-- [Java 知识体系](../)
-- [Java 基础专题](../basis/)
-- [Java 并发编程专题](../concurrent/)
-- [JVM 专题](../jvm/)
-- [Java IO 专题](../io/)
+- [Hệ thống kiến thức Java](../)
+- [Chuyên đề Java Fundamentals](../basis/)
+- [Chuyên đề Java Concurrency](../concurrent/)
+- [Chuyên đề JVM](../jvm/)
+- [Chuyên đề Java IO](../io/)
 
 <!-- @include: @article-footer.snippet.md -->

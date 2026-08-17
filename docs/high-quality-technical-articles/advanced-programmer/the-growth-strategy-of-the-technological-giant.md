@@ -1,6 +1,6 @@
 ---
-title: 程序员的技术成长战略
-description: "程序员的技术成长战略：围绕技术知识与面试总结梳理关键概念、常见问题与实践要点，帮助你高效学习与备战面试。"
+title: Chiến lược trưởng thành kỹ thuật của lập trình viên
+description: "Chiến lược trưởng thành kỹ thuật của lập trình viên: xoay quanh kiến thức kỹ thuật và tổng kết phỏng vấn, hệ thống lại các khái niệm then chốt, câu hỏi thường gặp và điểm mấu chốt thực hành, giúp bạn học tập hiệu quả và chuẩn bị vững vàng cho phỏng vấn."
 category: 技术文章精选集
 author: 波波微课
 tag:
@@ -11,200 +11,198 @@ head:
       content: 技术成长战略,程序员成长,学习金字塔,刻意练习,技术大牛,职业规划,十年规划,持续产出
 ---
 
-> **推荐语**：波波老师的一篇文章，写的非常好，不光是对技术成长有帮助，其他领域也是同样适用的！建议反复阅读，形成一套自己的技术成长策略。
+> **Lời giới thiệu**: Một bài viết của thầy 波波, viết rất hay, không chỉ hữu ích cho sự trưởng thành kỹ thuật mà còn áp dụng được cho các lĩnh vực khác! Khuyên bạn nên đọc đi đọc lại, để hình thành một chiến lược trưởng thành kỹ thuật của riêng mình.
 >
-> **原文地址：** <https://mp.weixin.qq.com/s/YrN8T67s801-MRo01lCHXA>
+> **Địa chỉ bài viết gốc:** <https://mp.weixin.qq.com/s/YrN8T67s801-MRo01lCHXA>
 
-## 1. 前言
+## 1. Lời mở đầu
 
-在波波的微信技术交流群里头，经常有学员问关于技术人该如何学习成长的问题，虽然是微信交流，但我依然可以感受到小伙伴们焦虑的心情。
+Trong nhóm giao lưu kỹ thuật WeChat của 波波, thường xuyên có học viên hỏi về cách học tập và trưởng thành của người làm kỹ thuật. Mặc dù chỉ giao lưu qua WeChat, nhưng tôi vẫn có thể cảm nhận được tâm trạng lo lắng của các bạn.
 
-**技术人为啥焦虑？** 恕我直言，说白了是胆识不足格局太小。胆就是胆量，焦虑的人一般对未来的不确定性怀有恐惧。识就是见识，焦虑的人一般看不清楚周围世界，也看不清自己和适合自己的道路。格局也称志向，容易焦虑的人通常视野窄志向小。如果从战略和管理的视角来看，就是对自己和周围世界的认知不足，没有一个清晰和长期的学习成长战略，也没有可执行的阶段性目标计划+严格的执行。
+**Vì sao người làm kỹ thuật lại lo lắng?** Nói thẳng ra, là do thiếu dũng khí và tầm nhìn, khí độ quá nhỏ. "胆" (dũng) là dũng khí, người lo lắng thường có nỗi sợ với những điều bất định trong tương lai. "识" (thức) là kiến thức và tầm nhìn, người lo lắng thường nhìn không rõ thế giới xung quanh, cũng không nhìn rõ bản thân và con đường phù hợp với mình. Khí độ còn được gọi là chí hướng, người dễ lo lắng thường có tầm nhìn hẹp và chí hướng nhỏ. Nếu nhìn từ góc độ chiến lược và quản lý, thì đó là do nhận thức về bản thân và thế giới xung quanh chưa đủ, không có một chiến lược học tập và trưởng thành rõ ràng, dài hạn, cũng không có kế hoạch mục tiêu theo giai đoạn khả thi cùng với việc thực thi nghiêm túc.
 
-因为问此类问题的学员很多，让我感觉有点烦了，为了避免重复回答，所以我专门总结梳理了这篇长文，试图统一来回答这类问题。如果后面还有学员问类似问题，我会引导他们来读这篇文章，然后让他们用三个月、一年甚至更长的时间，去思考和回答这样一个问题：**你的技术成长战略究竟是什么？** 如果你想清楚了这个问题，有清晰和可落地的答案，那么恭喜你，你只需按部就班执行就好，根本无需焦虑，你实现自己的战略目标并做出成就只是一个时间问题；否则，你仍然需要通过不断磨炼+思考，务必去搞清楚这个人生的大问题！！！
+Vì số học viên hỏi dạng câu hỏi này quá đông, khiến tôi cảm thấy hơi phiền, để tránh phải trả lời lặp lại, tôi đã đặc biệt tổng kết và hệ thống lại bài viết dài này, cố gắng trả lời thống nhất cho các câu hỏi kiểu này. Nếu sau này còn học viên hỏi các câu hỏi tương tự, tôi sẽ hướng dẫn họ đọc bài viết này, rồi để họ dùng ba tháng, một năm thậm chí lâu hơn để suy nghĩ và trả lời một câu hỏi như vậy: **Chiến lược trưởng thành kỹ thuật của bạn rốt cuộc là gì?** Nếu bạn nghĩ rõ câu hỏi này, có câu trả lời rõ ràng và khả thi, thì xin chúc mừng, bạn chỉ cần thực hiện theo đúng trình tự, hoàn toàn không cần lo lắng, việc đạt được mục tiêu chiến lược và tạo ra thành tựu của bạn chỉ là vấn đề thời gian; còn không, bạn vẫn cần thông qua rèn luyện + suy nghĩ không ngừng, nhất định phải làm rõ câu hỏi lớn này của cuộc đời!!!
 
-下面我们来看一些行业技术大牛是怎么做的。
+Dưới đây chúng ta hãy xem một số cao thủ kỹ thuật trong ngành đã làm như thế nào.
 
-## 二. 跟技术大牛学成长战略
+## 2. Học chiến lược trưởng thành từ các cao thủ kỹ thuật
 
-我们知道软件设计是有设计模式(Design Pattern)的，其实技术人的成长也是有成长模式(Growth Pattern)的。波波经常在 Linkedin 上看一些技术大牛的成长履历，探究其中的成长模式，从而启发制定自己的技术成长战略。
+Chúng ta biết rằng thiết kế phần mềm có design pattern (mẫu thiết kế), thực ra sự trưởng thành của người làm kỹ thuật cũng có growth pattern (mô hình tăng trưởng). 波波 thường xem hồ sơ trưởng thành của một số cao thủ kỹ thuật trên LinkedIn, khám phá mô hình trưởng thành bên trong, từ đó truyền cảm hứng xây dựng chiến lược trưởng thành kỹ thuật của bản thân.
 
-当然，很少有技术大牛会清晰地告诉你他们的技术成长战略，以及每一年的细分落地计划。但是，这并不妨碍我们通过他们的过往履历和产出成果，去溯源他们的技术成长战略。实际上， **越是牛逼的技术人，他们的技术成长战略和路径越是清晰，我们越容易从中探究出一些成功的模式。**
+Tất nhiên, rất hiếm khi có cao thủ kỹ thuật nói rõ cho bạn biết chiến lược trưởng thành kỹ thuật của họ cùng kế hoạch triển khai chi tiết từng năm. Nhưng điều đó không cản trở chúng ta truy nguyên chiến lược trưởng thành kỹ thuật của họ thông qua hồ sơ trong quá khứ và thành quả họ tạo ra. Thực tế, **những người làm kỹ thuật càng đỉnh, chiến lược và lộ trình trưởng thành kỹ thuật của họ càng rõ ràng, chúng ta càng dễ dàng khám phá ra những mô hình thành công từ đó.**
 
-### 2.1 系统性能专家案例
+### 2.1 Trường hợp chuyên gia hiệu năng hệ thống
 
-国内的开发者大都热衷于系统性能优化，有些人甚至三句话离不开高性能/高并发，但真正能深入这个领域，做到专家级水平的却寥寥无几。
+Các nhà phát triển trong nước hầu hết đều hăng hái với tối ưu hiệu năng hệ thống, có người thậm chí ba câu không rời khỏi high-performance (hiệu năng cao) / high-concurrency (độ song song cao), nhưng những người thực sự có thể đào sâu vào lĩnh vực này, đạt đến trình độ chuyên gia thì vô cùng hiếm hoi.
 
-我这边要特别介绍的这个技术大牛叫 **Brendan Gregg** ，他是系统性能领域经典书《System Performance: Enterprise and the Cloud》(中文版[《性能之巅：洞悉系统、企业和云计算》](https://www.amazon.cn/dp/B08GC261P9))的作者，也是著名的[性能分析利器火焰图(Flame Graph)](https://github.com/brendangregg/FlameGraph)的作者。
+Người cao thủ kỹ thuật tôi muốn đặc biệt giới thiệu ở đây là **Brendan Gregg**, ông là tác giả của cuốn sách kinh điển trong lĩnh vực hiệu năng hệ thống 《System Performance: Enterprise and the Cloud》(bản tiếng Trung [《性能之巅：洞悉系统、企业和云计算》](https://www.amazon.cn/dp/B08GC261P9)), đồng thời cũng là tác giả của công cụ phân tích hiệu năng nổi tiếng [Flame Graph (sơ đồ ngọn lửa)](https://github.com/brendangregg/FlameGraph).
 
-Brendan Gregg 之前是 Netflix 公司的高级性能架构师，在 Netflix 工作近 7 年。2022 年 4 月，他离开了 Netflix 去了 Intel，担任院士职位。
+Brendan Gregg trước đây là kiến trúc sư hiệu năng cấp cao của công ty Netflix, làm việc tại Netflix gần 7 năm. Tháng 4 năm 2022, ông rời Netflix sang Intel, đảm nhận chức vụ viện sĩ.
 
 ![](https://oss.javaguide.cn/github/javaguide/high-quality-technical-articles/cdb11ce2f1c3a69fd19e922a7f5f59bf.png)
 
-总体上，他已经在系统性能领域深耕超过 10 年，[Brendan Gregg 的过往履历](https://www.linkedin.com/in/brendangregg/)可以在 linkedin 上看到。在这 10 年间，除了书籍以外，Brendan Gregg 还产出了超过上百份和系统性能相关的技术文档，演讲视频/ppt，还有各种工具软件，相关内容都整整齐齐地分享在[他的技术博客](http://www.brendangregg.com/)上，可以说他是一个非常高产的技术大牛。
+Nhìn tổng thể, ông đã đào sâu trong lĩnh vực hiệu năng hệ thống hơn 10 năm, [hồ sơ quá khứ của Brendan Gregg](https://www.linkedin.com/in/brendangregg/) có thể xem trên LinkedIn. Trong 10 năm này, ngoài sách vở, Brendan Gregg còn tạo ra hơn một trăm tài liệu kỹ thuật liên quan đến hiệu năng hệ thống, video/bài giảng (ppt), cùng đủ loại công cụ phần mềm, toàn bộ nội dung đều được chia sẻ ngăn nắp trên [blog kỹ thuật của ông](http://www.brendangregg.com/), có thể nói ông là một cao thủ kỹ thuật rất năng suất.
 
-![性能工具](https://oss.javaguide.cn/github/javaguide/high-quality-technical-articles/format,png-20230309231802218.png)
+![Công cụ hiệu năng](https://oss.javaguide.cn/github/javaguide/high-quality-technical-articles/format,png-20230309231802218.png)
 
-上图来自 Brendan Gregg 的新书《BPF Performance Tools: Linux System and Application Observability》。从这个图可以看出，Brendan Gregg 对系统性能领域的掌握程度，已经深挖到了硬件、操作系统和应用的每一个角落，可以说是 360 度无死角，整个计算机系统对他来说几乎都是透明的。波波认为，Brendan Gregg 是名副其实的，世界级的，系统性能领域的大神级人物。
+Hình trên lấy từ cuốn sách mới của Brendan Gregg 《BPF Performance Tools: Linux System and Application Observability》. Từ hình này có thể thấy, mức độ nắm bắt lĩnh vực hiệu năng hệ thống của Brendan Gregg đã đào sâu đến từng ngóc ngách của phần cứng, hệ điều hành và ứng dụng, có thể nói là 360 độ không góc chết, toàn bộ hệ thống máy tính gần như trong suốt đối với ông. 波波 cho rằng, Brendan Gregg là một nhân vật thần thánh đẳng cấp thế giới, danh xứng với thực, trong lĩnh vực hiệu năng hệ thống.
 
-### 2.2 从开源到企业案例
+### 2.2 Trường hợp từ mã nguồn mở đến doanh nghiệp
 
-我要分享的第二个技术大牛是 **Jay Kreps**，他是知名的开源消息中间件 Kafka 的创始人/架构师，也是 Confluent 公司的联合创始人和 CEO，Confluent 公司是围绕 Kafka 开发企业级产品和服务的技术公司。
+Người cao thủ kỹ thuật thứ hai tôi muốn chia sẻ là **Jay Kreps**, anh là người sáng lập/kiến trúc sư của Kafka - middleware (phần mềm trung gian) nhắn tin mã nguồn mở nổi tiếng, đồng thời cũng là đồng sáng lập viên và CEO của công ty Confluent, một công ty công nghệ phát triển các sản phẩm và dịch vụ cấp doanh nghiệp xoay quanh Kafka.
 
-从[Jay Kreps 的 Linkedin 的履历](https://www.linkedin.com/in/jaykreps/)上我们可以看出，Jay Kreps 之前在 Linkedin 工作了 7 年多(2007.6 ~ 2014. 9)，从高级工程师、工程主管，一直做到首席资深工程师。Kafka 大致是在 2010 年，Jay Kreps 在 Linkedin 发起的一个项目，解决 Linkedin 内部的大数据采集、存储和消费问题。之后，他和他的团队一直专注 Kafka 的打磨，开源(2011 年初)和社区生态的建设。
+Từ [hồ sơ LinkedIn của Jay Kreps](https://www.linkedin.com/in/jaykreps/) chúng ta có thể thấy, Jay Kreps trước đây đã làm việc tại LinkedIn hơn 7 năm (6/2007 ~ 9/2014), từ kỹ sư cao cấp, trưởng nhóm kỹ thuật, đến tận kỹ sư cao cấp trưởng (principal engineer). Kafka đại khái là một dự án do Jay Kreps khởi xướng tại LinkedIn vào năm 2010, nhằm giải quyết vấn đề thu thập, lưu trữ và tiêu thụ dữ liệu lớn nội bộ của LinkedIn. Sau đó, anh và đội ngũ của mình luôn tập trung vào việc mài giũa Kafka, mã nguồn mở (đầu năm 2011) và xây dựng hệ sinh thái cộng đồng.
 
-到 2014 年底，Kafka 在社区已经非常成功，有了一个比较大的用户群，于是 Jay Kreps 就和几个早期作者一起离开了 Linkedin，成立了[Confluent 公司](https://tech.163.com/14/1107/18/AAFG92LD00094ODU.html)，开始了 Kafka 和周边产品的企业化服务道路。今年(2020.4 月)，Confluent 公司已经获得 E 轮 2.5 亿美金融资，公司估值达到 45 亿美金。从 Kafka 诞生到现在，Jay Kreps 差不多在这个产品和公司上投入了整整 10 年。
+Đến cuối năm 2014, Kafka đã rất thành công trong cộng đồng, có một lượng người dùng khá lớn, vì vậy Jay Kreps cùng vài tác giả ban đầu đã rời LinkedIn, thành lập [công ty Confluent](https://tech.163.com/14/1107/18/AAFG92LD00094ODU.html), bắt đầu con đường dịch vụ doanh nghiệp hóa cho Kafka và các sản phẩm xung quanh. Năm nay (tháng 4/2020), công ty Confluent đã huy động được vòng E trị giá 250 triệu USD, định giá công ty đạt 4,5 tỷ USD. Từ khi Kafka ra đời đến nay, Jay Kreps đã đầu tư gần như trọn 10 năm vào sản phẩm và công ty này.
 
-![Confluent创始人三人组](https://oss.javaguide.cn/github/javaguide/high-quality-technical-articles/format,png-20230309231805796.png)
+![Bộ ba nhà sáng lập Confluent](https://oss.javaguide.cn/github/javaguide/high-quality-technical-articles/format,png-20230309231805796.png)
 
-上图是 Confluent 创始人三人组，一个非常有意思的组合，一个中国人(左)，一个印度人(右)，中间的 Jay Kreps 是美国人。
+Hình trên là bộ ba nhà sáng lập Confluent, một tổ hợp rất thú vị, một người Trung Quốc (bên trái), một người Ấn Độ (bên phải), người ở giữa là Jay Kreps, người Mỹ.
 
-我之所以对 Kafka 和 Jay Kreps 的印象特别深刻，是因为在 2012 年下半年，我在携程框架部也是专门搞大数据采集的，我还开发过一套功能类似 Kafka 的 Log Collector + Agent 产品。我记得同时期有不止 4 个同类型的开源产品：Facebook Scribe、Apache Chukwa、Apache Flume 和 Apache Kafka。现在回头看，只有 Kafka 走到现在发展得最好，这个和创始人的专注和持续投入是分不开的，当然背后和几个创始人的技术大格局也是分不开的。
+Sở dĩ tôi có ấn tượng đặc biệt sâu sắc với Kafka và Jay Kreps, là vì vào nửa cuối năm 2012, tôi cũng chuyên làm thu thập dữ liệu lớn tại bộ phận framework của Ctrip (携程), tôi từng phát triển một bộ sản phẩm Log Collector + Agent có chức năng tương tự Kafka. Tôi nhớ trong cùng thời kỳ có tới hơn 4 sản phẩm mã nguồn mở cùng loại: Facebook Scribe, Apache Chukwa, Apache Flume và Apache Kafka. Giờ nhìn lại, chỉ có Kafka phát triển tốt nhất đến tận bây giờ, điều này không thể tách rời sự tập trung và đầu tư liên tục của người sáng lập, tất nhiên phía sau cũng không thể tách rời tầm nhìn kỹ thuật lớn của các nhà sáng lập.
 
-当年我对战略性思维几乎没有概念，还处在**什么技术都想学、认为各种项目做得越多越牛的阶段**。搞了半年的数据采集以后，我就掉头搞其它“更有趣的”项目去了(从这个事情的侧面，也可以看出我当年的技术格局是很小的)。中间我陆续关注过 Jay 的一些创业动向，但是没想到他能把 Confluent 公司发展到目前这个规模。现在回想，其实在十年前，Jay Kreps 对自己的技术成长就有比较明确的战略性思考，也具有大的技术格局和成事的一些必要特质。Jay Kreps 和 Kafka 给我上了一堂生动的技术战略和实践课。
+Năm đó tôi gần như không có khái niệm gì về tư duy chiến lược, vẫn đang ở giai đoạn **cái gì cũng muốn học, cho rằng làm càng nhiều dự án càng giỏi**. Làm thu thập dữ liệu được nửa năm, tôi đã quay đầu sang làm các dự án "thú vị hơn" khác (từ mặt trái của chuyện này, cũng có thể thấy tầm nhìn kỹ thuật của tôi năm đó rất nhỏ). Giữa chừng tôi có quan tâm đến một số động thái khởi nghiệp của Jay, nhưng không ngờ anh ấy có thể phát triển công ty Confluent đến quy mô hiện tại. Giờ nghĩ lại, thực ra mười năm trước, Jay Kreps đã có những suy nghĩ chiến lược khá rõ ràng về sự trưởng thành kỹ thuật của bản thân, cũng có tầm nhìn kỹ thuật lớn và một số phẩm chất cần thiết để làm nên chuyện. Jay Kreps và Kafka đã cho tôi một bài học sinh động về chiến lược và thực hành kỹ thuật.
 
-### 2.3 技术媒体大 V 案例
+### 2.3 Trường hợp đại V truyền thông kỹ thuật
 
-介绍到这里，有些同学可能会反驳说：波波你讲的这些大牛都是学历背景好，功底扎实起点高，所以他们才更能成功。其实不然，这里我再要介绍一位技术媒体界的大 V 叫 Brad Traversy，大家可以看[他的 Linkedin 简历](https://www.linkedin.com/in/bradtraversy/)，背景很一般，学历差不多是一个非正规的社区大学(相当于大专)，没有正规大厂工作经历，有限几份工作一直是在做网站外包。
+Giới thiệu đến đây, sẽ có một số bạn phản bác rằng: 波波, những cao thủ này anh nói đều có nền tảng học vấn tốt, kiến thức vững chắc, điểm xuất phát cao, nên họ mới dễ thành công hơn. Thực ra không phải vậy, ở đây tôi xin giới thiệu thêm một đại V trong giới truyền thông kỹ thuật tên là Brad Traversy, mọi người có thể xem [hồ sơ LinkedIn của anh ấy](https://www.linkedin.com/in/bradtraversy/), nền tảng rất bình thường, học vấn chỉ khoảng một trường community college (cao đẳng cộng đồng) không chính quy (tương đương cao đẳng), không có kinh nghiệm làm việc tại các công ty lớn chính quy, vài công việc ít ỏi đều là làm thuê ngoài website.
 
 ![](https://oss.javaguide.cn/github/javaguide/high-quality-technical-articles/30d6d67dc6dd5f9251f2f01af4de53fc.png)
 
-但是！！！Brad Traversy 目前是技术媒体领域的一个大 V，当前[他在 Youtube 上的频道](https://www.youtube.com/c/TraversyMedia)有 138 万多的订阅量，10 年累计输出 Web 开发和编程相关教学视频超过 800 个。Brad Traversy 也是 [Udemy](https://www.udemy.com/user/brad-traversy/) 上的一个成功讲师，目前已经在 Udemy 上累计输出课程 19 门，购课学生数量近 42 万。
+Nhưng!!! Brad Traversy hiện là một đại V trong lĩnh vực truyền thông kỹ thuật, hiện tại [kênh Youtube của anh ấy](https://www.youtube.com/c/TraversyMedia) có hơn 1,38 triệu lượt đăng ký, trong 10 năm đã tích lũy tạo ra hơn 800 video giảng dạy liên quan đến phát triển Web và lập trình. Brad Traversy cũng là một giảng viên thành công trên [Udemy](https://www.udemy.com/user/brad-traversy/), hiện đã tích lũy tạo ra 19 khóa học trên Udemy, số học viên mua khóa học gần 420.000.
 
 ![](https://oss.javaguide.cn/github/javaguide/high-quality-technical-articles/160b0bc4f689413757b9b5e2448f940b.png)
 
-Brad Traversy 目前是自由职业者，他的 Youtube 广告+Udemy 课程的收入相当不错。
+Brad Traversy hiện là freelancer (người làm tự do), thu nhập từ quảng cáo Youtube + khóa học Udemy của anh ấy khá tốt.
 
-就是这样一位技术媒体大 V，你很难想象，在年轻的时候，贴在他身上的标签是：不良少年，酗酒，抽烟，吸毒，纹身，进监狱。。。直
-
-到结婚后的第一个孩子诞生，他才开始担起责任做出改变，然后凭借对技术的一腔热情，开始在 Youtube 平台上持续输出免费课程。从此他找到了适合自己的战略目标，然后人生开始发生各种积极的变化。。。如果大家对 Brad Traversy 的过往经历感兴趣，推荐观看他在 Youtube 上的自述视频[《My Struggles & Success》](https://www.youtube.com/watch?v=zA9krklwADI)。
+Chính là một đại V truyền thông kỹ thuật như vậy, bạn khó mà tưởng tượng được rằng, hồi trẻ, những nhãn dán trên người anh ấy là: thanh niên hư hỏng, nghiện rượu, hút thuốc, dùng ma túy, xăm mình, vào tù... Cho đến khi đứa con đầu lòng sau khi kết hôn ra đời, anh mới bắt đầu gánh vác trách nhiệm và thay đổi, rồi dựa vào niềm đam mê cháy bỏng với công nghệ, bắt đầu liên tục tạo ra các khóa học miễn phí trên nền tảng Youtube. Từ đó anh tìm thấy mục tiêu chiến lược phù hợp với bản thân, rồi cuộc đời bắt đầu có những thay đổi tích cực đủ kiểu... Nếu mọi người quan tâm đến quá khứ của Brad Traversy, khuyên các bạn nên xem video tự thuật của anh ấy trên Youtube [《My Struggles & Success》](https://www.youtube.com/watch?v=zA9krklwADI).
 
 ![My Struggles & Success](https://oss.javaguide.cn/github/javaguide/high-quality-technical-articles/format,png-20230309231830686.png)
 
-我粗略浏览了[Brad Traversy 在 Youtube 上的所有视频](https://www.youtube.com/c/TraversyMedia/videos)，10 年总计输出 800+视频，平均每年 80+。第一个视频提交于 2010 年 8 月，刚开始几年几乎没有订阅量，2017 年 1 月订阅量才到 50k，这中间差不多隔了 6 年。2017.10 月订阅量猛增到 200k，2018 年 3 月订阅量到 300k。当前 2021.1 月，订阅量达到 138 万。可以认为从 2017 开始，也就是在积累了 6 ～ 7 年后，他的订阅量开始出现拐点。**如果把这些数据画出来，将会是一条非常漂亮的复利曲线**。
+Tôi đã lướt qua [tất cả video của Brad Traversy trên Youtube](https://www.youtube.com/c/TraversyMedia/videos), 10 năm tổng cộng tạo ra 800+ video, trung bình mỗi năm 80+. Video đầu tiên đăng vào tháng 8/2010, vài năm đầu gần như không có lượt đăng ký, đến tháng 1/2017 lượt đăng ký mới đạt 50k, khoảng thời gian giữa chừng gần 6 năm. Tháng 10/2017 lượt đăng ký tăng vọt lên 200k, tháng 3/2018 lên 300k. Hiện tại tháng 1/2021, lượt đăng ký đạt 1,38 triệu. Có thể coi là từ năm 2017, tức là sau khi tích lũy 6-7 năm, lượt đăng ký của anh ấy bắt đầu xuất hiện bước ngoặt. **Nếu vẽ những dữ liệu này ra, sẽ là một đường cong lãi kép (compound interest curve) vô cùng đẹp**.
 
-### 2.4 案例小结
+### 2.4 Tổng kết các trường hợp
 
-Brendan Gregg，Jay Kreps 和 Brad Traversy 三个人走的技术路线各不相同，但是他们的成功具有共性或者说模式：
+Ba người Brendan Gregg, Jay Kreps và Brad Traversy đi theo những hướng kỹ thuật khác nhau, nhưng thành công của họ có điểm chung, hay nói là có mô hình chung:
 
-**1、找到了适合自己的长期战略目标。**
+**1. Tìm ra mục tiêu chiến lược dài hạn phù hợp với bản thân.**
 
-- Brendan Gregg: 成为系统性能领域顶级专家
-- Jay Kreps：开创基于 Kafka 开源消息队列的企业服务公司，并将公司做到上市
-- Brad Traversy: 成为技术媒体领域大 V 和课程讲师，并以此作为自己的职业
+- Brendan Gregg: trở thành chuyên gia hàng đầu trong lĩnh vực hiệu năng hệ thống
+- Jay Kreps: sáng lập công ty dịch vụ doanh nghiệp dựa trên Kafka - hàng đợi tin nhắn mã nguồn mở, và đưa công ty lên sàn chứng khoán
+- Brad Traversy: trở thành đại V trong lĩnh vực truyền thông kỹ thuật và giảng viên khóa học, lấy đó làm nghề nghiệp của mình
 
-**2、专注深耕一个(或有限几个相关的)细分领域(Niche)，保持定力，不随便切换领域。**
+**2. Tập trung đào sâu vào một (hoặc vài lĩnh vực liên quan) lĩnh vực phân khúc (Niche), giữ vững định lực, không tùy tiện chuyển đổi lĩnh vực.**
 
-- Brendan Gregg：系统性能领域
-- Jay Kreps: 消息中间件/实时计算领域+创业
-- Brad Traversy: 技术媒体/教学领域，方向 Web 开发 + 编程语言
+- Brendan Gregg: lĩnh vực hiệu năng hệ thống
+- Jay Kreps: lĩnh vực middleware nhắn tin / tính toán thời gian thực + khởi nghiệp
+- Brad Traversy: lĩnh vực truyền thông kỹ thuật / giảng dạy, hướng Web development + ngôn ngữ lập trình
 
-**3、长期投入，三人都持续投入了 10 年。**
+**3. Đầu tư dài hạn, cả ba người đều đầu tư liên tục 10 năm.**
 
-**4、年度细分计划+持续可量化的价值产出(Persistent & Measurable Value Output)。**
+**4. Kế hoạch chi tiết theo năm + đầu ra giá trị có thể đo lường liên tục (Persistent & Measurable Value Output).**
 
-- Brendan Gregg：除公司日常工作产出以外，每年有超过 10 份以上的技术文档和演讲视频产出，平均每年有 2.5 个开源工具产出。十年共产出书籍 2 本，其中《System Performance》已经更新到第二版。
-- Jay Kreps：总体有开源产品+公司产出，1 本书产出，每年有 Kafka 和周边产品发版若干。
-- Brad Traversy: 每年有 Youtube 免费视频产出（平均每年 80+）+Udemy 收费视频课产出(平均每年 1.5 门)。
+- Brendan Gregg: ngoài các thành quả công việc hằng ngày tại công ty, mỗi năm có hơn 10 tài liệu kỹ thuật và video bài giảng được tạo ra, trung bình mỗi năm có 2,5 công cụ mã nguồn mở. Mười năm tổng cộng xuất bản 2 cuốn sách, trong đó 《System Performance》đã cập nhật đến phiên bản thứ hai.
+- Jay Kreps: tổng thể có sản phẩm mã nguồn mở + thành quả công ty, 1 cuốn sách, mỗi năm có vài bản phát hành Kafka và các sản phẩm xung quanh.
+- Brad Traversy: mỗi năm có video miễn phí trên Youtube (trung bình 80+/năm) + khóa học video trả phí trên Udemy (trung bình 1,5 khóa/năm).
 
-**5、以终为始是牛人和普通人的一大区别。**
+**5. Lấy cái kết làm điểm khởi đầu (begin with the end in mind) là một khác biệt lớn giữa người giỏi và người thường.**
 
-普通人通常走一步算一步，很少长远规划。牛人通 常是先有远大目标，然后采用倒推法，将大目标细化到每年/月/周的详细落地计划。Brendan Gregg，Jay Kreps 和 Brad Traversy 三人都是以终为始的典型。
+Người thường thường đi đến đâu tính đến đó, rất ít khi hoạch định dài hạn. Người giỏi thường có mục tiêu xa lớn trước, rồi dùng phương pháp suy ngược, phân rã mục tiêu lớn thành kế hoạch triển khai chi tiết theo năm/tháng/tuần. Cả ba người Brendan Gregg, Jay Kreps và Brad Traversy đều là điển hình của việc lấy cái kết làm điểm khởi đầu.
 
-![以终为始](https://oss.javaguide.cn/github/javaguide/high-quality-technical-articles/format,png-20230309231833871.png)
+![Lấy cái kết làm điểm khởi đầu](https://oss.javaguide.cn/github/javaguide/high-quality-technical-articles/format,png-20230309231833871.png)
 
-上面总结了几位技术大牛的成长模式，其中一个重点就是：这些大牛的成长都是通过 **持续有价值产出(Persistent Valuable Output)** 来驱动的。持续产出为啥如此重要，这个还要从下面的学习金字塔说起。
+Phía trên đã tổng kết mô hình trưởng thành của vài cao thủ kỹ thuật, một trong những trọng điểm là: sự trưởng thành của những cao thủ này đều được thúc đẩy bởi **đầu ra giá trị liên tục (Persistent Valuable Output)**. Vì sao việc duy trì đầu ra lại quan trọng đến vậy, điều này cần phải nói từ kim tự tháp học tập dưới đây.
 
-## 三、学习金字塔和刻意训练
+## 3. Kim tự tháp học tập và luyện tập có chủ đích
 
-![学习金字塔](https://oss.javaguide.cn/github/javaguide/high-quality-technical-articles/format,png-20230309231836811.png)
+![Kim tự tháp học tập](https://oss.javaguide.cn/github/javaguide/high-quality-technical-articles/format,png-20230309231836811.png)
 
-学习金字塔是美国缅因州国家训练实验室的研究成果，它认为：
+Kim tự tháp học tập là thành quả nghiên cứu của Phòng thí nghiệm Đào tạo Quốc gia bang Maine, Hoa Kỳ, nó cho rằng:
 
-> 1. 我们平时上课听讲之后，学习内容平均留存率大致只有 5%左右；
-> 2. 书本阅读的平均留存率大致只有 10%左右；
-> 3. 学习配上视听效果的课程，平均留存率大致在 20%左右；
-> 4. 老师实际动手做实验演示后的平均留存率大致在 30%左右；
-> 5. 小组讨论(尤其是辩论后)的平均留存率可以达到 50%左右；
-> 6. 在实践中实际应用所学之后，平均留存率可以达到 75%左右；
-> 7. 在实践的基础上，再把所学梳理出来，转而再传授给他人后，平均留存率可以达到 90%左右。
+> 1. Sau khi nghe giảng trên lớp bình thường, tỷ lệ lưu giữ nội dung học tập trung bình chỉ khoảng 5%;
+> 2. Tỷ lệ lưu giữ trung bình khi đọc sách chỉ khoảng 10%;
+> 3. Tỷ lệ lưu giữ trung bình khi học các khóa học kèm hiệu ứng nghe nhìn khoảng 20%;
+> 4. Tỷ lệ lưu giữ trung bình khi giáo viên thực hành làm thí nghiệm minh họa khoảng 30%;
+> 5. Tỷ lệ lưu giữ trung bình khi thảo luận nhóm (đặc biệt sau khi tranh luận) có thể đạt khoảng 50%;
+> 6. Sau khi thực sự áp dụng những gì đã học vào thực tiễn, tỷ lệ lưu giữ trung bình có thể đạt khoảng 75%;
+> 7. Trên nền tảng thực hành, hệ thống lại những gì đã học rồi truyền thụ lại cho người khác, tỷ lệ lưu giữ trung bình có thể đạt khoảng 90%.
 
-上面列出的 7 种学习方法，前四种称为 **被动学习** ，后三种称为 **主动学习**。
+Trong 7 phương pháp học tập liệt kê ở trên, bốn phương pháp đầu được gọi là **học tập thụ động**, ba phương pháp sau được gọi là **học tập chủ động**.
 
-拿学游泳做个类比，被动学习相当于你看别人游泳，而主动学习则是你自己要下水去游。我们知道游泳或者跑步之类的运动是要燃烧身体卡路里的，这样才能达到锻炼身体和长肌肉的效果(肌肉是卡路里燃烧的结果)。如果你只是看别人游泳，自己不实际去游，是不会长肌肉的。同样的，主动学习也是要燃烧脑部卡路里的，这样才能达到训练大脑和长脑部“肌肉”的效果。
+Lấy việc học bơi làm ví dụ so sánh, học tập thụ động cũng giống như bạn nhìn người khác bơi, còn học tập chủ động là chính bạn phải xuống nước bơi. Chúng ta biết rằng các môn thể thao như bơi lội hay chạy bộ cần đốt cháy calo của cơ thể, như vậy mới đạt được hiệu quả rèn luyện thân thể và tăng cơ (cơ bắp là kết quả của việc đốt cháy calo). Nếu bạn chỉ nhìn người khác bơi, còn bản thân không thực sự xuống bơi, thì sẽ không tăng cơ được. Tương tự, học tập chủ động cũng cần đốt cháy calo của não bộ, như vậy mới đạt được hiệu quả rèn luyện trí não và phát triển "cơ bắp" của não.
 
-我们也知道，燃烧身体的卡路里，通常会让人感觉不舒适，如果燃烧身体卡路里会让人感觉舒适的话，估计这个世界上应该不会有胖子这类人。同样，燃烧脑部卡路里也会让人感觉不适、紧张、出汗或语无伦次，如果燃烧脑部卡路里会让人感觉舒适的话，估计这个世界上人人都很聪明，人人都能发挥最大潜能。当然，这些不舒适是短期的，长期会使你更健康和聪明。波波一直认为， **人与人之间的先天身体其实都差不多，但是后天身体素质和能力有差异，这些差异，很大程度是由后天对身体和大脑的训练质量、频度和强度所造成的。**
+Chúng ta cũng biết rằng, đốt cháy calo của cơ thể thường khiến con người cảm thấy không thoải mái, nếu đốt cháy calo cơ thể mà cảm thấy dễ chịu, thì ước chừng trên thế giới này sẽ không có những người như người béo. Tương tự, đốt cháy calo của não bộ cũng khiến con người cảm thấy khó chịu, căng thẳng, đổ mồ hôi hoặc lủng củng không nói nên lời, nếu đốt cháy calo não bộ mà cảm thấy dễ chịu, thì ước chừng trên thế giới ai cũng thông minh, ai cũng phát huy được tối đa tiềm năng. Tất nhiên, những khó chịu này chỉ là ngắn hạn, về lâu dài sẽ khiến bạn khỏe mạnh và thông minh hơn. 波波 luôn cho rằng, **cơ thể bẩm sinh của con người về cơ bản đều giống nhau, nhưng thể chất và năng lực hậu thiên thì có khác biệt, những khác biệt này, phần lớn do chất lượng, tần suất và cường độ rèn luyện thân thể và trí não hậu thiên tạo nên.**
 
-明白这个道理之后，心智成熟和自律的人就会对自己进行持续地 **刻意训练** 。这个刻意训练包括对身体的训练，比如波波现在每天坚持跑步 3km，走 3km，每天做 60 个仰卧起坐，5 分钟平板撑等等，每天保持让身体燃烧一定量的卡路里。刻意训练也包括对大脑的训练，比如波波现在每天做项目写代码 coding(训练脑+手)，平均每天在 B 站上输出十分钟免费视频(训练脑+口头表达)，另外有定期总结输出公众号文章(训练脑+文字表达)，还有每天打半小时左右的平衡球(下图)或古墓丽影游戏(训练小脑+手)，每天保持让大脑燃烧一定量的卡路里，并保持一定强度(适度不适感)。
+Hiểu được đạo lý này, những người tâm trí trưởng thành và biết tự kỷ luật sẽ tự tiến hành **luyện tập có chủ đích** một cách liên tục đối với bản thân. Việc luyện tập có chủ đích này bao gồm rèn luyện thân thể, ví dụ như 波波 hiện nay mỗi ngày kiên trì chạy bộ 3km, đi bộ 3km, mỗi ngày tập 60 cái gập bụng, plank 5 phút v.v., mỗi ngày giữ cho cơ thể đốt cháy một lượng calo nhất định. Luyện tập có chủ đích cũng bao gồm rèn luyện não bộ, ví dụ 波波 hiện nay mỗi ngày làm dự án viết code coding (rèn luyện não + tay), trung bình mỗi ngày tạo ra video miễn phí mười phút trên Bilibili (B 站) (rèn luyện não + khả năng diễn đạt bằng lời nói), ngoài ra còn định kỳ tổng kết tạo ra bài viết trên tài khoản công khai WeChat (rèn luyện não + khả năng diễn đạt bằng chữ viết), còn mỗi ngày chơi khoảng nửa tiếng trò chơi cân bằng bóng (hình dưới) hoặc Tomb Raider (rèn luyện tiểu não + tay), mỗi ngày giữ cho não bộ đốt cháy một lượng calo nhất định, và giữ một cường độ nhất định (cảm giác khó chịu ở mức độ vừa phải).
 
-![平衡球游戏](https://oss.javaguide.cn/github/javaguide/high-quality-technical-articles/format,png-20230309231839985.png)
+![Trò chơi cân bằng bóng](https://oss.javaguide.cn/github/javaguide/high-quality-technical-articles/format,png-20230309231839985.png)
 
-关于刻意训练的专业原理和方法论，推荐看书籍《刻意练习》。
+Về nguyên lý chuyên môn và phương pháp luận của luyện tập có chủ đích, khuyên nên đọc cuốn sách 《刻意练习》.
 
-![刻意练习](https://oss.javaguide.cn/github/javaguide/high-quality-technical-articles/format,png-20230309231842735.png)
+![Luyện tập có chủ đích](https://oss.javaguide.cn/github/javaguide/high-quality-technical-articles/format,png-20230309231842735.png)
 
-注意，如果你平时从来不做举重锻炼的，那么某天突然做举重会很不适应甚至受伤。脑部训练也是一样的，如果你从来没有做过视频输出，那么刚开始做会很不适应，做出来的视频质量会很差。不过没有关系，任何训练都是一个循序渐进，不断强化的过程。等大脑相关区域的"肌肉"长出来以后，会逐步进入正循环，后面会越来越顺畅，相关"肌肉"会越来越发达。所以，和健身一样，健脑也不能遇到困难就放弃，需要循序渐进(Incremental)+持续地(Persistent)刻意训练。
+Lưu ý, nếu bạn bình thường chưa bao giờ tập cử tạ, thì một ngày nào đó đột nhiên cử tạ sẽ rất không quen thậm chí bị chấn thương. Rèn luyện não bộ cũng vậy, nếu bạn chưa bao giờ tạo ra video xuất bản nội dung, thì lúc mới bắt đầu sẽ rất không quen, chất lượng video làm ra sẽ rất kém. Nhưng không sao, bất kỳ sự rèn luyện nào cũng là một quá trình tiến dần, không ngừng củng cố. Khi "cơ bắp" của vùng tương ứng trong não phát triển lên, sẽ dần đi vào vòng tuần hoàn tích cực, về sau càng ngày càng thuận lợi, "cơ bắp" liên quan sẽ càng ngày càng phát triển. Vì vậy, giống như tập gym, rèn luyện não cũng không thể gặp khó khăn là bỏ cuộc, cần luyện tập có chủ đích một cách tiến dần (Incremental) + liên tục (Persistent).
 
-理解了学习金字塔和刻意训练以后，现在再来看 Brendan Gregg，Jay Kreps 和 Brad Traversy 这些大牛的做法，他们的学习成长都是建立在持续有价值产出的基础上的，这些产出都是刻意训练+燃烧脑部卡路里的成果。他们的产出要么是建立在实践基础上的产出，例如 Jay Kreps 的 Kafka 开源项目和 Confluent 公司；要么是在实践的基础上，再整理传授给其他人的产出，例如，Brendan Greeg 的技术演讲 ppt/视频，书籍，还有 Brad Traversy 的教学视频等等。换句话说，他们一直在学习金字塔的 5 ～ 7 层主动和高效地学习。并且，他们的学习产出还可以获得用户使用，有客户价值(Customer Value)，有用户就有反馈和度量。记住，有反馈和度量的学习，也称闭环学习，它是能够不断改进提升的；反之，没有反馈和度量的学习，无法改进提升。
+Sau khi hiểu kim tự tháp học tập và luyện tập có chủ đích, giờ hãy nhìn lại cách làm của những cao thủ như Brendan Gregg, Jay Kreps và Brad Traversy, việc học tập và trưởng thành của họ đều được xây dựng trên nền tảng đầu ra giá trị liên tục, những đầu ra này đều là thành quả của luyện tập có chủ đích + đốt cháy calo não bộ. Đầu ra của họ hoặc là đầu ra dựa trên nền tảng thực hành, ví dụ như dự án mã nguồn mở Kafka của Jay Kreps và công ty Confluent; hoặc là đầu ra trên nền tảng thực hành, hệ thống lại rồi truyền thụ cho người khác, ví dụ như các ppt/video bài giảng kỹ thuật của Brendan Gregg, sách vở, và các video giảng dạy của Brad Traversy v.v. Nói cách khác, họ luôn học tập một cách chủ động và hiệu quả ở tầng 5-7 của kim tự tháp học tập. Hơn nữa, đầu ra học tập của họ còn có thể được người dùng sử dụng, có giá trị khách hàng (Customer Value), có người dùng là có phản hồi và đo lường. Hãy nhớ rằng, học tập có phản hồi và đo lường, còn được gọi là học tập vòng khép kín (closed-loop learning), nó có thể không ngừng cải tiến và nâng cao; ngược lại, học tập không có phản hồi và đo lường thì không thể cải tiến nâng cao.
 
-现在，你也应该明白，晒个书单秀个技能图谱很简单，读个书上个课也不难。但是要你给出 5 ～ 10 年的总体技术成长战略，再基于这个战略给出每年的细分落地计划(尤其是产出计划)，然后再严格按计划执行，这的确是很难的事情。这需要大量的实践训练+深度思考，要燃烧大量的脑部卡路里！但这是上天设置的进化法则，成长为真正的技术大牛如同成长为一流的运动员，是需要通过燃烧与之相匹配量的卡路里来交换的。成长为真正的技术大牛，也是需要通过产出与之匹配的社会价值来交换的，只有这样社会才能正常进化。你推进了社会进化，社会才会回馈你。如果不是这样，社会就无法正常进化。
+Giờ bạn cũng nên hiểu rằng, khoe một danh sách sách, trưng một bản đồ kỹ năng rất đơn giản, đọc một cuốn sách, học một khóa học cũng không khó. Nhưng để bạn đưa ra chiến lược trưởng thành kỹ thuật tổng thể 5-10 năm, rồi dựa trên chiến lược đó đưa ra kế hoạch triển khai chi tiết từng năm (đặc biệt là kế hoạch đầu ra), rồi nghiêm túc thực hiện theo kế hoạch, thì đây thực sự là chuyện rất khó. Điều này cần rất nhiều thực hành rèn luyện + suy nghĩ sâu sắc, phải đốt cháy rất nhiều calo não bộ! Nhưng đây là quy luật tiến hóa do trời đất thiết lập, để trưởng thành thành một cao thủ kỹ thuật thực thụ giống như trưởng thành thành một vận động viên đẳng cấp, cần phải đổi lại bằng việc đốt cháy một lượng calo tương xứng. Để trưởng thành thành cao thủ kỹ thuật thực thụ, cũng cần đổi lại bằng việc tạo ra giá trị xã hội tương xứng, chỉ có như vậy xã hội mới có thể tiến hóa bình thường. Bạn thúc đẩy sự tiến hóa của xã hội, xã hội mới phản hồi lại cho bạn. Nếu không như vậy, xã hội không thể tiến hóa bình thường.
 
-## 四、战略思维的诞生
+## 4. Sự ra đời của tư duy chiến lược
 
-![思考周期和机会点](https://oss.javaguide.cn/p3-juejin/dc87167f53b243d49f9f4e8c7fe530a1~tplv-k3u1fbpfcp-zoom-1.png)
+![Chu kỳ tư duy và điểm cơ hội](https://oss.javaguide.cn/p3-juejin/dc87167f53b243d49f9f4e8c7fe530a1~tplv-k3u1fbpfcp-zoom-1.png)
 
-一般毕业生刚进入企业工作的时候，思考大都是以天/星期/月为单位的，基本上都是今天学个什么技术，明天学个什么语言，很少会去思考一年甚至更长的目标。这是个眼前漆黑看不到的懵懂时期，捕捉到机会点的能力和概率都非常小。
+Thông thường khi sinh viên tốt nghiệp vừa bước vào làm việc tại doanh nghiệp, tư duy chủ yếu tính theo ngày/tuần/tháng, về cơ bản hôm nay học công nghệ gì, ngày mai học ngôn ngữ gì, rất ít khi suy nghĩ về mục tiêu một năm thậm chí lâu hơn. Đây là giai đoạn mông muội, trước mắt tối đen nhìn không thấy gì, khả năng và xác suất nắm bắt được điểm cơ hội đều rất nhỏ.
 
-工作了三年以后，悟性好的人通常会以一年为思考周期，制定和实施一些年度计划。这个时期是相信天赋和比拼能力的阶段，可以捕捉到一些小机会。
+Sau khi làm việc ba năm, những người có khả năng ngộ tính tốt thường lấy một năm làm chu kỳ tư duy, xây dựng và thực hiện một số kế hoạch hằng năm. Giai đoạn này là giai đoạn tin vào thiên phú và so đọ năng lực, có thể nắm bắt được một số cơ hội nhỏ.
 
-工作了五年以后，一些悟性好的人会产生出一定的胆识和眼光，他们会以 3 ～ 5 年为周期来制定和实施计划，开始主动布局去捕捉一些中型机会点。
+Sau khi làm việc năm năm, một số người có ngộ tính tốt sẽ sinh ra một chút dũng khí và tầm nhìn, họ lấy 3-5 năm làm chu kỳ để xây dựng và thực hiện kế hoạch, bắt đầu chủ động bố trí để nắm bắt một số điểm cơ hội cỡ trung.
 
-工作了十年以后，悟性高的人会看到模式和规则变化，例如看出行业发展模式，还有人才的成长模式等，于是开始诞生出战略性思维。然后他们会以 5 ～ 10 年为周期来制定和实施自己的战略计划，开始主动布局去捕捉一些中大机会点。Brendan Gregg，Jay Kreps 和 Brad Traversy 都是属于这个阶段的人。
+Sau khi làm việc mười năm, những người có ngộ tính cao sẽ nhìn thấy sự biến đổi của các mô hình và quy luật, ví dụ nhìn ra mô hình phát triển ngành, cũng như mô hình trưởng thành của nhân tài v.v., từ đó bắt đầu manh nha tư duy chiến lược. Rồi họ lấy 5-10 năm làm chu kỳ để xây dựng và thực hiện kế hoạch chiến lược của mình, bắt đầu chủ động bố trí để nắm bắt một số điểm cơ hội cỡ trung đến lớn. Brendan Gregg, Jay Kreps và Brad Traversy đều thuộc giai đoạn này.
 
-当然还有很少一些更牛的时代精英，他们能够看透时代和人性，他们的思考是以一生甚至更长时间为单位的，这些超人不在本文讨论范围内。
+Tất nhiên còn có rất ít những tinh anh thời đại lợi hại hơn, họ có thể nhìn thấu thời đại và nhân tính, tư duy của họ tính theo cả đời thậm chí lâu hơn, những siêu nhân này nằm ngoài phạm vi thảo luận của bài viết này.
 
-## 五、建议
+## 5. Lời khuyên
 
-**1、以 5 ～ 10 年为周期去布局谋划你的战略。**
+**1. Lấy chu kỳ 5-10 năm để bố trí và mưu tính chiến lược của bạn.**
 
-现在大学生毕业的年龄一般在 22 ～ 23 岁，那么在工作了十年后，也就是在你 32 ～ 33 岁的时候，你也差不多看了十年了，应该对自己和周围的世界(你的行业和领域)有一个比较深刻的领悟了。**如果你到这个年纪还懵懵懂懂，今天抓东明天抓西，那么只能说你的胆识格局是相当的低**。在当前 IT 行业竞争这么激烈的情况下，到 35 岁被下岗可能就在眼前了。
+Hiện nay sinh viên tốt nghiệp đại học thường ở độ tuổi 22-23, vậy sau khi làm việc mười năm, tức là khi bạn 32-33 tuổi, bạn cũng đã nhìn ngắm gần mười năm, nên có một sự thấu hiểu khá sâu sắc về bản thân và thế giới xung quanh (ngành nghề và lĩnh vực của bạn). **Nếu ở độ tuổi này bạn vẫn mông muội, hôm nay nắm đông ngày mai nắm tây, thì chỉ có thể nói dũng khí và tầm nhìn của bạn khá thấp**. Trong bối cảnh ngành IT cạnh tranh khốc liệt như hiện nay, bị cho nghỉ việc ở tuổi 35 có thể đang ngay trước mắt.
 
-有了战略性思考，你应该以 5 ～ 10 年为周期去布局谋划你的战略。以 Brendan Gregg，Jay Kreps 和 Brad Traversy 这些大牛为例，**人生若真的要干点成就出来，投入周期一般都要十年的**。从 33 岁开始，你大致有 3 个十年，因为到 60 岁以后，一般人都老眼昏花干不了大事了。如果你悟性差一点，到 40 岁才开始规划，那么你大致还有 2 个十年。如果你规划好了，这 2 ～ 3 个十年可以成就不小的事业。否则，你很可能一生都成就不了什么事业，或者一直在帮助别人成就别人的事业。
+Có tư duy chiến lược rồi, bạn nên lấy chu kỳ 5-10 năm để bố trí và mưu tính chiến lược của mình. Lấy những cao thủ như Brendan Gregg, Jay Kreps và Brad Traversy làm ví dụ, **nếu cuộc đời thực sự muốn làm nên chút thành tựu, chu kỳ đầu tư thường phải là mười năm**. Bắt đầu từ 33 tuổi, bạn có khoảng 3 thập kỷ, vì sau 60 tuổi, người thường đều mắt mờ không làm nổi việc lớn. Nếu khả năng ngộ tính của bạn kém hơn một chút, đến 40 tuổi mới bắt đầu hoạch định, thì bạn vẫn còn khoảng 2 thập kỷ. Nếu bạn hoạch định tốt, 2-3 thập kỷ này có thể làm nên sự nghiệp không nhỏ. Còn không, rất có thể cả đời bạn chẳng làm nên sự nghiệp gì, hoặc cứ mãi giúp người khác làm nên sự nghiệp của họ.
 
-**2、专注自己的精力。**
+**2. Tập trung sức lực của bạn.**
 
-考虑到人生能干事业的时间也就是 2 ～ 3 个十年，你会发现人生其实很短暂，这时候你会把精力都投入到实现你的十年战略上去，没有时间再浪费在比如网上的闲聊和扯皮争论上去。
+Cân nhắc đến việc thời gian làm nên sự nghiệp trong đời người chỉ có 2-3 thập kỷ, bạn sẽ nhận ra cuộc đời thực ra rất ngắn ngủi, lúc này bạn sẽ dồn toàn bộ sức lực vào việc hiện thực hóa chiến lược mười năm của mình, không còn thời gian để lãng phí vào những chuyện như tán gẫu và tranh cãi vô bổ trên mạng.
 
-**3、细分落地计划尤其是产出计划。**
+**3. Kế hoạch triển khai chi tiết, đặc biệt là kế hoạch đầu ra.**
 
-有了十年战略方向，下一步是每年的细分落地计划，尤其是产出计划。这些计划主要应该工作在学习金字塔的 5/6/7 层。**产出应该是刻意训练+燃烧卡路里的结果，每天让身体和大脑都保持燃烧一定量的卡路里**。
+Có định hướng chiến lược mười năm rồi, bước tiếp theo là kế hoạch triển khai chi tiết từng năm, đặc biệt là kế hoạch đầu ra. Những kế hoạch này chủ yếu nên hoạt động ở tầng 5/6/7 của kim tự tháp học tập. **Đầu ra phải là kết quả của luyện tập có chủ đích + đốt cháy calo, mỗi ngày giữ cho cơ thể và não bộ đều đốt cháy một lượng calo nhất định**.
 
-**4、产出有价值的东西形成正反馈。**
+**4. Tạo ra những thứ có giá trị để hình thành vòng phản hồi tích cực.**
 
-产出应该有客户价值，自己能学习(自己成长进化)，对别人还有用(推动社会成长进化)，这样可以得到**用户回馈和度量**，形成一个闭环，可以持续改进和提升你的学习。
+Đầu ra nên có giá trị khách hàng, bản thân có thể học được (tự mình trưởng thành tiến hóa), còn hữu ích cho người khác (thúc đẩy sự trưởng thành tiến hóa của xã hội), như vậy mới nhận được **phản hồi và đo lường từ người dùng**, hình thành một vòng khép kín, có thể liên tục cải tiến và nâng cao việc học tập của bạn.
 
-**5、少即是多。**
+**5. Ít mà hóa nhiều (Less is more).**
 
-深耕一个(或有限几个相关的)领域。所有细分计划应该紧密围绕你的战略展开。克制内心欲望，不要贪多和分心，不要被喧嚣的世界所迷惑。
+Đào sâu một (hoặc vài lĩnh vực liên quan). Tất cả các kế hoạch chi tiết nên bám sát xoay quanh chiến lược của bạn. Kiềm chế dục vọng trong lòng, đừng tham nhiều và phân tâm, đừng bị thế giới ồn ào mê hoặc.
 
-**6、战略方向+细分计划都要写下来，定期 review 优化。**
+**6. Phải viết ra cả định hướng chiến lược + kế hoạch chi tiết, định kỳ review (rà soát) để tối ưu.**
 
-**7、要有定力，持续努力。**
+**7. Phải có định lực, nỗ lực kiên trì.**
 
-曲则全、枉则直，战略实现是不可能直线的。战略方向和细分计划通常要按需调整，尤其在早期，但是最终要收敛。如果老是变不收敛，就是缺乏战略定力，是个必须思考和解决的大问题。
+"Uốn cong mới nên trọn vẹn, uốn khúc mới thành thẳng", việc hiện thực hóa chiến lược không thể là đường thẳng. Định hướng chiến lược và kế hoạch chi tiết thường cần điều chỉnh theo nhu cầu, đặc biệt trong giai đoạn đầu, nhưng cuối cùng phải hội tụ. Nếu cứ thay đổi mà không hội tụ, thì đó là thiếu định lực chiến lược, là một vấn đề lớn bắt buộc phải suy nghĩ và giải quyết.
 
-别人的成长战略可以参考，但是不要刻意去模仿，你有你自己的颜色，**你应该成为独一无二的你**。
+Chiến lược trưởng thành của người khác có thể tham khảo, nhưng đừng cố gắng bắt chước, bạn có màu sắc của riêng mình, **bạn nên trở thành một bạn không ai giống được**.
 
-战略方向和细分计划明确了，接下来就是按部就班执行，十年如一日铁打不动。
+Định hướng chiến lược và kế hoạch chi tiết đã rõ ràng, tiếp theo chính là thực hiện đúng trình tự, mười năm như một ngày, kiên định như sắt đá.
 
-**8、慢就是快。**
+**8. Chậm chính là nhanh.**
 
-战略目标的实现也和种树一样是生长出来的，需要时间耐心栽培，记住**慢就是快。**焦虑纠结的时候，像念经一样默念王阳明《传习录》中的教诲：
+Việc hiện thực hóa mục tiêu chiến lược cũng giống như trồng cây, là quá trình sinh trưởng, cần thời gian kiên nhẫn vun trồng, hãy nhớ kỹ **chậm chính là nhanh**. Khi lo lắng giằng co, hãy như đọc kinh, thầm nhẩm lời dạy trong 《传习录》 (Truyền Tập Lục) của Vương Dương Minh:
 
 > 立志用功，如种树然。方其根芽，犹未有干；及其有干，尚未有枝；枝而后叶，叶而后花实。初种根时，只管栽培灌溉。勿作枝想，勿作花想，勿作实想。悬想何益？但不忘栽培之功，怕没有枝叶花实？
 >
-> 译文：
+> Dịch nghĩa:
 >
-> 实现战略目标，就像种树一样。刚开始只是一个小根芽，树干还没有长出来；树干长出来了，枝叶才能慢慢长出来；树枝长出来，然后才能开花和结果。刚开始种树的时候，只管栽培灌溉，别老是纠结枝什么时候长出来，花什么时候开，果实什么时候结出来。纠结有什么好处呢？只要你坚持投入栽培，还怕没有枝叶花实吗？
+> Hiện thực hóa mục tiêu chiến lược, cũng giống như trồng cây. Lúc đầu chỉ là một cái rễ non, thân cây chưa mọc ra; thân cây mọc ra rồi, cành lá mới từ từ mọc ra; cành cây mọc ra, rồi mới ra hoa và kết quả. Lúc mới trồng cây, cứ vun trồng tưới tiêu mà thôi, đừng cứ mãi băn khoăn cành bao giờ mọc, hoa bao giờ nở, quả bao giờ kết. Băn khoăn thì có ích gì? Chỉ cần bạn kiên trì công sức vun trồng, còn sợ không có cành lá hoa quả sao?
 
 <!-- @include: @article-footer.snippet.md -->

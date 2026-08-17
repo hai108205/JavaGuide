@@ -1,6 +1,6 @@
 ---
-title: 程序员如何快速学习新技术
-description: "程序员如何快速学习新技术：围绕技术知识与面试总结梳理关键概念、常见问题与实践要点，帮助你高效学习与备战面试。"
+title: Lập trình viên làm thế nào để nhanh chóng học công nghệ mới
+description: "Lập trình viên làm thế nào để nhanh chóng học công nghệ mới: xoay quanh kiến thức kỹ thuật và tổng kết phỏng vấn để hệ thống lại các khái niệm then chốt, câu hỏi thường gặp và điểm thực hành trọng yếu, giúp bạn học tập hiệu quả và chuẩn bị phỏng vấn."
 category: 技术文章精选集
 tag:
   - 练级攻略
@@ -10,46 +10,46 @@ head:
       content: 程序员学习,技术学习方法,快速学习,官方文档,技术面试,八股文,知行合一,学习技巧
 ---
 
-> **推荐语**：这是[《Java 面试指北》](https://javaguide.cn/zhuanlan/java-mian-shi-zhi-bei.html)练级攻略篇中的一篇文章，分享了我对于如何快速学习一门新技术的看法。
+> **Lời giới thiệu**: Đây là một bài viết trong chuyên mục "Lộ trình luyện cấp" của [《Java 面试指北》](https://javaguide.cn/zhuanlan/java-mian-shi-zhi-bei.html), chia sẻ quan điểm của tôi về cách nhanh chóng học một công nghệ mới.
 >
 > ![《Java 面试指北》练级攻略篇](https://oss.javaguide.cn/javamianshizhibei/training-strategy-articles.png)
 
-很多时候，我们因为工作原因需要快速学习某项技术，进而在项目中应用。或者说，我们想要去面试的公司要求的某项技术我们之前没有接触过，为了应对面试需要，我们需要快速掌握这项技术。
+Rất nhiều khi, vì nhu cầu công việc chúng ta cần nhanh chóng học một công nghệ nào đó để áp dụng vào dự án. Hoặc là, công ty mà chúng ta muốn phỏng vấn yêu cầu một công nghệ mà trước đây chúng ta chưa từng tiếp xúc, để đáp ứng nhu cầu phỏng vấn, chúng ta cần nhanh chóng nắm vững công nghệ đó.
 
-作为一个人纯自学出生的程序员，这篇文章简单聊聊自己对于如何快速学习某项技术的看法。
+Là một lập trình viên tự học hoàn toàn từ con số 0, bài viết này sẽ đơn giản chia sẻ quan điểm của tôi về cách nhanh chóng học một công nghệ nào đó.
 
-学习任何一门技术的时候，一定要先搞清楚这个技术是为了解决什么问题的。深入学习这个技术的之前，一定先从全局的角度来了解这个技术，思考一下它是由哪些模块构成的，提供了哪些功能，和同类的技术想必它有什么优势。
+Khi học bất kỳ một công nghệ nào, trước tiên phải làm rõ công nghệ này được sinh ra để giải quyết vấn đề gì. Trước khi học sâu công nghệ này, nhất định phải hiểu công nghệ đó từ góc nhìn tổng thể, suy nghĩ xem nó được cấu thành từ những module nào, cung cấp những chức năng gì, và so với các công nghệ cùng loại thì nó có ưu điểm gì.
 
-比如说我们在学习 Spring 的时候，通过 Spring 官方文档你就可以知道 Spring 最新的技术动态，Spring 包含哪些模块 以及 Spring 可以帮你解决什么问题。
+Ví dụ như khi chúng ta học Spring, thông qua tài liệu chính thức (official documentation) của Spring bạn có thể biết được động thái kỹ thuật mới nhất của Spring, Spring bao gồm những module nào, cũng như Spring có thể giúp bạn giải quyết những vấn đề gì.
 
 ![](https://oss.javaguide.cn/github/javaguide/system-design/web-real-time-message-push/20210506110341207.png)
 
-再比如说我在学习消息队列的时候，我会先去了解这个消息队列一般在系统中有什么作用，帮助我们解决了什么问题。消息队列的种类很多，具体学习研究某个消息队列的时候，我会将其和自己已经学习过的消息队列作比较。像我自己在学习 RocketMQ 的时候，就会先将其和自己曾经学习过的第 1 个消息队列 ActiveMQ 进行比较，思考 RocketMQ 相对于 ActiveMQ 有了哪些提升，解决了 ActiveMQ 的哪些痛点，两者有哪些相似的地方，又有哪些不同的地方。
+Lại ví dụ như khi tôi học hàng đợi tin nhắn (message queue), tôi sẽ đi tìm hiểu hàng đợi tin nhắn này thường có vai trò gì trong hệ thống, giúp chúng ta giải quyết vấn đề gì. Hàng đợi tin nhắn có rất nhiều loại, khi cụ thể nghiên cứu một hàng đợi tin nhắn nào đó, tôi sẽ đem nó so sánh với những hàng đợi tin nhắn mà mình đã từng học. Giống như bản thân tôi khi học RocketMQ, tôi sẽ trước tiên đem nó so sánh với ActiveMQ - hàng đợi tin nhắn đầu tiên mà tôi từng học, suy nghĩ xem RocketMQ so với ActiveMQ đã có những cải tiến gì, giải quyết những điểm nghẽn (pain point) nào của ActiveMQ, hai bên có những điểm giống nhau nào, và lại có những điểm khác nhau nào.
 
-**学习一个技术最有效最快的办法就是将这个技术和自己之前学到的技术建立连接，形成一个网络。**
+**Cách học một công nghệ hiệu quả và nhanh nhất chính là đem công nghệ này kết nối với những công nghệ mà mình đã học trước đó, tạo thành một mạng lưới.**
 
-然后，我建议你先去看看官方文档的教程，运行一下相关的 Demo ，做一些小项目。
+Sau đó, tôi khuyên bạn trước tiên nên xem hướng dẫn trong tài liệu chính thức (official documentation), chạy thử các Demo liên quan, và làm một số dự án nhỏ.
 
-不过，官方文档通常是英文的，通常只有国产项目以及少部分国外的项目提供了中文文档。并且，官方文档介绍的往往也比较粗糙，不太适合初学者作为学习资料。
+Tuy nhiên, tài liệu chính thức thường bằng tiếng Anh, thông thường chỉ có các dự án nội địa và một số ít dự án nước ngoài là cung cấp tài liệu tiếng Trung. Hơn nữa, những gì tài liệu chính thức giới thiệu thường khá sơ sài, không thích hợp để làm tài liệu học tập cho người mới.
 
-如果你看不太懂官网的文档，你也可以搜索相关的关键词找一些高质量的博客或者视频来看。 **一定不要一上来就想着要搞懂这个技术的原理。**
+Nếu bạn không đọc hiểu tài liệu trên trang web chính thức, bạn cũng có thể tìm kiếm các từ khóa liên quan để xem những blog hoặc video chất lượng cao. **Nhất định đừng mới bắt đầu đã nghĩ đến việc phải hiểu cho bằng được nguyên lý của công nghệ này.**
 
-就比如说我们在学习 Spring 框架的时候，我建议你在搞懂 Spring 框架所解决的问题之后，不是直接去开始研究 Spring 框架的原理或者源码，而是先实际去体验一下 Spring 框架提供的核心功能 IoC（Inverse of Control:控制反转） 和 AOP(Aspect-Oriented Programming:面向切面编程)，使用 Spring 框架写一些 Demo，甚至是使用 Spring 框架做一些小项目。
+Ví dụ như khi chúng ta học framework Spring, tôi khuyên bạn sau khi đã hiểu được vấn đề mà Spring framework giải quyết, đừng vội bắt tay nghiên cứu nguyên lý hay mã nguồn (source code) của Spring, mà trước tiên hãy thực sự trải nghiệm các chức năng cốt lõi mà Spring framework cung cấp như IoC (Inverse of Control: Đảo ngược điều khiển) và AOP (Aspect-Oriented Programming: Lập trình hướng khía cạnh), dùng Spring framework để viết một vài Demo, thậm chí là dùng Spring framework để làm một số dự án nhỏ.
 
-一言以蔽之， **在研究这个技术的原理之前，先要搞懂这个技术是怎么使用的。**
+Nói gọn lại một câu: **trước khi nghiên cứu nguyên lý của một công nghệ, trước tiên phải hiểu được cách sử dụng công nghệ đó.**
 
-这样的循序渐进的学习过程，可以逐渐帮你建立学习的快感，获得即时的成就感，避免直接研究原理性的知识而被劝退。
+Quá trình học tập tiến dần từng bước như vậy có thể dần giúp bạn xây dựng niềm vui khi học, đạt được cảm giác thành tựu tức thời, tránh việc đi thẳng nghiên cứu kiến thức về nguyên lý mà bị "dội ngược" (nản chí).
 
-**研究某个技术原理的时候，为了避免内容过于抽象，我们同样可以动手实践。**
+**Khi nghiên cứu nguyên lý của một công nghệ nào đó, để tránh nội dung quá trừu tượng, chúng ta cũng có thể tự tay thực hành.**
 
-比如说我们学习 Tomcat 原理的时候，我们发现 Tomcat 的自定义线程池挺有意思，那我们自己也可以手写一个定制版的线程池。再比如我们学习 Dubbo 原理的时候，可以自己动手造一个简易版的 RPC 框架。
+Ví dụ như khi học nguyên lý của Tomcat, chúng ta phát hiện bộ xử lý đa luồng tùy chỉnh (custom thread pool) của Tomcat khá thú vị, vậy chúng ta có thể tự viết một bộ xử lý đa luồng phiên bản tùy chỉnh. Lại ví dụ như khi chúng ta học nguyên lý của Dubbo, chúng ta có thể tự tay tạo ra một framework RPC phiên bản đơn giản.
 
-另外，学习项目中需要用到的技术和面试中需要用到的技术其实还是有一些差别的。
+Ngoài ra, công nghệ cần dùng trong dự án và công nghệ cần dùng trong phỏng vấn thực ra có một chút khác biệt.
 
-如果你学习某一项技术是为了在实际项目中使用的话，那你的侧重点就是学习这项技术的使用以及最佳实践，了解这项技术在使用过程中可能会遇到的问题。你的最终目标就是这项技术为项目带来了实际的效果，并且，这个效果是正面的。
+Nếu bạn học một công nghệ nào đó để dùng trong dự án thực tế, thì trọng tâm của bạn là học cách sử dụng công nghệ đó cùng với các phương pháp thực hành tốt nhất (best practice), tìm hiểu những vấn đề mà công nghệ đó có thể gặp phải trong quá trình sử dụng. Mục tiêu cuối cùng của bạn là công nghệ này mang lại hiệu quả thực tế cho dự án, và hiệu quả đó là tích cực.
 
-如果你学习某一项技术仅仅是为了面试的话，那你的侧重点就应该放在这项技术在面试中最常见的一些问题上，也就是我们常说的八股文。
+Nếu bạn học một công nghệ nào đó chỉ đơn thuần để phỏng vấn, thì trọng tâm của bạn nên đặt vào những câu hỏi phổ biến nhất về công nghệ đó trong phỏng vấn, tức là thứ mà chúng ta vẫn thường gọi là "bát cổ văn" (八股文 - kiến thức lý thuyết kinh điển).
 
-很多人一提到八股文，就是一脸不屑。在我看来，如果你不是死记硬背八股文，而是去所思考这些面试题的本质。那你在准备八股文的过程中，同样也能让你加深对这项技术的了解。
+Rất nhiều người vừa nhắc đến "bát cổ văn" là tỏ vẻ khinh thường. Theo tôi, nếu bạn không phải học vẹt "bát cổ văn", mà đi suy nghĩ về bản chất của những câu hỏi phỏng vấn này, thì trong quá trình chuẩn bị "bát cổ văn", bạn cũng có thể làm sâu sắc thêm hiểu biết của mình về công nghệ đó.
 
-最后，最重要同时也是最难的还是 **知行合一！知行合一！知行合一！** 不论是编程还是其他领域，最重要不是你知道的有多少，而是要尽量做到知行合一。
+Cuối cùng, điều quan trọng nhất đồng thời cũng là khó nhất chính là **tri hành hợp nhất (知行合一 - biết và làm phải đi đôi với nhau)! Tri hành hợp nhất! Tri hành hợp nhất!** Dù là lập trình hay bất kỳ lĩnh vực nào khác, điều quan trọng nhất không phải là bạn biết bao nhiêu, mà là phải cố gắng đạt được tri hành hợp nhất.

@@ -1,108 +1,104 @@
 ---
-title: 后端高频系统设计面试题 | 场景题 | 秒杀系统 | 短链系统（含答案）
-description: 后端面试高频系统设计与场景题解析，涵盖秒杀系统、短链系统、海量数据处理、分布式 ID 等 30+ 道经典面试题，适合中大厂后端面试准备。
-category: 知识星球
+title: Bộ câu hỏi phỏng vấn System Design Backend thường gặp | Scenario Questions | Seckill System | Short URL System (Kèm đáp án)
+description: Phân tích các câu hỏi System Design và Scenario Questions thường gặp trong phỏng vấn Backend, bao gồm Seckill System, Short URL System, xử lý dữ liệu quy mô lớn, Distributed ID và hơn 30 câu hỏi kinh điển, phù hợp để chuẩn bị phỏng vấn Backend tại các công ty công nghệ lớn.
+category: Knowledge Planet
 head:
   - - meta
     - name: keywords
-      content: 系统设计面试题,场景题,后端面试系统设计,秒杀系统设计,短链系统设计,海量数据处理面试题,分布式系统设计,高频面试题,系统设计案例,后端场景面试题
+      content: câu hỏi phỏng vấn System Design,câu hỏi Scenario,Backend System Design,thiết kế Seckill System,thiết kế Short URL System,câu hỏi xử lý dữ liệu lớn,Distributed System Design,câu hỏi phỏng vấn thường gặp,Case Study System Design,Backend Scenario Questions
 ---
 
-## 介绍
+## Giới thiệu
 
-**《后端面试高频系统设计&场景题》** 是我的[知识星球](../about-the-author/zhishixingqiu-two-years.md)的一个内部小册，系统性地总结了后端面试中高频出现的系统设计案例和场景题。
+**"System Design & Scenario Questions Backend thường gặp trong phỏng vấn"** là một **nội san** thuộc [Knowledge Planet](../about-the-author/zhishixingqiu-two-years.md) của tôi, tổng hợp một cách có hệ thống các **System Design Case** và **Scenario Questions** thường xuất hiện trong các buổi phỏng vấn Backend.
 
-### 为什么你需要这份小册？
+### Tại sao bạn cần nội san này?
 
-近年来，国内技术面试“越来越卷”。越来越多的公司（阿里、美团、字节、腾讯等）开始在面试中考察 **系统设计** 和 **场景问题**，以此来更全面地考察求职者的综合能力——不论是校招还是社招。
+Trong những năm gần đây, các buổi phỏng vấn kỹ thuật tại Trung Quốc ngày càng cạnh tranh. Ngày càng nhiều công ty như **Alibaba, Meituan, ByteDance, Tencent** bắt đầu đưa **System Design** và **Scenario Questions** vào quy trình phỏng vấn nhằm đánh giá toàn diện hơn năng lực của ứng viên — cả **Campus Recruitment** lẫn **Experienced Hire**.
 
-> 很多同学八股文背得滚瓜烂熟，但一遇到“如何设计一个秒杀系统？”这类开放性问题就懵了。
+> Rất nhiều ứng viên có thể học thuộc lòng các câu hỏi lý thuyết một cách thành thạo, nhưng lại "đứng hình" khi gặp những câu hỏi mở như: **"Làm thế nào để thiết kế một Seckill System?"**
 
-**系统设计和场景题的考察特点**：
+**Đặc điểm khi đánh giá System Design và Scenario Questions:**
 
-- ✅ 没有标准答案，重点考察思维过程和架构能力
-- ✅ 考察对高并发、高可用、分布式等技术的综合运用
-- ✅ 考察解决实际问题的能力和工程经验
-- ⚠️ 正常面试不会全是场景题，一般会穿插 1-2 道来考察你
+- ✅ Không có một đáp án chuẩn duy nhất; trọng tâm là **quá trình tư duy và năng lực kiến trúc (Architecture)**.
+- ✅ Đánh giá khả năng tổng hợp và vận dụng các kỹ thuật như **High Concurrency, High Availability, Distributed System**.
+- ✅ Đánh giá khả năng giải quyết vấn đề thực tế và **kinh nghiệm Engineering**.
+- ⚠️ Một buổi phỏng vấn thông thường không chỉ gồm Scenario Questions; thường sẽ xen kẽ khoảng **1–2 câu** để đánh giá năng lực này.
 
-于是，**《后端面试高频系统设计&场景题》** 小册就诞生了！
+Vì vậy, **"System Design & Scenario Questions Backend thường gặp trong phỏng vấn"** đã ra đời!
 
-### 这份小册能带给你什么？
+### Nội san này mang lại gì cho bạn?
 
-**1. 面试加分项**
+**1. Điểm cộng trong phỏng vấn**
 
-系统设计和场景题回答得好，面试官会对你印象非常好！这类问题稍微准备就能脱颖而出。
+Nếu trả lời tốt các câu hỏi **System Design** và **Scenario Questions**, bạn sẽ tạo được ấn tượng rất tốt với interviewer. Chỉ cần chuẩn bị đúng cách, bạn có thể tạo ra sự khác biệt so với các ứng viên khác.
 
-**2. 提升系统设计思维**
+**2. Nâng cao tư duy System Design**
 
-即使不是准备面试，这份小册也能帮助你建立系统设计的思维框架，提升解决实际问题的能力。
+Ngay cả khi không chuẩn bị cho phỏng vấn, nội san này vẫn giúp bạn xây dựng **framework tư duy System Design**, từ đó nâng cao khả năng giải quyết các vấn đề thực tế.
 
-**3. 实战落地参考**
+**3. Tham khảo để áp dụng vào Project thực tế**
 
-涉及到的很多案例都可以直接用到自己的项目上，比如：
+Nhiều case trong nội san có thể được áp dụng trực tiếp vào project của bạn, chẳng hạn:
 
-- 第三方授权登录（微信/QQ 登录）
-- Redis 实现延时任务的正确方式
-- 动态线程池的设计与实现
-- 分布式锁的多种实现方案
+- **Third-party OAuth Login** (đăng nhập bằng WeChat/QQ)
+- Cách triển khai **Delayed Task** đúng cách với Redis
+- Thiết kế và triển khai **Dynamic Thread Pool**
+- Nhiều phương án triển khai **Distributed Lock**
 
-## 内容概览
+## Tổng quan nội dung
 
-### 📐 系统设计案例
+### 📐 System Design Case
 
-| 主题                                   | 核心知识点                                         |
-| -------------------------------------- | -------------------------------------------------- |
-| ⭐ **如何设计一个动态线程池？**        | 线程池参数动态调整、监控告警、拒绝策略、优雅停机   |
-| **如何设计一个站内消息系统？**         | 消息推送、未读数统计、WebSocket、消息队列          |
-| **如何设计微博 Feed 流/信息流系统？**  | 推拉模型、Timeline、智能推荐、读写扩散、缓存策略   |
-| **如何设计一个排行榜？**               | Redis Sorted Set、实时更新、分页查询、海量数据排序 |
-| **几种典型的系统设计案例（整理补充）** | 点赞、优惠券、红包等综合案例分享                   |
+| Chủ đề                                                           | Kiến thức trọng tâm                                                                                  |
+| ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| ⭐ **Thiết kế Dynamic Thread Pool như thế nào?**                 | Dynamic Thread Pool Parameter Tuning, Monitoring & Alerting, Rejection Policy, Graceful Shutdown     |
+| **Thiết kế hệ thống In-app Messaging như thế nào?**              | Message Push, Unread Count, WebSocket, Message Queue                                                 |
+| **Thiết kế hệ thống Weibo Feed / Information Feed như thế nào?** | Push Model vs Pull Model, Timeline, Intelligent Recommendation, Read/Write Fan-out, Caching Strategy |
+| **Thiết kế hệ thống Ranking như thế nào?**                       | Redis Sorted Set, Real-time Update, Pagination, Sorting dữ liệu quy mô lớn                           |
+| **Một số System Design Case điển hình (bổ sung)**                | Các case tổng hợp như Like, Coupon, Red Envelope                                                     |
 
-### 🎯 高频场景题
+### 🎯 Scenario Questions thường gặp
 
-| 主题                                    | 核心知识点                                            |
-| --------------------------------------- | ----------------------------------------------------- |
-| ⭐ **订单超时自动取消如何实现？**       | 延时队列、定时任务、状态机、幂等性保障                |
-| **如何基于 Redis 实现延时任务？**       | 过期事件监听 vs Redisson DelayedQueue、时效性、可靠性 |
-| ⭐ **如何解决大文件上传问题？**         | 分片上传、断点续传、秒传、并发上传、文件校验          |
-| **如何实现 IP 归属地功能？**            | IP 库选择、离线库 vs 在线接口、性能优化               |
-| **如何统计网站 UV？**                   | PV/UV/VV/IP 概念、HyperLogLog、去重统计               |
-| ⭐ **几种典型的后端面试场景题（补充）** | 限流、幂等、缓存穿透等综合场景                        |
+| Chủ đề                                                           | Kiến thức trọng tâm                                                                    |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| ⭐ **Tự động hủy Order khi quá thời gian như thế nào?**          | Delayed Queue, Scheduled Task, State Machine, Idempotency                              |
+| **Triển khai Delayed Task dựa trên Redis như thế nào?**          | Expiration Event Listener vs Redisson DelayedQueue, Timeliness, Reliability            |
+| ⭐ **Giải quyết vấn đề upload file dung lượng lớn như thế nào?** | Multipart Upload, Resumable Upload, Instant Upload, Concurrent Upload, File Validation |
+| **Triển khai chức năng xác định IP Geolocation như thế nào?**    | Lựa chọn IP Database, Offline Database vs Online API, Performance Optimization         |
+| **Thống kê Website UV như thế nào?**                             | Khái niệm PV/UV/VV/IP, HyperLogLog, Deduplication                                      |
+| ⭐ **Một số Backend Scenario Questions điển hình (bổ sung)**     | Rate Limiting, Idempotency, Cache Penetration và các Scenario tổng hợp                 |
 
-### 🔐 认证安全与风控
+### 🔐 Authentication, Security & Risk Control
 
-| 主题                                | 核心知识点                                   |
-| ----------------------------------- | -------------------------------------------- |
-| ⭐ **项目敏感词脱敏是如何实现的？** | 脱敏策略、正则匹配、性能优化、动态配置       |
-| ⭐ **如何安全传输和存储密码？**     | 加盐哈希、BCrypt、HTTPS、防重放攻击          |
-| **如何实现第三方授权登录？**        | OAuth 2.0 协议、授权码模式、Token 机制、JWT  |
-| **验证码登录场景怎么设计？**        | 验证码生成、存储、校验、防刷、有效期管理     |
-| **多次输错密码后如何限制登录？**    | 限流策略、Redis 计数器、滑动窗口、分布式限流 |
+| Chủ đề                                                              | Kiến thức trọng tâm                                                                    |
+| ------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| ⭐ **Triển khai Sensitive Word Masking trong Project như thế nào?** | Data Masking Strategy, Regex Matching, Performance Optimization, Dynamic Configuration |
+| ⭐ **Truyền tải và lưu trữ Password an toàn như thế nào?**          | Salted Hashing, BCrypt, HTTPS, Replay Attack Prevention                                |
+| **Triển khai Third-party OAuth Login như thế nào?**                 | OAuth 2.0, Authorization Code Grant, Token Mechanism, JWT                              |
+| **Thiết kế Login bằng Verification Code như thế nào?**              | Code Generation, Storage, Validation, Anti-abuse, TTL Management                       |
+| **Hạn chế Login sau nhiều lần nhập sai Password như thế nào?**      | Rate Limiting Strategy, Redis Counter, Sliding Window, Distributed Rate Limiting       |
 
-### 📊 大数据量场景
+### 📊 Scenario với dữ liệu quy mô lớn
 
-| 主题                                           | 核心知识点                                |
-| ---------------------------------------------- | ----------------------------------------- |
-| ⭐ **40 亿个 QQ 号，限制 1G 内存，如何去重？** | 位图、布隆过滤器、分治思想、外部排序      |
-| ⭐ **日活上亿，如何保证推荐视频不重复？**      | 布隆过滤器、Redis Set、去重策略、空间优化 |
-| ⭐ **大数据 Top K 问题**                       | 堆排序、快速选择、分治、MapReduce         |
+| Chủ đề                                                                                              | Kiến thức trọng tâm                                                  |
+| --------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| ⭐ **Có 4 tỷ QQ ID, giới hạn 1 GB Memory, làm thế nào để Deduplicate?**                             | Bitmap, Bloom Filter, Divide and Conquer, External Sorting           |
+| ⭐ **DAU lên tới hàng trăm triệu, làm thế nào để đảm bảo Video Recommendation không bị trùng lặp?** | Bloom Filter, Redis Set, Deduplication Strategy, Memory Optimization |
+| ⭐ **Bài toán Big Data Top K**                                                                      | Heap Sort, Quickselect, Divide and Conquer, MapReduce                |
 
-### 🔄 并发控制与分布式一致性
+### 🔄 Concurrency Control & Distributed Consistency
 
-| 主题                                   | 核心知识点                              |
-| -------------------------------------- | --------------------------------------- |
-| **多位骑手抢一个订单如何保证不重复？** | 分布式锁、乐观锁、Redis SETNX、并发控制 |
-| **发生提现失败（退单）时怎么处理？**   | 补偿机制、幂等设计、状态回滚、对账系统  |
+| Chủ đề                                                                                  | Kiến thức trọng tâm                                                              |
+| --------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| **Nhiều Rider cùng tranh giành một Order, làm thế nào để đảm bảo không bị nhận trùng?** | Distributed Lock, Optimistic Lock, Redis SETNX, Concurrency Control              |
+| **Xử lý thế nào khi Withdrawal thất bại và cần hoàn tiền (Rollback)?**                  | Compensation Mechanism, Idempotent Design, State Rollback, Reconciliation System |
 
-## 内容预览
+## Xem trước nội dung
 
-![《后端面试高频系统设计&场景题》](https://oss.javaguide.cn/xingqiu/back-end-interview-high-frequency-system-design-and-scenario-questions-fengmian.png)
+## Đối tượng phù hợp
 
-## 适合人群
-
-- 🎓 **校招求职者**：应对大厂系统设计面试
-- 👨‍💻 **社招跳槽者**：提升架构设计能力，拿到更好的 offer
-- 🔧 **初中级工程师**：学习系统设计思维，提升解决实际问题的能力
-- 📚 **技术爱好者**：了解常见系统的设计原理
-
-<!-- @include: @planet2.snippet.md -->
+- 🎓 **Ứng viên Campus Recruitment**: Chuẩn bị cho các buổi phỏng vấn System Design tại các công ty công nghệ lớn.
+- 👨‍💻 **Ứng viên Experienced Hire**: Nâng cao năng lực Architecture Design và tăng cơ hội nhận được offer tốt hơn.
+- 🔧 **Junior/Middle-level Engineer**: Học tư duy System Design và nâng cao khả năng giải quyết vấn đề thực tế.
+- 📚 **Người yêu thích công nghệ**: Tìm hiểu nguyên lý thiết kế của các hệ thống phổ biến.

@@ -1,6 +1,6 @@
 ---
-title: BigDecimal 详解
-description: 详解BigDecimal使用方法：解决浮点数精度丢失问题，掌握加减乘除运算、RoundingMode舍入规则、compareTo比较方法，适用金融计算等高精度场景。
+title: BigDecimal chi tiết
+description: "Giải thích chi tiết cách sử dụng BigDecimal: giải quyết vấn đề mất độ chính xác của số dấu phẩy động, nắm vững các phép cộng trừ nhân chia, quy tắc làm tròn RoundingMode, phương thức so sánh compareTo, phù hợp với các tình huống yêu cầu độ chính xác cao như tính toán tài chính."
 category: Java
 tag:
   - Java基础
@@ -10,11 +10,11 @@ head:
       content: BigDecimal,浮点数精度,小数运算,RoundingMode舍入模式,BigDecimal比较,金额计算,精度丢失
 ---
 
-《阿里巴巴 Java 开发手册》中提到：“为了避免精度丢失，可以使用 `BigDecimal` 来进行浮点数的运算”。
+"Sổ tay phát triển Java của Alibaba" có đề cập: "Để tránh mất độ chính xác, có thể sử dụng `BigDecimal` để thực hiện các phép toán với số dấu phẩy động".
 
-浮点数的运算竟然还会有精度丢失的风险吗？确实会！
+Phép toán với số dấu phẩy động thực sự có nguy cơ mất độ chính xác sao? Quả thực là có!
 
-示例代码：
+Mã ví dụ:
 
 ```java
 float a = 2.0f - 1.9f;
@@ -24,38 +24,38 @@ System.out.println(b);// 0.099999905
 System.out.println(a == b);// false
 ```
 
-**为什么浮点数 `float` 或 `double` 运算的时候会有精度丢失的风险呢？**
+**Tại sao phép toán với số dấu phẩy động `float` hoặc `double` lại có nguy cơ mất độ chính xác?**
 
-这个和计算机保存小数的机制有很大关系。我们知道计算机是二进制的，而且计算机在表示一个数字时，宽度是有限的。许多十进制小数转换为二进制后会无限循环，只能舍入为有限位数，因此存在精度损失的风险。不过，像 0.5、0.25 这样能够表示为有限二进制小数的值可以被精确表示。
+Điều này liên quan mật thiết đến cơ chế lưu trữ số thập phân của máy tính. Chúng ta biết rằng máy tính sử dụng hệ nhị phân, và khi máy tính biểu diễn một con số, độ rộng là có giới hạn. Nhiều số thập phân khi chuyển sang nhị phân sẽ trở thành số thập phân vô hạn tuần hoàn, chỉ có thể được làm tròn thành số hữu hạn chữ số, do đó tồn tại nguy cơ mất độ chính xác. Tuy nhiên, những giá trị như 0.5, 0.25 có thể được biểu diễn dưới dạng số nhị phân hữu hạn thì có thể được biểu diễn chính xác.
 
-就比如说十进制下的 0.2 就没办法精确转换成二进制小数：
+Ví dụ, 0.2 trong hệ thập phân không thể chuyển đổi chính xác thành số nhị phân:
 
 ```java
-// 0.2 转换为二进制数的过程为，不断乘以 2，直到不存在小数为止，
-// 在这个计算过程中，得到的整数部分从上到下排列就是二进制的结果。
+// Quá trình chuyển đổi 0.2 sang số nhị phân là liên tục nhân với 2, cho đến khi không còn phần thập phân,
+// trong quá trình tính toán này, phần nguyên thu được sắp xếp từ trên xuống dưới chính là kết quả nhị phân.
 0.2 * 2 = 0.4 -> 0
 0.4 * 2 = 0.8 -> 0
 0.8 * 2 = 1.6 -> 1
 0.6 * 2 = 1.2 -> 1
-0.2 * 2 = 0.4 -> 0（发生循环）
+0.2 * 2 = 0.4 -> 0（xảy ra vòng lặp）
 ...
 ```
 
-关于浮点数的更多内容，建议看一下[计算机系统基础（四）浮点数](http://kaito-kidd.com/2018/08/08/computer-system-float-point/)这篇文章。
+Để biết thêm về số dấu phẩy động, bạn nên xem bài viết [Cơ sở hệ thống máy tính (4) Số dấu phẩy động](http://kaito-kidd.com/2018/08/08/computer-system-float-point/).
 
-## BigDecimal 介绍
+## Giới thiệu BigDecimal
 
-`BigDecimal` 可以精确表示十进制数，并提供可显式指定精度和舍入规则的运算。不过，使用有限精度的 `MathContext`、执行需要舍入的除法，或将结果转换为 `float`、`double` 时，仍可能发生舍入。
+`BigDecimal` có thể biểu diễn chính xác số thập phân và cung cấp các phép toán với độ chính xác và quy tắc làm tròn có thể chỉ định rõ ràng. Tuy nhiên, khi sử dụng `MathContext` với độ chính xác giới hạn, thực hiện phép chia cần làm tròn, hoặc chuyển đổi kết quả sang `float`、`double`, vẫn có thể xảy ra làm tròn.
 
-通常情况下，大部分需要小数精确运算结果的业务场景（比如涉及到钱的场景）都是通过 `BigDecimal` 来做的。
+Thông thường, phần lớn các tình huống nghiệp vụ yêu cầu kết quả phép toán số thập phân chính xác (ví dụ như các tình huống liên quan đến tiền tệ) đều được thực hiện thông qua `BigDecimal`.
 
-《阿里巴巴 Java 开发手册》中提到：**浮点数之间的等值判断，基本数据类型不能用 == 来比较，包装数据类型不能用 equals 来判断。**
+"Sổ tay phát triển Java của Alibaba" có đề cập: **Đối với phép so sánh bằng nhau giữa các số dấu phẩy động, kiểu dữ liệu cơ bản không được dùng == để so sánh, kiểu dữ liệu wrapper không được dùng equals để so sánh.**
 
 ![](https://oss.javaguide.cn/javaguide/image-20211213101646884.png)
 
-具体原因我们在上面已经详细介绍了，这里就不多提了。
+Lý do cụ thể chúng ta đã giới thiệu chi tiết ở trên, ở đây không nhắc lại nữa.
 
-想要解决浮点数运算精度丢失这个问题，可以直接使用 `BigDecimal` 来定义小数的值，然后再进行小数的运算操作即可。
+Muốn giải quyết vấn đề mất độ chính xác trong phép toán số dấu phẩy động, có thể trực tiếp sử dụng `BigDecimal` để định nghĩa giá trị số thập phân, sau đó thực hiện các phép toán số thập phân.
 
 ```java
 BigDecimal a = new BigDecimal("1.0");
@@ -68,19 +68,19 @@ BigDecimal y = b.subtract(c);
 System.out.println(x.compareTo(y));// 0
 ```
 
-## BigDecimal 常见方法
+## Các phương thức phổ biến của BigDecimal
 
-### 创建
+### Tạo đối tượng
 
-我们在使用 `BigDecimal` 时，为了防止精度丢失，推荐使用它的 `BigDecimal(String val)` 构造方法或者 `BigDecimal.valueOf(double val)` 静态方法来创建对象。
+Khi sử dụng `BigDecimal`, để tránh mất độ chính xác, khuyến nghị sử dụng phương thức khởi tạo `BigDecimal(String val)` hoặc phương thức tĩnh `BigDecimal.valueOf(double val)` để tạo đối tượng.
 
-《阿里巴巴 Java 开发手册》对这部分内容也有提到，如下图所示。
+"Sổ tay phát triển Java của Alibaba" cũng có đề cập đến phần nội dung này, như hình dưới đây.
 
 ![](https://oss.javaguide.cn/javaguide/image-20211213102222601.png)
 
-### 加减乘除
+### Cộng trừ nhân chia
 
-`add` 方法用于将两个 `BigDecimal` 对象相加，`subtract` 方法用于将两个 `BigDecimal` 对象相减。`multiply` 方法用于将两个 `BigDecimal` 对象相乘，`divide` 方法用于将两个 `BigDecimal` 对象相除。
+Phương thức `add` dùng để cộng hai đối tượng `BigDecimal`, phương thức `subtract` dùng để trừ hai đối tượng `BigDecimal`. Phương thức `multiply` dùng để nhân hai đối tượng `BigDecimal`, phương thức `divide` dùng để chia hai đối tượng `BigDecimal`.
 
 ```java
 BigDecimal a = new BigDecimal("1.0");
@@ -92,7 +92,7 @@ System.out.println(a.divide(b));// 无法除尽，抛出 ArithmeticException 异
 System.out.println(a.divide(b, 2, RoundingMode.HALF_UP));// 1.11
 ```
 
-这里需要注意的是，应根据业务是否允许舍入来选择 `divide` 的重载。要求结果精确时，可以使用不指定舍入规则的版本；结果无法精确表示时会抛出 `ArithmeticException`。允许舍入时，应显式指定 `scale` 和 `roundingMode`。`RoundingMode.UNNECESSARY` 用于断言结果无需舍入，如果实际需要舍入同样会抛出 `ArithmeticException`。
+Cần lưu ý ở đây, nên chọn overload của `divide` dựa trên việc nghiệp vụ có cho phép làm tròn hay không. Khi yêu cầu kết quả chính xác, có thể sử dụng phiên bản không chỉ định quy tắc làm tròn; nếu kết quả không thể biểu diễn chính xác sẽ ném ra `ArithmeticException`. Khi cho phép làm tròn, nên chỉ định rõ `scale` và `roundingMode`. `RoundingMode.UNNECESSARY` dùng để khẳng định kết quả không cần làm tròn, nếu thực tế cần làm tròn cũng sẽ ném ra `ArithmeticException`.
 
 ```java
 public BigDecimal divide(BigDecimal divisor, int scale, RoundingMode roundingMode) {
@@ -100,7 +100,7 @@ public BigDecimal divide(BigDecimal divisor, int scale, RoundingMode roundingMod
 }
 ```
 
-保留规则非常多，这里列举几种:
+Quy tắc làm tròn có rất nhiều loại, dưới đây liệt kê một vài:
 
 ```java
 public enum RoundingMode {
@@ -123,9 +123,9 @@ public enum RoundingMode {
 }
 ```
 
-### 大小比较
+### So sánh kích thước
 
-`a.compareTo(b)` : 返回 -1 表示 `a` 小于 `b`，0 表示 `a` 等于 `b`， 1 表示 `a` 大于 `b`。
+`a.compareTo(b)` : trả về -1 nghĩa là `a` nhỏ hơn `b`, 0 nghĩa là `a` bằng `b`, 1 nghĩa là `a` lớn hơn `b`.
 
 ```java
 BigDecimal a = new BigDecimal("1.0");
@@ -133,9 +133,9 @@ BigDecimal b = new BigDecimal("0.9");
 System.out.println(a.compareTo(b));// 1
 ```
 
-### 保留几位小数
+### Giữ lại một số chữ số thập phân
 
-通过 `setScale` 方法设置保留几位小数以及保留规则。保留规则有挺多种，不需要记，IDEA 会提示。
+Sử dụng phương thức `setScale` để thiết lập số chữ số thập phân cần giữ lại và quy tắc làm tròn. Có khá nhiều quy tắc làm tròn, không cần phải nhớ, IDEA sẽ gợi ý.
 
 ```java
 BigDecimal m = new BigDecimal("1.255433");
@@ -143,13 +143,13 @@ BigDecimal n = m.setScale(3,RoundingMode.HALF_DOWN);
 System.out.println(n);// 1.255
 ```
 
-## BigDecimal 等值比较问题
+## Vấn đề so sánh bằng nhau của BigDecimal
 
-《阿里巴巴 Java 开发手册》中提到：
+"Sổ tay phát triển Java của Alibaba" có đề cập:
 
 ![](https://oss.javaguide.cn/github/javaguide/java/basis/image-20220714161315993.png)
 
-`BigDecimal` 使用 `equals()` 方法进行等值比较出现问题的代码示例：
+Mã ví dụ về vấn đề khi sử dụng phương thức `equals()` để so sánh bằng nhau với `BigDecimal`:
 
 ```java
 BigDecimal a = new BigDecimal("1");
@@ -157,13 +157,13 @@ BigDecimal b = new BigDecimal("1.0");
 System.out.println(a.equals(b));//false
 ```
 
-这是因为 `equals()` 方法不仅仅会比较值的大小（value）还会比较精度（scale），而 `compareTo()` 方法比较的时候会忽略精度。
+Điều này là do phương thức `equals()` không chỉ so sánh giá trị (value) mà còn so sánh độ chính xác (scale), trong khi phương thức `compareTo()` khi so sánh sẽ bỏ qua độ chính xác.
 
-1.0 的 scale 是 1，1 的 scale 是 0，因此 `a.equals(b)` 的结果是 false。
+Scale của 1.0 là 1, scale của 1 là 0, do đó kết quả của `a.equals(b)` là false.
 
 ![](https://oss.javaguide.cn/github/javaguide/java/basis/image-20220714164706390.png)
 
-`compareTo()` 方法可以比较两个 `BigDecimal` 的值，如果相等就返回 0，如果第 1 个数比第 2 个数大则返回 1，反之返回-1。
+Phương thức `compareTo()` có thể so sánh giá trị của hai `BigDecimal`, nếu bằng nhau thì trả về 0, nếu số thứ nhất lớn hơn số thứ hai thì trả về 1, ngược lại trả về -1.
 
 ```java
 BigDecimal a = new BigDecimal("1");
@@ -171,11 +171,11 @@ BigDecimal b = new BigDecimal("1.0");
 System.out.println(a.compareTo(b));//0
 ```
 
-## BigDecimal 工具类分享
+## Chia sẻ lớp tiện ích BigDecimal
 
-网上有一个使用人数比较多的 `BigDecimal` 工具类，提供了多个静态方法来简化 `BigDecimal` 的操作。
+Trên mạng có một lớp tiện ích `BigDecimal` được khá nhiều người sử dụng, cung cấp nhiều phương thức tĩnh để đơn giản hóa các thao tác với `BigDecimal`.
 
-我对其进行了简单改进，分享一下源码：
+Tôi đã thực hiện một số cải tiến đơn giản, chia sẻ mã nguồn:
 
 ```java
 import java.math.BigDecimal;
@@ -356,14 +356,14 @@ public class BigDecimalUtil {
 }
 ```
 
-相关 issue：[建议对保留规则设置为 RoundingMode.HALF_EVEN,即四舍六入五成双,#2129](https://github.com/Snailclimb/JavaGuide/issues/2129)。
+Issue liên quan: [建议对保留规则设置为 RoundingMode.HALF_EVEN,即四舍六入五成双,#2129](https://github.com/Snailclimb/JavaGuide/issues/2129).
 
 ![RoundingMode.HALF_EVEN](https://oss.javaguide.cn/github/javaguide/java/basis/RoundingMode.HALF_EVEN.png)
 
-## 总结
+## Tổng kết
 
-许多十进制小数无法用有限位二进制精确表示，因此使用 `float` 或 `double` 运算时存在精度丢失的风险。
+Nhiều số thập phân không thể được biểu diễn chính xác bằng số nhị phân hữu hạn chữ số, do đó khi sử dụng `float` hoặc `double` để tính toán tồn tại nguy cơ mất độ chính xác.
 
-不过，Java 提供了 `BigDecimal` 来操作浮点数。`BigDecimal` 的实现利用到了 `BigInteger`（用来操作大整数）, 所不同的是 `BigDecimal` 加入了小数位的概念。
+Tuy nhiên, Java cung cấp `BigDecimal` để thao tác với số dấu phẩy động. Cài đặt của `BigDecimal` tận dụng `BigInteger`（dùng để thao tác số nguyên lớn）, điểm khác biệt là `BigDecimal` bổ sung khái niệm về vị trí thập phân.
 
 <!-- @include: @article-footer.snippet.md -->

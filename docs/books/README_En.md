@@ -1,5 +1,5 @@
 ---
-title: Recommended Technical Books: Java, Databases, Distributed Systems, Computer Science Fundamentals, and Software Quality
+title: "Recommended Technical Books: Java, Databases, Distributed Systems, Computer Science Fundamentals, and Software Quality"
 description: A curated learning roadmap for backend developers, featuring recommended books on Java, databases, distributed systems, computer science fundamentals, search engines, and software quality. Ideal for interview preparation and improving engineering skills.
 category: Computer Science Books
 sitemap:
@@ -14,6 +14,8 @@ head:
 <!-- @include: @small-advertisement.snippet.md -->
 
 This **curated technical book collection** is designed for programmers who want to build a solid foundation and grow their engineering skills over the long term. It includes carefully selected books on Java, databases, distributed systems, computer science fundamentals, search engines, and software quality.
+
+---
 
 This reading list is maintained based on the open-source project [CodingDocs/awesome-cs](https://github.com/CodingDocs/awesome-cs) and is continuously updated. Feel free to recommend books you find valuable in the project's [Issues](https://github.com/CodingDocs/awesome-cs/issues) so we can build a higher-quality technical reading list together.
 

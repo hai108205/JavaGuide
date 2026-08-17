@@ -1,102 +1,104 @@
 ---
-title: 高性能系统知识体系：CDN、负载均衡、数据库优化、缓存与消息队列
-description: 高性能系统面试与架构学习路线，涵盖 CDN、负载均衡、读写分离、分库分表、冷热分离、深度分页、SQL 优化、消息队列和主流 MQ。
-category: 高性能
+title: "Hệ thống kiến thức về hệ thống hiệu năng cao - CDN, cân bằng tải, tối ưu cơ sở dữ liệu, bộ nhớ đệm và hàng đợi thông điệp"
+description: "Lộ trình học tập và ôn phỏng vấn về hệ thống hiệu năng cao, bao gồm CDN, cân bằng tải, tách đọc/ghi, phân tách cơ sở dữ liệu và bảng, phân tách dữ liệu nóng/lạnh, phân trang sâu, tối ưu SQL, hàng đợi thông điệp và các hệ thống MQ phổ biến."
+category: "Hiệu năng cao"
 tag:
-  - 高性能
-  - 系统设计
-  - 后端面试
+  - "Hiệu năng cao"
+  - "Thiết kế hệ thống"
+  - "Phỏng vấn Backend"
 sitemap:
   changefreq: weekly
   priority: 0.95
 head:
   - - meta
     - name: keywords
-      content: 高性能系统,高性能系统设计,高性能面试题,CDN,负载均衡,读写分离,分库分表,冷热分离,深度分页,SQL优化,消息队列,Kafka,RocketMQ,RabbitMQ,Disruptor,后端面试
+      content: "hệ thống hiệu năng cao,thiết kế hệ thống hiệu năng cao,câu hỏi phỏng vấn hệ thống hiệu năng cao,CDN,cân bằng tải,tách đọc ghi,phân tách cơ sở dữ liệu và bảng,phân tách dữ liệu nóng lạnh,phân trang sâu,tối ưu SQL,hàng đợi thông điệp,Kafka,RocketMQ,RabbitMQ,Disruptor,phỏng vấn Backend"
 ---
 
-<!-- @include: @small-advertisement.snippet.md -->
+## Tổng quan
 
-这份 **高性能系统知识体系** 面向后端学习、系统设计和面试复习，围绕“减少延迟、提升吞吐、削峰填谷、降低数据库压力、优化数据访问路径”整理本站高性能相关文章。
+**Hệ thống kiến thức về hệ thống hiệu năng cao** này dành cho việc học Backend, thiết kế hệ thống và ôn tập phỏng vấn. Nội dung tập trung vào các bài viết về hiệu năng cao trên website, xoay quanh các mục tiêu: **giảm độ trễ, tăng thông lượng, điều tiết lưu lượng, giảm áp lực lên cơ sở dữ liệu và tối ưu đường đi của dữ liệu**.
 
-如果你时间有限，建议先看 [高性能系统设计面试题总结](./high-performance-interview-questions.md)，快速建立高频问题清单；如果你想系统补基础，可以按下面的阅读顺序推进。
+Nếu bạn có ít thời gian, nên đọc trước [Tổng hợp câu hỏi phỏng vấn về thiết kế hệ thống hiệu năng cao](./high-performance-interview-questions.md) để nhanh chóng nắm được danh sách các vấn đề thường gặp. Nếu muốn xây dựng nền tảng một cách có hệ thống, bạn có thể học theo thứ tự được đề xuất bên dưới.
 
-学习这部分内容时，不建议只记“加缓存、加 MQ、分库分表”这些方案名。高性能优化更像一条链路分析题：请求从用户侧进来，经过 CDN、负载均衡、应用服务、缓存、数据库、消息队列，每一段都有可能成为瓶颈。能讲清楚瓶颈在哪里、为什么选这个方案、会引入什么新问题，才算真的掌握。
+Khi học phần này, không nên chỉ ghi nhớ tên các giải pháp như “thêm cache, thêm MQ, phân tách cơ sở dữ liệu và bảng”. Tối ưu hiệu năng thực tế giống một bài toán **phân tích toàn bộ chuỗi xử lý** hơn: request đi từ phía người dùng, qua CDN, cân bằng tải, dịch vụ ứng dụng, cache, cơ sở dữ liệu và hàng đợi thông điệp; bất kỳ khâu nào cũng có thể trở thành nút thắt cổ chai.
 
-## 适合谁看
+Chỉ khi có thể giải thích rõ **nút thắt nằm ở đâu, tại sao chọn giải pháp đó và giải pháp sẽ phát sinh những vấn đề mới nào**, bạn mới thực sự nắm vững kiến thức.
 
-- 正在系统学习高性能系统设计的后端开发者。
-- 准备校招、社招、中大厂后端面试的同学。
-- 想补齐 CDN、负载均衡、数据库优化、消息队列等工程能力的工程师。
-- 已经遇到慢 SQL、深分页、热点流量、消息积压、数据库压力等问题，但缺少系统解法的读者。
+## Đối tượng phù hợp
 
-## 学习重点
+- Các lập trình viên Backend đang học một cách có hệ thống về thiết kế hệ thống hiệu năng cao.
+- Những người đang chuẩn bị phỏng vấn Backend cho chương trình tuyển dụng sinh viên mới tốt nghiệp, tuyển dụng có kinh nghiệm hoặc các công ty công nghệ lớn.
+- Các kỹ sư muốn bổ sung năng lực thực tế về CDN, cân bằng tải, tối ưu cơ sở dữ liệu, hàng đợi thông điệp và các lĩnh vực liên quan.
+- Những người đã gặp các vấn đề như SQL chậm, phân trang sâu, lưu lượng truy cập tập trung vào một số điểm nóng, hàng đợi thông điệp bị tồn đọng hoặc cơ sở dữ liệu chịu tải cao nhưng chưa có phương pháp xử lý một cách hệ thống.
 
-- 高性能系统到底是在优化延迟、吞吐、资源利用率，还是在优化用户感知？
-- CDN、负载均衡、缓存、数据库优化、消息队列分别解决链路上的哪些瓶颈？
-- 读写分离、分库分表、冷热分离、深度分页优化分别适合什么场景？
-- Kafka、RocketMQ、RabbitMQ、Disruptor 的定位和选型差异是什么？
-- 面试中如何从“瓶颈定位 -> 方案选择 -> 取舍分析 -> 落地风险”回答高性能问题？
+## Trọng tâm học tập
 
-## 面试回答主线
+- Khi nói đến tối ưu hệ thống hiệu năng cao, thực chất chúng ta đang tối ưu **độ trễ, thông lượng, hiệu suất sử dụng tài nguyên hay trải nghiệm mà người dùng cảm nhận**?
+- CDN, cân bằng tải, cache, tối ưu cơ sở dữ liệu và hàng đợi thông điệp lần lượt giải quyết những nút thắt nào trong chuỗi xử lý?
+- Tách đọc/ghi, phân tách cơ sở dữ liệu và bảng, phân tách dữ liệu nóng/lạnh và tối ưu phân trang sâu phù hợp với những tình huống nào?
+- Kafka, RocketMQ, RabbitMQ và Disruptor có vai trò gì và khác nhau như thế nào khi lựa chọn công nghệ?
+- Khi phỏng vấn, làm thế nào để trả lời các câu hỏi về hiệu năng cao theo mạch **“xác định nút thắt → lựa chọn giải pháp → phân tích đánh đổi → rủi ro khi triển khai”**?
 
-回答高性能系统设计题时，可以按下面这条线展开：
+## Mạch trả lời khi phỏng vấn
 
-1. **先确认目标**：QPS、RT、P99、数据量、读写比例、一致性要求、成本约束。
-2. **再定位瓶颈**：入口带宽、应用线程池、慢 SQL、锁竞争、缓存命中率、MQ 积压、下游依赖。
-3. **然后选方案**：入口层用 CDN/负载均衡，应用层用缓存/限流/异步化，数据层用索引/读写分离/分库分表/冷热分离，削峰层用 MQ。
-4. **最后讲取舍**：方案带来的复杂度、一致性风险、运维成本、回滚方案和监控指标。
+Khi trả lời câu hỏi thiết kế hệ thống hiệu năng cao, có thể triển khai theo trình tự sau:
 
-面试里最忌讳一上来就堆技术名词。比如“订单查询慢”不一定要分库分表，可能只是缺索引、深分页、历史数据太多或者热点商家查询集中。先把场景问清楚，再给方案，答案会稳很多。
+1. **Xác định mục tiêu trước**: QPS, RT, P99, khối lượng dữ liệu, tỷ lệ đọc/ghi, yêu cầu về tính nhất quán và các ràng buộc về chi phí.
+2. **Xác định nút thắt**: băng thông ở tầng truy cập, thread pool của ứng dụng, SQL chậm, tranh chấp khóa, tỷ lệ cache hit, tình trạng tồn đọng của MQ, các dependency phía sau.
+3. **Lựa chọn giải pháp**: tầng truy cập sử dụng CDN/cân bằng tải; tầng ứng dụng sử dụng cache/giới hạn lưu lượng/bất đồng bộ hóa; tầng dữ liệu sử dụng index/tách đọc ghi/phân tách cơ sở dữ liệu và bảng/phân tách dữ liệu nóng lạnh; tầng điều tiết lưu lượng sử dụng MQ.
+4. **Phân tích đánh đổi**: độ phức tạp do giải pháp mang lại, rủi ro về tính nhất quán, chi phí vận hành, phương án rollback và các chỉ số giám sát.
 
-## 建议阅读顺序
+Trong phỏng vấn, điều tối kỵ là vừa bắt đầu đã “ném” ra hàng loạt tên công nghệ. Ví dụ, khi “truy vấn đơn hàng chậm”, không nhất thiết phải phân tách cơ sở dữ liệu và bảng. Nguyên nhân có thể đơn giản chỉ là **thiếu index, phân trang sâu, quá nhiều dữ liệu lịch sử hoặc truy vấn tập trung vào một cửa hàng đang có lưu lượng lớn**.
 
-1. [高性能系统设计面试题总结](./high-performance-interview-questions.md)：先建立缓存、数据库、消息队列、负载均衡等高频问题清单。
-2. [CDN 工作原理详解](./cdn.md) 和 [负载均衡原理及算法详解](./load-balancing.md)：理解流量入口和请求分发。
-3. [读写分离和分库分表详解](./read-and-write-separation-and-library-subtable.md)、[常见 SQL 优化手段总结](./sql-optimization.md)、[深度分页介绍及优化建议](./deep-pagination-optimization.md)：补齐数据库性能优化主线。
-4. [消息队列基础知识总结](./message-queue/message-queue.md)：理解异步处理、解耦、削峰、消息可靠性、顺序性和幂等。
-5. 再根据技术栈深入 [Kafka 常见问题总结](./message-queue/kafka-questions-01.md)、[RocketMQ 常见问题总结](./message-queue/rocketmq-questions.md)、[RabbitMQ 常见问题总结](./message-queue/rabbitmq-questions.md)。
+Hãy làm rõ bối cảnh trước rồi mới đưa ra giải pháp. Cách trả lời như vậy sẽ chắc chắn và thuyết phục hơn.
 
-## 核心文章
+## Thứ tự đọc đề xuất
 
-### 流量入口与请求分发
+1. [Tổng hợp câu hỏi phỏng vấn về thiết kế hệ thống hiệu năng cao](./high-performance-interview-questions.md): Trước tiên xây dựng danh sách các vấn đề thường gặp về cache, cơ sở dữ liệu, hàng đợi thông điệp, cân bằng tải và các chủ đề liên quan.
+2. [Giải thích chi tiết nguyên lý hoạt động của CDN](./cdn.md) và [Giải thích chi tiết nguyên lý và thuật toán cân bằng tải](./load-balancing.md): Hiểu về tầng truy cập và cơ chế phân phối request.
+3. [Giải thích chi tiết về tách đọc/ghi và phân tách cơ sở dữ liệu, bảng](./read-and-write-separation-and-library-subtable.md), [Tổng hợp các phương pháp tối ưu SQL phổ biến](./sql-optimization.md), [Giới thiệu phân trang sâu và các đề xuất tối ưu](./deep-pagination-optimization.md): Hoàn thiện kiến thức cốt lõi về tối ưu hiệu năng cơ sở dữ liệu.
+4. [Tổng hợp kiến thức cơ bản về hàng đợi thông điệp](./message-queue/message-queue.md): Hiểu về xử lý bất đồng bộ, giảm phụ thuộc, điều tiết lưu lượng, độ tin cậy của thông điệp, thứ tự thông điệp và tính idempotent.
+5. Sau đó, tùy theo công nghệ sử dụng, có thể đi sâu vào [Tổng hợp các câu hỏi thường gặp về Kafka](./message-queue/kafka-questions-01.md), [Tổng hợp các câu hỏi thường gặp về RocketMQ](./message-queue/rocketmq-questions.md), [Tổng hợp các câu hỏi thường gặp về RabbitMQ](./message-queue/rabbitmq-questions.md).
 
-- [CDN 工作原理详解](./cdn.md)：理解 GSLB 调度、缓存策略、预热刷新、命中率优化和防盗链。
-- [负载均衡原理及算法详解](./load-balancing.md)：理解四层/七层负载均衡、服务端/客户端负载均衡和常见调度算法。
+## Các bài viết trọng tâm
 
-### 数据库与数据访问优化
+### Tầng truy cập và phân phối request
 
-- [读写分离和分库分表详解](./read-and-write-separation-and-library-subtable.md)：理解主从复制、读写分离、垂直拆分、水平拆分和分库分表后的问题。
-- [数据冷热分离详解](./data-cold-hot-separation.md)：理解冷热数据判定、分层存储、数据迁移一致性和冷数据查询优化。
-- [常见 SQL 优化手段总结](./sql-optimization.md)：梳理慢 SQL 定位、索引优化、查询重写和分页优化等实战方法。
-- [深度分页介绍及优化建议](./deep-pagination-optimization.md)：理解深分页性能问题，以及范围查询、子查询优化、延迟关联和覆盖索引方案。
+- [Giải thích chi tiết nguyên lý hoạt động của CDN](./cdn.md): Tìm hiểu cơ chế điều phối GSLB, chiến lược cache, pre-warming và refresh cache, tối ưu tỷ lệ cache hit và chống hotlink.
+- [Giải thích chi tiết nguyên lý và thuật toán cân bằng tải](./load-balancing.md): Tìm hiểu cân bằng tải Layer 4/Layer 7, cân bằng tải phía server/phía client và các thuật toán điều phối phổ biến.
 
-### 消息队列与异步削峰
+### Cơ sở dữ liệu và tối ưu truy cập dữ liệu
 
-- [消息队列专题](./message-queue/)：从消息队列基础讲到 Kafka、RocketMQ、RabbitMQ 和 Disruptor 的使用边界。
-- [消息队列基础知识总结](./message-queue/message-queue.md)：理解应用场景、消息模型、消息可靠性、顺序性、幂等和积压处理。
-- [Kafka 常见问题总结](./message-queue/kafka-questions-01.md)：掌握 Kafka 架构、高性能原理、消息可靠性、顺序性和 Rebalance。
-- [RocketMQ 常见问题总结](./message-queue/rocketmq-questions.md)：理解 RocketMQ 架构、消息类型、存储机制、可靠性和 5.x 新特性。
-- [RabbitMQ 常见问题总结](./message-queue/rabbitmq-questions.md)：理解 AMQP、Exchange 类型、确认机制、死信队列、延迟队列、Quorum Queue 和 Streams。
-- [Disruptor 常见问题总结](./message-queue/disruptor-questions.md)：理解 RingBuffer、Sequencer、WaitStrategy、无锁设计和缓存行填充。
+- [Giải thích chi tiết về tách đọc/ghi và phân tách cơ sở dữ liệu, bảng](./read-and-write-separation-and-library-subtable.md): Tìm hiểu replication giữa master và replica, tách đọc/ghi, phân tách theo chiều dọc, phân tách theo chiều ngang và các vấn đề phát sinh sau khi phân tách cơ sở dữ liệu và bảng.
+- [Giải thích chi tiết về phân tách dữ liệu nóng/lạnh](./data-cold-hot-separation.md): Tìm hiểu cách xác định dữ liệu nóng/lạnh, lưu trữ phân tầng, tính nhất quán khi di chuyển dữ liệu và tối ưu truy vấn dữ liệu lạnh.
+- [Tổng hợp các phương pháp tối ưu SQL phổ biến](./sql-optimization.md): Hệ thống hóa các phương pháp thực tế như xác định SQL chậm, tối ưu index, viết lại truy vấn và tối ưu phân trang.
+- [Giới thiệu phân trang sâu và các đề xuất tối ưu](./deep-pagination-optimization.md): Tìm hiểu vấn đề hiệu năng của phân trang sâu và các giải pháp như truy vấn theo phạm vi, tối ưu bằng subquery, delayed join và covering index.
 
-## 高频问题
+### Hàng đợi thông điệp và xử lý bất đồng bộ để điều tiết tải
 
-- 高性能系统优化时，应该先定位哪些指标？
-- CDN 和负载均衡分别解决什么问题？
-- 四层负载均衡和七层负载均衡有什么区别？
-- 读写分离会带来哪些一致性问题？如何处理主从延迟？
-- 分库分表后如何处理分布式 ID、跨库 JOIN 和分布式事务？
-- 深度分页为什么慢？有哪些优化方案？
-- 消息队列如何保证消息不丢、不重复、不乱序？
-- Kafka、RocketMQ、RabbitMQ 如何选型？
-- 消息积压应该如何定位和处理？
+- [Chuyên đề về hàng đợi thông điệp](./message-queue/): Từ kiến thức cơ bản về hàng đợi thông điệp đến phạm vi sử dụng của Kafka, RocketMQ, RabbitMQ và Disruptor.
+- [Tổng hợp kiến thức cơ bản về hàng đợi thông điệp](./message-queue/message-queue.md): Tìm hiểu các kịch bản sử dụng, mô hình thông điệp, độ tin cậy, thứ tự, tính idempotent và cách xử lý tình trạng tồn đọng thông điệp.
+- [Tổng hợp các câu hỏi thường gặp về Kafka](./message-queue/kafka-questions-01.md): Nắm vững kiến trúc Kafka, nguyên lý đạt hiệu năng cao, độ tin cậy của thông điệp, thứ tự thông điệp và Rebalance.
+- [Tổng hợp các câu hỏi thường gặp về RocketMQ](./message-queue/rocketmq-questions.md): Tìm hiểu kiến trúc RocketMQ, các loại thông điệp, cơ chế lưu trữ, độ tin cậy và các tính năng mới trong phiên bản 5.x.
+- [Tổng hợp các câu hỏi thường gặp về RabbitMQ](./message-queue/rabbitmq-questions.md): Tìm hiểu AMQP, các loại Exchange, cơ chế xác nhận, Dead Letter Queue, Delay Queue, Quorum Queue và Streams.
+- [Tổng hợp các câu hỏi thường gặp về Disruptor](./message-queue/disruptor-questions.md): Tìm hiểu RingBuffer, Sequencer, WaitStrategy, thiết kế không khóa (lock-free) và kỹ thuật padding cache line.
 
-## 相关专题
+## Các câu hỏi thường gặp
 
-- [高可用系统知识体系](../high-availability/)
-- [分布式系统知识体系](../distributed-system/)
-- [数据库](../database/)
-- [系统设计](../system-design/)
+- Khi tối ưu hệ thống hiệu năng cao, trước tiên nên xác định những chỉ số nào?
+- CDN và cân bằng tải lần lượt giải quyết vấn đề gì?
+- Cân bằng tải Layer 4 và Layer 7 khác nhau như thế nào?
+- Tách đọc/ghi gây ra những vấn đề gì về tính nhất quán? Xử lý độ trễ giữa master và replica như thế nào?
+- Sau khi phân tách cơ sở dữ liệu và bảng, xử lý Distributed ID, JOIN giữa các cơ sở dữ liệu và giao dịch phân tán như thế nào?
+- Tại sao phân trang sâu lại chậm? Có những phương án tối ưu nào?
+- Hàng đợi thông điệp làm thế nào để đảm bảo thông điệp không bị mất, không bị xử lý trùng và không bị sai thứ tự?
+- Nên lựa chọn Kafka, RocketMQ hay RabbitMQ như thế nào?
+- Nên xác định nguyên nhân và xử lý tình trạng tồn đọng thông điệp như thế nào?
 
-<!-- @include: @article-footer.snippet.md -->
+## Các chuyên đề liên quan
+
+- [Hệ thống kiến thức về hệ thống có tính sẵn sàng cao](../high-availability/)
+- [Hệ thống kiến thức về hệ thống phân tán](../distributed-system/)
+- [Cơ sở dữ liệu](../database/)
+- [Thiết kế hệ thống](../system-design/)

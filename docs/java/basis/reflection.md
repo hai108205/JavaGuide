@@ -1,6 +1,6 @@
 ---
-title: Java 反射机制详解
-description: 深入讲解Java反射机制原理与应用：掌握Class、Method、Field核心API，理解反射在Spring、MyBatis等框架中的应用，学习动态代理实现。
+title: Giải thích chi tiết về Java Reflection
+description: "Đi sâu vào nguyên lý và ứng dụng của Java Reflection: nắm vững các API cốt lõi Class, Method, Field, hiểu cách Reflection được sử dụng trong các framework như Spring, MyBatis, và tìm hiểu cách triển khai Dynamic Proxy."
 category: Java
 tag:
   - Java基础
@@ -10,23 +10,23 @@ head:
       content: Java反射,反射机制,Class类,Method方法,Field字段,动态代理,框架原理,运行时操作
 ---
 
-## 何为反射？
+## Reflection là gì?
 
-如果说大家研究过框架的底层原理或者咱们自己写过框架的话，一定对反射这个概念不陌生。
+Nếu bạn đã từng nghiên cứu nguyên lý bên dưới của các framework hoặc tự viết framework, chắc hẳn bạn không còn xa lạ với khái niệm Reflection.
 
-反射之所以被称为框架的灵魂，主要是因为它赋予了我们在运行时分析类以及执行类中方法的能力。
+Reflection được coi là linh hồn của framework, chủ yếu bởi vì nó cho phép chúng ta phân tích class và thực thi các phương thức trong class tại thời điểm runtime.
 
-通过反射可以获取类的字段、方法、构造器等信息，并在访问控制和模块边界允许的情况下进行调用或读写。不同 API 的范围也不同，例如 `getMethods()` 返回可访问的 public 方法，而 `getDeclaredMethods()` 返回当前类声明的方法但不包含继承方法。
+Thông qua Reflection, bạn có thể lấy thông tin về field, method, constructor của class, đồng thời gọi hoặc đọc/ghi chúng trong phạm vi được phép bởi access control và module boundary. Phạm vi của các API cũng khác nhau, ví dụ `getMethods()` trả về các public method có thể truy cập, trong khi `getDeclaredMethods()` trả về các method được khai báo trong class hiện tại nhưng không bao gồm method kế thừa.
 
-## 反射的应用场景了解么？
+## Bạn có biết các tình huống ứng dụng của Reflection không?
 
-像咱们平时大部分时候都是在写业务代码，很少会接触到直接使用反射机制的场景。
+Thông thường, phần lớn thời gian chúng ta viết code nghiệp vụ, hiếm khi tiếp xúc trực tiếp với các tình huống sử dụng Reflection.
 
-但是，这并不代表反射没有用。相反，正是因为反射，你才能这么轻松地使用各种框架。像 Spring/Spring Boot、MyBatis 等等框架中都大量使用了反射机制。
+Tuy nhiên, điều này không có nghĩa là Reflection vô dụng. Ngược lại, chính nhờ có Reflection mà bạn mới có thể dễ dàng sử dụng các framework khác nhau. Các framework như Spring/Spring Boot, MyBatis, v.v. đều sử dụng rất nhiều Reflection.
 
-**这些框架中也大量使用了动态代理，而动态代理的实现也依赖反射。**
+**Các framework này cũng sử dụng rất nhiều Dynamic Proxy, và việc triển khai Dynamic Proxy cũng phụ thuộc vào Reflection.**
 
-比如下面是通过 JDK 实现动态代理的示例代码，其中就使用了反射类 `Method` 来调用指定的方法。
+Ví dụ dưới đây là đoạn code triển khai Dynamic Proxy thông qua JDK, trong đó sử dụng class Reflection `Method` để gọi phương thức được chỉ định.
 
 ```java
 public class DebugInvocationHandler implements InvocationHandler {
@@ -50,56 +50,56 @@ public class DebugInvocationHandler implements InvocationHandler {
 
 ```
 
-另外，像 Java 中的一大利器 **注解** 的实现也用到了反射。
+Ngoài ra, một công cụ mạnh mẽ khác trong Java là **Annotation** cũng được triển khai bằng Reflection.
 
-为什么你使用 Spring 的时候，一个 `@Component` 注解就声明了一个类为 Spring Bean 呢？为什么你通过一个 `@Value` 注解就读取到配置文件中的值呢？究竟是怎么起作用的呢？
+Tại sao khi bạn sử dụng Spring, chỉ với một annotation `@Component` là đã khai báo một class thành Spring Bean? Tại sao bạn chỉ cần một annotation `@Value` là có thể đọc được giá trị trong file cấu hình? Rốt cuộc chúng hoạt động như thế nào?
 
-这些都是因为你可以基于反射分析类，然后获取到类/属性/方法/方法的参数上的注解。你获取到注解之后，就可以做进一步的处理。
+Tất cả những điều này là nhờ bạn có thể phân tích class dựa trên Reflection, sau đó lấy được annotation trên class/thuộc tính/phương thức/tham số của phương thức. Sau khi lấy được annotation, bạn có thể thực hiện các xử lý tiếp theo.
 
-## 谈谈反射机制的优缺点
+## Ưu nhược điểm của Reflection
 
-**优点**：可以让咱们的代码更加灵活、为各种框架提供开箱即用的功能提供了便利
+**Ưu điểm**: Giúp code của chúng ta linh hoạt hơn, cung cấp sự tiện lợi cho các chức năng out-of-the-box của các framework.
 
-**缺点**：让我们在运行时有了分析操作类的能力，这同样也增加了安全问题。比如可以无视泛型参数的安全检查（泛型参数的安全检查发生在编译时）。另外，反射的性能也要稍差点，不过，对于框架来说实际是影响不大的。相关阅读：[Java Reflection: Why is it so slow?](https://stackoverflow.com/questions/1392351/java-reflection-why-is-it-so-slow)
+**Nhược điểm**: Cho phép chúng ta có khả năng phân tích và thao tác class tại runtime, điều này cũng làm tăng vấn đề bảo mật. Ví dụ như có thể bỏ qua kiểm tra an toàn của tham số generic (kiểm tra an toàn của tham số generic diễn ra tại compile-time). Ngoài ra, hiệu năng của Reflection cũng kém hơn một chút, tuy nhiên đối với framework thì ảnh hưởng thực tế không đáng kể. Bài viết liên quan: [Java Reflection: Why is it so slow?](https://stackoverflow.com/questions/1392351/java-reflection-why-is-it-so-slow)
 
-## 反射实战
+## Reflection thực chiến
 
-### 获取 Class 对象的四种方式
+### Bốn cách lấy Class Object
 
-如果我们动态获取到这些信息，我们需要依靠 Class 对象。Class 类对象将一个类的方法、变量等信息告诉运行的程序。Java 提供了四种方式获取 Class 对象:
+Nếu chúng ta muốn lấy động những thông tin này, chúng ta cần dựa vào Class Object. Class Object cho chương trình đang chạy biết về các method, biến và thông tin khác của một class. Java cung cấp bốn cách để lấy Class Object:
 
-**1. 知道具体类的情况下可以使用：**
+**1. Khi biết class cụ thể, có thể sử dụng:**
 
 ```java
 Class alunbarClass = TargetObject.class;
 ```
 
-这种方式适用于编译时已经知道具体类型的场景，获取类字面量本身不会触发类初始化。
+Cách này phù hợp với tình huống đã biết kiểu cụ thể tại compile-time, việc lấy class literal không kích hoạt khởi tạo class.
 
-**2. 通过 `Class.forName()` 传入类的全路径获取：**
+**2. Thông qua `Class.forName()` truyền vào đường dẫn đầy đủ của class:**
 
 ```java
 Class alunbarClass1 = Class.forName("cn.javaguide.TargetObject");
 ```
 
-**3. 通过对象实例 `instance.getClass()` 获取：**
+**3. Thông qua instance đối tượng `instance.getClass()`:**
 
 ```java
 TargetObject o = new TargetObject();
 Class alunbarClass2 = o.getClass();
 ```
 
-**4. 通过类加载器 `xxxClassLoader.loadClass()` 传入类路径获取:**
+**4. Thông qua class loader `xxxClassLoader.loadClass()` truyền vào đường dẫn class:**
 
 ```java
 ClassLoader.getSystemClassLoader().loadClass("cn.javaguide.TargetObject");
 ```
 
-通过类加载器获取 Class 对象不会进行初始化，意味着不进行包括初始化等一系列步骤，静态代码块和静态对象不会得到执行
+Lấy Class Object thông qua class loader sẽ không thực hiện khởi tạo, nghĩa là không thực hiện hàng loạt bước bao gồm khởi tạo, static block và static object sẽ không được thực thi.
 
-### 反射的一些基本操作
+### Một số thao tác cơ bản với Reflection
 
-1. 创建一个我们要使用反射操作的类 `TargetObject`。
+1. Tạo một class `TargetObject` để chúng ta thao tác với Reflection.
 
 ```java
 package cn.javaguide;
@@ -121,7 +121,7 @@ public class TargetObject {
 }
 ```
 
-2. 使用反射操作这个类的方法以及属性
+2. Sử dụng Reflection để thao tác với method và thuộc tính của class này
 
 ```java
 package cn.javaguide;
@@ -173,7 +173,7 @@ public class Main {
 
 ```
 
-输出内容：
+Nội dung output:
 
 ```plain
 publicMethod
@@ -182,8 +182,8 @@ I love JavaGuide
 value is JavaGuide
 ```
 
-**注意** : 有读者提到上面代码运行会抛出 `ClassNotFoundException` 异常，具体原因是你没有下面把这段代码的包名替换成自己创建的 `TargetObject` 所在的包。
-可以参考：<https://www.cnblogs.com/chanshuyi/p/head_first_of_reflection.html> 这篇文章。
+**Lưu ý**: Có độc giả đã đề cập rằng đoạn code trên khi chạy sẽ ném ra ngoại lệ `ClassNotFoundException`, nguyên nhân cụ thể là do bạn chưa thay thế tên package trong đoạn code này bằng package chứa `TargetObject` mà bạn đã tạo.
+Có thể tham khảo bài viết: <https://www.cnblogs.com/chanshuyi/p/head_first_of_reflection.html>.
 
 ```java
 Class<?> targetClass = Class.forName("cn.javaguide.TargetObject");

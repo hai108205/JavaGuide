@@ -1,144 +1,144 @@
 ---
-title: SQL语句在MySQL中的执行过程
-description: 详解SQL语句在MySQL中的完整执行流程，从连接器身份认证、查询缓存、分析器语法解析、优化器生成执行计划到执行器调用存储引擎的全过程。
-category: 数据库
+title: Quá trình thực thi câu lệnh SQL trong MySQL
+description: Giải thích chi tiết quy trình thực thi hoàn chỉnh của câu lệnh SQL trong MySQL, từ Connector xác thực danh tính, Query Cache, Parser phân tích cú pháp, Optimizer sinh Execution Plan cho đến Executor gọi Storage Engine.
+category: Cơ sở dữ liệu
 tag:
   - MySQL
 head:
   - - meta
     - name: keywords
-      content: MySQL执行流程,SQL执行过程,连接器,解析器,优化器,执行器,Server层,存储引擎,InnoDB
+      content: Quy trình thực thi MySQL,Quá trình thực thi SQL,Connector,Parser,Optimizer,Executor,Tầng Server,Storage Engine,InnoDB
 ---
 
-> 本文来自[木木匠](https://github.com/kinglaw1204)投稿。
+> Bài viết này được đóng góp bởi [木木匠](https://github.com/kinglaw1204).
 
-本篇文章会分析下一个 SQL 语句在 MySQL 中的执行流程，包括 SQL 的查询在 MySQL 内部会怎么流转，SQL 语句的更新是怎么完成的。
+Bài viết này sẽ phân tích quy trình thực thi của một câu lệnh SQL trong MySQL, bao gồm việc truy vấn SQL sẽ luân chuyển bên trong MySQL như thế nào, và việc cập nhật câu lệnh SQL được hoàn thành ra sao.
 
-在分析之前我会先带着你看看 MySQL 的基础架构，知道了 MySQL 由那些组件组成以及这些组件的作用是什么，可以帮助我们理解和解决这些问题。
+Trước khi phân tích, tôi sẽ cùng bạn xem qua kiến trúc cơ bản của MySQL. Việc nắm được MySQL được cấu thành từ những thành phần nào và tác dụng của các thành phần đó là gì, sẽ giúp chúng ta hiểu và giải quyết những vấn đề này.
 
-## 一 MySQL 基础架构分析
+## 1. Phân tích kiến trúc cơ bản của MySQL
 
-### 1.1 MySQL 基本架构概览
+### 1.1 Tổng quan kiến trúc cơ bản của MySQL
 
-下图是 MySQL 的一个简要架构图，从下图你可以很清晰的看到用户的 SQL 语句在 MySQL 内部是如何执行的。
+Hình dưới đây là sơ đồ kiến trúc tóm tắt của MySQL, từ hình này bạn có thể thấy rất rõ ràng câu lệnh SQL của người dùng được thực thi bên trong MySQL như thế nào.
 
-先简单介绍一下下图涉及的一些组件的基本作用帮助大家理解这幅图，在 1.2 节中会详细介绍到这些组件的作用。
+Trước tiên xin giới thiệu ngắn gọn tác dụng cơ bản của một số thành phần xuất hiện trong hình để giúp mọi người hiểu bức hình này, trong mục 1.2 sẽ trình bày chi tiết tác dụng của các thành phần đó.
 
-- **连接器：** 身份认证和权限相关(登录 MySQL 的时候)。
-- **查询缓存：** 执行查询语句的时候，会先查询缓存（MySQL 8.0 版本后移除，因为这个功能不太实用）。
-- **分析器：** 没有命中缓存的话，SQL 语句就会经过分析器，分析器说白了就是要先看你的 SQL 语句要干嘛，再检查你的 SQL 语句语法是否正确。
-- **优化器：** 按照 MySQL 认为最优的方案去执行。
-- **执行器：** 执行语句，然后从存储引擎返回数据。 -
+- **Connector (Bộ kết nối):** Liên quan đến xác thực danh tính và quyền (khi đăng nhập vào MySQL).
+- **Query Cache (Bộ nhớ đệm truy vấn):** Khi thực thi câu lệnh truy vấn, sẽ tra cứu Cache trước (đã bị loại bỏ từ phiên bản MySQL 8.0, vì tính năng này không mấy thực dụng).
+- **Parser (Bộ phân tích):** Nếu không trúng Cache, câu lệnh SQL sẽ đi qua Parser. Parser nói đơn giản là trước tiên xem câu lệnh SQL của bạn định làm gì, rồi kiểm tra cú pháp câu lệnh SQL của bạn có đúng không.
+- **Optimizer (Bộ tối ưu):** Thực thi theo phương án mà MySQL cho là tối ưu.
+- **Executor (Bộ thực thi):** Thực thi câu lệnh, sau đó nhận dữ liệu trả về từ Storage Engine. -
 
 ![](https://oss.javaguide.cn/javaguide/13526879-3037b144ed09eb88.png)
 
-简单来说 MySQL 主要分为 Server 层和存储引擎层：
+Nói đơn giản, MySQL chủ yếu chia thành tầng Server và tầng Storage Engine:
 
-- **Server 层**：主要包括连接器、查询缓存、分析器、优化器、执行器等，所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图，函数等，还有一个通用的日志模块 binlog 日志模块。
-- **存储引擎**：主要负责数据的存储和读取，采用可以替换的插件式架构，支持 InnoDB、MyISAM、Memory 等多个存储引擎，其中 InnoDB 引擎有自有的日志模块 redolog 模块。**现在最常用的存储引擎是 InnoDB，它从 MySQL 5.5 版本开始就被当做默认存储引擎了。**
+- **Tầng Server**: Chủ yếu bao gồm Connector, Query Cache, Parser, Optimizer, Executor,... Tất cả các tính năng liên Storage Engine đều được thực hiện ở tầng này, ví dụ như Stored Procedure (thủ tục lưu trữ), Trigger, View, Function,... Ngoài ra còn có một module Log dùng chung là module binlog.
+- **Storage Engine (Công cụ lưu trữ)**: Chủ yếu chịu trách nhiệm lưu trữ và đọc dữ liệu, sử dụng kiến trúc dạng Plugin (cắm) có thể thay thế, hỗ trợ nhiều Storage Engine như InnoDB, MyISAM, Memory,... Trong đó Engine InnoDB có module Log riêng là module redolog. **Hiện nay Storage Engine được dùng phổ biến nhất là InnoDB, nó đã được chọn làm Storage Engine mặc định từ phiên bản MySQL 5.5.**
 
-### 1.2 Server 层基本组件介绍
+### 1.2 Giới thiệu các thành phần cơ bản của tầng Server
 
-#### 1) 连接器
+#### 1) Connector
 
-连接器主要和身份认证和权限相关的功能相关，就好比一个级别很高的门卫一样。
+Connector chủ yếu liên quan đến các tính năng về xác thực danh tính và quyền, giống như một người gác cổng cấp cao vậy.
 
-主要负责用户登录数据库，进行用户的身份认证，包括校验账户密码，权限等操作，如果用户账户密码已通过，连接器会到权限表中查询该用户的所有权限，之后在这个连接里的权限逻辑判断都是会依赖此时读取到的权限数据，也就是说，后续只要这个连接不断开，即使管理员修改了该用户的权限，该用户也是不受影响的。
+Nó chủ yếu chịu trách nhiệm cho việc người dùng đăng nhập vào Database, thực hiện xác thực danh tính người dùng, bao gồm các thao tác như kiểm tra mật khẩu tài khoản, quyền,... Nếu mật khẩu tài khoản người dùng thông qua, Connector sẽ tra cứu tất cả quyền của người dùng đó trong bảng quyền, sau đó mọi phán đoán logic về quyền trong kết nối này đều dựa trên dữ liệu quyền đã đọc được tại thời điểm đó. Nghĩa là, sau này chỉ cần kết nối này không bị ngắt, dù quản trị viên có sửa quyền của người dùng đó thì người dùng này cũng không bị ảnh hưởng.
 
-#### 2) 查询缓存(MySQL 8.0 版本后移除)
+#### 2) Query Cache (đã bị loại bỏ từ phiên bản MySQL 8.0)
 
-查询缓存主要用来缓存我们所执行的 SELECT 语句以及该语句的结果集。
+Query Cache chủ yếu dùng để Cache câu lệnh SELECT mà chúng ta thực thi cùng tập kết quả (Result Set) của câu lệnh đó.
 
-连接建立后，执行查询语句的时候，会先查询缓存，MySQL 会先校验这个 SQL 是否执行过，以 Key-Value 的形式缓存在内存中，Key 是查询语句，Value 是结果集。如果缓存 key 被命中，就会直接返回给客户端，如果没有命中，就会执行后续的操作，完成后也会把结果缓存起来，方便下一次调用。当然在真正执行缓存查询的时候还是会校验用户的权限，是否有该表的查询条件。
+Sau khi kết nối được thiết lập, khi thực thi câu lệnh truy vấn, sẽ tra cứu Cache trước. MySQL sẽ kiểm tra xem câu SQL này đã từng được thực thi chưa, và Cache dưới dạng Key-Value trong bộ nhớ, Key là câu lệnh truy vấn, Value là tập kết quả. Nếu Cache key được trúng, sẽ trả trực tiếp kết quả về Client; nếu không trúng, sẽ thực thi các thao tác tiếp theo, sau khi hoàn thành cũng sẽ Cache kết quả lại, tiện cho lần gọi sau. Tất nhiên khi thực sự thực thi truy vấn Cache vẫn sẽ kiểm tra quyền của người dùng, xem có điều kiện truy vấn bảng đó hay không.
 
-MySQL 查询不建议使用缓存，因为查询缓存失效在实际业务场景中可能会非常频繁，假如你对一个表更新的话，这个表上的所有的查询缓存都会被清空。对于不经常更新的数据来说，使用缓存还是可以的。
+Không khuyến khích sử dụng Cache cho các truy vấn MySQL, vì việc Cache truy vấn bị vô hiệu hóa trong các tình huống nghiệp vụ thực tế có thể xảy ra rất thường xuyên. Giả sử bạn cập nhật một bảng, thì tất cả Cache truy vấn trên bảng đó đều sẽ bị xóa sạch. Đối với dữ liệu không thường xuyên cập nhật, dùng Cache vẫn ổn.
 
-所以，一般在大多数情况下我们都是不推荐去使用查询缓存的。
+Vì vậy, trong hầu hết các trường hợp chúng ta đều không khuyến khích sử dụng Query Cache.
 
-MySQL 8.0 版本后删除了缓存的功能，官方也是认为该功能在实际的应用场景比较少，所以干脆直接删掉了。
+Từ phiên bản MySQL 8.0 trở đi, tính năng Cache đã bị xóa, phía chính thức cũng cho rằng tính năng này ít được ứng dụng trong thực tế, nên dứt khoát xóa bỏ hoàn toàn.
 
-#### 3) 分析器
+#### 3) Parser
 
-MySQL 没有命中缓存，那么就会进入分析器，分析器主要是用来分析 SQL 语句是来干嘛的，分析器也会分为几步：
+MySQL không trúng Cache, thì sẽ đi vào Parser. Parser chủ yếu dùng để phân tích câu lệnh SQL định làm gì, Parser cũng được chia thành vài bước:
 
-**第一步，词法分析**，一条 SQL 语句有多个字符串组成，首先要提取关键字，比如 select，提出查询的表，提出字段名，提出查询条件等等。做完这些操作后，就会进入第二步。
+**Bước một, phân tích từ vựng (Lexical Analysis)**, một câu lệnh SQL được cấu thành từ nhiều chuỗi ký tự, trước tiên phải trích xuất các từ khóa, ví dụ như select, trích xuất bảng cần truy vấn, trích xuất tên trường, trích xuất điều kiện truy vấn,... Sau khi hoàn thành các thao tác này, sẽ chuyển sang bước hai.
 
-**第二步，语法分析**，主要就是判断你输入的 SQL 是否正确，是否符合 MySQL 的语法。
+**Bước hai, phân tích cú pháp (Syntax Analysis)**, chủ yếu là phán đoán câu SQL bạn nhập có đúng không, có phù hợp với cú pháp của MySQL không.
 
-完成这 2 步之后，MySQL 就准备开始执行了，但是如何执行，怎么执行是最好的结果呢？这个时候就需要优化器上场了。
+Sau khi hoàn thành 2 bước này, MySQL chuẩn bị bắt đầu thực thi, nhưng thực thi như thế nào, thực thi thế nào để có kết quả tốt nhất? Lúc này cần Optimizer ra sân.
 
-#### 4) 优化器
+#### 4) Optimizer
 
-优化器的作用就是它认为的最优的执行方案去执行（有时候可能也不是最优，这篇文章涉及对这部分知识的深入讲解），比如多个索引的时候该如何选择索引，多表查询的时候如何选择关联顺序等。
+Tác dụng của Optimizer là thực thi theo phương án mà nó cho là tối ưu (đôi khi cũng chưa chắc là tối ưu, bài viết này có liên quan đến việc giảng giải chuyên sâu phần kiến thức này), ví dụ như khi có nhiều Index thì chọn Index như thế nào, khi truy vấn nhiều bảng thì chọn thứ tự Join ra sao,...
 
-可以说，经过了优化器之后可以说这个语句具体该如何执行就已经定下来。
+Có thể nói, sau khi qua Optimizer, câu lệnh này cụ thể sẽ thực thi như thế nào đã được định xong.
 
-#### 5) 执行器
+#### 5) Executor
 
-当选择了执行方案后，MySQL 就准备开始执行了，首先执行前会校验该用户有没有权限，如果没有权限，就会返回错误信息，如果有权限，就会去调用引擎的接口，返回接口执行的结果。
+Sau khi chọn xong phương án thực thi, MySQL chuẩn bị bắt đầu thực thi. Trước tiên trước khi thực thi sẽ kiểm tra người dùng có quyền hay không, nếu không có quyền sẽ trả về thông tin lỗi, nếu có quyền sẽ gọi Interface của Engine và trả về kết quả thực thi của Interface.
 
-## 二 语句分析
+## 2. Phân tích câu lệnh
 
-### 2.1 查询语句
+### 2.1 Câu lệnh truy vấn
 
-说了以上这么多，那么究竟一条 SQL 语句是如何执行的呢？其实我们的 SQL 可以分为两种，一种是查询，一种是更新（增加，修改，删除）。我们先分析下查询语句，语句如下：
+Đã nói nhiều như trên, vậy rốt cuộc một câu lệnh SQL được thực thi như thế nào? Thực ra SQL của chúng ta có thể chia thành hai loại, một loại là truy vấn, một loại là cập nhật (thêm, sửa, xóa). Chúng ta phân tích câu lệnh truy vấn trước, câu lệnh như sau:
 
 ```sql
 select * from tb_student  A where A.age='18' and A.name=' 张三 ';
 ```
 
-结合上面的说明，我们分析下这个语句的执行流程：
+Kết hợp với phần trình bày ở trên, chúng ta phân tích quy trình thực thi của câu lệnh này:
 
-- 先通过连接器进行身份认证和权限获取（若认证失败则直接拒绝），在 MySQL8.0 版本以前，认证通过后会先查询缓存，以这条 SQL 语句为 key 在内存中查询是否有结果，如果有直接缓存，如果没有，执行下一步。
-- 通过分析器进行词法分析，提取 SQL 语句的关键元素，比如提取上面这个语句是查询 select，提取需要查询的表名为 tb_student，需要查询所有的列，查询条件是这个表的 id='1'。然后判断这个 SQL 语句是否有语法错误，比如关键词是否正确等等，如果检查没问题就执行下一步。
-- 接下来就是优化器进行确定执行方案，上面的 SQL 语句，可以有两种执行方案：a.先查询学生表中姓名为“张三”的学生，然后判断是否年龄是 18。b.先找出学生中年龄 18 岁的学生，然后再查询姓名为“张三”的学生。那么优化器根据自己的优化算法进行选择执行效率最好的一个方案（优化器认为，有时候不一定最好）。那么确认了执行计划后就准备开始执行了。
+- Trước tiên thông qua Connector để xác thực danh tính và lấy quyền (nếu xác thực thất bại thì từ chối trực tiếp). Ở các phiên bản trước MySQL 8.0, sau khi xác thực thông qua sẽ tra cứu Cache trước, dùng câu lệnh SQL này làm key để tra trong bộ nhớ xem có kết quả không, nếu có thì Cache trực tiếp, nếu không thì thực hiện bước tiếp theo.
+- Thông qua Parser để phân tích từ vựng, trích xuất các yếu tố chính của câu lệnh SQL, ví dụ trích xuất câu lệnh trên là truy vấn select, trích xuất tên bảng cần truy vấn là tb_student, cần truy vấn tất cả các cột, điều kiện truy vấn là id='1' của bảng này. Sau đó phán đoán câu lệnh SQL này có lỗi cú pháp không, ví dụ từ khóa có đúng không,... Nếu kiểm tra không có vấn đề thì thực hiện bước tiếp theo.
+- Tiếp theo là Optimizer xác định phương án thực thi. Câu lệnh SQL ở trên có thể có hai phương án thực thi: a. Trước tiên truy vấn học sinh có tên là "张三" (Trương Tam) trong bảng học sinh, sau đó phán đoán xem tuổi có phải là 18 không. b. Trước tiên tìm học sinh 18 tuổi trong số các học sinh, sau đó truy vấn học sinh có tên là "张三". Vậy Optimizer sẽ dựa trên thuật toán tối ưu của mình để chọn phương án có hiệu suất thực thi tốt nhất (Optimizer cho là tốt nhất, đôi khi chưa chắc đã là tốt nhất). Sau khi xác nhận Execution Plan (kế hoạch thực thi) thì chuẩn bị bắt đầu thực thi.
 
-- 进行权限校验，如果没有权限就会返回错误信息，如果有权限就会调用数据库引擎接口，返回引擎的执行结果。
+- Tiến hành kiểm tra quyền, nếu không có quyền sẽ trả về thông tin lỗi, nếu có quyền sẽ gọi Interface của Database Engine và trả về kết quả thực thi của Engine.
 
-### 2.2 更新语句
+### 2.2 Câu lệnh cập nhật
 
-以上就是一条查询 SQL 的执行流程，那么接下来我们看看一条更新语句如何执行的呢？SQL 语句如下：
+Trên đây là quy trình thực thi của một câu lệnh SQL truy vấn, vậy tiếp theo chúng ta xem một câu lệnh cập nhật được thực thi như thế nào? Câu lệnh SQL như sau:
 
 ```plain
 update tb_student A set A.age='19' where A.name=' 张三 ';
 ```
 
-我们来给张三修改下年龄，在实际数据库肯定不会设置年龄这个字段的，不然要被技术负责人打的。其实这条语句也基本上会沿着上一个查询的流程走，只不过执行更新的时候肯定要记录日志啦，这就会引入日志模块了，MySQL 自带的日志模块是 **binlog（归档日志）** ，所有的存储引擎都可以使用，我们常用的 InnoDB 引擎还自带了一个日志模块 **redo log（重做日志）**，我们就以 InnoDB 模式下来探讨这个语句的执行流程。流程如下：
+Chúng ta sửa tuổi của Trương Tam một chút. Trong Database thực tế chắc chắn sẽ không thiết lập trường tuổi này, nếu không sẽ bị người phụ trách kỹ thuật đánh cho. Thực ra câu lệnh này về cơ bản cũng sẽ đi theo quy trình truy vấn ở trên, chỉ là khi thực thi cập nhật chắc chắn phải ghi Log, điều này sẽ dẫn đến việc đưa vào module Log. Module Log đi kèm của MySQL là **binlog (Archive Log)**, tất cả các Storage Engine đều có thể sử dụng; Engine InnoDB mà chúng ta thường dùng còn đi kèm một module Log là **redo log (Redo Log)**. Chúng ta sẽ thảo luận quy trình thực thi của câu lệnh này dưới chế độ InnoDB. Quy trình như sau:
 
-- 先查询到张三这一条数据，不会走查询缓存，因为查询缓存的设计规则就是只服务于查询类语句。
-- 然后拿到查询的语句，把 age 改为 19，然后调用引擎 API 接口，写入这一行数据，InnoDB 引擎把数据保存在内存中，同时记录 redo log，此时 redo log 进入 prepare 状态，然后告诉执行器，执行完成了，随时可以提交。
-- 执行器收到通知后记录 binlog，然后清空该表的查询缓存。此时清空能保证后续的 SELECT 不会读到旧缓存 —— 因为事务马上就要最终提交，数据即将变成最新状态，缓存失效的时机刚好匹配数据的实际更新。
-- 执行器调用引擎接口 ，提交 redo log 为 commit 状态。
-- 更新完成。
+- Trước tiên truy vấn đến dòng dữ liệu của Trương Tam, sẽ không đi qua Query Cache, vì quy tắc thiết kế của Query Cache là chỉ phục vụ các câu lệnh dạng truy vấn.
+- Sau đó lấy câu lệnh truy vấn được, đổi age thành 19, rồi gọi Interface API của Engine, ghi dòng dữ liệu này. InnoDB Engine lưu dữ liệu vào bộ nhớ, đồng thời ghi redo log, lúc này redo log chuyển sang trạng thái prepare, rồi báo cho Executor biết đã thực thi xong, có thể commit bất cứ lúc nào.
+- Sau khi nhận được thông báo, Executor ghi binlog, rồi xóa sạch Query Cache của bảng đó. Việc xóa sạch lúc này đảm bảo các câu lệnh SELECT sau này sẽ không đọc phải Cache cũ —— vì Transaction sắp commit cuối cùng, dữ liệu sắp chuyển sang trạng thái mới nhất, thời điểm vô hiệu hóa Cache vừa khớp với thời điểm cập nhật thực tế của dữ liệu.
+- Executor gọi Interface Engine, commit redo log sang trạng thái commit.
+- Cập nhật hoàn tất.
 
-**这里肯定有同学会问，为什么要用两个日志模块，用一个日志模块不行吗?**
+**Chắc chắn sẽ có bạn hỏi, tại sao phải dùng hai module Log, dùng một module Log không được sao?**
 
-这是因为最开始 MySQL 并没有 InnoDB 引擎（InnoDB 引擎是其他公司以插件形式插入 MySQL 的），MySQL 自带的引擎是 MyISAM，但是我们知道 redo log 是 InnoDB 引擎特有的，其他存储引擎都没有，这就导致会没有 crash-safe 的能力(crash-safe 的能力即使数据库发生异常重启，之前提交的记录都不会丢失)，binlog 日志只能用来归档。
+Đó là vì ban đầu MySQL không có InnoDB Engine (InnoDB Engine là của công ty khác cắm vào MySQL dưới dạng Plugin), Engine đi kèm của MySQL là MyISAM. Nhưng chúng ta biết redo log là thứ riêng có của InnoDB Engine, các Storage Engine khác đều không có, điều này dẫn đến việc không có khả năng crash-safe (khả năng crash-safe nghĩa là dù Database có khởi động lại bất thường, các bản ghi đã commit trước đó đều không bị mất), binlog chỉ có thể dùng để lưu trữ (Archive).
 
-并不是说只用一个日志模块不可以，只是 InnoDB 引擎就是通过 redo log 来支持事务的。那么，又会有同学问，我用两个日志模块，但是不要这么复杂行不行，为什么 redo log 要引入 prepare 预提交状态？这里我们用反证法来说明下为什么要这么做？
+Không phải nói dùng một module Log là không được, chỉ là InnoDB Engine chính là thông qua redo log để hỗ trợ Transaction. Vậy lại có bạn hỏi, tôi dùng hai module Log, nhưng đừng phức tạp như vậy có được không, tại sao redo log phải đưa vào trạng thái prepare (tiền commit)? Ở đây chúng ta dùng phương pháp phản chứng để giải thích tại sao phải làm như vậy?
 
-- **先写 redo log 直接提交，然后写 binlog**，假设写完 redo log 后，机器挂了，binlog 日志没有被写入，那么机器重启后，这台机器会通过 redo log 恢复数据，但是这个时候 binlog 并没有记录该数据，后续进行机器备份的时候，就会丢失这一条数据，同时主从同步也会丢失这一条数据。
-- **先写 binlog，然后写 redo log**，假设写完了 binlog，机器异常重启了，由于没有 redo log，本机是无法恢复这一条记录的，但是 binlog 又有记录，那么和上面同样的道理，就会产生数据不一致的情况。
+- **Ghi redo log trước rồi commit trực tiếp, sau đó ghi binlog**, giả sử sau khi ghi xong redo log, máy bị lỗi, binlog chưa được ghi, vậy sau khi máy khởi động lại, máy này sẽ thông qua redo log để phục hồi dữ liệu, nhưng lúc này binlog không có ghi nhận dữ liệu đó, sau này khi Backup máy sẽ mất dòng dữ liệu này, đồng thời đồng bộ chủ-tớ cũng sẽ mất dòng dữ liệu này.
+- **Ghi binlog trước, sau đó ghi redo log**, giả sử ghi xong binlog, máy khởi động lại bất thường, do không có redo log, máy này không thể phục hồi dòng bản ghi đó, nhưng binlog lại có ghi nhận, vậy cũng giống như lý lẽ ở trên, sẽ xảy ra tình trạng dữ liệu không nhất quán.
 
-如果采用 redo log 两阶段提交的方式就不一样了，先写完 redo log，标记为 prepare，紧接着写完 binlog 后，然后再将 redo log 标记为 commit 就可以防止出现上述的问题，从而保证了数据的一致性。
-那么问题来了，有没有一个极端的情况呢？假设 redo log 处于 prepare 状态，binlog 也已经写完了，这个时候发生了异常重启会怎么样呢？
-这个就要依赖于 MySQL 的处理机制了，MySQL 的处理过程如下：
+Nếu áp dụng cách Two-Phase Commit (Cam kết hai giai đoạn) của redo log thì khác, trước tiên ghi xong redo log, đánh dấu là prepare, ngay sau đó ghi xong binlog, rồi đánh dấu redo log là commit, là có thể ngăn chặn các vấn đề nêu trên, từ đó đảm bảo tính nhất quán của dữ liệu.
+Vậy vấn đề đặt ra là, có tình huống cực đoan nào không? Giả sử redo log đang ở trạng thái prepare, binlog cũng đã ghi xong, lúc này xảy ra khởi động lại bất thường thì sẽ như thế nào?
+Điều này phụ thuộc vào cơ chế xử lý của MySQL, quá trình xử lý của MySQL như sau:
 
-- 判断 redo log 是否为 commit 状态，如果是，说明 binlog 一定已完成刷盘，就立即提交。
-- 如果 redo log 只是 prepare 状态但不是 commit 状态，这个时候就会拿着事物的XID，去 binlog 判断该事物是否完成刷盘，如果是就提交 redo log, 否则就回滚事务。
+- Phán đoán redo log có ở trạng thái commit không, nếu có, nói rõ binlog nhất định đã hoàn thành việc flush xuống đĩa, thì commit ngay lập tức.
+- Nếu redo log chỉ ở trạng thái prepare nhưng không phải trạng thái commit, lúc này sẽ cầm XID của Transaction, sang binlog phán đoán Transaction đó đã hoàn thành flush xuống đĩa chưa, nếu có thì commit redo log, nếu không thì Rollback Transaction.
 
-这样就解决了数据一致性的问题。
+Như vậy đã giải quyết được vấn đề nhất quán dữ liệu.
 
-## 三 总结
+## 3. Tổng kết
 
-- MySQL 主要分为 Server 层和引擎层，Server 层主要包括连接器、查询缓存、分析器、优化器、执行器，同时还有一个日志模块（binlog），这个日志模块所有执行引擎都可以共用，redolog 只有 InnoDB 有。
-- 引擎层是插件式的，目前主要包括，MyISAM,InnoDB,Memory 等。
-- 查询语句的执行流程如下：权限校验（如果命中缓存）--->查询缓存--->分析器--->优化器--->权限校验--->执行器--->引擎
-- 更新语句执行流程如下：分析器---->权限校验---->执行器--->引擎---redo log(prepare 状态)--->binlog--->redo log(commit 状态)
+- MySQL chủ yếu chia thành tầng Server và tầng Engine. Tầng Server chủ yếu bao gồm Connector, Query Cache, Parser, Optimizer, Executor, đồng thời còn có một module Log (binlog), module Log này tất cả các Engine thực thi đều có thể dùng chung, redolog chỉ có ở InnoDB.
+- Tầng Engine có dạng Plugin, hiện tại chủ yếu bao gồm MyISAM, InnoDB, Memory,...
+- Quy trình thực thi của câu lệnh truy vấn như sau: Kiểm tra quyền (nếu trúng Cache) ---> Query Cache ---> Parser ---> Optimizer ---> Kiểm tra quyền ---> Executor ---> Engine
+- Quy trình thực thi của câu lệnh cập nhật như sau: Parser ----> Kiểm tra quyền ----> Executor ---> Engine --- redo log (trạng thái prepare) ---> binlog ---> redo log (trạng thái commit)
 
-## 四 参考
+## 4. Tham khảo
 
-- 《MySQL 实战 45 讲》
-- MySQL 5.6 参考手册:<https://dev.MySQL.com/doc/refman/5.6/en/>
+- 《MySQL 实战 45 讲》(45 bài giảng thực chiến MySQL)
+- MySQL 5.6 Reference Manual:<https://dev.MySQL.com/doc/refman/5.6/en/>
 
 <!-- @include: @article-footer.snippet.md -->

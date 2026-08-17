@@ -29,31 +29,37 @@ export default sidebar({
   // 必须放在最后面
   "/": [
     {
-      text: "项目介绍",
+      text: "Giới thiệu dự án",
       icon: ICONS.STAR,
       collapsible: true,
       prefix: "javaguide/",
       children: ["intro", "use-suggestion", "contribution-guideline", "faq"],
     },
     {
-      text: "面试准备（必看）",
+      text: "Chuẩn bị phỏng vấn (bắt buộc xem)",
       icon: ICONS.INTERVIEW,
       collapsible: true,
       prefix: "interview-preparation/",
       children: [
         {
-          text: "面试准备知识体系",
+          text: "Hệ thống kiến thức chuẩn bị phỏng vấn",
           link: "/interview-preparation/",
         },
-        { text: "Java 后端面试通关计划", link: "backend-interview-plan" },
+        {
+          text: "Kế hoạch vượt qua phỏng vấn backend Java",
+          link: "backend-interview-plan",
+        },
         "teach-you-how-to-prepare-for-the-interview-hand-in-hand",
         "resume-guide",
-        { text: "Java 后端面试重点总结", link: "key-points-of-interview" },
         {
-          text: "Java 面试 + 后端面试 PDF 资料",
+          text: "Tổng hợp trọng điểm phỏng vấn backend Java",
+          link: "key-points-of-interview",
+        },
+        {
+          text: "Tài liệu PDF phỏng vấn Java + phỏng vấn backend",
           link: "pdf-interview-javaguide",
         },
-        { text: "Java 学习路线", link: "java-roadmap" },
+        { text: "Lộ trình học Java", link: "java-roadmap" },
         "project-experience-guide",
         "how-to-handle-interview-nerves",
         "internship-experience",
@@ -66,11 +72,11 @@ export default sidebar({
       prefix: "java/",
       children: [
         {
-          text: "Java 知识体系",
+          text: "Hệ thống kiến thức Java",
           link: "/java/",
         },
         {
-          text: "基础",
+          text: "Cơ bản",
           prefix: "basis/",
           icon: ICONS.BASIC,
           children: [
@@ -85,7 +91,7 @@ export default sidebar({
               "proxy",
               "bigdecimal",
               {
-                text: "Java 金额类型选择",
+                text: "Lựa chọn kiểu tiền tệ trong Java",
                 link: "money-long-vs-bigdecimal",
               },
               "unsafe",
@@ -95,7 +101,7 @@ export default sidebar({
           ],
         },
         {
-          text: "集合",
+          text: "Collection",
           prefix: "collection/",
           icon: ICONS.CONTAINER,
           children: [
@@ -116,7 +122,7 @@ export default sidebar({
           ],
         },
         {
-          text: "并发编程",
+          text: "Lập trình đa luồng (Concurrency)",
           prefix: "concurrent/",
           icon: ICONS.PERFORMANCE,
           children: [
@@ -124,7 +130,10 @@ export default sidebar({
             "java-concurrent-questions-02",
             "java-concurrent-questions-03",
             createImportantSection([
-              { text: "Java 锁详解", link: "java-lock" },
+              {
+                text: "Giải thích chi tiết về Lock (khóa) trong Java",
+                link: "java-lock",
+              },
               "optimistic-lock-and-pessimistic-lock",
               "cas",
               "jmm",
@@ -153,7 +162,7 @@ export default sidebar({
           collapsible: true,
           children: [
             {
-              text: "JVM常见面试题总结",
+              text: "Tổng hợp câu hỏi phỏng vấn JVM thường gặp",
               link: "https://interview.javaguide.cn/java/java-jvm.html",
             },
             "memory-area",
@@ -167,7 +176,7 @@ export default sidebar({
           ],
         },
         {
-          text: "新特性",
+          text: "Tính năng mới",
           prefix: "new-features/",
           icon: ICONS.FEATURED,
           collapsible: true,
@@ -193,23 +202,23 @@ export default sidebar({
       ],
     },
     {
-      text: "数据库",
+      text: "CSDL (Cơ sở dữ liệu)",
       icon: ICONS.DATABASE,
       prefix: "database/",
       collapsible: true,
       children: [
         {
-          text: "数据库知识体系",
+          text: "Hệ thống kiến thức CSDL",
           link: "/database/",
         },
         {
-          text: "基础",
+          text: "Cơ bản",
           icon: ICONS.BASIC,
           children: [
             "basis",
             "nosql",
             {
-              text: "字符集详解",
+              text: "Giải thích chi tiết về Charset",
               link: "character-set",
             },
             {
@@ -239,11 +248,11 @@ export default sidebar({
               "mysql-index",
               "mysql-index-invalidation",
               {
-                text: "MySQL三大日志详解",
+                text: "Giải thích chi tiết ba nhật ký (log) lớn của MySQL",
                 link: "mysql-logs",
               },
               {
-                text: "MySQL备份与恢复",
+                text: "Sao lưu và khôi phục dữ liệu MySQL",
                 link: "mysql-backup-and-restore",
               },
               "transaction-isolation-level",
@@ -296,13 +305,13 @@ export default sidebar({
       ],
     },
     {
-      text: "开发工具",
+      text: "Công cụ phát triển",
       icon: ICONS.TOOL,
       prefix: "tools/",
       collapsible: true,
       children: [
         {
-          text: "开发工具知识体系",
+          text: "Hệ thống kiến thức công cụ phát triển",
           link: "/tools/",
         },
         {
@@ -310,8 +319,14 @@ export default sidebar({
           icon: ICONS.MAVEN,
           prefix: "maven/",
           children: [
-            { text: "Maven 核心概念总结", link: "maven-core-concepts" },
-            { text: "Maven 最佳实践", link: "maven-best-practices" },
+            {
+              text: "Tổng kết khái niệm cốt lõi Maven",
+              link: "maven-core-concepts",
+            },
+            {
+              text: "Thực hành tốt nhất với Maven",
+              link: "maven-best-practices",
+            },
           ],
         },
         {
@@ -340,13 +355,13 @@ export default sidebar({
       ],
     },
     {
-      text: "常用框架",
+      text: "Framework phổ biến",
       prefix: "system-design/framework/",
       icon: ICONS.COMPONENT,
       collapsible: true,
       children: [
         {
-          text: "Spring&Spring Boot",
+          text: "Spring & Spring Boot",
           icon: ICONS.SPRING_BOOT,
           prefix: "spring/",
           children: [
@@ -368,17 +383,17 @@ export default sidebar({
       ],
     },
     {
-      text: "系统设计",
+      text: "Thiết kế hệ thống",
       icon: ICONS.DESIGN,
       prefix: "system-design/",
       collapsible: true,
       children: [
         {
-          text: "系统设计知识体系",
+          text: "Hệ thống kiến thức thiết kế hệ thống",
           link: "/system-design/",
         },
         {
-          text: "基础知识",
+          text: "Kiến thức cơ bản",
           prefix: "basis/",
           icon: ICONS.BASIC,
           collapsible: true,
@@ -388,13 +403,13 @@ export default sidebar({
             "naming",
             "refactoring",
             {
-              text: "单元测试指南",
+              text: "Hướng dẫn kiểm thử đơn vị",
               link: "unit-test",
             },
           ],
         },
         {
-          text: "认证授权",
+          text: "Xác thực & ủy quyền",
           prefix: "security/",
           icon: ICONS.SECURITY,
           collapsible: true,
@@ -407,7 +422,7 @@ export default sidebar({
           ],
         },
         {
-          text: "数据安全",
+          text: "Bảo mật dữ liệu",
           prefix: "security/",
           icon: ICONS.SECURITY,
           collapsible: true,
@@ -421,7 +436,7 @@ export default sidebar({
         },
         "system-design-questions",
         {
-          text: "⭐设计模式常见面试题总结",
+          text: "⭐Tổng hợp câu hỏi phỏng vấn mẫu thiết kế thường gặp",
           link: "https://interview.javaguide.cn/system-design/design-pattern.html",
         },
         "schedule-task",
@@ -429,89 +444,122 @@ export default sidebar({
       ],
     },
     {
-      text: "分布式",
+      text: "Phân tán (Distributed)",
       icon: ICONS.DISTRIBUTED,
       prefix: "distributed-system/",
       collapsible: true,
       children: [
         {
-          text: "分布式系统知识体系",
+          text: "Hệ thống kiến thức hệ phân tán",
           link: "/distributed-system/",
         },
         {
-          text: "分布式系统入门",
+          text: "Nhập môn hệ phân tán",
           link: "distributed-system-intro",
         },
         {
-          text: "⭐分布式高频面试题",
+          text: "⭐Câu hỏi phỏng vấn tần suất cao hệ phân tán",
           link: "distributed-system-interview-questions",
         },
         {
-          text: "理论&算法&协议",
+          text: "Lý thuyết & thuật toán & giao thức",
           icon: ICONS.ALGORITHM,
           prefix: "protocol/",
           collapsible: true,
           children: [
             {
-              text: "理论&算法&协议专题",
+              text: "Chuyên đề lý thuyết & thuật toán & giao thức",
               link: "/distributed-system/protocol/",
             },
-            { text: "CAP定理与BASE理论详解", link: "cap-and-base-theorem" },
             {
-              text: "分布式协调详解",
+              text: "Giải thích chi tiết định lý CAP và lý thuyết BASE",
+              link: "cap-and-base-theorem",
+            },
+            {
+              text: "Giải thích chi tiết phối điều phối phân tán (Distributed Coordination)",
               link: "centralized-and-decentralized",
             },
-            { text: "拜占庭将军问题", link: "byzantine-generals-problem" },
-            { text: "Paxos算法详解", link: "paxos-algorithm" },
-            { text: "Raft算法详解", link: "raft-algorithm" },
-            { text: "ZAB协议详解", link: "zab" },
-            { text: "Gossip协议详解", link: "gossip-protocol" },
-            { text: "一致性哈希算法详解", link: "consistent-hashing" },
+            {
+              text: "Bài toán tướng Byzantine",
+              link: "byzantine-generals-problem",
+            },
+            {
+              text: "Giải thích chi tiết thuật toán Paxos",
+              link: "paxos-algorithm",
+            },
+            {
+              text: "Giải thích chi tiết thuật toán Raft",
+              link: "raft-algorithm",
+            },
+            { text: "Giải thích chi tiết giao thức ZAB", link: "zab" },
+            {
+              text: "Giải thích chi tiết giao thức Gossip",
+              link: "gossip-protocol",
+            },
+            {
+              text: "Giải thích chi tiết thuật toán băm nhất quán",
+              link: "consistent-hashing",
+            },
           ],
         },
         {
-          text: "API网关",
+          text: "API Gateway",
           icon: ICONS.GATEWAY,
           children: [
-            { text: "API网关基础知识总结", link: "api-gateway" },
             {
-              text: "Spring Cloud Gateway面试题总结",
+              text: "Tổng kết kiến thức cơ bản về API Gateway",
+              link: "api-gateway",
+            },
+            {
+              text: "Tổng hợp câu hỏi phỏng vấn Spring Cloud Gateway",
               link: "spring-cloud-gateway-questions",
             },
           ],
         },
         {
-          text: "分布式ID",
+          text: "ID phân tán (Distributed ID)",
           icon: ICONS.ID,
           children: [
-            { text: "分布式ID生成方案详解", link: "distributed-id" },
-            { text: "分布式ID设计实战指南", link: "distributed-id-design" },
+            {
+              text: "Giải thích chi tiết phương án sinh ID phân tán",
+              link: "distributed-id",
+            },
+            {
+              text: "Hướng dẫn thực chiến thiết kế ID phân tán",
+              link: "distributed-id-design",
+            },
           ],
         },
         {
-          text: "分布式锁",
+          text: "Khóa phân tán (Distributed Lock)",
           icon: ICONS.LOCK,
           children: [
-            { text: "分布式锁入门介绍", link: "distributed-lock" },
             {
-              text: "分布式锁常见实现方案总结",
+              text: "Giới thiệu nhập môn khóa phân tán",
+              link: "distributed-lock",
+            },
+            {
+              text: "Tổng kết phương án triển khai khóa phân tán phổ biến",
               link: "distributed-lock-implementations",
             },
           ],
         },
         {
-          text: "分布式事务",
+          text: "Giao dịch phân tán (Distributed Transaction)",
           icon: ICONS.TRANSACTION,
           children: [
-            { text: "分布式事务解决方案总结", link: "distributed-transaction" },
+            {
+              text: "Tổng kết giải pháp giao dịch phân tán",
+              link: "distributed-transaction",
+            },
           ],
         },
         {
-          text: "分布式配置中心",
+          text: "Trung tâm cấu hình phân tán",
           icon: ICONS.MAVEN,
           children: [
             {
-              text: "分布式配置中心面试题总结",
+              text: "Tổng hợp câu hỏi phỏng vấn trung tâm cấu hình phân tán",
               link: "distributed-configuration-center",
             },
           ],
@@ -522,9 +570,9 @@ export default sidebar({
           icon: ICONS.RPC,
           collapsible: true,
           children: [
-            { text: "RPC专题", link: "/distributed-system/rpc/" },
-            { text: "RPC基础知识总结", link: "rpc-intro" },
-            { text: "Dubbo面试题总结", link: "dubbo" },
+            { text: "Chuyên đề RPC", link: "/distributed-system/rpc/" },
+            { text: "Tổng kết kiến thức cơ bản về RPC", link: "rpc-intro" },
+            { text: "Tổng hợp câu hỏi phỏng vấn Dubbo", link: "dubbo" },
           ],
         },
         {
@@ -534,28 +582,34 @@ export default sidebar({
           collapsible: true,
           children: [
             {
-              text: "ZooKeeper专题",
+              text: "Chuyên đề ZooKeeper",
               link: "/distributed-system/distributed-process-coordination/zookeeper/",
             },
-            { text: "ZooKeeper入门指南", link: "zookeeper-intro" },
-            { text: "ZooKeeper进阶详解", link: "zookeeper-plus" },
-            { text: "ZooKeeper实战教程", link: "zookeeper-in-action" },
+            { text: "Hướng dẫn nhập môn ZooKeeper", link: "zookeeper-intro" },
+            {
+              text: "Giải thích chi tiết nâng cao ZooKeeper",
+              link: "zookeeper-plus",
+            },
+            {
+              text: "Hướng dẫn thực chiến ZooKeeper",
+              link: "zookeeper-in-action",
+            },
           ],
         },
       ],
     },
     {
-      text: "高性能",
+      text: "Hiệu năng cao (High Performance)",
       icon: ICONS.PERFORMANCE,
       prefix: "high-performance/",
       collapsible: true,
       children: [
         {
-          text: "高性能系统知识体系",
+          text: "Hệ thống kiến thức hệ thống hiệu năng cao",
           link: "/high-performance/",
         },
         {
-          text: "⭐高性能系统设计高频面试题",
+          text: "⭐Câu hỏi phỏng vấn tần suất cao thiết kế hệ thống hiệu năng cao",
           link: "high-performance-interview-questions",
         },
         {
@@ -564,14 +618,17 @@ export default sidebar({
           children: ["cdn"],
         },
         {
-          text: "负载均衡",
+          text: "Cân bằng tải (Load Balancing)",
           icon: ICONS.LOAD_BALANCING,
           children: [
-            { text: "负载均衡原理及算法详解", link: "load-balancing" },
+            {
+              text: "Giải thích chi tiết nguyên lý và thuật toán cân bằng tải",
+              link: "load-balancing",
+            },
           ],
         },
         {
-          text: "数据库优化",
+          text: "Tối ưu cơ sở dữ liệu",
           icon: ICONS.MYSQL,
           children: [
             "read-and-write-separation-and-library-subtable",
@@ -581,7 +638,7 @@ export default sidebar({
           ],
         },
         {
-          text: "消息队列",
+          text: "Hàng đợi tin nhắn (Message Queue)",
           prefix: "message-queue/",
           icon: ICONS.MQ,
           collapsible: true,
@@ -596,45 +653,45 @@ export default sidebar({
       ],
     },
     {
-      text: "高可用",
+      text: "Khả dụng cao (High Availability)",
       icon: ICONS.HIGH_AVAILABLE,
       prefix: "high-availability/",
       collapsible: true,
       children: [
         {
-          text: "高可用系统知识体系",
+          text: "Hệ thống kiến thức hệ thống khả dụng cao",
           link: "/high-availability/",
         },
         {
-          text: "⭐高可用系统面试题总结",
+          text: "⭐Tổng hợp câu hỏi phỏng vấn hệ thống khả dụng cao",
           link: "high-availability-interview-questions",
         },
         {
-          text: "高可用系统设计指南",
+          text: "Hướng dẫn thiết kế hệ thống khả dụng cao",
           link: "high-availability-system-design",
         },
         {
-          text: "⭐接口幂等方案总结",
+          text: "⭐Tổng kết phương án tính chất lũy đẳng (Idempotency) cho giao diện",
           link: "idempotency",
         },
         {
-          text: "⭐服务限流详解",
+          text: "⭐Giải thích chi tiết giới hạn lưu lượng dịch vụ (Rate Limiting)",
           link: "limit-request",
         },
         {
-          text: "⭐超时和重试机制详解",
+          text: "⭐Giải thích chi tiết cơ chế timeout và retry",
           link: "timeout-and-retry",
         },
         {
-          text: "服务降级与熔断详解",
+          text: "Giải thích chi tiết giáng cấp dịch vụ (Fallback) và ngắt mạch (Circuit Breaker)",
           link: "fallback-and-circuit-breaker",
         },
         {
-          text: "冗余设计详解",
+          text: "Giải thích chi tiết thiết kế dự phòng (Redundancy)",
           link: "redundancy",
         },
         {
-          text: "性能测试入门",
+          text: "Nhập môn kiểm thử hiệu năng",
           link: "performance-test",
         },
       ],

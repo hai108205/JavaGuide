@@ -1,6 +1,6 @@
 ---
-title: Java 21 新特性概览(重要)
-description: 概览 JDK 21 的关键新特性与实践影响，重点介绍字符串模板、Sequenced Collections、分代 ZGC、虚拟线程等。
+title: Tổng quan các tính năng mới Java 21 (Quan trọng)
+description: Tổng quan các tính năng mới quan trọng của JDK 21 và tác động thực tiễn, tập trung vào string template, Sequenced Collections, generational ZGC, virtual thread...
 category: Java
 tag:
   - Java新特性
@@ -10,33 +10,33 @@ head:
       content: Java 21,JDK21,LTS,字符串模板,Sequenced Collections,分代 ZGC,记录模式,switch 模式匹配,虚拟线程,外部函数与内存 API
 ---
 
-JDK 21 于 2023 年 9 月 19 日 发布，这是一个非常重要的版本，里程碑式。
+JDK 21 được phát hành vào ngày 19 tháng 9 năm 2023, đây là một phiên bản rất quan trọng, mang tính mốc son.
 
-JDK 21 是 LTS（长期支持版）。Oracle 当前列出的 LTS 版本包括 JDK 8、JDK 11、JDK 17、JDK 21 和 JDK 25。
+JDK 21 là LTS (Long-Term Support). Các phiên bản LTS hiện tại mà Oracle liệt kê bao gồm JDK 8, JDK 11, JDK 17, JDK 21 và JDK 25.
 
-JDK 21 共有 15 个新特性，这篇文章会挑选其中较为重要的一些新特性进行详细介绍：
+JDK 21 có tổng cộng 15 tính năng mới, bài viết này sẽ chọn ra một số tính năng mới quan trọng hơn để giới thiệu chi tiết:
 
-- [JEP 430: String Templates（字符串模板）](https://openjdk.org/jeps/430)（预览）
-- [JEP 431: Sequenced Collections（有序集合）](https://openjdk.org/jeps/431)
-- [JEP 439: Generational ZGC（分代 ZGC）](https://openjdk.org/jeps/439)
-- [JEP 440: Record Patterns（记录模式）](https://openjdk.org/jeps/440)
-- [JEP 441: Pattern Matching for switch（switch 的模式匹配）](https://openjdk.org/jeps/441)
-- [JEP 442: Foreign Function & Memory API（外部函数和内存 API）](https://openjdk.org/jeps/442)（第三次预览）
-- [JEP 443: Unnamed Patterns and Variables（未命名模式和变量）](https://openjdk.org/jeps/443)（预览）
-- [JEP 444: Virtual Threads（虚拟线程）](https://openjdk.org/jeps/444)
-- [JEP 445: Unnamed Classes and Instance Main Methods（未命名类和实例 main 方法）](https://openjdk.org/jeps/445)（预览）
+- [JEP 430: String Templates (string template)](https://openjdk.org/jeps/430)（xem trước）
+- [JEP 431: Sequenced Collections (collection có thứ tự)](https://openjdk.org/jeps/431)
+- [JEP 439: Generational ZGC (ZGC phân thế hệ)](https://openjdk.org/jeps/439)
+- [JEP 440: Record Patterns (record pattern)](https://openjdk.org/jeps/440)
+- [JEP 441: Pattern Matching for switch (pattern matching cho switch)](https://openjdk.org/jeps/441)
+- [JEP 442: Foreign Function & Memory API (API hàm và bộ nhớ ngoài)](https://openjdk.org/jeps/442)（xem trước lần ba）
+- [JEP 443: Unnamed Patterns and Variables (pattern và biến không tên)](https://openjdk.org/jeps/443)（xem trước）
+- [JEP 444: Virtual Threads (virtual thread)](https://openjdk.org/jeps/444)
+- [JEP 445: Unnamed Classes and Instance Main Methods (class không tên và instance main method)](https://openjdk.org/jeps/445)（xem trước）
 
-下图是从 JDK 8 到 JDK 24 每个版本的更新带来的新特性数量和更新时间：
+Hình dưới đây là số lượng tính năng mới và thời điểm phát hành của từng phiên bản từ JDK 8 đến JDK 24:
 
 ![](https://oss.javaguide.cn/github/javaguide/java/new-features/jdk8~jdk24.png)
 
-## JEP 430: String Templates（字符串模板，预览）
+## JEP 430: String Templates (string template, xem trước)
 
-String Templates（字符串模板）是 JDK 21 中的预览功能。该功能在 JDK 22 中进行了第二次预览，随后被撤回，因此当前 JDK 中不再提供这套 API 和语法。
+String Templates (string template) là tính năng xem trước trong JDK 21. Tính năng này trải qua lần xem trước thứ hai trong JDK 22, sau đó bị rút lại, do đó trong JDK hiện tại không còn cung cấp bộ API và cú pháp này nữa.
 
-String Templates 提供了一种更简洁、更直观的方式来动态构建字符串。JDK 21 的预览语法使用 `\{表达式}` 作为嵌入式表达式，并由模板处理器处理模板。表达式支持局部变量、静态或非静态字段、方法调用和计算结果等。
+String Templates cung cấp một cách xây dựng chuỗi động động ngắn gọn và trực quan hơn. Cú pháp xem trước của JDK 21 sử dụng `\{biểu thức}` làm embedded expression (biểu thức nhúng), và template processor (bộ xử lý mẫu) xử lý template. Biểu thức hỗ trợ biến cục bộ, static hoặc non-static field, lời gọi method, kết quả tính toán, v.v.
 
-实际上，String Templates（字符串模板）在大多数编程语言中都存在:
+Trên thực tế, String Templates (string template) tồn tại trong hầu hết các ngôn ngữ lập trình:
 
 ```typescript
 "Greetings {{ name }}!";  //Angular
@@ -45,7 +45,7 @@ $"Greetings { name }!"    //Visual basic
 f"Greetings { name }!"    //Python
 ```
 
-Java 在没有 String Templates 之前，我们通常使用字符串拼接或格式化方法来构建字符串：
+Khi Java chưa có String Templates, chúng ta thường dùng phép nối chuỗi hoặc method định dạng để xây dựng chuỗi:
 
 ```java
 //concatenation
@@ -61,24 +61,24 @@ message = new MessageFormat("Greetings {0}!").format(name);
 message = new StringBuilder().append("Greetings ").append(name).append("!").toString();
 ```
 
-这些方法或多或少都存在一些缺点，比如难以阅读、冗长、复杂。
+Những method này ít nhiều đều có nhược điểm, ví dụ khó đọc, rườm rà, phức tạp.
 
-Java 使用 String Templates 进行字符串拼接，可以直接在字符串中嵌入表达式，而无需进行额外的处理：
+Java sử dụng String Templates để nối chuỗi, có thể nhúng trực tiếp biểu thức vào chuỗi mà không cần xử lý thêm:
 
 ```java
 String message = STR."Greetings \{name}!";
 ```
 
-在上面的模板表达式中：
+Trong biểu thức template ở trên:
 
-- STR 是模板处理器。
-- `\{name}` 为表达式，运行时，这些表达式将被相应的变量值替换。
+- STR là template processor.
+- `\{name}` là biểu thức, khi chạy, các biểu thức này sẽ được thay thế bằng giá trị của biến tương ứng.
 
-Java 目前支持三种模板处理器：
+Java hiện hỗ trợ ba template processor:
 
-- STR：自动执行字符串插值，即将模板中的每个嵌入式表达式替换为其值（转换为字符串）。
-- FMT：和 STR 类似，但是它还可以接受格式说明符，这些格式说明符出现在嵌入式表达式的左边，用来控制输出的样式。
-- RAW：不会像 STR 和 FMT 模板处理器那样自动处理字符串模板，而是返回一个 `StringTemplate` 对象，这个对象包含了模板中的文本和表达式的信息。
+- STR: tự động thực hiện string interpolation (nội suy chuỗi), tức thay thế mỗi embedded expression trong template bằng giá trị của nó (chuyển thành chuỗi).
+- FMT: tương tự như STR, nhưng nó còn có thể nhận format specifier (bộ chỉ định định dạng), các format specifier này nằm ở phía bên trái của embedded expression, dùng để điều khiển kiểu xuất ra.
+- RAW: không tự động xử lý string template như STR và FMT, mà trả về một đối tượng `StringTemplate`, đối tượng này chứa thông tin về văn bản và biểu thức trong template.
 
 ```java
 String name = "Lokesh";
@@ -94,9 +94,9 @@ StringTemplate st = RAW."Greetings \{name}.";
 String message = STR.process(st);
 ```
 
-除了 JDK 自带的三种模板处理器外，你还可以实现 `StringTemplate.Processor` 接口来创建自己的模板处理器，只需要继承 `StringTemplate.Processor` 接口，然后实现 `process` 方法即可。
+Ngoài ba template processor đi kèm của JDK, bạn còn có thể implement interface `StringTemplate.Processor` để tạo template processor của riêng mình, chỉ cần kế thừa interface `StringTemplate.Processor`, rồi implement method `process` là được.
 
-我们可以使用局部变量、静态/非静态字段甚至方法作为嵌入表达式：
+Chúng ta có thể dùng biến cục bộ, static/non-static field thậm chí method làm embedded expression:
 
 ```java
 //variable
@@ -109,14 +109,14 @@ message = STR."Greetings \{getName()}!";
 message = STR."Greetings \{this.name}!";
 ```
 
-还可以在表达式中执行计算并打印结果：
+Còn có thể thực hiện tính toán trong biểu thức và in ra kết quả:
 
 ```java
 int x = 10, y = 20;
 String s = STR."\{x} + \{y} = \{x + y}";  //"10 + 20 = 30"
 ```
 
-为了提高可读性，我们可以将嵌入的表达式分成多行:
+Để nâng cao tính dễ đọc, chúng ta có thể chia biểu thức nhúng thành nhiều dòng:
 
 ```java
 String time = STR."The current time is \{
@@ -127,17 +127,17 @@ String time = STR."The current time is \{
   }.";
 ```
 
-## JEP 431: Sequenced Collections（有序集合）
+## JEP 431: Sequenced Collections (collection có thứ tự)
 
-JDK 21 引入了一组新的集合接口：**Sequenced Collections（有序集合）**。这类集合具有确定的遍历顺序（encounter order），并提供访问集合首尾元素以及获取反向视图的方法。
+JDK 21 giới thiệu một nhóm interface collection mới: **Sequenced Collections (collection có thứ tự)**. Loại collection này có thứ tự duyệt xác định (encounter order), đồng thời cung cấp method truy cập phần tử đầu-cuối và lấy view đảo ngược.
 
-Sequenced Collections 包括以下三个接口：
+Sequenced Collections bao gồm ba interface sau:
 
 - [`SequencedCollection`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/SequencedCollection.html)
 - [`SequencedSet`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/SequencedSet.html)
 - [`SequencedMap`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/SequencedMap.html)
 
-`SequencedCollection` 接口继承了 `Collection` 接口， 提供了在集合两端访问、添加或删除元素以及获取集合的反向视图的方法。
+Interface `SequencedCollection` kế thừa interface `Collection`, cung cấp method truy cập, thêm hoặc xóa phần tử ở hai đầu collection cũng như lấy view đảo ngược của collection.
 
 ```java
 interface SequencedCollection<E> extends Collection<E> {
@@ -159,9 +159,9 @@ interface SequencedCollection<E> extends Collection<E> {
 }
 ```
 
-`List` 和 `Deque` 接口继承了 `SequencedCollection` 接口。
+Interface `List` và `Deque` kế thừa interface `SequencedCollection`.
 
-这里以 `ArrayList` 为例，演示一下实际使用效果：
+Lấy `ArrayList` làm ví dụ, minh họa hiệu quả sử dụng thực tế:
 
 ```java
 ArrayList<Integer> arrayList = new ArrayList<>();
@@ -178,7 +178,7 @@ List<Integer> reversed = arrayList.reversed();
 System.out.println(reversed); // Prints [2, 1, 0]
 ```
 
-`SequencedSet` 接口直接继承了 `SequencedCollection` 接口并重写了 `reversed()` 方法。
+Interface `SequencedSet` trực tiếp kế thừa interface `SequencedCollection` và ghi đè method `reversed()`.
 
 ```java
 interface SequencedSet<E> extends SequencedCollection<E>, Set<E> {
@@ -187,9 +187,9 @@ interface SequencedSet<E> extends SequencedCollection<E>, Set<E> {
 }
 ```
 
-`SortedSet` 接口继承了 `SequencedSet` 接口，`LinkedHashSet` 实现了 `SequencedSet` 接口。
+Interface `SortedSet` kế thừa interface `SequencedSet`, `LinkedHashSet` implement interface `SequencedSet`.
 
-这里以 `LinkedHashSet` 为例，演示一下实际使用效果：
+Lấy `LinkedHashSet` làm ví dụ, minh họa hiệu quả sử dụng thực tế:
 
 ```java
 LinkedHashSet<Integer> linkedHashSet = new LinkedHashSet<>(List.of(1, 2, 3));
@@ -203,7 +203,7 @@ linkedHashSet.addLast(4);   //List contains: [0, 1, 2, 3, 4]
 System.out.println(linkedHashSet.reversed());   //Prints [4, 3, 2, 1, 0]
 ```
 
-`SequencedMap` 接口继承了 `Map` 接口， 提供了在集合两端访问、添加或删除键值对、获取包含 key 的 `SequencedSet`、包含 value 的 `SequencedCollection`、包含 entry（键值对） 的 `SequencedSet` 以及获取集合的反向视图的方法。
+Interface `SequencedMap` kế thừa interface `Map`, cung cấp method truy cập, thêm hoặc xóa cặp key-value ở hai đầu collection, lấy `SequencedSet` chứa key, `SequencedCollection` chứa value, `SequencedSet` chứa entry (cặp key-value) cũng như lấy view đảo ngược của collection.
 
 ```java
 interface SequencedMap<K,V> extends Map<K,V> {
@@ -230,9 +230,9 @@ interface SequencedMap<K,V> extends Map<K,V> {
 }
 ```
 
-`SortedMap` 接口继承了 `SequencedMap` 接口，`LinkedHashMap` 实现了 `SequencedMap` 接口。
+Interface `SortedMap` kế thừa interface `SequencedMap`, `LinkedHashMap` implement interface `SequencedMap`.
 
-这里以 `LinkedHashMap` 为例，演示一下实际使用效果：
+Lấy `LinkedHashMap` làm ví dụ, minh họa hiệu quả sử dụng thực tế:
 
 ```java
 LinkedHashMap<Integer, String> map = new LinkedHashMap<>();
@@ -258,34 +258,34 @@ System.out.println(map);  //{1=One, 2=Two, 3=Three}
 System.out.println(map.reversed());   //{3=Three, 2=Two, 1=One}
 ```
 
-## JEP 439: Generational ZGC（分代 ZGC）
+## JEP 439: Generational ZGC (ZGC phân thế hệ)
 
-JDK21 中对 ZGC 进行了功能扩展，增加了分代 GC 功能。不过，默认是关闭的，需要通过配置打开：
+Trong JDK 21, ZGC được mở rộng tính năng, bổ sung chức năng Generational GC. Tuy nhiên, mặc định là tắt, cần bật thông qua cấu hình:
 
 ```bash
-// 启用分代ZGC
+// Kích hoạt Generational ZGC
 java -XX:+UseZGC -XX:+ZGenerational ...
 ```
 
-在未来的版本中，官方会把 ZGenerational 设为默认值，即默认打开 ZGC 的分代 GC。在更晚的版本中，非分代 ZGC 就被移除。
+Trong các phiên bản tương lai, nhà phát hành sẽ đặt ZGenerational làm giá trị mặc định, tức mặc định bật Generational GC của ZGC. Ở các phiên bản muộn hơn, ZGC không phân thế hệ sẽ bị gỡ bỏ.
 
 > In a future release we intend to make Generational ZGC the default, at which point -XX:-ZGenerational will select non-generational ZGC. In an even later release we intend to remove non-generational ZGC, at which point the ZGenerational option will become obsolete.
 >
-> 在将来的版本中，我们打算将 Generational ZGC 作为默认选项，此时-XX:-ZGenerational 将选择非分代 ZGC。在更晚的版本中，我们打算移除非分代 ZGC，此时 ZGenerational 选项将变得过时。
+> Trong các phiên bản tương lai, chúng tôi dự định đặt Generational ZGC làm mặc định, khi đó -XX:-ZGenerational sẽ chọn ZGC không phân thế hệ. Trong các phiên bản muộn hơn, chúng tôi dự định gỡ bỏ ZGC không phân thế hệ, khi đó tùy chọn ZGenerational sẽ trở nên lỗi thời.
 
-分代 ZGC 在保持 ZGC 低暂停目标的同时，主要通过更频繁地回收年轻对象来降低分配停顿风险、减少所需堆内存并提高吞吐量。
+Generational ZGC khi vẫn giữ mục tiêu low-pause (tạm dừng thấp) của ZGC, chủ yếu thông qua việc thu hồi thường xuyên hơn các đối tượng trẻ để giảm rủi ro dừng do cấp phát, giảm bộ nhớ heap cần thiết và nâng cao thông lượng.
 
-## JEP 440: Record Patterns（记录模式）
+## JEP 440: Record Patterns (record pattern)
 
-记录模式在 Java 19 进行了第一次预览， 由 [JEP 405](https://openjdk.org/jeps/405) 提出。JDK 20 中是第二次预览，由 [JEP 432](https://openjdk.org/jeps/432) 提出。最终，记录模式在 JDK21 顺利转正。
+Record pattern trải qua lần xem trước đầu tiên trong Java 19, do [JEP 405](https://openjdk.org/jeps/405) đề xuất. Trong JDK 20 là lần xem trước thứ hai, do [JEP 432](https://openjdk.org/jeps/432) đề xuất. Cuối cùng, record pattern chuyển chính thức thành công trong JDK 21.
 
-[Java 20 新特性概览](./java20.md)已经详细介绍过记录模式，这里就不重复了。
+[Tổng quan các tính năng mới Java 20](./java20.md) đã giới thiệu chi tiết về record pattern, ở đây không lặp lại nữa.
 
-## JEP 441: Pattern Matching for switch（switch 的模式匹配）
+## JEP 441: Pattern Matching for switch (pattern matching cho switch)
 
-增强 Java 中的 switch 表达式和语句，允许在 case 标签中使用模式。当模式匹配时，执行 case 标签对应的代码。
+Tăng cường switch expression và câu lệnh trong Java, cho phép dùng pattern trong case label. Khi pattern khớp, sẽ thực thi code tương ứng với case label.
 
-在下面的代码中，switch 表达式使用了类型模式来进行匹配。
+Trong code dưới đây, switch expression sử dụng type pattern để khớp.
 
 ```java
 static String formatterPatternSwitch(Object obj) {
@@ -299,19 +299,19 @@ static String formatterPatternSwitch(Object obj) {
 }
 ```
 
-## JEP 442: Foreign Function & Memory API（外部函数和内存 API，第三次预览）
+## JEP 442: Foreign Function & Memory API (API hàm và bộ nhớ ngoài, xem trước lần ba)
 
-Java 程序可以通过该 API 与 Java 运行时之外的代码和数据进行互操作。通过高效地调用外部函数（即 JVM 之外的代码）和安全地访问外部内存（即不受 JVM 管理的内存），该 API 使 Java 程序能够调用本机库并处理本机数据，而不会像 JNI 那样危险和脆弱。
+Chương trình Java có thể thông qua API này để tương tác với code và dữ liệu nằm ngoài Java runtime. Bằng cách gọi hiệu quả các hàm ngoài (tức code nằm ngoài JVM) và truy cập an toàn bộ nhớ ngoài (tức bộ nhớ không do JVM quản lý), API này giúp chương trình Java có thể gọi thư viện native và xử lý dữ liệu native, mà không nguy hiểm và mong manh như JNI.
 
-外部函数和内存 API 在 Java 17 中进行了第一轮孵化，由 [JEP 412](https://openjdk.java.net/jeps/412) 提出。Java 18 中进行了第二次孵化，由[JEP 419](https://openjdk.org/jeps/419) 提出。Java 19 中是第一次预览，由 [JEP 424](https://openjdk.org/jeps/424) 提出。JDK 20 中是第二次预览，由 [JEP 434](https://openjdk.org/jeps/434) 提出。JDK 21 中是第三次预览，由 [JEP 442](https://openjdk.org/jeps/442) 提出。
+Foreign function and memory API trải qua vòng ấp ủ đầu tiên trong Java 17, do [JEP 412](https://openjdk.java.net/jeps/412) đề xuất. Vòng ấp ủ thứ hai trong Java 18, do [JEP 419](https://openjdk.org/jeps/419) đề xuất. Lần xem trước đầu tiên trong Java 19, do [JEP 424](https://openjdk.org/jeps/424) đề xuất. Lần xem trước thứ hai trong JDK 20, do [JEP 434](https://openjdk.org/jeps/434) đề xuất. Lần xem trước thứ ba trong JDK 21, do [JEP 442](https://openjdk.org/jeps/442) đề xuất.
 
-在 [Java 19 新特性概览](./java19.md) 中，我有详细介绍到外部函数和内存 API，这里就不再做额外的介绍了。
+Trong [Tổng quan các tính năng mới Java 19](./java19.md), tôi đã giới thiệu chi tiết về foreign function and memory API, ở đây không giới thiệu thêm nữa.
 
-## JEP 443: Unnamed Patterns and Variables（未命名模式和变量，预览）
+## JEP 443: Unnamed Patterns and Variables (pattern và biến không tên, xem trước)
 
-未命名模式和变量使得我们可以使用下划线 `_` 表示未命名的变量以及模式匹配时不使用的组件，旨在提高代码的可读性和可维护性。
+Unnamed pattern và biến không tên cho phép chúng ta dùng gạch dưới `_` để biểu diễn biến không tên cũng như các thành phần không dùng khi khớp pattern, nhằm nâng cao tính dễ đọc và dễ bảo trì của code.
 
-未命名变量的典型场景是 `try-with-resources` 语句、 `catch` 子句中的异常变量和 `for` 循环。当变量不需要使用的时候就可以使用下划线 `_` 代替，这样清晰标识未被使用的变量。
+Kịch bản điển hình của biến không tên là câu lệnh `try-with-resources`, biến ngoại lệ trong mệnh đề `catch` và vòng lặp `for`. Khi biến không cần dùng thì có thể dùng gạch dưới `_` thay thế, như vậy xác định rõ ràng biến không được sử dụng.
 
 ```java
 try (var _ = ScopedContext.acquire()) {
@@ -326,7 +326,7 @@ for (int i = 0, _ = runOnce(); i < arr.length; i++) {
 }
 ```
 
-未命名模式是一个无条件的模式，并不绑定任何值。未命名模式变量出现在类型模式中。
+Unnamed pattern là một pattern vô điều kiện, không ràng buộc với bất kỳ giá trị nào. Biến unnamed pattern xuất hiện trong type pattern.
 
 ```java
 if (r instanceof ColoredPoint(_, Color c)) { ... c ... }
@@ -338,19 +338,19 @@ switch (b) {
 }
 ```
 
-## JEP 444: Virtual Threads（虚拟线程）
+## JEP 444: Virtual Threads (virtual thread)
 
-虚拟线程是一项重量级的更新，一定一定要重视！
+Virtual thread là một cập nhật nặng ký, nhất định phải chú trọng!
 
-虚拟线程在 Java 19 中进行了第一次预览，由[JEP 425](https://openjdk.org/jeps/425)提出。JDK 20 中是第二次预览。最终，虚拟线程在 JDK21 顺利转正。
+Virtual thread trải qua lần xem trước đầu tiên trong Java 19, do [JEP 425](https://openjdk.org/jeps/425) đề xuất. Trong JDK 20 là lần xem trước thứ hai. Cuối cùng, virtual thread chuyển chính thức thành công trong JDK 21.
 
-[Java 20 新特性概览](./java20.md)已经详细介绍过虚拟线程，这里就不重复了。
+[Tổng quan các tính năng mới Java 20](./java20.md) đã giới thiệu chi tiết về virtual thread, ở đây không lặp lại nữa.
 
-## JEP 445: Unnamed Classes and Instance Main Methods（未命名类和实例 main 方法，预览）
+## JEP 445: Unnamed Classes and Instance Main Methods (class không tên và instance main method, xem trước)
 
-这个特性主要简化了 `main` 方法的声明。对于 Java 初学者来说，这个 `main` 方法的声明引入了太多的 Java 语法概念，不利于初学者快速上手。
+Tính năng này chủ yếu đơn giản hóa khai báo của method `main`. Đối với người mới học Java, khai báo method `main` này giới thiệu quá nhiều khái niệm cú pháp Java, không thuận lợi cho người mới nhanh chóng nắm bắt.
 
-没有使用该特性之前定义一个 `main` 方法：
+Trước khi dùng tính năng này, khai báo một `main` method:
 
 ```java
 public class HelloWorld {
@@ -360,7 +360,7 @@ public class HelloWorld {
 }
 ```
 
-使用该新特性之后定义一个 `main` 方法：
+Sau khi dùng tính năng mới này, khai báo một `main` method:
 
 ```java
 class HelloWorld {
@@ -370,7 +370,7 @@ class HelloWorld {
 }
 ```
 
-进一步精简（未命名的类允许我们不定义类名）：
+Tiếp tục tinh gọn (class không tên cho phép chúng ta không định nghĩa tên class):
 
 ```java
 void main() {
@@ -378,7 +378,7 @@ void main() {
 }
 ```
 
-## 参考
+## Tham khảo
 
 - Java 21 String Templates：<https://howtodoinjava.com/java/java-string-templates/>
 - Java 21 Sequenced Collections：<https://howtodoinjava.com/java/sequenced-collections/>

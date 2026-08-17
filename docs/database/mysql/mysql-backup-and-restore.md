@@ -1,92 +1,92 @@
 ---
-title: MySQL备份与恢复详解：mysqldump、XtraBackup、binlog和PITR
-description: MySQL备份与恢复详解，讲解 mysqldump、MySQL Shell、Percona XtraBackup、binlog、PITR、RTO/RPO、恢复演练和常见备份误区。
-category: 数据库
+title: "Giải thích chi tiết Backup và Restore trong MySQL: mysqldump, XtraBackup, binlog và PITR"
+description: Giải thích chi tiết về Backup và Restore trong MySQL, trình bày về mysqldump, MySQL Shell, Percona XtraBackup, binlog, PITR, RTO/RPO, diễn tập phục hồi và những hiểu lầm phổ biến khi Backup.
+category: Cơ sở dữ liệu
 tag:
   - MySQL
-  - 备份恢复
+  - Backup và Restore
 head:
   - - meta
     - name: keywords
-      content: MySQL备份,MySQL恢复,mysqldump,mysqlbinlog,MySQL Shell,Percona XtraBackup,binlog,PITR,全量备份,增量备份,逻辑备份,物理备份,RTO,RPO
+      content: MySQL Backup,MySQL Restore,mysqldump,mysqlbinlog,MySQL Shell,Percona XtraBackup,binlog,PITR,Full Backup,Incremental Backup,Logical Backup,Physical Backup,RTO,RPO
 ---
 
-线上最怕的数据库事故，很多时候不是 MySQL 进程挂了。
+Sự cố Database đáng sợ nhất trên Production, nhiều khi không phải là MySQL Process bị chết.
 
-进程挂了还能重启，主库挂了还能切从库。真正麻烦的是数据被删了、被错误脚本改了、磁盘坏了，或者迁移时发现少了一批表。这个时候，主从复制、redo log、undo log 都不够用，最后能救场的通常是备份和恢复方案。
+Process chết còn có thể khởi động lại, Master chết còn có thể chuyển sang Slave. Điều thực sự phiền phức là dữ liệu bị xóa, bị script sai sửa mất, ổ đĩa hỏng, hoặc khi Migration phát hiện thiếu mất một loạt bảng. Lúc này, Replication chủ-tớ, redo log, undo log đều không đủ dùng, thứ cuối cùng có thể cứu vãn tình thế thường là phương án Backup và Restore.
 
-这篇只讲 MySQL 备份与恢复，不展开 PostgreSQL、Redis 和云厂商备份产品。命令主要按 MySQL 8.4 LTS 校对，同时参考了截至 2026-06-25 的 MySQL 9.7 当前文档；不同版本的参数名、权限要求和工具兼容性会有变化，生产落地前一定要以自己环境里的 `mysqldump --help`、`mysqlbinlog --help` 和工具文档为准。
+Bài này chỉ nói về Backup và Restore trong MySQL, không mở rộng sang PostgreSQL, Redis hay các sản phẩm Backup của nhà cung cấp Cloud. Các câu lệnh chủ yếu được kiểm chứng theo MySQL 8.4 LTS, đồng thời tham khảo tài liệu hiện hành của MySQL 9.7 tính đến ngày 2026-06-25; tên tham số, yêu cầu quyền và tính tương thích của công cụ giữa các phiên bản sẽ có khác biệt, trước khi áp dụng lên Production nhất định phải lấy `mysqldump --help`, `mysqlbinlog --help` và tài liệu công cụ trong chính môi trường của mình làm chuẩn.
 
-## 备份到底解决什么问题？
+## Backup rốt cuộc giải quyết vấn đề gì?
 
-先把几个容易混在一起的概念拆开：
+Trước tiên hãy tách riêng vài khái niệm dễ bị trộn lẫn:
 
-- **崩溃恢复**：MySQL 异常宕机后，InnoDB 依赖 redo log、undo log 等机制把数据库恢复到一致状态。这解决的是进程崩溃、机器重启后的存储引擎一致性问题。
-- **主从复制 / 高可用切换**：主库不可用时，把流量切到从库或新主库。这解决的是服务可用性问题，但错误写入通常会被同步到从库。
-- **备份恢复**：从某个历史数据副本恢复，再根据 binlog 回放到指定时间点。这解决的是数据丢失、误删误改、磁盘损坏、跨环境迁移和审计留存问题。
+- **Crash Recovery (Phục hồi sau sự cố)**: Sau khi MySQL downtime bất thường, InnoDB dựa vào các cơ chế như redo log, undo log để đưa Database về trạng thái nhất quán. Điều này giải quyết vấn đề nhất quán của Storage Engine sau khi Process Crash, máy khởi động lại.
+- **Replication chủ-tớ / Chuyển đổi High Availability (HA)**: Khi Master không khả dụng, chuyển Traffic sang Slave hoặc Master mới. Điều này giải quyết vấn đề khả dụng của dịch vụ, nhưng các thao tác ghi sai thường sẽ được đồng bộ sang Slave.
+- **Backup Restore (Phục hồi từ Backup)**: Phục hồi từ một bản sao dữ liệu lịch sử nào đó, rồi dựa vào binlog để replay (phát lại) đến một thời điểm chỉ định. Điều này giải quyết vấn đề mất dữ liệu, xóa nhầm sửa nhầm, hỏng ổ đĩa, Migration chéo môi trường và lưu trữ phục vụ Audit.
 
-主从复制不能替代备份。
+Replication chủ-tớ không thể thay thế Backup.
 
-如果一条 `DROP TABLE` 在主库执行成功，它大概率也会同步到从库。复制做得越快，错误传播也越快。备份的价值在于保留一个独立的历史状态，让你有机会回到事故发生前。
+Nếu một câu lệnh `DROP TABLE` thực thi thành công trên Master, khả năng cao nó cũng sẽ được đồng bộ sang Slave. Replication càng nhanh thì lỗi càng lan nhanh. Giá trị của Backup nằm ở việc giữ lại một trạng thái lịch sử độc lập, cho bạn cơ hội quay về thời điểm trước khi sự cố xảy ra.
 
-## RTO 和 RPO 决定备份策略
+## RTO và RPO quyết định chiến lược Backup
 
-备份策略不能只问“每天备几次”。更实际的问题是两个：
+Chiến lược Backup không thể chỉ hỏi "mỗi ngày Backup mấy lần". Câu hỏi thực tế hơn gồm hai điều:
 
-- **RPO（Recovery Point Objective）**：最多能接受丢多久的数据？
-- **RTO（Recovery Time Objective）**：最多能接受多久恢复服务？
+- **RPO (Recovery Point Objective)**: Chấp nhận mất dữ liệu tối đa trong bao lâu?
+- **RTO (Recovery Time Objective)**: Chấp nhận tối đa bao lâu để phục hồi dịch vụ?
 
-如果业务能接受丢 1 天数据，每天一次全量备份也许够用。如果订单、支付、库存这类数据最多只能丢几分钟，只有全量备份不够，还要保留 binlog 做增量恢复。如果数据库有几百 GB，恢复 SQL 文件可能跑很久，RTO 又要求在 30 分钟内恢复，那就要认真考虑物理备份、备库预热、恢复演练和切换流程。
+Nếu nghiệp vụ chấp nhận mất 1 ngày dữ liệu, có lẽ mỗi ngày một lần Full Backup là đủ. Nếu dữ liệu dạng đơn hàng, thanh toán, tồn kho chỉ được phép mất tối đa vài phút, thì chỉ Full Backup không đủ, còn phải giữ binlog để phục hồi tăng cường (Incremental Restore). Nếu Database lên đến vài trăm GB, việc Restore file SQL có thể chạy rất lâu, RTO lại yêu cầu phục hồi trong 30 phút, thì phải cân nhắc nghiêm túc Physical Backup, làm nóng Slave dự phòng, diễn tập phục hồi và quy trình chuyển đổi.
 
-一套常见组合是：
+Một tổ hợp thường thấy là:
 
-- 每天或每周做一次全量备份。
-- 开启 binlog，并按 RPO 要求保留足够长的日志。
-- 备份文件和 binlog 不放在同一块磁盘、同一个故障域里。
-- 定期把备份恢复到一台新机器，记录实际耗时。
+- Mỗi ngày hoặc mỗi tuần thực hiện một lần Full Backup.
+- Bật binlog, và giữ Log đủ lâu theo yêu cầu RPO.
+- File Backup và binlog không đặt trên cùng một ổ đĩa, cùng một Failure Domain (miền lỗi).
+- Định kỳ Restore Backup lên một máy mới, ghi lại thời gian thực tế tiêu tốn.
 
-binlog 保留 30 天，不代表 RPO 就一定是几秒。真正能恢复到哪里，取决于最后一份完整、可读、已经复制到独立故障域的 binlog。生产里还要看 `sync_binlog`、`innodb_flush_log_at_trx_commit`、binlog 归档延迟、归档进程是否断过、binlog 文件链是否连续。MySQL 8.4 默认 `sync_binlog=1`、`innodb_flush_log_at_trx_commit=1`，这两个值更偏向安全；如果为了性能改小了持久性保证，就要把可能丢最近事务这件事算进 RPO。
+binlog giữ 30 ngày không có nghĩa RPO chắc chắn chỉ là vài giây. Thực sự phục hồi được đến đâu phụ thuộc vào bản binlog hoàn chỉnh, đọc được, đã được sao chép sang Failure Domain độc lập cuối cùng. Trên Production còn phải xem `sync_binlog`, `innodb_flush_log_at_trx_commit`, độ trễ Archive binlog, tiến trình Archive có từng bị gián đoạn không, chuỗi file binlog có liên tục không. MySQL 8.4 mặc định `sync_binlog=1`, `innodb_flush_log_at_trx_commit=1`, hai giá trị này thiên về an toàn; nếu vì hiệu năng mà giảm mức bảo đảm Persistence, thì phải tính khả năng mất các Transaction gần nhất vào RPO.
 
-所以，要求分钟级甚至秒级 RPO 的系统，不只要监控“磁盘上还有多少天 binlog”，还要监控“最新已安全归档的 binlog 距离现在多久”。
+Vì vậy, hệ thống yêu cầu RPO cấp phút thậm chí cấp giây, không chỉ cần giám sát "trên đĩa còn bao nhiêu ngày binlog", mà còn phải giám sát "binlog đã Archive an toàn mới nhất cách hiện tại bao lâu".
 
-这里有个很现实的限制：恢复速度和数据量、磁盘性能、索引数量、网络带宽、导入方式都有关系。没有演练数据时，RTO 只能算愿望，不能算承诺。
+Ở đây có một giới hạn rất thực tế: tốc độ phục hồi có liên quan đến lượng dữ liệu, hiệu năng ổ đĩa, số lượng Index, băng thông mạng và phương pháp Import. Khi chưa có dữ liệu diễn tập, RTO chỉ có thể coi là mong muốn, không thể coi là cam kết.
 
-## 备份方式有哪些？
+## Có những phương pháp Backup nào?
 
-MySQL 备份常见有三组分类，分别回答不同问题。
+Backup trong MySQL thường có ba nhóm phân loại, mỗi nhóm trả lời một câu hỏi khác nhau.
 
-按备份时数据库是否提供服务：
+Theo việc Database có đang phục vụ trong lúc Backup hay không:
 
-| 类型 | 说明                                   | 适用场景                                 |
-| ---- | -------------------------------------- | ---------------------------------------- |
-| 冷备 | 停掉 MySQL 后复制数据文件              | 小型系统、维护窗口充足的场景             |
-| 温备 | MySQL 运行中备份，但可能加锁或影响写入 | 对可用性要求一般、能接受短时间影响的场景 |
-| 热备 | MySQL 运行中备份，尽量不阻塞业务读写   | 生产库、大库、维护窗口很短的场景         |
+| Loại                      | Mô tả                                                                | Tình huống áp dụng                                                                     |
+| ------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Cold Backup (Backup lạnh) | Dừng MySQL rồi sao chép file dữ liệu                                 | Hệ thống nhỏ, tình huống có Maintenance Window (cửa sổ bảo trì) rộng rãi               |
+| Warm Backup (Backup ấm)   | Backup khi MySQL đang chạy, nhưng có thể khóa hoặc ảnh hưởng đến ghi | Tình huống yêu cầu khả dụng ở mức trung bình, chấp nhận ảnh hưởng trong thời gian ngắn |
+| Hot Backup (Backup nóng)  | Backup khi MySQL đang chạy, cố gắng không chặn đọc/ghi của nghiệp vụ | Database Production, Database lớn, tình huống Maintenance Window rất ngắn              |
 
-按备份文件内容：
+Theo nội dung file Backup:
 
-| 类型     | 说明                             | 代表工具                                    |
-| -------- | -------------------------------- | ------------------------------------------- |
-| 逻辑备份 | 导出 SQL、CSV 等逻辑内容         | `mysqldump`、MySQL Shell dump utilities     |
-| 物理备份 | 复制数据文件、日志文件等物理文件 | Percona XtraBackup、MySQL Enterprise Backup |
+| Loại                            | Mô tả                                           | Công cụ tiêu biểu                           |
+| ------------------------------- | ----------------------------------------------- | ------------------------------------------- |
+| Logical Backup (Backup logic)   | Xuất nội dung logic như SQL, CSV                | `mysqldump`, MySQL Shell dump utilities     |
+| Physical Backup (Backup vật lý) | Sao chép file vật lý như file dữ liệu, file Log | Percona XtraBackup, MySQL Enterprise Backup |
 
-按备份范围：
+Theo phạm vi Backup:
 
-| 类型     | 说明                             |
-| -------- | -------------------------------- |
-| 全量备份 | 备份某个时刻完整数据             |
-| 增量备份 | 备份上次备份之后变化的数据或日志 |
-| 差异备份 | 备份上次全量备份之后变化的数据   |
+| Loại                                   | Mô tả                                                   |
+| -------------------------------------- | ------------------------------------------------------- |
+| Full Backup (Backup toàn bộ)           | Backup toàn bộ dữ liệu tại một thời điểm                |
+| Incremental Backup (Backup tăng cường) | Backup dữ liệu hoặc Log thay đổi kể từ lần Backup trước |
+| Differential Backup (Backup khác biệt) | Backup dữ liệu thay đổi kể từ lần Full Backup trước     |
 
-面试里经常会问这些分类，但生产里真正要落到一件事：备份文件能不能恢复出业务需要的数据。分类只是选型语言，恢复成功才是结果。
+Trong phỏng vấn rất hay hỏi các phân loại này, nhưng trên Production điều thực sự phải đạt được chỉ có một: file Backup có Restore ra được dữ liệu mà nghiệp vụ cần hay không. Phân loại chỉ là ngôn ngữ để chọn phương án, Restore thành công mới là kết quả.
 
-## 用 mysqldump 做逻辑备份
+## Dùng mysqldump để Logical Backup
 
-`mysqldump` 是 MySQL 自带的逻辑备份工具，它会导出一批 SQL 语句，用这些语句可以重建库表结构和表数据。它的优点是简单、通用、方便查看，也适合跨环境迁移。缺点同样明显：数据量大时备份慢，恢复更慢，因为恢复过程要重新执行 SQL、写数据、建索引。
+`mysqldump` là công cụ Logical Backup đi kèm MySQL, nó xuất ra một loạt câu lệnh SQL, dùng những câu lệnh này có thể dựng lại cấu trúc Database, bảng và dữ liệu bảng. Ưu điểm của nó là đơn giản, thông dụng, tiện xem, cũng phù hợp cho Migration chéo môi trường. Nhược điểm cũng rõ ràng: dữ liệu lớn thì Backup chậm, Restore còn chậm hơn, vì quá trình Restore phải thực thi lại SQL, ghi dữ liệu, dựng Index.
 
-MySQL 官方文档也明确提醒，`mysqldump` 不是大规模备份和恢复的快速方案；数据量上来以后，物理备份通常更合适。
+Tài liệu chính thức của MySQL cũng nhắc rõ, `mysqldump` không phải phương án nhanh cho Backup và Restore quy mô lớn; khi lượng dữ liệu tăng lên, Physical Backup thường phù hợp hơn.
 
-一个偏生产的 InnoDB 全库备份命令可以这样写：
+Một câu lệnh Backup toàn bộ Database InnoDB thiên hướng Production có thể viết như sau:
 
 ```bash
 mysqldump \
@@ -102,14 +102,14 @@ mysqldump \
   > mysql-full-backup.sql
 ```
 
-几个参数要单独解释一下：
+Vài tham số cần giải thích riêng:
 
-- `--single-transaction`：备份开始前开启一个一致性读事务，适合 InnoDB 表。它通常不需要在整个导出期间持续锁表，但本文命令还用了 `--source-data=2`，`mysqldump` 会在启动阶段短暂获取全局读锁，用来对齐一致性快照和 binlog 位点。因此更准确的说法是“不长期阻塞业务写入”，不是“完全无锁”。如果混了 MyISAM、MEMORY 等非事务表，备份期间这些表仍可能变化。
-- `--routines` 和 `--events`：把存储过程、函数和事件也导出来。MySQL 8.4 文档明确说明，相关定义在数据字典里，`--all-databases` 不等于自动带上这些对象。
-- `--triggers`：触发器默认会导出，显式写出来是为了让备份脚本的意图更清楚。
-- `--source-data=2`：把当前 binlog 文件名和位置写入 dump 文件，并且以 SQL 注释形式保留。旧资料里常见的 `--master-data` 在新文档里已经是 `--source-data` 的废弃别名。
+- `--single-transaction`: Trước khi bắt đầu Backup mở một Transaction đọc nhất quán (Consistent Read), phù hợp với bảng InnoDB. Nó thường không cần khóa bảng liên tục trong suốt quá trình xuất, nhưng câu lệnh trong bài còn dùng `--source-data=2`, `mysqldump` sẽ lấy Global Read Lock (khóa đọc toàn cục) trong thời gian ngắn ở giai đoạn khởi động, dùng để đồng bộ Snapshot nhất quán với vị trí binlog. Vì vậy cách nói chính xác hơn là "không chặn ghi nghiệp vụ trong thời gian dài", chứ không phải "hoàn toàn không khóa". Nếu trộn lẫn các bảng phi Transaction như MyISAM, MEMORY, trong thời gian Backup những bảng này vẫn có thể thay đổi.
+- `--routines` và `--events`: Xuất cả Stored Procedure, Function và Event. Tài liệu MySQL 8.4 nói rõ, các định nghĩa liên quan nằm trong Data Dictionary, `--all-databases` không đồng nghĩa với việc tự động mang theo những Object này.
+- `--triggers`: Trigger mặc định sẽ được xuất, viết rõ ra là để ý đồ của script Backup rõ ràng hơn.
+- `--source-data=2`: Ghi tên file và vị trí binlog hiện tại vào file dump, và giữ lại dưới dạng chú thích SQL. `--master-data` thường thấy trong tài liệu cũ, trong tài liệu mới đã là Alias (bí danh) đã bị loại bỏ (deprecated) của `--source-data`.
 
-如果只备份一个库：
+Nếu chỉ Backup một Database:
 
 ```bash
 mysqldump \
@@ -125,7 +125,7 @@ mysqldump \
   > order_db.sql
 ```
 
-这种写法导出的主要是 `order_db` 里的对象，不会自动把 `CREATE DATABASE order_db` 和 `USE order_db` 写成一个完整建库脚本。恢复时要么提前建库，要么在备份时改用 `--databases order_db`：
+Cách viết này chủ yếu xuất các Object trong `order_db`, sẽ không tự động viết `CREATE DATABASE order_db` và `USE order_db` thành một script tạo Database hoàn chỉnh. Khi Restore, hoặc tạo Database trước, hoặc khi Backup đổi sang dùng `--databases order_db`:
 
 ```bash
 mysqldump \
@@ -141,9 +141,9 @@ mysqldump \
   > order_db.sql
 ```
 
-`--databases` 会在 dump 里加入 `CREATE DATABASE` 和 `USE`。如果你只是想把数据导入一个已经存在的同名库，保留前一种写法也可以，但恢复命令必须指明目标库。
+`--databases` sẽ thêm `CREATE DATABASE` và `USE` vào trong dump. Nếu bạn chỉ muốn Import dữ liệu vào một Database cùng tên đã tồn tại, giữ cách viết trước đó cũng được, nhưng câu lệnh Restore phải chỉ rõ Database đích.
 
-如果备份文件很大，可以直接压缩：
+Nếu file Backup rất lớn, có thể nén trực tiếp:
 
 ```bash
 mysqldump \
@@ -157,13 +157,13 @@ mysqldump \
   order_db | gzip > order_db.sql.gz
 ```
 
-恢复时执行：
+Khi Restore thực thi:
 
 ```bash
 mysql --host=127.0.0.1 --user=root --password < mysql-full-backup.sql
 ```
 
-压缩文件可以这样恢复：
+File nén có thể Restore như sau:
 
 ```bash
 mysql --host=127.0.0.1 --user=root --password \
@@ -172,21 +172,21 @@ mysql --host=127.0.0.1 --user=root --password \
 gunzip -c order_db.sql.gz | mysql --host=127.0.0.1 --user=root --password order_db
 ```
 
-`mysqldump` 有几个常见坑：
+`mysqldump` có một vài cái bẫy thường gặp:
 
-- 备份用户权限不够，视图、触发器、存储过程、事件没有导完整。
-- 使用 `--single-transaction` 时，备份期间执行了 `ALTER TABLE`、`DROP TABLE`、`TRUNCATE TABLE` 这类 DDL，可能导致备份失败或内容不符合预期。
-- 没有记录 binlog 位点，后续无法从全量备份继续做按时间点恢复。
-- 把备份恢复到启用了 GTID 的环境时，不要依赖默认的 `--set-gtid-purged=AUTO`。官方文档说明，默认情况下源端开启 GTID 时，dump 可能写入 `SET @@GLOBAL.gtid_purged` 和 `SET @@SESSION.sql_log_bin=0`；部分库 dump 也可能携带源实例 `gtid_executed` 中其他库事务的 GTID。导入测试库、临时库、已有 GTID 历史的目标实例时，通常要显式评估是否使用 `--set-gtid-purged=OFF`；如果是创建新的复制节点，则可能需要保留 GTID。关键是显式选择，不要照抄默认值。
-- `--source-data=2` 记录的是实例级 binlog 位点，不是“只属于这个数据库”的增量日志。单库 PITR 比整实例 PITR 更麻烦，尤其要考虑跨库事务、存储过程、触发器和 `binlog_format`，不能简单地把整个实例 binlog 原样回放到目标库。
+- Quyền của User Backup không đủ, View, Trigger, Stored Procedure, Event không được xuất đầy đủ.
+- Khi dùng `--single-transaction`, trong thời gian Backup lại thực thi các DDL như `ALTER TABLE`, `DROP TABLE`, `TRUNCATE TABLE`, có thể khiến Backup thất bại hoặc nội dung không như mong đợi.
+- Không ghi lại vị trí binlog, sau này không thể từ Full Backup tiếp tục phục hồi theo thời điểm (Point-in-Time Recovery).
+- Khi Restore Backup vào môi trường đã bật GTID, đừng dựa vào mặc định `--set-gtid-purged=AUTO`. Tài liệu chính thức nói rằng, mặc định khi nguồn bật GTID, dump có thể ghi `SET @@GLOBAL.gtid_purged` và `SET @@SESSION.sql_log_bin=0`; dump một phần Database cũng có thể mang theo GTID của Transaction thuộc Database khác trong `gtid_executed` của Instance nguồn. Khi Import vào Database kiểm thử, Database tạm thời, hay Instance đích đã có lịch sử GTID, thường phải đánh giá rõ có dùng `--set-gtid-purged=OFF` hay không; nếu tạo Node Replication mới thì có thể cần giữ GTID. Mấu chốt là chọn một cách tường minh, đừng chép nguyên giá trị mặc định.
+- `--source-data=2` ghi lại vị trí binlog cấp Instance, không phải Log tăng cường "chỉ thuộc về Database này". PITR cho một Database đơn lẻ phiền phức hơn PITR cho cả Instance, đặc biệt phải cân nhắc Transaction chéo Database, Stored Procedure, Trigger và `binlog_format`, không thể đơn giản replay nguyên xi binlog của cả Instance vào Database đích.
 
-小库、测试环境、跨版本迁移、导出少量数据，`mysqldump` 很顺手。上百 GB 的生产库如果还只靠它做恢复，恢复时间通常会让人难受。
+Database nhỏ, môi trường kiểm thử, Migration chéo phiên bản, xuất lượng dữ liệu nhỏ, `mysqldump` rất tiện dụng. Database Production hàng trăm GB mà vẫn chỉ dựa vào nó để Restore, thời gian phục hồi thường sẽ khiến người ta khó chịu.
 
-## MySQL Shell Dump Utilities：并行逻辑备份
+## MySQL Shell Dump Utilities: Logical Backup song song
 
-如果你希望保留逻辑备份的可迁移性，又嫌 `mysqldump` 单线程导出和导入太慢，可以看看 MySQL Shell Dump Utilities。
+Nếu bạn muốn giữ tính di động của Logical Backup, lại chê `mysqldump` xuất và Import đơn luồng quá chậm, có thể xem qua MySQL Shell Dump Utilities.
 
-MySQL Shell 提供了几类 `util` 函数：
+MySQL Shell cung cấp vài loại hàm `util`:
 
 ```javascript
 util.dumpInstance("/backup/mysql/instance", { threads: 8 });
@@ -197,24 +197,24 @@ util.dumpTables("order_db", ["orders", "order_item"], "/backup/mysql/orders", {
 util.loadDump("/backup/mysql/order_db", { threads: 8 });
 ```
 
-它的定位仍然是逻辑备份，但支持并行 dump / load、压缩、进度信息、校验和以及对象存储输出。官方文档里 `threads` 默认值是 4，可以按实例负载、网络和目标端写入能力调大。
+Định vị của nó vẫn là Logical Backup, nhưng hỗ trợ dump / load song song, nén, thông tin tiến độ, Checksum và xuất ra Object Storage. Trong tài liệu chính thức, giá trị mặc định của `threads` là 4, có thể tăng lên tùy theo tải của Instance, mạng và khả năng ghi của đầu đích.
 
-不过不要把它误解成物理备份替代品。它导出的仍是逻辑对象和数据文件，恢复时也要重建表、索引和对象；大库如果 RTO 很紧，物理备份通常还是更稳。
+Nhưng đừng hiểu nhầm nó là thứ thay thế Physical Backup. Thứ nó xuất vẫn là Object logic và file dữ liệu, khi Restore vẫn phải dựng lại bảng, Index và Object; Database lớn mà RTO quá gấp, Physical Backup thường vẫn ổn định hơn.
 
-## 用 binlog 做增量恢复
+## Dùng binlog để phục hồi tăng cường (Incremental Restore)
 
-全量备份只能恢复到备份那一刻。想恢复到更靠后的时间点，需要依赖 binlog。
+Full Backup chỉ có thể phục hồi đến đúng thời điểm Backup. Muốn phục hồi đến thời điểm muộn hơn, cần dựa vào binlog.
 
-binlog 记录了会修改数据的事件，也是 MySQL 主从复制和按时间点恢复的基础。PITR（Point-in-Time Recovery）通常就是先恢复一个全量备份，再从备份对应的 binlog 位点开始回放日志，直到目标时间或目标位置。
+binlog ghi lại các Event có sửa đổi dữ liệu, cũng là nền tảng của Replication chủ-tớ và phục hồi theo thời điểm (Point-in-Time Recovery) trong MySQL. PITR (Point-in-Time Recovery) thường là trước tiên phục hồi một bản Full Backup, rồi từ vị trí binlog tương ứng với bản Backup đó bắt đầu replay Log, cho đến thời điểm đích hoặc vị trí đích.
 
-一个简化例子：
+Một ví dụ đơn giản hóa:
 
-1. 凌晨 02:00 做了一次全量备份，dump 文件里记录了 `binlog.000120` 和位置 `154`。
-2. 上午 10:21 有人误删了 `order_item` 表的一批数据。
-3. 恢复时先导入 02:00 的全量备份。
-4. 再用 `mysqlbinlog` 回放 `binlog.000120` 及之后的日志，停止在误删语句之前。
+1. Lúc 02:00 sáng thực hiện một lần Full Backup, trong file dump có ghi `binlog.000120` và vị trí `154`.
+2. Lúc 10:21 sáng có người xóa nhầm một loạt dữ liệu của bảng `order_item`.
+3. Khi phục hồi, trước tiên Import bản Full Backup lúc 02:00.
+4. Sau đó dùng `mysqlbinlog` để replay `binlog.000120` và các Log sau đó, dừng lại trước câu lệnh xóa nhầm.
 
-按时间恢复可以这样写：
+Phục hồi theo thời gian có thể viết như sau:
 
 ```bash
 mysqlbinlog \
@@ -224,9 +224,9 @@ mysqlbinlog \
   | mysql --binary-mode --host=127.0.0.1 --user=root --password
 ```
 
-按时间停止适合快速缩小范围，但不能把它当成绝对精确的业务时间。`mysqlbinlog` 会按执行命令机器的本地时区解释 `--stop-datetime`，并在遇到第一个时间戳大于或等于目标值的事件时停止。生产恢复时，更稳的做法通常是先用时间范围导出一段 binlog 做检查，找到误操作对应的 event 或事务边界，再用 `--stop-position` 做最终回放。
+Dừng theo thời gian phù hợp để nhanh chóng thu hẹp phạm vi, nhưng không thể coi đó là thời gian nghiệp vụ chính xác tuyệt đối. `mysqlbinlog` sẽ diễn giải `--stop-datetime` theo múi giờ cục bộ của máy thực thi câu lệnh, và dừng khi gặp Event đầu tiên có Timestamp lớn hơn hoặc bằng giá trị đích. Khi phục hồi trên Production, cách làm ổn định hơn thường là dùng phạm vi thời gian để xuất một đoạn binlog ra kiểm tra trước, tìm Event hoặc ranh giới Transaction tương ứng với thao tác nhầm, rồi dùng `--stop-position` để replay lần cuối.
 
-如果已经精确找到了事件位置，用位置比时间更可靠：
+Nếu đã tìm chính xác vị trí Event, dùng vị trí sẽ đáng tin cậy hơn thời gian:
 
 ```bash
 mysqlbinlog \
@@ -236,26 +236,26 @@ mysqlbinlog \
   | mysql --binary-mode --host=127.0.0.1 --user=root --password
 ```
 
-同时指定多个 binlog 文件时，`--start-position` 只作用于命令里的第一个文件，`--stop-position` 只作用于最后一个文件，中间文件会完整处理。位置是 binlog 文件里的字节偏移，不是第几个事件，必须落在有效事件边界上。
+Khi chỉ định nhiều file binlog cùng lúc, `--start-position` chỉ có tác dụng với file đầu tiên trong câu lệnh, `--stop-position` chỉ có tác dụng với file cuối cùng, các file ở giữa sẽ được xử lý trọn vẹn. Vị trí là Offset (độ lệch) byte trong file binlog, không phải Event thứ mấy, và phải rơi vào đúng ranh giới Event hợp lệ.
 
-`mysql --binary-mode` 不是装饰参数。官方文档提到，如果 binlog 输出里包含 `\0` 这类空字符，不加 `--binary-mode` 可能无法被 `mysql` 客户端正确解析。
+`mysql --binary-mode` không phải tham số trang trí. Tài liệu chính thức đề cập, nếu trong output của binlog chứa các ký tự rỗng như `\0`, không thêm `--binary-mode` thì `mysql` Client có thể không phân tích đúng được.
 
-现代 MySQL 常见 `ROW` 格式 binlog。这个格式记录的是行变更，不一定能直接看到原始 SQL。排查误操作时，可以用下面的方式把行事件解码成便于阅读的注释：
+MySQL hiện đại thường có binlog định dạng `ROW`. Định dạng này ghi lại thay đổi theo dòng, không nhất định nhìn thấy SQL gốc. Khi điều tra thao tác nhầm, có thể dùng cách sau để giải mã Row Event thành chú thích dễ đọc:
 
 ```bash
 mysqlbinlog --base64-output=DECODE-ROWS -vv binlog.000120 > binlog.000120.readable.sql
 ```
 
-注意，这个输出主要用于人工检查。官方文档也提醒，如果要把 `mysqlbinlog` 输出重新执行，默认的 `--base64-output=AUTO` 才是安全行为；`DECODE-ROWS` 这类模式不应拿来做正式回放。
+Lưu ý, output này chủ yếu dùng để kiểm tra thủ công. Tài liệu chính thức cũng nhắc, nếu muốn thực thi lại output của `mysqlbinlog`, mặc định `--base64-output=AUTO` mới là hành vi an toàn; không nên dùng các chế độ như `DECODE-ROWS` để replay chính thức.
 
-binlog 恢复有几个前提：
+Phục hồi bằng binlog có vài tiền đề:
 
-- MySQL 必须提前开启 binary logging。
-- binlog 保留时间要覆盖你的 RPO 要求。
-- 全量备份里要能找到起始 binlog 文件和位置，或者有 GTID 信息。
-- 恢复前最好在隔离实例验证，不要直接把不确定的 binlog 回放到生产库。
+- MySQL phải được bật binary logging từ trước.
+- Thời gian giữ binlog phải phủ được yêu cầu RPO của bạn.
+- Trong Full Backup phải tìm được file và vị trí binlog khởi đầu, hoặc có thông tin GTID.
+- Trước khi phục hồi tốt nhất nên xác minh trên Instance cách ly, đừng trực tiếp replay binlog chưa chắc chắn vào Database Production.
 
-binlog 文件本身也要备份。MySQL 官方文档给过一种连续备份 binlog 的方式：
+Bản thân file binlog cũng cần được Backup. Tài liệu chính thức của MySQL từng đưa ra một cách Backup binlog liên tục:
 
 ```bash
 mysqlbinlog \
@@ -270,36 +270,36 @@ mysqlbinlog \
   binlog.000999
 ```
 
-这条命令会以原始二进制格式拉取 binlog，并在到达当前最后一个日志文件末尾后继续等待新事件。它和复制从库不同，连接断了不会像从库一样自动重连，所以生产脚本还要配合进程守护、告警和断点续传。
+Câu lệnh này sẽ kéo binlog ở định dạng nhị phân gốc, và sau khi đến cuối file Log cuối cùng hiện tại sẽ tiếp tục chờ Event mới. Nó khác với Slave Replication, khi kết nối bị đứt sẽ không tự động kết nối lại như Slave, nên script Production còn cần kèm theo Process Daemon (tiến trình giám sát), cảnh báo và tiếp tục truyền từ điểm đứt.
 
-连续拉取 binlog 还有几个容易漏掉的点：
+Việc kéo binlog liên tục còn có vài điểm dễ bị bỏ sót:
 
-- 远程读取 binlog 的账号需要复制相关权限。MySQL 8.4 文档对 `--read-from-remote-server` 仍写的是 `REPLICATION SLAVE` 权限；不同版本和权限模型可能有差异，建账号时要按当前版本文档确认。
-- `--stop-never` 会让 `mysqlbinlog` 以一个 server ID 持续连接源端，生产里建议显式配置 `--connection-server-id`，避免和复制节点或另一个 `mysqlbinlog` 进程冲突。
-- `--raw` 模式默认会用源端 binlog 同名文件写到当前目录；如果文件已经存在会被覆盖。用 `--result-file` 指定独立目录或前缀，并对目录做权限和容量监控。
-- 如果源端开启了 binlog 加密，`mysqlbinlog` 拉出来的副本仍会以未加密格式存放在备份端。传输链路要用 TLS，备份目录也要做加密、访问控制和删除保护。
+- Tài khoản đọc binlog từ xa cần quyền liên quan đến Replication. Tài liệu MySQL 8.4 đối với `--read-from-remote-server` vẫn ghi là quyền `REPLICATION SLAVE`; các phiên bản và mô hình quyền khác nhau có thể có khác biệt, khi tạo tài khoản phải xác nhận theo tài liệu của phiên bản hiện tại.
+- `--stop-never` khiến `mysqlbinlog` kết nối liên tục với nguồn bằng một server ID, trên Production khuyến nghị cấu hình tường minh `--connection-server-id`, tránh xung đột với Node Replication hoặc một tiến trình `mysqlbinlog` khác.
+- Chế độ `--raw` mặc định sẽ dùng tên file trùng với binlog nguồn để ghi vào thư mục hiện tại; nếu file đã tồn tại sẽ bị ghi đè. Hãy dùng `--result-file` để chỉ định thư mục hoặc tiền tố riêng, đồng thời giám sát quyền và dung lượng của thư mục.
+- Nếu nguồn bật mã hóa binlog, bản sao mà `mysqlbinlog` kéo về vẫn sẽ ở định dạng chưa mã hóa tại phía Backup. Đường truyền phải dùng TLS, thư mục Backup cũng phải được mã hóa, kiểm soát truy cập và bảo vệ chống xóa.
 
-## 用 XtraBackup 做物理备份
+## Dùng XtraBackup để Physical Backup
 
-逻辑备份导出的是 SQL，物理备份复制的是 MySQL 数据文件和相关日志文件。数据量越大，物理备份的优势越明显：备份和恢复更接近文件复制，不需要逐条重放大量 `INSERT`。
+Logical Backup xuất ra SQL, Physical Backup sao chép file dữ liệu và file Log liên quan của MySQL. Lượng dữ liệu càng lớn, ưu thế của Physical Backup càng rõ: Backup và Restore gần với sao chép file hơn, không cần replay từng câu lệnh `INSERT`.
 
-Percona XtraBackup 是 MySQL 实践中常用的开源物理备份工具。它可以在 MySQL 运行时备份 InnoDB / XtraDB 等存储引擎的数据，常用于生产环境热备。不过“热备”主要是对 InnoDB 这类事务型引擎而言；Percona 文档也说明，复制非 InnoDB 数据时 InnoDB 表会被锁住，混用存储引擎的实例要单独评估影响。
+Percona XtraBackup là công cụ Physical Backup mã nguồn mở thường dùng trong thực tế MySQL. Nó có thể Backup dữ liệu của các Storage Engine như InnoDB / XtraDB khi MySQL đang chạy, thường dùng cho Hot Backup trong môi trường Production. Tuy nhiên "Hot Backup" chủ yếu là nói với các Engine dạng Transaction như InnoDB; tài liệu Percona cũng nói rõ, khi sao chép dữ liệu phi InnoDB thì bảng InnoDB sẽ bị khóa, Instance dùng lẫn nhiều Storage Engine cần đánh giá riêng mức ảnh hưởng.
 
-一个最小的全量备份流程如下：
+Một quy trình Full Backup tối thiểu như sau:
 
 ```bash
 xtrabackup --backup --target-dir=/data/backups/mysql/base
 ```
 
-备份完成后不能直接拿来启动，需要先 prepare，让数据文件达到一致状态：
+Sau khi Backup xong không thể dùng để khởi động ngay, cần prepare trước, để file dữ liệu đạt trạng thái nhất quán:
 
 ```bash
 xtrabackup --prepare --target-dir=/data/backups/mysql/base
 ```
 
-`--prepare` 会应用 redo / undo，让备份目录里的文件形成一致快照。这个步骤不要中断；如果备份后面还要继续合并增量，需要按 Percona 文档使用 `--apply-log-only` 保留未提交事务回滚前的状态。
+`--prepare` sẽ áp dụng redo / undo, để các file trong thư mục Backup hình thành Snapshot nhất quán. Bước này không được gián đoạn; nếu sau bản Backup này còn phải tiếp tục gộp Incremental Backup, cần dùng `--apply-log-only` theo tài liệu Percona để giữ trạng thái trước khi Rollback các Transaction chưa commit.
 
-恢复时要停掉 MySQL，并确保目标 `datadir` 为空：
+Khi Restore phải dừng MySQL, và đảm bảo `datadir` đích trống:
 
 ```bash
 systemctl stop mysqld
@@ -314,9 +314,9 @@ chown -R mysql:mysql /var/lib/mysql
 systemctl start mysqld
 ```
 
-这类命令看起来不复杂，真正容易出问题的是版本兼容。Percona 文档写得很明确：XtraBackup 8.4 只支持 MySQL 8.4 和 Percona Server for MySQL 8.4，不支持 MySQL 8.0 或 9.x；MySQL 8.0 要看 XtraBackup 8.0 系列的支持范围。生产环境不要用“版本号差不多”来判断能不能备份和恢复。
+Những câu lệnh dạng này nhìn không phức tạp, nơi thực sự dễ xảy ra vấn đề là tính tương thích phiên bản. Tài liệu Percona viết rất rõ: XtraBackup 8.4 chỉ hỗ trợ MySQL 8.4 và Percona Server for MySQL 8.4, không hỗ trợ MySQL 8.0 hay 9.x; MySQL 8.0 phải xem phạm vi hỗ trợ của dòng XtraBackup 8.0. Môi trường Production đừng dùng "số phiên bản gần giống nhau" để phán đoán xem có Backup và Restore được không.
 
-XtraBackup 也支持增量备份，例如基于一次全量备份继续备份变化数据：
+XtraBackup cũng hỗ trợ Incremental Backup, ví dụ dựa trên một bản Full Backup để tiếp tục Backup dữ liệu thay đổi:
 
 ```bash
 xtrabackup \
@@ -325,72 +325,72 @@ xtrabackup \
   --incremental-basedir=/data/backups/mysql/base
 ```
 
-增量链路的 prepare 顺序、合并方式和恢复步骤更容易写错。团队没有熟练演练前，不建议一上来就把恢复能力押在复杂增量链上。更稳的做法是先保证“全量物理备份 + binlog”能恢复，再根据数据量和窗口压力增加增量备份。
+Thứ tự prepare, cách gộp và các bước phục hồi của chuỗi Incremental rất dễ viết sai. Khi Team chưa diễn tập thành thạo, không nên vừa bắt đầu đã đặt cược khả năng phục hồi vào chuỗi Incremental phức tạp. Cách ổn định hơn là trước tiên đảm bảo "Full Physical Backup + binlog" phục hồi được, rồi tùy theo lượng dữ liệu và áp lực cửa sổ thời gian mà thêm Incremental Backup.
 
-如果 XtraBackup 恢复后还要继续做 PITR，起点不要靠猜。备份目录里的 `xtrabackup_binlog_info` 会记录备份时的 binlog 文件和位置：
+Nếu sau khi Restore bằng XtraBackup còn tiếp tục làm PITR, điểm bắt đầu đừng dựa vào phỏng đoán. `xtrabackup_binlog_info` trong thư mục Backup sẽ ghi file và vị trí binlog tại thời điểm Backup:
 
 ```bash
 cat /data/backups/mysql/base/xtrabackup_binlog_info
 ```
 
-恢复全量物理备份后，再从这个文件给出的位点开始用 `mysqlbinlog` 回放后续日志。
+Sau khi phục hồi Full Physical Backup, từ vị trí mà file này đưa ra bắt đầu dùng `mysqlbinlog` để replay Log tiếp theo.
 
-## 逻辑备份和物理备份怎么选？
+## Chọn Logical Backup hay Physical Backup?
 
-可以按数据量、恢复目标和运维能力来选。
+Có thể chọn theo lượng dữ liệu, mục tiêu phục hồi và năng lực vận hành.
 
-| 场景                               | 更适合的方式                          |
-| ---------------------------------- | ------------------------------------- |
-| 小库、测试库、单表导出、跨环境迁移 | `mysqldump`                           |
-| 需要查看或手工修改备份内容         | `mysqldump`                           |
-| 中等规模逻辑迁移，希望并行导入导出 | MySQL Shell Dump Utilities            |
-| 大库、恢复窗口短、主要是 InnoDB 表 | XtraBackup 或 MySQL Enterprise Backup |
-| 需要按时间点恢复                   | 全量备份 + binlog                     |
-| 云数据库实例                       | 优先用云厂商快照 / PITR，再做导出校验 |
+| Tình huống                                                                   | Phương pháp phù hợp hơn                                                         |
+| ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Database nhỏ, Database kiểm thử, xuất bảng đơn lẻ, Migration chéo môi trường | `mysqldump`                                                                     |
+| Cần xem hoặc sửa thủ công nội dung Backup                                    | `mysqldump`                                                                     |
+| Migration logic quy mô vừa, muốn Import/Xuất song song                       | MySQL Shell Dump Utilities                                                      |
+| Database lớn, cửa sổ phục hồi ngắn, chủ yếu là bảng InnoDB                   | XtraBackup hoặc MySQL Enterprise Backup                                         |
+| Cần phục hồi theo thời điểm (Point-in-Time)                                  | Full Backup + binlog                                                            |
+| Instance Cloud Database                                                      | Ưu tiên dùng Snapshot / PITR của nhà cung cấp Cloud, sau đó xuất ra để xác minh |
 
-这里不要把工具选型想得太玄。小库用 `mysqldump` 没问题，脚本简单，出问题也好排查。数据量上来以后，SQL 文件恢复慢的问题会越来越明显，再切到物理备份更实际。
+Ở đây đừng nghĩ việc chọn công cụ quá huyền bí. Database nhỏ dùng `mysqldump` không có vấn đề gì, script đơn giản, có sự cố cũng dễ điều tra. Khi lượng dữ liệu tăng lên, vấn đề Restore file SQL chậm sẽ ngày càng rõ, lúc đó chuyển sang Physical Backup mới thực tế.
 
-最差的方案通常是只做一种备份，且从来不恢复验证。
+Phương án tệ nhất thường là chỉ làm một loại Backup, và không bao giờ xác minh bằng Restore.
 
-## 恢复演练应该怎么做？
+## Nên diễn tập phục hồi như thế nào?
 
-备份脚本跑成功，只说明生成了文件。文件能不能用，要靠恢复演练回答。
+Script Backup chạy thành công, chỉ nói lên rằng đã tạo ra file. File có dùng được không, phải do diễn tập phục hồi trả lời.
 
-一个最小演练可以按这个流程走：
+Một cuộc diễn tập tối thiểu có thể đi theo quy trình này:
 
-1. 准备一台隔离机器，安装相同大版本的 MySQL。
-2. 拉取最近一次全量备份和对应 binlog，确认解密密钥、账号、证书和对象存储访问方式都可用。
-3. 恢复全量备份，记录耗时。
-4. 回放 binlog 到指定时间点，记录耗时。
-5. 校验关键库表数量、关键业务 SQL、存储过程、事件、触发器、账号、角色和权限。
-6. 检查 `charset`、`collation`、`time_zone`、`sql_mode`、只读开关和网络隔离，确保恢复实例不会被真实业务流量误连。
-7. 用应用连接恢复实例，跑一组只读冒烟接口。
-8. 记录这次演练的实际 RTO、可恢复到的时间点、失败步骤和人工操作。
+1. Chuẩn bị một máy cách ly, cài MySQL cùng phiên bản lớn (major version).
+2. Kéo bản Full Backup gần nhất và binlog tương ứng, xác nhận khóa giải mã, tài khoản, chứng chỉ và cách truy cập Object Storage đều khả dụng.
+3. Phục hồi Full Backup, ghi lại thời gian tiêu tốn.
+4. Replay binlog đến thời điểm chỉ định, ghi lại thời gian tiêu tốn.
+5. Xác minh số lượng Database và bảng quan trọng, SQL nghiệp vụ quan trọng, Stored Procedure, Event, Trigger, tài khoản, Role và quyền.
+6. Kiểm tra `charset`, `collation`, `time_zone`, `sql_mode`, công tắc chỉ đọc (read-only) và cách ly mạng, đảm bảo Instance phục hồi không bị Traffic nghiệp vụ thật kết nối nhầm.
+7. Dùng ứng dụng kết nối đến Instance phục hồi, chạy một nhóm Interface Smoke Test chỉ đọc.
+8. Ghi lại RTO thực tế của lần diễn tập này, thời điểm có thể phục hồi đến, các bước thất bại và thao tác thủ công.
 
-校验不要只看 MySQL 能不能启动。至少要查几类数据：
+Xác minh đừng chỉ xem MySQL có khởi động được không. Ít nhất phải kiểm tra vài loại dữ liệu:
 
 ```sql
--- 关键表行数
+-- Số dòng của bảng quan trọng
 SELECT COUNT(*) FROM order_db.orders;
 
--- 最近写入时间
+-- Thời gian ghi gần nhất
 SELECT MAX(created_at) FROM order_db.orders;
 
--- 存储过程和函数
+-- Stored Procedure và Function
 SHOW PROCEDURE STATUS WHERE Db = 'order_db';
 SHOW FUNCTION STATUS WHERE Db = 'order_db';
 
--- 事件
+-- Event
 SHOW EVENTS FROM order_db;
 
--- 触发器
+-- Trigger
 SHOW TRIGGERS FROM order_db;
 
--- 账号、角色和权限
+-- Tài khoản, Role và quyền
 SELECT user, host FROM mysql.user;
 SHOW GRANTS FOR 'app_user'@'%';
 
--- 关键环境参数
+-- Tham số môi trường quan trọng
 SELECT
   @@character_set_server,
   @@collation_server,
@@ -400,64 +400,64 @@ SELECT
   @@super_read_only;
 ```
 
-如果业务有对账表、流水表、库存表，要优先校验这些表。恢复演练的目标很具体：尽早发现“备份少对象、binlog 缺文件、权限恢复不了、导入耗时远超预期”这类会在事故里放大的问题。
+Nếu nghiệp vụ có bảng đối soát, bảng giao dịch, bảng tồn kho, phải ưu tiên xác minh những bảng này. Mục tiêu của diễn tập phục hồi rất cụ thể: sớm phát hiện những vấn đề như "Backup thiếu Object, binlog thiếu file, quyền không phục hồi được, thời gian Import vượt xa dự kiến", những thứ sẽ bị phóng đại trong sự cố.
 
-## 常见误区
+## Những hiểu lầm phổ biến
 
-**误区一：有从库就不用备份。**
+**Hiểu lầm một: Có Slave rồi thì không cần Backup.**
 
-从库能接管读写流量，但挡不住误删误改。错误 SQL 同步过去以后，从库也会变成错误状态。延迟从库能争取一点处理时间，但仍然不能替代离线备份。
+Slave có thể tiếp quản Traffic đọc/ghi, nhưng không chặn được xóa nhầm sửa nhầm. SQL sai sau khi đồng bộ sang, Slave cũng sẽ thành trạng thái sai. Slave có độ trễ (Delayed Slave) có thể tranh thủ chút thời gian xử lý, nhưng vẫn không thể thay thế Backup ngoại tuyến.
 
-**误区二：只备份数据，不备份 binlog。**
+**Hiểu lầm hai: Chỉ Backup dữ liệu, không Backup binlog.**
 
-这种做法最多恢复到全量备份那一刻。全量备份之后到事故发生前的写入都找不回来，RPO 会被备份周期拉长。
+Cách làm này nhiều nhất chỉ phục hồi đến thời điểm Full Backup. Toàn bộ ghi nhận từ sau Full Backup đến trước sự cố đều không thể lấy lại, RPO sẽ bị kéo dài theo chu kỳ Backup.
 
-**误区三：备份文件和数据库放在同一台机器。**
+**Hiểu lầm ba: File Backup và Database đặt trên cùng một máy.**
 
-磁盘损坏、机房故障、误删目录时，数据和备份可能一起没了。至少要复制到独立存储；重要业务还要考虑跨机房或对象存储。
+Khi hỏng ổ đĩa, sự cố phòng máy, xóa nhầm thư mục, dữ liệu và Backup có thể mất cùng lúc. Ít nhất phải sao chép sang Storage độc lập; nghiệp vụ quan trọng còn phải cân nhắc chéo phòng máy hoặc Object Storage.
 
-**误区四：备份脚本没有失败告警。**
+**Hiểu lầm bốn: Script Backup không có cảnh báo thất bại.**
 
-备份目录里有旧文件，不代表最近一次备份成功。脚本应该检查退出码、文件大小、生成时间、校验和，并把失败通知到人。
+Trong thư mục Backup có file cũ, không có nghĩa lần Backup gần nhất đã thành công. Script nên kiểm tra Exit Code, kích thước file, thời gian tạo, Checksum, và gửi thông báo thất bại đến người phụ trách.
 
-**误区五：从不恢复。**
+**Hiểu lầm năm: Không bao giờ Restore.**
 
-没有恢复演练的备份，平时看起来最省事，事故时最贵。恢复步骤越久没跑，越容易被版本、权限、路径、磁盘空间和工具参数卡住。
+Backup không có diễn tập phục hồi, ngày thường nhìn có vẻ đỡ tốn công nhất, nhưng khi sự cố lại đắt giá nhất. Quy trình phục hồi càng lâu không chạy, càng dễ bị mắc kẹt bởi phiên bản, quyền, đường dẫn, dung lượng ổ đĩa và tham số công cụ.
 
-**误区六：校验和通过就等于能恢复。**
+**Hiểu lầm sáu: Checksum qua là bằng với phục hồi được.**
 
-校验和只能说明文件在复制和存储过程中大概率没有损坏，不代表 SQL 能顺利导入、物理备份能启动、权限对象齐全，也不代表 binlog 链连续。恢复能力只能靠恢复演练证明。
+Checksum chỉ nói lên file không bị hỏng trong quá trình sao chép và lưu trữ với xác suất cao, không có nghĩa SQL Import suôn sẻ, Physical Backup khởi động được, Object quyền đầy đủ, cũng không có nghĩa chuỗi binlog liên tục. Năng lực phục hồi chỉ có thể được chứng minh bằng diễn tập phục hồi.
 
-**误区七：备份文件谁都能改、能删。**
+**Hiểu lầm bảy: File Backup ai cũng có thể sửa, có thể xóa.**
 
-备份如果和生产账号共用权限，或者普通运维脚本可以直接覆盖、删除，遇到误删、勒索软件、脚本 bug 时可能一起失效。重要业务至少要有一份跨账号、跨故障域、带版本或不可变策略的副本，并限制删除权限。
+Nếu Backup dùng chung quyền với tài khoản Production, hoặc script vận hành thông thường có thể trực tiếp ghi đè, xóa, thì khi gặp xóa nhầm, Ransomware, bug script có thể cùng mất hiệu lực. Nghiệp vụ quan trọng ít nhất phải có một bản sao chéo tài khoản, chéo Failure Domain, có Versioning hoặc chính sách bất biến (Immutable), và hạn chế quyền xóa.
 
-## 一套可落地的基础方案
+## Một phương án cơ bản có thể áp dụng
 
-如果没有现成方案，可以从这套开始：
+Nếu chưa có phương án sẵn, có thể bắt đầu từ bộ này:
 
-- 业务库主要是 InnoDB，数据量不大：每天 `mysqldump --single-transaction --routines --events --triggers --source-data=2` 全量备份，保留 7 到 30 天，binlog 保留时间覆盖同样窗口。
-- 数据量上来以后：每天或每周做一次 XtraBackup 全量备份，按业务写入量决定是否增加增量备份，binlog 单独备份。
-- 备份落盘后计算校验和，复制到独立存储；重要业务再保留一份加密、跨账号、带版本或不可变策略的副本。
-- 监控最新可用全量备份时间、最新已归档 binlog 时间、binlog 文件连续性和归档进程状态。
-- 每月至少做一次恢复演练；核心业务在大促、迁移、版本升级前额外做一次。
-- 写一份恢复 runbook，包含负责人、备份位置、解密方式、恢复命令、binlog 起点查找方式、隔离恢复环境、校验 SQL 和回滚说明。
+- Database nghiệp vụ chủ yếu là InnoDB, lượng dữ liệu không lớn: mỗi ngày `mysqldump --single-transaction --routines --events --triggers --source-data=2` Full Backup, giữ 7 đến 30 ngày, thời gian giữ binlog phủ cùng cửa sổ đó.
+- Khi lượng dữ liệu tăng lên: mỗi ngày hoặc mỗi tuần một lần XtraBackup Full Backup, tùy theo lượng ghi của nghiệp vụ quyết định có thêm Incremental Backup không, binlog Backup riêng.
+- Sau khi Backup ghi xuống đĩa thì tính Checksum, sao chép sang Storage độc lập; nghiệp vụ quan trọng giữ thêm một bản sao mã hóa, chéo tài khoản, có Versioning hoặc chính sách bất biến.
+- Giám sát thời gian Full Backup khả dụng mới nhất, thời gian binlog đã Archive mới nhất, tính liên tục của file binlog và trạng thái tiến trình Archive.
+- Mỗi tháng ít nhất một lần diễn tập phục hồi; nghiệp vụ cốt lõi làm thêm một lần trước đợt khuyến mãi lớn, Migration, nâng cấp phiên bản.
+- Viết một bản Runbook phục hồi, gồm người phụ trách, vị trí Backup, cách giải mã, câu lệnh phục hồi, cách tìm điểm bắt đầu binlog, môi trường phục hồi cách ly, SQL xác minh và hướng dẫn Rollback.
 
-这里的周期只是起点，不是标准答案。金融、订单、支付、医疗这类数据的 RPO/RTO 要求会更严；内部报表、日志分析库通常可以放宽。备份策略应该跟着业务损失来定，而不是跟着网上模板来定。
+Chu kỳ ở đây chỉ là điểm khởi đầu, không phải đáp án chuẩn. Dữ liệu dạng tài chính, đơn hàng, thanh toán, y tế sẽ có yêu cầu RPO/RTO nghiêm ngặt hơn; Database báo cáo nội bộ, phân tích Log thường có thể nới lỏng. Chiến lược Backup nên định theo thiệt hại nghiệp vụ, chứ không phải định theo Template trên mạng.
 
-## 参考资料
+## Tài liệu tham khảo
 
-- [MySQL Reference Manual：mysqldump](https://dev.mysql.com/doc/refman/8.4/en/mysqldump.html)
-- [MySQL Reference Manual：mysqlbinlog](https://dev.mysql.com/doc/refman/8.4/en/mysqlbinlog.html)
-- [MySQL Reference Manual：Using mysqlbinlog to Back Up Binary Log Files](https://dev.mysql.com/doc/refman/8.4/en/mysqlbinlog-backup.html)
-- [MySQL Reference Manual：Point-in-Time Recovery](https://dev.mysql.com/doc/refman/8.4/en/point-in-time-recovery-binlog.html)
-- [MySQL Reference Manual：Binary Logging Options and Variables](https://dev.mysql.com/doc/refman/8.4/en/replication-options-binary-log.html)
-- [MySQL Shell 8.4：Instance Dump Utility, Schema Dump Utility, and Table Dump Utility](https://dev.mysql.com/doc/mysql-shell/8.4/en/mysql-shell-utilities-dump-instance-schema.html)
-- [MySQL Shell 8.4：Dump Loading Utility](https://dev.mysql.com/doc/mysql-shell/8.4/en/mysql-shell-utilities-load-dump.html)
-- [MySQL Reference Manual：MySQL Releases: Innovation and LTS](https://dev.mysql.com/doc/refman/8.4/en/mysql-releases.html)
+- [MySQL Reference Manual: mysqldump](https://dev.mysql.com/doc/refman/8.4/en/mysqldump.html)
+- [MySQL Reference Manual: mysqlbinlog](https://dev.mysql.com/doc/refman/8.4/en/mysqlbinlog.html)
+- [MySQL Reference Manual: Using mysqlbinlog to Back Up Binary Log Files](https://dev.mysql.com/doc/refman/8.4/en/mysqlbinlog-backup.html)
+- [MySQL Reference Manual: Point-in-Time Recovery](https://dev.mysql.com/doc/refman/8.4/en/point-in-time-recovery-binlog.html)
+- [MySQL Reference Manual: Binary Logging Options and Variables](https://dev.mysql.com/doc/refman/8.4/en/replication-options-binary-log.html)
+- [MySQL Shell 8.4: Instance Dump Utility, Schema Dump Utility, and Table Dump Utility](https://dev.mysql.com/doc/mysql-shell/8.4/en/mysql-shell-utilities-dump-instance-schema.html)
+- [MySQL Shell 8.4: Dump Loading Utility](https://dev.mysql.com/doc/mysql-shell/8.4/en/mysql-shell-utilities-load-dump.html)
+- [MySQL Reference Manual: MySQL Releases: Innovation and LTS](https://dev.mysql.com/doc/refman/8.4/en/mysql-releases.html)
 - [Percona XtraBackup 8.4 Documentation](https://docs.percona.com/percona-xtrabackup/8.4/index.html)
-- [Percona XtraBackup 8.4：Prepare a full backup](https://docs.percona.com/percona-xtrabackup/8.4/prepare-full-backup.html)
-- [Percona XtraBackup 8.4：Index of files created by Percona XtraBackup](https://docs.percona.com/percona-xtrabackup/8.4/xtrabackup-files.html)
+- [Percona XtraBackup 8.4: Prepare a full backup](https://docs.percona.com/percona-xtrabackup/8.4/prepare-full-backup.html)
+- [Percona XtraBackup 8.4: Index of files created by Percona XtraBackup](https://docs.percona.com/percona-xtrabackup/8.4/xtrabackup-files.html)
 - [Percona XtraBackup 8.0 Supported Versions](https://docs.percona.com/percona-xtrabackup/8.0/supported-versions.html)
 
 <!-- @include: @article-footer.snippet.md -->

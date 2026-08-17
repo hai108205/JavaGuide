@@ -3,7 +3,7 @@ import { ICONS } from "./constants.js";
 
 export const aboutTheAuthor = arraySidebar([
   {
-    text: "个人经历",
+    text: "Kinh nghiệm cá nhân",
     icon: ICONS.EXPERIENCE,
     collapsible: false,
     children: [
@@ -15,7 +15,7 @@ export const aboutTheAuthor = arraySidebar([
     ],
   },
   {
-    text: "杂谈",
+    text: "Tạp luận",
     icon: ICONS.CHAT,
     collapsible: false,
     children: [

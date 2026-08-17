@@ -1,6 +1,6 @@
 ---
-title: Java 关键字总结
-description: 系统总结Java常用关键字：详解final、static、this、super、volatile、transient、synchronized等关键字用法与区别，助力Java开发者掌握核心语法。
+title: Tổng hợp từ khóa Java
+description: "Tổng hợp hệ thống các từ khóa Java thường dùng: giải thích chi tiết cách dùng và phân biệt các từ khóa final, static, this, super, volatile, transient, synchronized, giúp lập trình viên Java nắm vững cú pháp cốt lõi."
 category: Java
 tag:
   - Java基础
@@ -10,35 +10,35 @@ head:
       content: Java关键字,final关键字,static关键字,this关键字,super关键字,volatile,transient,synchronized
 ---
 
-# final,static,this,super 关键字总结
+# Tổng hợp từ khóa final, static, this, super
 
-## final 关键字
+## Từ khóa final
 
-**final 关键字，意思是最终的、不可修改的，最见不得变化，用来修饰类、方法和变量，具有以下特点：**
+**Từ khóa final, có nghĩa là cuối cùng, không thể thay đổi, được dùng để sửa đổi (modify) lớp, phương thức và biến, có các đặc điểm sau:**
 
-1. final 修饰的类不能被继承，final 类中的所有成员方法都会被隐式的指定为 final 方法；
+1. Lớp được final sửa đổi không thể bị kế thừa (extend), tất cả các phương thức thành viên trong lớp final sẽ được ngầm định chỉ định là phương thức final;
 
-2. final 修饰的方法不能被重写；
+2. Phương thức được final sửa đổi không thể bị ghi đè (override);
 
-3. final 修饰的变量只能被赋值一次。如果是基本数据类型变量，其值在初始化后不能更改；如果是引用类型变量，初始化后不能再指向另一个对象，但所引用对象自身仍可能可变。只有满足 JLS“常量变量”条件的 final 变量才是编译期常量。
+3. Biến được final sửa đổi chỉ có thể được gán giá trị một lần. Nếu là biến kiểu dữ liệu nguyên thủy, giá trị của nó không thể thay đổi sau khi khởi tạo; nếu là biến kiểu tham chiếu, sau khi khởi tạo không thể trỏ đến đối tượng khác, nhưng bản thân đối tượng được tham chiếu vẫn có thể thay đổi. Chỉ những biến final thỏa mãn điều kiện "constant variable" của JLS mới là hằng số compile-time.
 
-说明：使用 final 方法的原因有两个：
+Giải thích: Có hai lý do để sử dụng phương thức final:
 
-1. 把方法锁定，以防任何继承类修改它的含义；
-2. 效率。在早期的 Java 实现版本中，会将 final 方法转为内嵌调用。但是如果方法过于庞大，可能看不到内嵌调用带来的任何性能提升（现在的 Java 版本已经不需要使用 final 方法进行这些优化了）。
+1. Khóa phương thức, ngăn bất kỳ lớp kế thừa nào sửa đổi ngữ nghĩa của nó;
+2. Hiệu năng. Trong các phiên bản Java cũ, phương thức final sẽ được chuyển thành lời gọi nội tuyến (inline). Nhưng nếu phương thức quá lớn, có thể không thấy bất kỳ cải thiện hiệu năng nào từ lời gọi nội tuyến (các phiên bản Java hiện tại không cần sử dụng phương thức final để tối ưu hóa này nữa).
 
-## static 关键字
+## Từ khóa static
 
-**static 关键字主要有以下四种使用场景：**
+**Từ khóa static chủ yếu có bốn tình huống sử dụng sau:**
 
-1. **修饰成员变量和成员方法:** 被 static 修饰的成员属于类，不属于单个这个类的某个对象，被类中所有对象共享，可以并且建议通过类名调用。静态变量的具体存储位置属于 JVM 实现细节；以 JDK 8 及之后的 HotSpot 为例，类元数据位于本地内存的元空间，而类静态变量位于 Java 堆中。调用格式：`类名.静态变量名` `类名.静态方法名()`
-2. **静态代码块:** 静态代码块定义在类中方法外, 静态代码块在非静态代码块之前执行（静态代码块—>非静态代码块—>构造方法）。 该类不管创建多少对象，静态代码块只执行一次.
-3. **静态内部类（static 修饰类的话只能修饰内部类）：** 静态内部类与非静态内部类之间存在一个最大的区别: 非静态内部类在编译完成之后会隐含地保存着一个引用，该引用是指向创建它的外围类，但是静态内部类却没有。没有这个引用就意味着：1. 它的创建是不需要依赖外围类的创建。2. 它不能使用任何外围类的非 static 成员变量和方法。
-4. **静态导包（用来导入类中的静态资源，1.5 之后的新特性）:** 格式为：`import static` 这两个关键字连用可以指定导入某个类中的指定静态资源，并且不需要使用类名调用类中静态成员，可以直接使用类中静态成员变量和成员方法。
+1. **Sửa đổi biến thành viên và phương thức thành viên:** Thành viên được static sửa đổi thuộc về lớp, không thuộc về một đối tượng riêng lẻ của lớp đó, được tất cả các đối tượng trong lớp chia sẻ, có thể và được khuyến nghị gọi thông qua tên lớp. Vị trí lưu trữ cụ thể của biến static là chi tiết triển khai của JVM; lấy HotSpot từ JDK 8 trở đi làm ví dụ, metadata của lớp nằm trong Metaspace của native memory, còn biến static của lớp nằm trong Java heap. Cú pháp gọi: `TênLớp.TênBiếnStatic` `TênLớp.TênPhươngThứcStatic()`
+2. **Khối mã static:** Khối mã static được định nghĩa trong lớp, bên ngoài phương thức, khối mã static thực thi trước khối mã non-static (khối mã static —> khối mã non-static —> phương thức khởi tạo). Dù lớp đó tạo bao nhiêu đối tượng, khối mã static cũng chỉ thực thi một lần.
+3. **Lớp nội bộ static (static chỉ có thể sửa đổi lớp nội bộ):** Có một sự khác biệt lớn nhất giữa lớp nội bộ static và lớp nội bộ non-static: lớp nội bộ non-static sau khi biên dịch sẽ ngầm lưu giữ một tham chiếu, tham chiếu này trỏ đến lớp ngoài (outer class) đã tạo ra nó, nhưng lớp nội bộ static thì không có. Không có tham chiếu này đồng nghĩa với: 1. Việc tạo nó không phụ thuộc vào việc tạo lớp ngoài. 2. Nó không thể sử dụng bất kỳ biến thành viên và phương thức non-static nào của lớp ngoài.
+4. **Static import (dùng để import tài nguyên static trong lớp, tính năng mới từ 1.5):** Cú pháp: `import static` hai từ khóa này dùng kết hợp có thể chỉ định import tài nguyên static cụ thể trong một lớp nào đó, và không cần dùng tên lớp để gọi thành viên static trong lớp, có thể trực tiếp sử dụng biến thành viên static và phương thức thành viên static.
 
-## this 关键字
+## Từ khóa this
 
-this 关键字用于引用类的当前实例。 例如：
+Từ khóa this dùng để tham chiếu đến instance hiện tại của lớp. Ví dụ:
 
 ```java
 class Manager {
@@ -52,16 +52,16 @@ class Manager {
 }
 ```
 
-在上面的示例中，this 关键字用于两个地方：
+Trong ví dụ trên, từ khóa this được dùng ở hai vị trí:
 
-- this.employees.length：访问类 Manager 的当前实例的变量。
-- this.report（）：调用类 Manager 的当前实例的方法。
+- this.employees.length: truy cập biến của instance hiện tại của lớp Manager.
+- this.report(): gọi phương thức của instance hiện tại của lớp Manager.
 
-此关键字是可选的，这意味着如果上面的示例在不使用此关键字的情况下表现相同。 但是，使用此关键字可能会使代码更易读或易懂。
+Từ khóa này là tùy chọn, điều đó có nghĩa là nếu ví dụ trên không sử dụng từ khóa this thì cũng hoạt động tương tự. Tuy nhiên, sử dụng từ khóa this có thể làm cho mã nguồn dễ đọc và dễ hiểu hơn.
 
-## super 关键字
+## Từ khóa super
 
-super 关键字用于从子类访问父类的变量和方法。 例如：
+Từ khóa super dùng để truy cập biến và phương thức của lớp cha từ lớp con. Ví dụ:
 
 ```java
 public class Super {
@@ -78,47 +78,47 @@ public class Sub extends Super {
 }
 ```
 
-在上面的例子中，Sub 类访问父类成员变量 number 并调用其父类 Super 的 `showNumber（）` 方法。
+Trong ví dụ trên, lớp Sub truy cập biến thành viên number của lớp cha và gọi phương thức `showNumber()` của lớp cha Super.
 
-**使用 this 和 super 要注意的问题：**
+**Các vấn đề cần lưu ý khi sử dụng this và super:**
 
-- 在构造器中使用 `super()` 调用父类中的其他构造方法时，该语句必须处于构造器的首行，否则编译器会报错。另外，this 调用本类中的其他构造方法时，也要放在首行。
-- this、super 不能用在 static 方法中。
+- Khi sử dụng `super()` trong constructor để gọi constructor khác của lớp cha, câu lệnh này phải nằm ở dòng đầu tiên của constructor, nếu không trình biên dịch sẽ báo lỗi. Tương tự, khi dùng this để gọi constructor khác trong cùng lớp, cũng phải đặt ở dòng đầu tiên.
+- this, super không thể dùng trong phương thức static.
 
-**简单解释一下：**
+**Giải thích ngắn gọn:**
 
-被 static 修饰的成员属于类，静态上下文中没有当前实例，因此不能使用 `this`。`super` 也不是一个指向“父类对象”的独立引用，而是用于访问父类成员或调用父类构造器的受限语法形式，因此同样不能在静态上下文中使用。
+Thành viên được static sửa đổi thuộc về lớp, trong ngữ cảnh static không có instance hiện tại, do đó không thể sử dụng `this`. `super` cũng không phải là một tham chiếu độc lập trỏ đến "đối tượng lớp cha", mà là một dạng cú pháp giới hạn dùng để truy cập thành viên lớp cha hoặc gọi constructor lớp cha, do đó cũng không thể sử dụng trong ngữ cảnh static.
 
-## 参考
+## Tham khảo
 
 - <https://www.codejava.net/java-core/the-java-language/java-keywords>
 - <https://blog.csdn.net/u013393958/article/details/79881037>
 
-# static 关键字详解
+# Chi tiết từ khóa static
 
-## static 关键字主要有以下四种使用场景
+## Từ khóa static chủ yếu có bốn tình huống sử dụng sau
 
-1. 修饰成员变量和成员方法
-2. 静态代码块
-3. 修饰类（只能修饰内部类）
-4. 静态导包（用来导入类中的静态资源，1.5 之后的新特性）
+1. Sửa đổi biến thành viên và phương thức thành viên
+2. Khối mã static
+3. Sửa đổi lớp (chỉ có thể sửa đổi lớp nội bộ)
+4. Static import (dùng để import tài nguyên static trong lớp, tính năng mới từ 1.5)
 
-### 修饰成员变量和成员方法（常用）
+### Sửa đổi biến thành viên và phương thức thành viên (thường dùng)
 
-被 static 修饰的成员属于类，不属于单个这个类的某个对象，被类中所有对象共享，可以并且建议通过类名调用。静态变量的具体存储位置属于 JVM 实现细节。
+Thành viên được static sửa đổi thuộc về lớp, không thuộc về một đối tượng riêng lẻ của lớp đó, được tất cả các đối tượng trong lớp chia sẻ, có thể và được khuyến nghị gọi thông qua tên lớp. Vị trí lưu trữ cụ thể của biến static là chi tiết triển khai của JVM.
 
-方法区与 Java 堆一样，是各个线程共享的运行时数据区。JVM 规范规定它存储每个类的结构信息，例如运行时常量池、字段和方法数据，以及方法和构造器的代码。具体存储布局由 JVM 实现决定。
+Method Area, giống như Java heap, là vùng dữ liệu runtime được chia sẻ giữa các thread. Đặc tả JVM quy định nó lưu trữ thông tin cấu trúc của mỗi lớp, chẳng hạn như runtime constant pool, dữ liệu field và method, cũng như mã của method và constructor. Cách bố trí lưu trữ cụ thể do triển khai JVM quyết định.
 
-在 JDK 7 及更早版本的 HotSpot 中，方法区主要由永久代实现，但方法区与永久代并不等价。JDK 8 已移除永久代：类元数据改存于本地内存的元空间，字符串常量和类静态变量等则位于 Java 堆中。
+Trong HotSpot JDK 7 trở về trước, Method Area chủ yếu được triển khai bằng Permanent Generation (PermGen), nhưng Method Area và PermGen không hoàn toàn tương đương. JDK 8 đã loại bỏ PermGen: metadata của lớp được chuyển sang lưu trong Metaspace thuộc native memory, còn string constant và biến static của lớp nằm trong Java heap.
 
-调用格式：
+Cú pháp gọi:
 
-- `类名.静态变量名`
-- `类名.静态方法名()`
+- `TênLớp.TênBiếnStatic`
+- `TênLớp.TênPhươngThứcStatic()`
 
-如果变量或者方法被 private 则代表该属性或者该方法只能在类的内部被访问而不能在类的外部被访问。
+Nếu biến hoặc phương thức được khai báo là private thì có nghĩa là thuộc tính hoặc phương thức đó chỉ có thể được truy cập bên trong lớp chứ không thể truy cập từ bên ngoài lớp.
 
-测试方法：
+Phương thức kiểm thử:
 
 ```java
 public class StaticBean {
@@ -156,11 +156,11 @@ public class StaticDemo {
 }
 ```
 
-### 静态代码块
+### Khối mã static
 
-静态代码块定义在类中方法外, 静态代码块在非静态代码块之前执行（静态代码块 —> 非静态代码块 —> 构造方法）。 该类不管创建多少对象，静态代码块只执行一次.
+Khối mã static được định nghĩa trong lớp, bên ngoài phương thức, khối mã static thực thi trước khối mã non-static (khối mã static —> khối mã non-static —> phương thức khởi tạo). Dù lớp đó tạo bao nhiêu đối tượng, khối mã static cũng chỉ thực thi một lần.
 
-静态代码块的格式是
+Cú pháp của khối mã static là
 
 ```plain
 static {
@@ -168,20 +168,20 @@ static {
 }
 ```
 
-一个类中的静态代码块可以有多个，位置可以随便放，它不在任何的方法体内。静态代码块在类初始化时执行；如果有多个，JVM 将按照它们在类中出现的先后顺序依次执行，每个代码块只会被执行一次。类的加载可能早于初始化。
+Một lớp có thể có nhiều khối mã static, vị trí có thể đặt tùy ý, nó không nằm trong bất kỳ thân phương thức nào. Khối mã static thực thi khi lớp được khởi tạo (initialization); nếu có nhiều khối, JVM sẽ thực thi chúng theo thứ tự xuất hiện trong lớp, mỗi khối mã chỉ thực thi một lần. Việc tải lớp (loading) có thể xảy ra trước khi khởi tạo (initialization).
 
 ![](https://oss.javaguide.cn/github/javaguide/88531075.jpg)
 
-静态代码块对于定义在它之后的静态变量，可以赋值，但是不能访问.
+Khối mã static có thể gán giá trị cho biến static được định nghĩa sau nó, nhưng không thể truy cập (đọc).
 
-### 静态内部类
+### Lớp nội bộ static
 
-静态内部类与非静态内部类之间存在一个最大的区别，我们知道非静态内部类在编译完成之后会隐含地保存着一个引用，该引用是指向创建它的外围类，但是静态内部类却没有。没有这个引用就意味着：
+Có một sự khác biệt lớn nhất giữa lớp nội bộ static và lớp nội bộ non-static, chúng ta biết rằng lớp nội bộ non-static sau khi biên dịch sẽ ngầm lưu giữ một tham chiếu, tham chiếu này trỏ đến lớp ngoài đã tạo ra nó, nhưng lớp nội bộ static thì không có. Không có tham chiếu này đồng nghĩa với:
 
-1. 它的创建是不需要依赖外围类的创建。
-2. 它不能使用任何外围类的非 static 成员变量和方法。
+1. Việc tạo nó không phụ thuộc vào việc tạo lớp ngoài.
+2. Nó không thể sử dụng bất kỳ biến thành viên và phương thức non-static nào của lớp ngoài.
 
-Example（静态内部类实现单例模式）
+Ví dụ (lớp nội bộ static triển khai Singleton pattern)
 
 ```java
 public class Singleton {
@@ -198,15 +198,15 @@ public class Singleton {
 }
 ```
 
-调用 `getUniqueInstance()` 并首次主动使用 `SingletonHolder.INSTANCE` 时，`SingletonHolder` 才会被初始化，此时初始化 `INSTANCE`。JVM 可以更早加载 `SingletonHolder`，但不会因此执行其静态初始化，并且能确保该类只初始化一次。
+Khi gọi `getUniqueInstance()` và lần đầu tiên chủ động sử dụng `SingletonHolder.INSTANCE`, `SingletonHolder` mới được khởi tạo (initialization), lúc này `INSTANCE` được khởi tạo. JVM có thể tải (load) `SingletonHolder` sớm hơn, nhưng sẽ không vì thế mà thực thi khởi tạo static của nó, và có thể đảm bảo lớp đó chỉ được khởi tạo một lần.
 
-这种方式不仅具有延迟初始化的好处，而且由 JVM 提供了对线程安全的支持。
+Cách này không chỉ có lợi ích của lazy initialization, mà còn được JVM cung cấp hỗ trợ về thread-safe.
 
-### 静态导包
+### Static import
 
-格式为：import static
+Cú pháp: import static
 
-这两个关键字连用可以指定导入某个类中的指定静态资源，并且不需要使用类名调用类中静态成员，可以直接使用类中静态成员变量和成员方法
+Hai từ khóa này dùng kết hợp có thể chỉ định import tài nguyên static cụ thể trong một lớp nào đó, và không cần dùng tên lớp để gọi thành viên static trong lớp, có thể trực tiếp sử dụng biến thành viên static và phương thức thành viên static
 
 ```java
  //将Math中的所有静态资源导入，这时候可以直接使用里面的静态方法，而不用通过类名进行调用
@@ -220,13 +220,13 @@ public class Demo {
 }
 ```
 
-## 补充内容
+## Nội dung bổ sung
 
-### 静态方法与非静态方法
+### Phương thức static và phương thức non-static
 
-静态方法属于类本身，非静态方法属于从该类生成的每个对象。 如果您的方法执行的操作不依赖于其类的各个变量和方法，请将其设置为静态（这将使程序的占用空间更小）。 否则，它应该是非静态的。
+Phương thức static thuộc về bản thân lớp, phương thức non-static thuộc về từng đối tượng được tạo ra từ lớp đó. Nếu phương thức của bạn thực hiện thao tác không phụ thuộc vào các biến và phương thức riêng lẻ của lớp, hãy đặt nó là static (điều này sẽ làm cho footprint của chương trình nhỏ hơn). Nếu không, nó nên là non-static.
 
-Example
+Ví dụ
 
 ```java
 class Foo {
@@ -243,28 +243,28 @@ class Foo {
 }
 ```
 
-你可以像这样调用静态方法：`Foo.method1()`。 如果您尝试使用这种方法调用 method2 将失败。 但这样可行
+Bạn có thể gọi phương thức static như thế này: `Foo.method1()`. Nếu bạn thử dùng cách này để gọi method2 sẽ thất bại. Nhưng cách này thì được
 
 ```java
 Foo bar = new Foo(1);
 bar.method2();
 ```
 
-总结：
+Tổng kết:
 
-- 在外部调用静态方法时，可以使用“类名.方法名”的方式，也可以使用“对象名.方法名”的方式。而实例方法只有后面这种方式。也就是说，调用静态方法可以无需创建对象。
-- 静态方法在访问本类的成员时，只允许访问静态成员（即静态成员变量和静态方法），而不允许访问实例成员变量和实例方法；实例方法则无此限制
+- Khi gọi phương thức static từ bên ngoài, có thể dùng cách "TênLớp.TênPhươngThức", cũng có thể dùng cách "TênĐốiTượng.TênPhươngThức". Còn phương thức instance chỉ có cách sau. Nói cách khác, gọi phương thức static có thể không cần tạo đối tượng.
+- Phương thức static khi truy cập thành viên của lớp hiện tại, chỉ cho phép truy cập thành viên static (tức là biến thành viên static và phương thức static), mà không cho phép truy cập biến thành viên instance và phương thức instance; phương thức instance thì không có hạn chế này
 
-### `static{}` 静态代码块与 `{}` 非静态代码块（构造代码块）
+### `static{}` khối mã static và `{}` khối mã non-static (khối mã khởi tạo instance)
 
-相同点：都可以在类中定义多个；同一类中的多个静态代码块按文本顺序纳入类初始化过程，多个实例初始化块按文本顺序纳入实例初始化过程。
+Điểm giống nhau: đều có thể định nghĩa nhiều khối trong cùng một lớp; nhiều khối mã static trong cùng một lớp được đưa vào quá trình khởi tạo lớp theo thứ tự văn bản, nhiều khối khởi tạo instance được đưa vào quá trình khởi tạo instance theo thứ tự văn bản.
 
-不同点：静态代码块在类初始化时执行一次，触发时机不一定是第一次 `new`；非静态代码块（实例初始化块）在每次初始化新实例时执行，并与实例字段初始化器按文本顺序纳入实例初始化过程。它们在父类构造器返回后、构造器的后续语句执行前运行；如果构造器通过 `this(...)` 委托给同类其他构造器，则这一初始化过程由委托链中实际调用父类构造器的构造器完成。普通方法中的裸代码块只是局部代码块，不是实例初始化块。
+Điểm khác nhau: khối mã static thực thi một lần khi lớp được khởi tạo, thời điểm kích hoạt không nhất thiết là lần `new` đầu tiên; khối mã non-static (khối khởi tạo instance) thực thi mỗi lần khởi tạo instance mới, và được đưa vào quá trình khởi tạo instance cùng với các instance field initializer theo thứ tự văn bản. Chúng chạy sau khi constructor lớp cha trả về, trước khi các câu lệnh tiếp theo của constructor thực thi; nếu constructor ủy nhiệm (delegate) cho constructor khác trong cùng lớp thông qua `this(...)`, thì quá trình khởi tạo này được thực hiện bởi constructor trong chuỗi ủy nhiệm thực sự gọi constructor lớp cha. Khối mã trần trong phương thức thông thường chỉ là khối mã cục bộ, không phải khối khởi tạo instance.
 
-> **🐛 修正（参见：[issue #677](https://github.com/Snailclimb/JavaGuide/issues/677)）**：静态代码块可能在第一次 new 对象的时候执行，但不一定只在第一次 new 的时候执行。比如通过 `Class.forName("ClassDemo")` 创建 Class 对象的时候也会执行，即 new 或者 `Class.forName("ClassDemo")` 都会执行静态代码块。
-> 一般情况下，如果有些代码比如一些项目最常用的变量或对象必须在项目启动的时候就执行，需要使用静态代码块，这种代码是主动执行的。如果我们想要设计不需要创建对象就可以调用类中的方法，例如：`Arrays` 类，`Character` 类，`String` 类等，就需要使用静态方法, 两者的区别是 静态代码块是自动执行的而静态方法是被调用的时候才执行的.
+> **🐛 Chỉnh sửa (xem: [issue #677](https://github.com/Snailclimb/JavaGuide/issues/677))**: Khối mã static có thể thực thi khi lần đầu tiên new đối tượng, nhưng không nhất thiết chỉ thực thi khi lần đầu tiên new. Ví dụ như khi tạo đối tượng Class thông qua `Class.forName("ClassDemo")` cũng sẽ thực thi, tức là new hoặc `Class.forName("ClassDemo")` đều sẽ thực thi khối mã static.
+> Thông thường, nếu có một số mã như các biến hoặc đối tượng thường dùng nhất của dự án phải được thực thi khi dự án khởi động, thì cần sử dụng khối mã static, loại mã này được thực thi chủ động. Nếu chúng ta muốn thiết kế có thể gọi phương thức trong lớp mà không cần tạo đối tượng, ví dụ: lớp `Arrays`, lớp `Character`, lớp `String`, v.v., thì cần sử dụng phương thức static, sự khác biệt giữa hai loại là khối mã static được thực thi tự động còn phương thức static được thực thi khi được gọi.
 
-Example：
+Ví dụ：
 
 ```java
 public class Test {
@@ -292,27 +292,27 @@ public class Test {
 }
 ```
 
-上述代码输出：
+Đoạn mã trên xuất ra:
 
 ```plain
 静态代码块！--非静态代码块！--默认构造方法！--静态方法中的内容! --静态方法中的代码块！--
 ```
 
-当只执行 `Test.test();` 时输出：
+Khi chỉ thực thi `Test.test();` thì xuất ra:
 
 ```plain
 静态代码块！--静态方法中的内容! --静态方法中的代码块！--
 ```
 
-当只执行 `Test test = new Test();` 时输出：
+Khi chỉ thực thi `Test test = new Test();` thì xuất ra:
 
 ```plain
 静态代码块！--非静态代码块！--默认构造方法！--
 ```
 
-非静态代码块与构造函数的区别是：非静态代码块是给所有对象进行统一初始化，而构造函数是给对应的对象初始化，因为构造函数是可以多个的，运行哪个构造函数就会建立什么样的对象，但无论建立哪个对象，都会先执行相同的构造代码块。也就是说，构造代码块中定义的是不同对象共性的初始化内容。
+Sự khác biệt giữa khối mã non-static và constructor là: khối mã non-static dùng để khởi tạo thống nhất cho tất cả các đối tượng, còn constructor dùng để khởi tạo cho đối tượng tương ứng, bởi vì constructor có thể có nhiều, chạy constructor nào thì sẽ tạo ra đối tượng như thế nào, nhưng dù tạo đối tượng nào, cũng sẽ thực thi khối mã khởi tạo (instance initializer) giống nhau trước. Nói cách khác, khối mã khởi tạo định nghĩa nội dung khởi tạo chung của các đối tượng khác nhau.
 
-### 参考
+### Tham khảo
 
 - <https://blog.csdn.net/chen13579867831/article/details/78995480>
 - <https://www.cnblogs.com/chenssy/p/3388487.html>

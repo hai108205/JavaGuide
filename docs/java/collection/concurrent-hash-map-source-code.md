@@ -1,6 +1,6 @@
 ---
-title: ConcurrentHashMap 源码分析
-description: ConcurrentHashMap源码深入解析：对比JDK1.7分段锁Segment与JDK1.8 CAS+Synchronized实现，理解高并发Map的线程安全机制与性能优化。
+title: Phân tích mã nguồn ConcurrentHashMap
+description: "Phân tích chuyên sâu mã nguồn ConcurrentHashMap: so sánh cách triển khai Segment lock phân đoạn trong JDK 1.7 với CAS + Synchronized trong JDK 1.8, hiểu cơ chế thread-safe và tối ưu hiệu năng của Map trong môi trường đa luồng."
 category: Java
 tag:
   - Java集合
@@ -10,21 +10,21 @@ head:
       content: ConcurrentHashMap源码,线程安全Map,分段锁Segment,CAS操作,并发容器,JDK7与JDK8区别
 ---
 
-> 本文来自末读代码投稿：<https://mp.weixin.qq.com/s/AHWzboztt53ZfFZmsSnMSw>，JavaGuide 对原文进行了大篇幅改进优化。
+> Bài viết này đến từ đóng góp của 末读代码：<https://mp.weixin.qq.com/s/AHWzboztt53ZfFZmsSnMSw>，JavaGuide đã cải tiến và chỉnh sửa đáng kể cho bài gốc.
 
-上一篇文章介绍了 HashMap 源码，反响不错，也有很多同学发表了自己的观点，这次又来了，这次是 `ConcurrentHashMap` 了，作为线程安全的 HashMap，它的使用频率也是很高。那么它的存储结构和实现原理是怎么样的呢？
+Bài viết trước đã giới thiệu về mã nguồn của HashMap, nhận được phản hồi tốt và cũng có nhiều bạn chia sẻ quan điểm của mình. Lần này chúng ta tiếp tục với `ConcurrentHashMap` — một HashMap thread-safe được sử dụng rất phổ biến. Vậy cấu trúc lưu trữ và nguyên lý triển khai của nó như thế nào?
 
 ## 1. ConcurrentHashMap 1.7
 
-### 1. 存储结构
+### 1. Cấu trúc lưu trữ
 
 ![Java 7 ConcurrentHashMap 存储结构](https://oss.javaguide.cn/github/javaguide/java/collection/java7_concurrenthashmap.png)
 
-Java 7 中 `ConcurrentHashMap` 的存储结构如上图，`ConcurrentHashMap` 由很多个 `Segment` 组合，而每一个 `Segment` 是一个类似于 `HashMap` 的结构，所以每一个 `HashMap` 的内部可以进行扩容。但是 `Segment` 的个数一旦**初始化就不能改变**，默认 `Segment` 的个数是 16 个，因此默认最多可以有 16 个分段同时执行更新操作。
+Cấu trúc lưu trữ của `ConcurrentHashMap` trong Java 7 như hình trên. `ConcurrentHashMap` được tạo thành từ nhiều `Segment`, mỗi `Segment` là một cấu trúc tương tự như `HashMap`, do đó bên trong mỗi `HashMap` có thể tự mở rộng (resize). Tuy nhiên, số lượng `Segment` **không thể thay đổi sau khi khởi tạo**, mặc định là 16, do đó mặc định tối đa có 16 phân đoạn có thể đồng thời thực hiện thao tác cập nhật.
 
-### 2. 初始化
+### 2. Khởi tạo
 
-通过 `ConcurrentHashMap` 的无参构造探寻 `ConcurrentHashMap` 的初始化流程。
+Thông qua constructor không tham số của `ConcurrentHashMap` để tìm hiểu quy trình khởi tạo.
 
 ```java
     /**
@@ -36,7 +36,7 @@ Java 7 中 `ConcurrentHashMap` 的存储结构如上图，`ConcurrentHashMap` �
     }
 ```
 
-无参构造中调用了有参构造，传入了三个参数的默认值，他们的值是。
+Constructor không tham số gọi constructor có tham số, truyền vào ba giá trị mặc định.
 
 ```java
     /**
@@ -55,7 +55,7 @@ Java 7 中 `ConcurrentHashMap` 的存储结构如上图，`ConcurrentHashMap` �
     static final int DEFAULT_CONCURRENCY_LEVEL = 16;
 ```
 
-接着看下这个有参构造函数的内部实现逻辑。
+Tiếp theo xem logic triển khai bên trong của constructor có tham số này.
 
 ```java
 @SuppressWarnings("unchecked")
@@ -100,18 +100,18 @@ public ConcurrentHashMap(int initialCapacity,float loadFactor, int concurrencyLe
 }
 ```
 
-总结一下在 Java 7 中 ConcurrentHashMap 的初始化逻辑。
+Tóm tắt logic khởi tạo của ConcurrentHashMap trong Java 7.
 
-1. 必要参数校验。
-2. 校验并发级别 `concurrencyLevel` 大小，如果大于最大值，重置为最大值。无参构造**默认值是 16.**
-3. 寻找并发级别 `concurrencyLevel` 之上最近的 **2 的幂次方**值，作为 `segments` 数组的长度，**默认是 16**。
-4. 记录 `segmentShift` 偏移量，这个值为 **32 - sshift**，在后面 Put 时计算位置时会用到，默认是 28。
-5. 记录 `segmentMask`，默认是 ssize - 1 = 16 -1 = 15.
-6. **初始化 `segments[0]`**，**默认大小为 2**，**负载因子 0.75**，**扩容阀值是 2\*0.75=1.5**，插入第二个值时才会进行扩容。
+1. Kiểm tra các tham số bắt buộc.
+2. Kiểm tra kích thước `concurrencyLevel` (mức độ đồng thời), nếu lớn hơn giá trị tối đa thì đặt lại về giá trị tối đa. Constructor không tham số có **giá trị mặc định là 16.**
+3. Tìm giá trị **lũy thừa của 2** gần nhất lớn hơn hoặc bằng `concurrencyLevel`, làm độ dài của mảng `segments`, **mặc định là 16**.
+4. Ghi nhận giá trị offset `segmentShift`, giá trị này là **32 - sshift**, được dùng khi tính toán vị trí trong thao tác Put sau này, mặc định là 28.
+5. Ghi nhận `segmentMask`, mặc định là ssize - 1 = 16 - 1 = 15.
+6. **Khởi tạo `segments[0]`**, **kích thước mặc định là 2**, **load factor 0.75**, **ngưỡng mở rộng là 2\*0.75=1.5**, chỉ mở rộng khi chèn giá trị thứ hai.
 
 ### 3. put
 
-接着上面的初始化参数继续查看 put 方法源码。
+Tiếp tục với các tham số khởi tạo ở trên, xem mã nguồn phương thức put.
 
 ```java
 /**
@@ -181,23 +181,23 @@ private Segment<K,V> ensureSegment(int k) {
 }
 ```
 
-上面的源码分析了 `ConcurrentHashMap` 在 put 一个数据时的处理流程，下面梳理下具体流程。
+Mã nguồn trên đã phân tích quy trình xử lý khi `ConcurrentHashMap` put một dữ liệu. Dưới đây là tóm tắt quy trình cụ thể.
 
-1. 计算要 put 的 key 的位置，获取指定位置的 `Segment`。
+1. Tính toán vị trí của key cần put, lấy `Segment` tại vị trí được chỉ định.
 
-2. 如果指定位置的 `Segment` 为空，则初始化这个 `Segment`.
+2. Nếu `Segment` tại vị trí đó là null, thì khởi tạo `Segment` này.
 
-   **初始化 Segment 流程：**
+   **Quy trình khởi tạo Segment:**
 
-   1. 检查计算得到的位置的 `Segment` 是否为 null.
-   2. 为 null 继续初始化，使用 `Segment[0]` 的容量和负载因子创建一个 `HashEntry` 数组。
-   3. 再次检查计算得到的指定位置的 `Segment` 是否为 null.
-   4. 使用创建的 `HashEntry` 数组初始化这个 Segment.
-   5. 自旋判断计算得到的指定位置的 `Segment` 是否为 null，使用 CAS 在这个位置赋值为 `Segment`.
+   1. Kiểm tra `Segment` tại vị trí đã tính toán có null hay không.
+   2. Nếu null thì tiếp tục khởi tạo, sử dụng capacity và load factor của `Segment[0]` để tạo một mảng `HashEntry`.
+   3. Kiểm tra lại lần nữa `Segment` tại vị trí đã tính toán có null hay không.
+   4. Sử dụng mảng `HashEntry` đã tạo để khởi tạo Segment này.
+   5. Spin kiểm tra `Segment` tại vị trí đã tính toán có null hay không, sử dụng CAS để gán `Segment` tại vị trí này.
 
-3. `Segment.put` 插入 key,value 值。
+3. `Segment.put` chèn cặp key, value.
 
-上面探究了获取 `Segment` 段和初始化 `Segment` 段的操作。最后一行的 `Segment` 的 put 方法还没有查看，继续分析。
+Ở trên đã tìm hiểu thao tác lấy `Segment` và khởi tạo `Segment`. Phương thức put của `Segment` ở dòng cuối cùng vẫn chưa được xem xét, tiếp tục phân tích.
 
 ```java
 final V put(K key, int hash, V value, boolean onlyIfAbsent) {
@@ -251,29 +251,29 @@ final V put(K key, int hash, V value, boolean onlyIfAbsent) {
 }
 ```
 
-由于 `Segment` 继承了 `ReentrantLock`，所以 `Segment` 内部可以很方便的获取锁，put 流程就用到了这个功能。
+Do `Segment` kế thừa `ReentrantLock`, nên bên trong `Segment` có thể dễ dàng lấy lock, quy trình put đã sử dụng tính năng này.
 
-1. `tryLock()` 获取锁，获取不到使用 **`scanAndLockForPut`** 方法继续获取。
+1. `tryLock()` lấy lock, nếu không lấy được thì sử dụng phương thức **`scanAndLockForPut`** để tiếp tục lấy.
 
-2. 计算 put 的数据要放入的 index 位置，然后获取这个位置上的 `HashEntry`。
+2. Tính toán vị trí index nơi dữ liệu put sẽ được đặt vào, sau đó lấy `HashEntry` tại vị trí này.
 
-3. 遍历 put 新元素，为什么要遍历？因为这里获取的 `HashEntry` 可能是一个空元素，也可能是链表已存在，所以要区别对待。
+3. Duyệt để put phần tử mới. Tại sao cần duyệt? Vì `HashEntry` lấy được ở đây có thể là một phần tử rỗng, hoặc cũng có thể là một linked list đã tồn tại, do đó cần xử lý khác nhau.
 
-   如果这个位置上的 **`HashEntry` 不存在**：
+   Nếu **`HashEntry`** tại vị trí này **không tồn tại**:
 
-   1. 如果当前容量大于扩容阀值，小于最大容量，**进行扩容**。
-   2. 直接头插法插入。
+   1. Nếu capacity hiện tại lớn hơn ngưỡng mở rộng và nhỏ hơn capacity tối đa, **tiến hành mở rộng**.
+   2. Chèn trực tiếp bằng phương pháp **head insertion (chèn vào đầu danh sách)**.
 
-   如果这个位置上的 **`HashEntry` 存在**：
+   Nếu **`HashEntry`** tại vị trí này **đã tồn tại**:
 
-   1. 判断链表当前元素 key 和 hash 值是否和要 put 的 key 和 hash 值一致。一致则替换值
-   2. 不一致，获取链表下一个节点，直到发现相同进行值替换，或者链表表里完毕没有相同的。
-      1. 如果当前容量大于扩容阀值，小于最大容量，**进行扩容**。
-      2. 直接链表头插法插入。
+   1. Kiểm tra key và hash của phần tử hiện tại trong linked list có trùng với key và hash cần put hay không. Nếu trùng thì thay thế value.
+   2. Nếu không trùng, lấy node tiếp theo trong linked list, cho đến khi tìm thấy key giống nhau để thay thế value, hoặc duyệt hết linked list mà không tìm thấy.
+      1. Nếu capacity hiện tại lớn hơn ngưỡng mở rộng và nhỏ hơn capacity tối đa, **tiến hành mở rộng**.
+      2. Chèn trực tiếp vào đầu linked list.
 
-4. 如果要插入的位置之前已经存在，替换后返回旧值，否则返回 null.
+4. Nếu vị trí cần chèn trước đó đã tồn tại, sau khi thay thế trả về giá trị cũ, ngược lại trả về null.
 
-这里面的第一步中的 `scanAndLockForPut` 操作这里没有介绍，这个方法做的操作就是不断的自旋 `tryLock()` 获取锁。当自旋次数大于指定次数时，使用 `lock()` 阻塞获取锁。在自旋时顺表获取下 hash 位置的 `HashEntry`。
+Bước đầu tiên ở đây là thao tác `scanAndLockForPut` chưa được giới thiệu. Phương thức này thực hiện spin liên tục `tryLock()` để lấy lock. Khi số lần spin vượt quá số lần quy định, sử dụng `lock()` để block lấy lock. Trong khi spin, đồng thời lấy `HashEntry` tại vị trí hash.
 
 ```java
 private HashEntry<K,V> scanAndLockForPut(K key, int hash, V value) {
@@ -311,9 +311,9 @@ private HashEntry<K,V> scanAndLockForPut(K key, int hash, V value) {
 
 ```
 
-### 4. 扩容 rehash
+### 4. Mở rộng (rehash)
 
-`ConcurrentHashMap` 的扩容只会扩容到原来的两倍。老数组里的数据移动到新的数组时，位置要么不变，要么变为 `index+ oldSize`，参数里的 node 会在扩容之后使用链表**头插法**插入到指定位置。
+Việc mở rộng của `ConcurrentHashMap` chỉ mở rộng lên gấp đôi kích thước ban đầu. Khi dữ liệu trong mảng cũ được chuyển sang mảng mới, vị trí hoặc không thay đổi, hoặc trở thành `index + oldSize`. Tham số `node` sẽ được chèn vào vị trí chỉ định bằng phương pháp **head insertion** sau khi mở rộng.
 
 ```java
 private void rehash(HashEntry<K,V> node) {
@@ -373,26 +373,26 @@ private void rehash(HashEntry<K,V> node) {
 }
 ```
 
-有些同学可能会对最后的两个 for 循环有疑惑，这里第一个 for 是为了寻找这样一个节点，这个节点后面的所有 next 节点的新位置都是相同的。然后把这个作为一个链表赋值到新位置。第二个 for 循环是为了把剩余的元素通过头插法插入到指定位置链表。~~这样实现的原因可能是基于概率统计，有深入研究的同学可以发表下意见。~~
+Một số bạn có thể thắc mắc về hai vòng lặp for cuối cùng. Vòng for đầu tiên nhằm tìm một node mà tất cả các node `next` phía sau nó đều có vị trí mới giống hệt nhau. Sau đó gán toàn bộ chuỗi này như một linked list vào vị trí mới. Vòng for thứ hai nhằm chèn các phần tử còn lại vào vị trí chỉ định bằng phương pháp head insertion. ~~Lý do triển khai như vậy có thể dựa trên thống kê xác suất, các bạn nào nghiên cứu sâu có thể chia sẻ thêm ý kiến.~~
 
-内部第二个 `for` 循环中使用了 `new HashEntry<K,V>(h, p.key, v, n)` 创建了一个新的 `HashEntry`，而不是复用之前的，是因为如果复用之前的，那么会导致正在遍历（如正在执行 `get` 方法）的线程由于指针的修改无法遍历下去。正如注释中所说的：
+Vòng lặp `for` thứ hai bên trong sử dụng `new HashEntry<K,V>(h, p.key, v, n)` để tạo một `HashEntry` mới thay vì tái sử dụng node cũ, bởi vì nếu tái sử dụng node cũ, các thread đang duyệt (như đang thực thi phương thức `get`) sẽ không thể duyệt tiếp do con trỏ bị thay đổi. Đúng như comment đã nói:
 
-> 当它们不再被可能正在并发遍历表的任何读取线程引用时，被替换的节点将被垃圾回收。
+> Khi chúng không còn được tham chiếu bởi bất kỳ thread đọc nào đang đồng thời duyệt bảng, các node bị thay thế sẽ được garbage collect.
 >
 > The nodes they replace will be garbage collectable as soon as they are no longer referenced by any reader thread that may be in the midst of concurrently traversing table
 
-为什么需要再使用一个 `for` 循环找到 `lastRun`，其实是为了减少对象创建的次数，正如注解中所说的：
+Lý do cần thêm một vòng lặp `for` để tìm `lastRun` thực chất là để giảm số lần tạo đối tượng, đúng như comment đã nói:
 
-> 从统计上看，在默认的阈值下，当表容量加倍时，只有大约六分之一的节点需要被克隆。
+> Theo thống kê, ở ngưỡng mặc định, khi dung lượng bảng tăng gấp đôi, chỉ khoảng một phần sáu số node cần được clone.
 >
 > Statistically, at the default threshold, only about one-sixth of them need cloning when a table doubles.
 
 ### 5. get
 
-到这里就很简单了，get 方法只需要两步即可。
+Đến đây thì khá đơn giản, phương thức get chỉ cần hai bước.
 
-1. 计算得到 key 的存放位置。
-2. 遍历指定位置查找相同 key 的 value 值。
+1. Tính toán vị trí lưu trữ của key.
+2. Duyệt vị trí đã chỉ định để tìm value có key tương ứng.
 
 ```java
 public V get(Object key) {
@@ -418,15 +418,15 @@ public V get(Object key) {
 
 ## 2. ConcurrentHashMap 1.8
 
-总的来说，`ConcurrentHashMap` 在 Java8 中相对于 Java7 来说变化还是挺大的，
+Nhìn chung, `ConcurrentHashMap` trong Java 8 có sự thay đổi khá lớn so với Java 7.
 
-### 1. 存储结构
+### 1. Cấu trúc lưu trữ
 
 ![Java8 ConcurrentHashMap 存储结构（图片来自 javadoop）](https://oss.javaguide.cn/github/javaguide/java/collection/java8_concurrenthashmap.png)
 
-可以发现 Java8 的 ConcurrentHashMap 相对于 Java7 来说变化比较大，不再是之前的 **Segment 数组 + HashEntry 数组 + 链表**，而是 **Node 数组 + 链表 / 红黑树**。当冲突链表达到一定长度时，链表会转换成红黑树。
+Có thể thấy ConcurrentHashMap trong Java 8 có sự thay đổi lớn so với Java 7, không còn là **Mảng Segment + Mảng HashEntry + Linked List** như trước nữa, mà là **Mảng Node + Linked List / Red-Black Tree (cây đỏ-đen)**. Khi linked list xung đột đạt đến một độ dài nhất định, linked list sẽ được chuyển đổi thành red-black tree.
 
-### 2. 初始化 initTable
+### 2. Khởi tạo initTable
 
 ```java
 /**
@@ -458,16 +458,16 @@ private final Node<K,V>[] initTable() {
 }
 ```
 
-从源码中可以发现 `ConcurrentHashMap` 的初始化是通过**自旋和 CAS** 操作完成的。里面需要注意的是变量 `sizeCtl`（sizeControl 的缩写），它的值决定着当前的初始化状态。
+Từ mã nguồn có thể thấy việc khởi tạo `ConcurrentHashMap` được thực hiện thông qua **spin và CAS**. Cần chú ý đến biến `sizeCtl` (viết tắt của sizeControl), giá trị của nó quyết định trạng thái khởi tạo hiện tại.
 
-1. -1 说明正在初始化，其他线程需要自旋等待
-2. -N 说明 table 正在进行扩容，高 16 位表示扩容的标识戳，低 16 位减 1 为正在进行扩容的线程数
-3. 0 表示 table 尚未初始化，初始化时使用默认容量
-4. \>0 表示 table 扩容的阈值，如果 table 已经初始化。
+1. -1 nghĩa là đang trong quá trình khởi tạo, các thread khác cần spin chờ
+2. -N nghĩa là table đang được mở rộng, 16 bit cao biểu thị stamp nhận dạng việc mở rộng, 16 bit thấp trừ 1 là số thread đang thực hiện mở rộng
+3. 0 nghĩa là table chưa được khởi tạo, khi khởi tạo sử dụng capacity mặc định
+4. \>0 nghĩa là ngưỡng mở rộng của table, nếu table đã được khởi tạo.
 
 ### 3. put
 
-直接过一遍 put 源码。
+Xem qua mã nguồn put.
 
 ```java
 public V put(K key, V value) {
@@ -547,21 +547,21 @@ final V putVal(K key, V value, boolean onlyIfAbsent) {
 }
 ```
 
-1. 根据 key 计算出 hashcode。
+1. Tính hashcode dựa trên key.
 
-2. 判断是否需要进行初始化。
+2. Kiểm tra xem có cần khởi tạo hay không.
 
-3. 如果当前 key 定位出的 Node 为空，表示当前位置可以写入数据，利用 CAS 尝试写入；失败后重新进入循环并判断最新状态。
+3. Nếu Node tại vị trí key định vị là null, nghĩa là vị trí hiện tại có thể ghi dữ liệu, sử dụng CAS để thử ghi; nếu thất bại thì vào lại vòng lặp và kiểm tra trạng thái mới nhất.
 
-4. 如果当前位置的 `hashcode == MOVED == -1`,则需要进行扩容。
+4. Nếu `hashcode == MOVED == -1` tại vị trí hiện tại, thì cần tiến hành mở rộng.
 
-5. 如果都不满足，则利用 synchronized 锁写入数据。
+5. Nếu không thỏa mãn các điều kiện trên, sử dụng synchronized lock để ghi dữ liệu.
 
-6. 如果数量大于 `TREEIFY_THRESHOLD` 则要执行树化方法，在 `treeifyBin` 中会首先判断当前数组长度 ≥64 时才会将链表转换为红黑树。
+6. Nếu số lượng lớn hơn `TREEIFY_THRESHOLD` thì thực thi phương thức treeify (chuyển thành cây). Trong `treeifyBin`, trước tiên sẽ kiểm tra độ dài mảng hiện tại >= 64 thì mới chuyển linked list thành red-black tree.
 
 ### 4. get
 
-get 流程比较简单，直接过一遍源码。
+Quy trình get tương đối đơn giản, xem qua mã nguồn.
 
 ```java
 public V get(Object key) {
@@ -590,78 +590,78 @@ public V get(Object key) {
 }
 ```
 
-总结一下 get 过程：
+Tóm tắt quy trình get:
 
-1. 根据 hash 值计算位置。
-2. 查找到指定位置，如果头节点就是要找的，直接返回它的 value.
-3. 如果头节点 hash 值小于 0，说明正在扩容或者是红黑树，查找之。
-4. 如果是链表，遍历查找之。
+1. Tính toán vị trí dựa trên giá trị hash.
+2. Tìm đến vị trí đã chỉ định, nếu node đầu (head) chính là node cần tìm, trả về trực tiếp value của nó.
+3. Nếu giá trị hash của node đầu nhỏ hơn 0, nghĩa là đang mở rộng hoặc là red-black tree, tìm kiếm trong đó.
+4. Nếu là linked list, duyệt tìm kiếm.
 
-### 5. size 计数
+### 5. Đếm size
 
-`ConcurrentHashMap` 的 `size()` 方法用来获取当前 Map 中元素的总数，但在高并发场景下，如何准确且高效地统计元素数量是一个技术难点。Java8 采用了一套精巧的分段计数机制来解决这个问题。
+Phương thức `size()` của `ConcurrentHashMap` được dùng để lấy tổng số phần tử trong Map hiện tại, nhưng trong kịch bản đa luồng cao, làm thế nào để thống kê số lượng phần tử một cách chính xác và hiệu quả là một thách thức kỹ thuật. Java 8 áp dụng một cơ chế đếm phân đoạn tinh tế để giải quyết vấn đề này.
 
-#### 5.1 为什么需要分段计数
+#### 5.1 Tại sao cần đếm phân đoạn
 
-在并发环境下，如果多个线程同时执行 `put` 操作，它们都需要更新元素总数。如果使用一个共享的计数器变量，就会导致激烈的竞争——所有线程都在争抢同一个变量的修改权，这会严重影响性能。
+Trong môi trường đa luồng, nếu nhiều thread đồng thời thực thi thao tác `put`, chúng đều cần cập nhật tổng số phần tử. Nếu sử dụng một biến đếm dùng chung duy nhất, sẽ dẫn đến cạnh tranh gay gắt — tất cả các thread đều tranh giành quyền sửa đổi cùng một biến, điều này ảnh hưởng nghiêm trọng đến hiệu năng.
 
-为了解决这个问题，`ConcurrentHashMap` 采用了**分散热点**的设计思想：不使用单一计数器，而是将计数分散到多个变量中。就像银行不会只开一个窗口办业务，而是开多个窗口分流客户一样，这样可以大大减少冲突。
+Để giải quyết vấn đề này, `ConcurrentHashMap` áp dụng tư tưởng thiết kế **phân tán điểm nóng (hotspot dispersal)**: không sử dụng một bộ đếm duy nhất, mà phân tán việc đếm ra nhiều biến. Giống như ngân hàng không chỉ mở một quầy giao dịch mà mở nhiều quầy để phân luồng khách hàng, điều này có thể giảm đáng kể xung đột.
 
-#### 5.2 baseCount 和 counterCells 的设计
+#### 5.2 Thiết kế của baseCount và counterCells
 
-`ConcurrentHashMap` 内部维护了两个关键的计数相关字段：
+`ConcurrentHashMap` duy trì nội bộ hai trường (field) then chốt liên quan đến đếm:
 
-- **baseCount**：基础计数器，在没有竞争的情况下，直接通过 CAS 更新这个变量。可以把它理解为“主计数器”。
-- **counterCells**：计数器数组。当多个线程竞争 `baseCount` 失败时，会尝试将计数增量分散到 `counterCells` 数组的不同位置。
-  - 每个线程根据自己的 **Probe 值**（可理解为线程 ID 生成的一种哈希码）映射到数组的某个槽位，优先在这个“偏向的格子”里进行累加。
-  - **注意**：这个格子并不是严格意义上的“线程私有”，当哈希冲突时，多个线程仍然可能映射到同一个槽位并发更新。
+- **baseCount**: Bộ đếm cơ sở, trong trường hợp không có cạnh tranh, cập nhật trực tiếp biến này thông qua CAS. Có thể hiểu nó như "bộ đếm chính".
+- **counterCells**: Mảng bộ đếm. Khi nhiều thread cạnh tranh `baseCount` thất bại, sẽ thử phân tán phần tăng thêm của bộ đếm vào các vị trí khác nhau trong mảng `counterCells`.
+  - Mỗi thread dựa trên giá trị **Probe** của mình (có thể hiểu như một loại hash code sinh ra từ thread ID) để ánh xạ đến một slot trong mảng, ưu tiên tích lũy trong "ô thiên vị" này.
+  - **Lưu ý**: Ô này không thực sự là "riêng tư của thread" một cách nghiêm ngặt. Khi xảy ra hash collision, nhiều thread vẫn có thể ánh xạ đến cùng một slot và cập nhật đồng thời.
 
-**举个例子**：假设有 10 个线程同时往 Map 中添加元素。第一个线程成功通过 CAS 更新了 `baseCount`，但后面 9 个线程在更新 `baseCount` 时发现有竞争，就会转而去 `counterCells` 数组中找一个位置进行累加。这 9 个线程可能分散到数组的不同位置（比如线程 2 在 `counterCells[1]`，线程 3 在 `counterCells[2]`），从而将竞争从一个点分散到了多个点。。
+**Ví dụ**: Giả sử có 10 thread đồng thời thêm phần tử vào Map. Thread đầu tiên thành công cập nhật `baseCount` qua CAS, nhưng 9 thread phía sau khi cập nhật `baseCount` phát hiện có cạnh tranh, sẽ chuyển sang tìm một vị trí trong mảng `counterCells` để tích lũy. 9 thread này có thể phân tán vào các vị trí khác nhau trong mảng (ví dụ thread 2 ở `counterCells[1]`, thread 3 ở `counterCells[2]`), từ đó phân tán cạnh tranh từ một điểm ra nhiều điểm.
 
-#### 5.3 put 元素时如何更新计数
+#### 5.3 Cách cập nhật bộ đếm khi put phần tử
 
-在 `putVal` 方法的最后，我们可以看到调用了 `addCount(1L, binCount)` 方法，这个方法就是用来更新元素计数的。
+Ở cuối phương thức `putVal`, chúng ta thấy lời gọi `addCount(1L, binCount)`, phương thức này dùng để cập nhật bộ đếm phần tử.
 
-`addCount` 的执行逻辑大致可以概括为：
+Logic thực thi của `addCount` có thể tóm tắt đại khái như sau:
 
-1. **优先尝试更新 baseCount**
+1. **Ưu tiên thử cập nhật baseCount**
 
-   - 如果当前还没有启用 `counterCells`（`counterCells == null`），线程会先尝试通过 CAS 直接更新 `baseCount`。
-   - 如果 CAS 成功，说明竞争不激烈，直接返回即可。
+   - Nếu `counterCells` chưa được kích hoạt (`counterCells == null`), thread sẽ thử trước tiên cập nhật trực tiếp `baseCount` qua CAS.
+   - Nếu CAS thành công, nghĩa là cạnh tranh không gay gắt, trả về trực tiếp.
 
-2. **竞争出现时，转向 counterCells**
+2. **Khi xuất hiện cạnh tranh, chuyển sang counterCells**
 
-   - 如果 CAS 更新 `baseCount` 失败（说明有其他线程在竞争），或者 `counterCells` 已经存在（说明系统之前已经遇到过竞争），线程就会尝试在 `counterCells` 中更新：
-     - 根据自己的 probe 值映射到某个槽位；
-     - 对该槽位对应的 `CounterCell` 做一次 CAS 累加。
-   - 如果这个槽位为空或 CAS 仍然冲突，就会进入一个更“重”的路径 `fullAddCount`，在里面负责初始化槽位、重新选择槽位等。
+   - Nếu CAS cập nhật `baseCount` thất bại (nghĩa là có thread khác đang cạnh tranh), hoặc `counterCells` đã tồn tại (nghĩa là hệ thống trước đó đã gặp cạnh tranh), thread sẽ thử cập nhật trong `counterCells`:
+     - Dựa trên giá trị probe của mình ánh xạ đến một slot nào đó;
+     - Thực hiện một lần CAS tích lũy trên `CounterCell` tương ứng với slot đó.
+   - Nếu slot này trống hoặc CAS vẫn xung đột, sẽ đi vào một đường dẫn "nặng" hơn là `fullAddCount`, bên trong đó xử lý việc khởi tạo slot, chọn lại slot, v.v.
 
-3. **动态初始化与扩容 counterCells**
-   - 当检测到竞争比较激烈（例如：某个 cell 的 CAS 也频繁失败）时，`fullAddCount` 会在一个轻量级的自旋锁 `cellsBusy` 保护下：
-     - 如果 `counterCells` 还没初始化，就初始化一个较小的数组（比如长度 2）；
-     - 如果已经存在并且长度还没达到上限（通常不超过 CPU 核数），就按 2 倍进行扩容，增加更多的计数槽位，把线程进一步打散。
+3. **Khởi tạo và mở rộng động counterCells**
+   - Khi phát hiện cạnh tranh tương đối gay gắt (ví dụ: CAS của một cell nào đó cũng thường xuyên thất bại), `fullAddCount` sẽ dưới sự bảo vệ của một spinlock nhẹ `cellsBusy`:
+     - Nếu `counterCells` chưa được khởi tạo, khởi tạo một mảng nhỏ (ví dụ độ dài 2);
+     - Nếu đã tồn tại và độ dài chưa đạt giới hạn trên (thường không vượt quá số lõi CPU), mở rộng gấp 2 lần, tăng thêm slot đếm, phân tán thread hơn nữa.
 
-这种设计保证了：在低并发时只使用简单的 `baseCount`，路径非常短；在高并发时则自动切换到分段计数，通过 `counterCells` 和扩容机制摊薄竞争，兼顾了性能和准确性。
+Thiết kế này đảm bảo: khi đồng thời thấp chỉ sử dụng `baseCount` đơn giản, đường dẫn rất ngắn; khi đồng thời cao thì tự động chuyển sang đếm phân đoạn, thông qua `counterCells` và cơ chế mở rộng để giảm cạnh tranh, cân bằng giữa hiệu năng và độ chính xác.
 
-#### 5.4 sumCount 如何计算元素总数
+#### 5.4 sumCount tính tổng số phần tử như thế nào
 
-当我们调用 `size()` 方法时，最终会调用 `sumCount()` 方法来计算元素总数。`sumCount()` 的逻辑非常简单直接：
+Khi chúng ta gọi phương thức `size()`, cuối cùng sẽ gọi phương thức `sumCount()` để tính tổng số phần tử. Logic của `sumCount()` rất đơn giản và trực tiếp:
 
-1. 读取 `baseCount` 的值作为基础值。
-2. 遍历 `counterCells` 数组，将所有非空位置的计数值累加到基础值上。
-3. 返回累加结果。
+1. Đọc giá trị của `baseCount` làm giá trị cơ sở.
+2. Duyệt mảng `counterCells`, tích lũy tất cả giá trị đếm tại các vị trí không null vào giá trị cơ sở.
+3. Trả về kết quả tích lũy.
 
-**注意**：
+**Lưu ý**:
 
-- **弱一致性**：`sumCount()` 全程**不加锁**。在计算期间如果有其他线程插入数据，返回的结果只是一个**近似值**。但在高并发场景下，追求“刹那间的精确总数”代价过大且无意义，近似值通常已足够。
-- **整型溢出**：`size()` 方法返回 `int` 类型。如果元素数量超过 `Integer.MAX_VALUE`，它只会返回 `Integer.MAX_VALUE`。Java 8 新增的 **`mappingCount()`** 方法返回 `long` 类型，适合表示更大的计数，但并发更新期间返回的仍是估计值。
+- **Weak consistency (nhất quán yếu)**: `sumCount()` **không lock** trong toàn bộ quá trình. Trong thời gian tính toán nếu có thread khác chèn dữ liệu, kết quả trả về chỉ là một **giá trị gần đúng**. Nhưng trong kịch bản đa luồng cao, việc theo đuổi "tổng số chính xác trong khoảnh khắc" có chi phí quá lớn và không có ý nghĩa, giá trị gần đúng thường là đủ.
+- **Tràn số nguyên**: Phương thức `size()` trả về kiểu `int`. Nếu số lượng phần tử vượt quá `Integer.MAX_VALUE`, nó chỉ trả về `Integer.MAX_VALUE`. Phương thức **`mappingCount()`** được thêm vào Java 8 trả về kiểu `long`, phù hợp để biểu thị số lượng lớn hơn, nhưng trong quá trình cập nhật đồng thời, giá trị trả về vẫn là ước lượng.
 
-## 3. 总结
+## 3. Tổng kết
 
-Java7 中 `ConcurrentHashMap` 使用的分段锁，也就是每一个 Segment 上同时只有一个线程可以操作，每一个 `Segment` 都是一个类似 `HashMap` 数组的结构，它可以扩容，它的冲突会转化为链表。但是 `Segment` 的个数一但初始化就不能改变。
+Trong Java 7, `ConcurrentHashMap` sử dụng **segment lock (khóa phân đoạn)**, tức là trên mỗi `Segment` chỉ có một thread có thể thao tác tại cùng một thời điểm. Mỗi `Segment` là một cấu trúc tương tự mảng `HashMap`, nó có thể mở rộng, xung đột của nó sẽ chuyển thành linked list. Tuy nhiên, số lượng `Segment` một khi đã khởi tạo thì không thể thay đổi.
 
-Java8 中的 `ConcurrentHashMap` 使用的 `Synchronized` 锁加 CAS 的机制。结构也由 Java7 中的 **`Segment` 数组 + `HashEntry` 数组 + 链表** 进化成了 **Node 数组 + 链表 / 红黑树**，Node 是类似于一个 HashEntry 的结构。它的冲突再达到一定大小时 `TREEIFY_THRESHOLD = 8` 会转化成红黑树，在冲突小于一定数量时 `UNTREEIFY_THRESHOLD = 6` 又退回链表。
+Trong Java 8, `ConcurrentHashMap` sử dụng cơ chế `Synchronized` lock kết hợp với CAS. Cấu trúc cũng tiến hóa từ **Mảng `Segment` + Mảng `HashEntry` + Linked List** trong Java 7 thành **Mảng Node + Linked List / Red-Black Tree**, Node là một cấu trúc tương tự như HashEntry. Xung đột của nó khi đạt đến một kích thước nhất định (`TREEIFY_THRESHOLD = 8`) sẽ chuyển đổi thành red-black tree, khi xung đột ít hơn một số lượng nhất định (`UNTREEIFY_THRESHOLD = 6`) lại quay về linked list.
 
-有些同学可能对 `Synchronized` 的性能存在疑问，其实 `Synchronized` 锁自从引入锁升级策略后，性能不再是问题，有兴趣的同学可以自己了解下 `Synchronized` 的**锁升级**。
+Một số bạn có thể nghi ngờ về hiệu năng của `Synchronized`. Thực ra, kể từ khi `Synchronized` lock được giới thiệu chiến lược **lock upgrade (nâng cấp khóa)**, hiệu năng không còn là vấn đề nữa. Các bạn quan tâm có thể tự tìm hiểu thêm về **lock upgrade** của `Synchronized`.
 
 <!-- @include: @article-footer.snippet.md -->

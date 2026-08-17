@@ -1,183 +1,195 @@
 ---
-title: 为什么忘记密码时只能重置，不能告诉你原密码？
-description: 详细解答为什么忘记密码时网站只能让你重置密码，而不能告诉你原密码。核心原因是服务端使用哈希算法存储密码，哈希算法不可逆，无法从哈希值还原出原始密码。本文还介绍了密码存储安全、加盐机制、Bcrypt 加密、密码传输安全等知识。
+title: "Tại sao khi quên mật khẩu chỉ có thể đặt lại, chứ không thể cho bạn biết mật khẩu gốc?"
+description: "Giải thích chi tiết vì sao khi quên mật khẩu, website chỉ có thể cho phép bạn đặt lại mật khẩu thay vì cung cấp mật khẩu ban đầu. Nguyên nhân cốt lõi là máy chủ lưu trữ mật khẩu bằng thuật toán băm (Hash), mà Hash là thuật toán một chiều, không thể khôi phục lại dữ liệu gốc từ giá trị băm. Bài viết cũng giới thiệu về bảo mật lưu trữ mật khẩu, cơ chế Salt, Bcrypt, bảo mật truyền mật khẩu và các kiến thức liên quan."
 category:
-  - 系统设计
+  - "Thiết kế hệ thống"
 tag:
-  - 数据安全
-  - 密码安全
-  - 哈希算法
-  - 面试题
+  - "An toàn dữ liệu"
+  - "Bảo mật mật khẩu"
+  - "Thuật toán Hash"
+  - "Câu hỏi phỏng vấn"
 head:
   - - meta
     - name: keywords
-      content: 密码重置,密码找回,哈希算法,密码存储,Bcrypt,加盐,密码安全,面试题
+      content: "đặt lại mật khẩu,khôi phục mật khẩu,thuật toán Hash,lưu trữ mật khẩu,Bcrypt,Salt,bảo mật mật khẩu,câu hỏi phỏng vấn"
 ---
 
-这是一个挺有意思的问题，很多公司也在面试中问过。挺简单的，不知道大家平时在重置密码的时候有没有想过这个问题。
+![Đặt lại mật khẩu tài khoản](https://oss.javaguide.cn/github/javaguide/system-design/security/reset-password-page.png)
 
-![重置帐号密码](https://oss.javaguide.cn/github/javaguide/system-design/security/reset-password-page.png)
+Thực ra, câu trả lời chỉ gói gọn trong một câu: **vì ngay cả máy chủ (server) cũng không biết mật khẩu gốc của bạn là gì**. Lập trình viên lưu mật khẩu gốc đã bị sa thải rồi 🤣.
 
-回答这个问题其实就一句话：**因为服务端也不知道你的原密码是什么**。存原密码的程序员已经被开了 🤣。
+Nếu máy chủ biết được mật khẩu gốc của bạn thì đó là một rủi ro bảo mật cực kỳ nghiêm trọng.
 
-如果服务端知道你的原密码，那就是严重的安全风险问题了。
+Hãy cùng phân tích ngắn gọn lý do.
 
-我们这里来简单分析一下。
-
-这篇文章不会谈论太多加密算法相关的内容，感兴趣的朋友可以看这篇文章：[常见加密算法总结](https://javaguide.cn/system-design/security/encryption-algorithms.html)。
+Bài viết này sẽ không đi quá sâu vào các thuật toán mã hóa. Nếu quan tâm, bạn có thể tham khảo bài viết: [Tổng hợp các thuật toán mã hóa phổ biến](https://javaguide.cn/system-design/security/encryption-algorithms.html).
 
 ![](https://oss.javaguide.cn/github/javaguide/system-design/security/encryption-algorithms/javaguide-security-encryption-algorithms.png)
 
-## 为什么服务端不知道你的原密码？
+## Vì sao máy chủ không biết mật khẩu gốc của bạn?
 
-做过开发的应该都知道，服务端在保存密码到数据库的时候，**绝对不能直接明文存储**。
+Những người từng phát triển phần mềm đều biết rằng, khi lưu mật khẩu vào cơ sở dữ liệu, **tuyệt đối không được lưu dưới dạng văn bản thuần (plaintext)**.
 
-如果明文存储的话，风险太大：
+Nếu lưu trực tiếp dưới dạng plaintext thì sẽ có rất nhiều rủi ro:
 
-1. 数据库数据有被盗的风险
-2. 有数据库权限的内部人员可能恶意利用
-3. 黑客入侵后可以直接获取所有用户密码
+1. Cơ sở dữ liệu có thể bị đánh cắp.
+2. Người nội bộ có quyền truy cập cơ sở dữ liệu có thể lợi dụng trái phép.
+3. Hacker sau khi xâm nhập có thể lấy ngay toàn bộ mật khẩu của người dùng.
 
-因此，密码必须经过处理后才能存储。这个处理方式就是使用**哈希算法**。
+Vì vậy, mật khẩu phải được xử lý trước khi lưu trữ. Cách xử lý phổ biến là sử dụng **thuật toán Hash**.
 
-## 哈希算法简介
+## Giới thiệu về thuật toán Hash
 
-哈希算法也叫散列函数或摘要算法，它的作用是对任意长度的数据生成一个固定长度的唯一标识，也叫哈希值、散列值或消息摘要（后文统称为哈希值）。
+Thuật toán Hash (hay còn gọi là hàm băm hoặc thuật toán tạo digest) có nhiệm vụ tạo ra một giá trị nhận dạng có độ dài cố định từ dữ liệu đầu vào có độ dài bất kỳ. Giá trị này được gọi là **giá trị Hash (Hash value)**, **giá trị băm** hoặc **message digest** (trong bài viết này gọi chung là **giá trị Hash**).
 
-![哈希算法效果演示](https://oss.javaguide.cn/github/javaguide/system-design/security/encryption-algorithms/hash-function-effect-demonstration.png)
+![Minh họa hoạt động của thuật toán Hash](https://oss.javaguide.cn/github/javaguide/system-design/security/encryption-algorithms/hash-function-effect-demonstration.png)
 
-哈希算法有两个关键特点：
+Thuật toán Hash có hai đặc điểm quan trọng:
 
-1. **不可逆性**：你无法通过哈希之后的值再得到原值。这是核心！
-2. **确定性**：相同的输入永远产生相同的输出。
+1. **Tính không thể đảo ngược (Irreversibility)**: Không thể khôi phục lại dữ liệu gốc từ giá trị Hash. Đây là đặc điểm quan trọng nhất!
+2. **Tính xác định (Deterministic)**: Cùng một đầu vào sẽ luôn tạo ra cùng một đầu ra.
 
-有个很形象的比喻：**你存的密码就像切过的土豆丝，不能被复原成土豆。但网站判断密码是否正确的方式，就是把你输入的新密码当成土豆再切一次，看看这两盘土豆丝是不是一样的。**
+Có một ví dụ rất trực quan:
 
-这两个特点决定了哈希算法非常适合用于密码存储：服务端只存储密码的哈希值，验证时只需比较哈希值是否一致。
+**Mật khẩu bạn lưu giống như củ khoai tây đã được bào thành sợi. Không thể ghép các sợi khoai lại thành củ khoai ban đầu. Nhưng website chỉ cần lấy mật khẩu bạn nhập, "bào" thêm một lần nữa, rồi so sánh xem hai đĩa khoai tây sợi có giống nhau hay không.**
 
-### 哈希算法的分类
+Chính hai đặc điểm này khiến thuật toán Hash rất phù hợp để lưu trữ mật khẩu: máy chủ chỉ lưu giá trị Hash của mật khẩu, còn khi xác thực thì chỉ cần so sánh giá trị Hash.
 
-哈希算法可以简单分为两类：
+### Phân loại thuật toán Hash
 
-1. **加密哈希算法**：安全性较高的哈希算法，它可以提供一定的数据完整性保护和数据防篡改能力，能够抵御一定的攻击手段，安全性相对较高，但性能较差，适用于对安全性要求较高的场景。例如 SHA2、SHA3、SM3、RIPEMD-160、BLAKE2等等。
-2. **非加密哈希算法**：安全性相对较低的哈希算法，易受到暴力破解、冲突攻击等攻击手段的影响，但性能较高，适用于对安全性没有要求的业务场景。例如 CRC32、MurMurHash3等等。
+Có thể chia thuật toán Hash thành hai nhóm chính:
 
-除了这两种之外，还有一些特殊的哈希算法，例如安全性更高的**慢哈希算法**。
+1. **Thuật toán Hash mật mã (Cryptographic Hash Algorithm)**: Có độ an toàn cao, cung cấp khả năng đảm bảo tính toàn vẹn dữ liệu và chống giả mạo dữ liệu, đồng thời chống chịu được một số hình thức tấn công. Tuy nhiên hiệu năng thấp hơn và phù hợp với các tình huống yêu cầu bảo mật cao. Ví dụ: SHA2, SHA3, SM3, RIPEMD-160, BLAKE2...
+2. **Thuật toán Hash không mật mã (Non-Cryptographic Hash Algorithm)**: Độ an toàn thấp hơn, dễ bị ảnh hưởng bởi các cuộc tấn công brute-force hoặc collision, nhưng hiệu năng cao hơn. Thường dùng trong các nghiệp vụ không yêu cầu bảo mật. Ví dụ: CRC32, MurMurHash3...
 
-### 为什么不推荐 MD5？
+Ngoài hai nhóm trên còn có các thuật toán Hash đặc biệt khác, chẳng hạn như **thuật toán Slow Hash** có mức độ an toàn cao hơn.
 
-早期常用 MD5 来加密密码，但现在已经**不被推荐**，原因如下：
+### Vì sao không còn khuyến nghị sử dụng MD5?
 
-1. **抗碰撞性差**：存在弱碰撞问题，即多个不同的输入可能产生相同的 MD5 值。
-2. **哈希值较短**：128 位的哈希值容易被彩虹表攻击。
-3. **计算速度太快**：反而容易被暴力破解。
+Trước đây MD5 thường được dùng để "mã hóa" mật khẩu, nhưng hiện nay **không còn được khuyến nghị** vì các lý do sau:
 
-详细介绍可以阅读这篇文章：[简历别再写 MD5 加密密码了！](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247542780&idx=1&sn=fb2fe3fb53fe596cc5b22e30766e0098&scene=21#wechat_redirect)
+1. **Khả năng chống va chạm (Collision Resistance) kém**: Có thể tạo ra nhiều đầu vào khác nhau cho cùng một giá trị MD5.
+2. **Độ dài giá trị Hash ngắn**: Chỉ 128 bit nên dễ bị Rainbow Table Attack.
+3. **Tốc độ tính toán quá nhanh**: Điều này lại khiến brute-force trở nên hiệu quả hơn.
 
-### 为什么需要加盐？
+Để tìm hiểu chi tiết, bạn có thể đọc bài viết: [Đừng ghi "MD5 mã hóa mật khẩu" trong CV nữa!](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247542780&idx=1&sn=fb2fe3fb53fe596cc5b22e30766e0098&scene=21#wechat_redirect)
 
-单纯使用哈希算法存储密码，仍然存在被**彩虹表攻击**的风险。彩虹表是一种预先计算好的哈希值对照表，攻击者可以通过查表的方式快速破解密码。
+### Vì sao cần Salt?
 
-盐（Salt）是为每个密码独立生成的随机值，密码哈希算法会把盐和密码一起参与计算。盐不需要保密，但必须随机且不能在所有用户之间复用。
+Chỉ sử dụng thuật toán Hash để lưu mật khẩu vẫn có nguy cơ bị **Rainbow Table Attack**. Rainbow Table là bảng tra cứu được tính toán trước, giúp kẻ tấn công nhanh chóng suy ra mật khẩu bằng cách tra cứu giá trị Hash.
 
-**加盐的作用**：
+**Salt** là một giá trị ngẫu nhiên được tạo riêng cho từng mật khẩu. Thuật toán Hash sẽ kết hợp Salt với mật khẩu trước khi tính toán. Salt không cần giữ bí mật, nhưng phải được tạo ngẫu nhiên và không được dùng chung giữa các người dùng.
 
-1. 增加密码的复杂度和唯一性。
-2. 使得彩虹表攻击失效（每个用户的盐都不同）。
-3. 即使两个用户使用相同密码，哈希值也不同。
+**Vai trò của Salt:**
 
-## 密码存储方案推荐
+1. Tăng độ phức tạp và tính duy nhất của mật khẩu.
+2. Vô hiệu hóa Rainbow Table Attack (vì mỗi người dùng có Salt khác nhau).
+3. Ngay cả khi hai người dùng dùng cùng một mật khẩu thì giá trị Hash cũng khác nhau.
 
-密码应使用专门为密码存储设计、可调节计算成本的算法，而不是直接使用 MD5、SHA-256、SHA-3 这类高速哈希算法。即使给高速哈希加盐，攻击者拿到数据库后仍然可以高速尝试大量候选密码。
+## Khuyến nghị về phương án lưu trữ mật khẩu
 
-新系统优先考虑 **Argon2id**。如果不可用，可以根据运行环境选择 scrypt；兼容遗留系统时可以使用合理配置的 Bcrypt；有 FIPS 合规要求时可以使用 PBKDF2。具体参数需要结合服务器性能定期评估和升级。
+Mật khẩu nên được lưu bằng các thuật toán được thiết kế chuyên biệt cho lưu trữ mật khẩu và có thể điều chỉnh chi phí tính toán (computational cost), thay vì sử dụng trực tiếp các thuật toán Hash tốc độ cao như MD5, SHA-256 hoặc SHA-3. Ngay cả khi thêm Salt cho các thuật toán Hash tốc độ cao, nếu kẻ tấn công lấy được cơ sở dữ liệu thì vẫn có thể thử số lượng lớn mật khẩu ứng viên với tốc độ rất nhanh.
 
-### Bcrypt 示例
+Đối với hệ thống mới, nên ưu tiên **Argon2id**. Nếu không thể sử dụng, có thể lựa chọn **scrypt** tùy theo môi trường triển khai; với hệ thống cũ cần tương thích thì có thể dùng **Bcrypt** được cấu hình hợp lý; còn trong môi trường yêu cầu tuân thủ **FIPS** thì có thể dùng **PBKDF2**. Các tham số cụ thể cần được đánh giá và nâng cấp định kỳ dựa trên hiệu năng của máy chủ.
 
-**Bcrypt** 是专门为密码存储设计的哈希算法，属于慢哈希算法。它内置了 salt 机制和 cost（成本）参数：
+### Ví dụ với Bcrypt
 
-- **salt**：随机生成的字符串，用于和密码混合，增加密码的唯一性
-- **cost**：控制迭代次数，增加计算时间和资源消耗
+**Bcrypt** là thuật toán Hash được thiết kế chuyên biệt cho lưu trữ mật khẩu và thuộc nhóm **Slow Hash**. Thuật toán này tích hợp sẵn cơ chế **Salt** và tham số **cost**:
 
-Bcrypt 的随机盐可以防止预计算和彩虹表攻击，cost 参数可以提高离线猜测成本，但无法让弱密码变得不可破解。还要注意，多数 Bcrypt 实现只处理密码的前 72 个字节，系统不能在没有提示的情况下静默截断密码。
+- **salt**: Chuỗi ngẫu nhiên dùng để kết hợp với mật khẩu nhằm tăng tính duy nhất.
+- **cost**: Điều khiển số lần lặp, từ đó tăng thời gian và chi phí tính toán.
 
-Spring Security 提供了 `BCryptPasswordEncoder`。下面以它演示如何显式设置 cost；新系统选型仍应优先评估 Argon2id：
+Salt ngẫu nhiên của Bcrypt giúp chống các cuộc tấn công tính toán trước và Rainbow Table Attack. Tham số cost giúp tăng chi phí brute-force ngoại tuyến, nhưng không thể biến một mật khẩu yếu thành mật khẩu không thể bị bẻ khóa. Ngoài ra, cần lưu ý rằng phần lớn các triển khai Bcrypt chỉ xử lý **72 byte đầu tiên** của mật khẩu; hệ thống không nên cắt bớt mật khẩu một cách âm thầm mà không thông báo cho người dùng.
+
+Spring Security cung cấp `BCryptPasswordEncoder`. Ví dụ dưới đây minh họa cách thiết lập cost một cách tường minh; tuy nhiên đối với hệ thống mới vẫn nên ưu tiên đánh giá Argon2id.
 
 ```java
 @Bean
 public PasswordEncoder passwordEncoder(){
-    // cost 应通过性能测试确定，并随着硬件能力提升定期调整。
+    // cost nên được xác định thông qua kiểm thử hiệu năng và điều chỉnh định kỳ theo sự cải thiện của phần cứng.
     return new BCryptPasswordEncoder(12);
 }
 ```
 
-## 登录验证流程
+## Quy trình xác thực đăng nhập
 
-当你输入密码登录时，验证流程如下：
+Khi bạn nhập mật khẩu để đăng nhập, quy trình xác thực diễn ra như sau:
 
-1. 服务端根据用户名从数据库取出该用户保存的密码哈希编码。这个编码通常已经包含算法标识、参数和随机盐。
-2. 服务端调用密码哈希库提供的验证方法，例如 Spring Security 的 `PasswordEncoder#matches`。不要自己拼接盐值，也不要直接比较字符串。
-3. 密码库读取编码中的盐值和参数，对用户输入进行同样的计算，并以安全方式比较结果。
-4. 如果验证通过，说明密码正确；否则密码错误。验证成功后还可以在参数过旧时重新计算并升级密码哈希。
+1. Máy chủ lấy giá trị Hash của mật khẩu đã lưu trong cơ sở dữ liệu dựa trên tên người dùng. Giá trị này thường đã bao gồm thông tin về thuật toán, tham số và Salt ngẫu nhiên.
+2. Máy chủ gọi phương thức xác thực do thư viện Hash mật khẩu cung cấp, chẳng hạn `PasswordEncoder#matches` của Spring Security. Không nên tự ghép Salt hoặc tự so sánh chuỗi.
+3. Thư viện sẽ đọc Salt và các tham số trong dữ liệu đã lưu, tính toán lại giá trị Hash từ mật khẩu người dùng nhập, sau đó thực hiện so sánh theo cách an toàn.
+4. Nếu xác thực thành công thì mật khẩu chính xác; nếu không thì mật khẩu sai. Sau khi xác thực thành công, nếu tham số Hash đã lỗi thời thì có thể tính toán lại và nâng cấp giá trị Hash.
 
-## 重置密码时如何判断新密码与旧密码相同？
+## Khi đặt lại mật khẩu, website làm sao biết mật khẩu mới có trùng mật khẩu cũ?
 
-细心的同学可能发现，有些网站在重置密码时会提示"新密码不可与旧密码相同"。那网站是怎么知道新密码和旧密码相同的呢？
+Có thể bạn từng thấy một số website hiển thị thông báo: **"Mật khẩu mới không được trùng với mật khẩu cũ."** Vậy website làm sao biết được điều đó?
 
-其实原理和验证密码正确性一样：
+Nguyên lý hoàn toàn giống với việc xác thực mật khẩu:
 
-1. 用户输入新密码。
-2. 服务端调用密码哈希库的验证方法，用新密码验证数据库中的旧密码哈希，例如 `passwordEncoder.matches(newPassword, oldPasswordHash)`。
-3. 如果验证通过，说明新密码和旧密码一样，拒绝修改。
-4. 如果不相同，则为新密码重新生成随机盐和密码哈希，不能复用旧哈希或自行固定盐值。
+1. Người dùng nhập mật khẩu mới.
+2. Máy chủ gọi phương thức xác thực của thư viện Hash mật khẩu để so sánh mật khẩu mới với giá trị Hash cũ trong cơ sở dữ liệu, ví dụ: `passwordEncoder.matches(newPassword, oldPasswordHash)`.
+3. Nếu xác thực thành công thì chứng tỏ mật khẩu mới trùng với mật khẩu cũ và yêu cầu sẽ bị từ chối.
+4. Nếu khác nhau thì hệ thống sẽ tạo Salt ngẫu nhiên mới và tính lại giá trị Hash cho mật khẩu mới. Không được tái sử dụng giá trị Hash cũ hoặc tự cố định Salt.
 
-所以网站并不知道你的旧密码是什么，只是比较了两盘"土豆丝"是否一样。
+Do đó, website hoàn toàn **không biết** mật khẩu cũ của bạn là gì; nó chỉ đang so sánh xem "hai đĩa khoai tây sợi" có giống nhau hay không.
 
-## 密码传输安全
+## Bảo mật truyền mật khẩu
 
-前面讲的都是密码在服务端的存储安全，那密码在传输过程中安全吗？
+Những gì trình bày ở trên đều liên quan đến việc lưu trữ mật khẩu trên máy chủ. Vậy còn quá trình truyền mật khẩu thì sao?
 
-有个常见的面试问题：**如果某个员工知道加密方式，那岂不是他可以在私下或者离职后拦截包然后模拟加密从而获取密码？**
+Có một câu hỏi phỏng vấn rất phổ biến:
 
-答案是：**存储与传输本身就是分开处理的**。
+> Nếu nhân viên biết thuật toán mã hóa thì chẳng phải sau khi nghỉ việc họ vẫn có thể tự mô phỏng quá trình mã hóa và lấy được mật khẩu sao?
 
-完整的密码安全方案需要同时保障存储安全和传输安全。
+Câu trả lời là:
 
-### 使用 HTTPS
+**Lưu trữ và truyền dữ liệu là hai vấn đề hoàn toàn tách biệt.**
 
-HTTPS 协议是保障传输安全的基础。HTTP 协议运行在 TCP 之上，所有传输的内容都是明文，客户端和服务器端都无法验证对方的身份。HTTPS 则是运行在 SSL/TLS 之上的 HTTP 协议，所有传输的内容都经过加密。
+Một giải pháp bảo mật mật khẩu hoàn chỉnh phải đồng thời đảm bảo **an toàn khi lưu trữ** và **an toàn khi truyền tải**.
 
-关于 HTTP 和 HTTPS 的详细对比可以看这篇文章：[HTTP vs HTTPS（应用层）](https://javaguide.cn/cs-basics/network/http-vs-https.html)。
+### Sử dụng HTTPS
 
-对于普通 Web 应用，正确配置的 HTTPS 是密码传输安全的基础方案。服务端应默认使用 TLS 1.3，并按兼容性需要支持 TLS 1.2；全站强制 HTTPS，启用 HSTS，正确校验证书并禁用过时协议和弱密码套件。
+HTTPS là nền tảng để đảm bảo an toàn trong quá trình truyền dữ liệu.
 
-浏览器再使用一层自定义 RSA 加密，通常不能解决恶意客户端、被攻陷的前端脚本或服务端解密点泄露密码的问题，反而会增加密钥分发、填充选择和密文重放等风险。因此，不要把“客户端 RSA + HTTPS”当作所有系统都必须采用的通用方案。
+HTTP hoạt động trên TCP, toàn bộ dữ liệu truyền đi đều ở dạng plaintext và cả client lẫn server đều không thể xác thực danh tính của đối phương.
 
-某些具有明确合规要求或特殊威胁模型的系统可能会在 TLS 之上增加应用层保护，但应使用经过评审的成熟协议，并同时包含随机挑战、时效校验和防重放机制，不能只做一次简单的公钥加密。
+Trong khi đó, HTTPS là HTTP chạy trên SSL/TLS, toàn bộ dữ liệu truyền đều được mã hóa.
 
-除了传输加密，还应限制登录尝试、避免记录密码、使用多因素认证，并防范凭据填充和撞库攻击。
+Bạn có thể tham khảo bài viết này để hiểu rõ hơn sự khác biệt giữa HTTP và HTTPS: [HTTP vs HTTPS (Tầng ứng dụng)](https://javaguide.cn/cs-basics/network/http-vs-https.html).
 
-## 忘记密码流程还要注意什么？
+Đối với các ứng dụng Web thông thường, việc cấu hình HTTPS đúng cách là nền tảng để bảo vệ việc truyền mật khẩu. Máy chủ nên mặc định sử dụng **TLS 1.3**, đồng thời hỗ trợ **TLS 1.2** khi cần tương thích; bắt buộc sử dụng HTTPS trên toàn bộ website, bật **HSTS**, xác thực chứng chỉ đúng cách và vô hiệu hóa các giao thức cũ cũng như các bộ mật mã yếu.
 
-本文重点解释为什么服务端不能找回原密码。实际实现忘记密码功能时，还需要注意下面这些安全要求：
+Việc bổ sung thêm một lớp mã hóa RSA tùy chỉnh ở phía trình duyệt thường không giải quyết được các vấn đề như client độc hại, mã JavaScript phía frontend bị xâm nhập hoặc điểm giải mã phía server bị lộ. Ngược lại, nó còn làm tăng độ phức tạp trong việc phân phối khóa, lựa chọn cơ chế padding và phòng chống replay attack. Vì vậy, không nên coi mô hình **"RSA phía client + HTTPS"** là giải pháp bắt buộc cho mọi hệ thống.
 
-- 无论账号是否存在，都返回一致的提示，并尽量保持接近的响应时间，避免用户枚举。
-- 重置令牌使用密码学安全随机数生成，具备足够熵，只能使用一次，并在较短时间后过期。
-- 对重置请求和令牌校验进行限流；重置链接只使用可信域名和 HTTPS，避免令牌通过 Referer 泄露。
-- 密码修改成功后发送安全通知，并根据风险使已有会话失效，或至少让用户能够一键注销其他会话。
+Trong một số hệ thống có yêu cầu tuân thủ hoặc mô hình đe dọa đặc biệt, có thể bổ sung thêm lớp bảo vệ ở tầng ứng dụng trên nền TLS. Tuy nhiên, nên sử dụng các giao thức đã được đánh giá kỹ lưỡng, đồng thời phải có cơ chế random challenge, kiểm tra thời hạn hiệu lực và chống replay attack, thay vì chỉ thực hiện một lần mã hóa bằng khóa công khai.
 
-## 总结
+Ngoài việc mã hóa đường truyền, hệ thống còn nên giới hạn số lần thử đăng nhập, tránh ghi log chứa mật khẩu, sử dụng xác thực đa yếu tố (MFA) và phòng chống Credential Stuffing cũng như Password Spraying.
 
-回到最初的问题：为什么忘记密码时只能重置，不能告诉你原密码？
+## Khi triển khai chức năng quên mật khẩu còn cần lưu ý điều gì?
 
-因为服务端存储的是密码经过哈希算法处理后的值，**哈希算法是不可逆的**，无法从哈希值还原出原始密码。这是密码安全的基本原则。
+Bài viết này tập trung giải thích vì sao máy chủ không thể khôi phục mật khẩu gốc. Trong thực tế, khi triển khai chức năng quên mật khẩu, vẫn cần chú ý các yêu cầu bảo mật sau:
 
-如果一个网站能够直接告诉你原密码，说明服务端以**明文或可逆形式**保存了可恢复的密码，而不是只保存专用密码哈希。这是严重的安全隐患，建议立即修改密码，并检查其他网站是否复用了同一密码。
+- Dù tài khoản có tồn tại hay không, hệ thống đều phải trả về cùng một thông báo và cố gắng giữ thời gian phản hồi tương đương nhằm tránh User Enumeration.
+- Reset Token phải được tạo bằng bộ sinh số ngẫu nhiên bảo mật, có đủ entropy, chỉ sử dụng một lần và hết hạn trong thời gian ngắn.
+- Áp dụng Rate Limiting đối với yêu cầu đặt lại mật khẩu và quá trình xác thực Reset Token; liên kết đặt lại mật khẩu chỉ sử dụng tên miền đáng tin cậy và HTTPS để tránh rò rỉ Token thông qua Referer.
+- Sau khi thay đổi mật khẩu thành công, nên gửi thông báo bảo mật cho người dùng, đồng thời vô hiệu hóa các phiên đăng nhập hiện có theo mức độ rủi ro, hoặc ít nhất cho phép người dùng đăng xuất tất cả các phiên khác chỉ bằng một thao tác.
 
-**更重要的是**：如果你在所有网站都用了相同的密码，一个不靠谱的网站泄漏了你的密码，就相当于你所有的账户都面临风险。所以，**不要在所有网站使用相同密码**！
+## Tổng kết
 
-## 参考
+Quay trở lại câu hỏi ban đầu:
 
-- OWASP Password Storage Cheat Sheet：<https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html>
-- OWASP Forgot Password Cheat Sheet：<https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html>
-- OWASP Transport Layer Security Cheat Sheet：<https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html>
+**Vì sao khi quên mật khẩu chỉ có thể đặt lại mà không thể cho bạn biết mật khẩu gốc?**
+
+Bởi vì máy chủ chỉ lưu **giá trị Hash của mật khẩu**, còn **thuật toán Hash là thuật toán một chiều**, không thể khôi phục lại mật khẩu gốc từ giá trị Hash. Đây là nguyên tắc cơ bản của bảo mật mật khẩu.
+
+Nếu một website có thể trực tiếp cho bạn biết mật khẩu gốc, điều đó chứng tỏ hệ thống đang lưu mật khẩu ở **dạng plaintext hoặc dạng có thể khôi phục**, thay vì chỉ lưu giá trị Hash chuyên dụng. Đây là một lỗ hổng bảo mật nghiêm trọng. Bạn nên đổi mật khẩu ngay và kiểm tra xem mình có đang dùng lại mật khẩu đó trên các website khác hay không.
+
+**Quan trọng hơn nữa:** Nếu bạn dùng cùng một mật khẩu trên mọi website, chỉ cần một website kém an toàn bị rò rỉ mật khẩu thì toàn bộ tài khoản của bạn đều có nguy cơ bị xâm phạm.
+
+Vì vậy, **đừng sử dụng cùng một mật khẩu cho tất cả các website!**
+
+## Tài liệu tham khảo
+
+- OWASP Password Storage Cheat Sheet：https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
+- OWASP Forgot Password Cheat Sheet：https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html
+- OWASP Transport Layer Security Cheat Sheet：https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html

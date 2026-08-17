@@ -1,6 +1,6 @@
 ---
-title: Java 集合专题：List、Map、Queue、并发集合与源码分析
-description: Java 集合面试与源码学习路线，涵盖 List、Set、Map、Queue、ArrayList、HashMap、ConcurrentHashMap、阻塞队列和常见集合使用问题。
+title: "Chuyên đề Java Collection: List, Map, Queue, Collection đồng bộ và phân tích mã nguồn"
+description: Lộ trình học tập Java Collection cho phỏng vấn và phân tích mã nguồn, bao gồm List, Set, Map, Queue, ArrayList, HashMap, ConcurrentHashMap, hàng đợi chặn (blocking queue) và các vấn đề thường gặp khi sử dụng collection.
 category: Java
 tag:
   - Java
@@ -15,76 +15,76 @@ head:
       content: Java集合,Java集合面试题,ArrayList,LinkedList,HashMap,ConcurrentHashMap,CopyOnWriteArrayList,ArrayBlockingQueue,PriorityQueue,DelayQueue,集合源码
 ---
 
-Java 集合是业务开发中使用频率最高的基础库之一，也是 Java 面试最常考的模块。学习集合时，既要知道每个容器适合什么场景，也要理解扩容、哈希冲突、迭代器、线程安全和并发容器背后的设计取舍。
+Java Collection là một trong những thư viện nền tảng được sử dụng thường xuyên nhất trong phát triển nghiệp vụ, đồng thời cũng là module được hỏi nhiều nhất trong phỏng vấn Java. Khi học về collection, bạn cần biết mỗi container phù hợp với tình huống nào, đồng thời hiểu rõ các đánh đổi thiết kế đằng sau cơ chế mở rộng (expansion), xung đột băm (hash collision), iterator, thread-safe và container đồng bộ (concurrent container).
 
-## 适合谁看
+## Đối tượng phù hợp
 
-- 想系统掌握 Java 集合框架的后端开发者。
-- 准备 List、Map、Queue、并发集合和源码分析相关面试题的同学。
-- 平时经常使用集合，但对扩容、哈希冲突、fail-fast、线程安全等细节不熟的读者。
-- 想阅读 JDK 源码，从常用集合类开始建立源码分析能力的工程师。
+- Backend developer muốn nắm vững một cách hệ thống về Java Collection Framework.
+- Người đang chuẩn bị cho các câu hỏi phỏng vấn liên quan đến List, Map, Queue, collection đồng bộ và phân tích mã nguồn.
+- Độc giả thường xuyên sử dụng collection nhưng chưa quen với các chi tiết như mở rộng (expansion), xung đột băm (hash collision), fail-fast, thread-safe.
+- Kỹ sư muốn đọc mã nguồn JDK, bắt đầu từ các lớp collection phổ biến để xây dựng khả năng phân tích mã nguồn.
 
-## 学习重点
+## Trọng tâm học tập
 
-- List、Set、Map、Queue 的接口体系和常见实现类定位。
-- `ArrayList`、`LinkedList`、`HashMap`、`LinkedHashMap` 的底层数据结构和扩容机制。
-- `ConcurrentHashMap`、`CopyOnWriteArrayList`、`ArrayBlockingQueue` 等并发容器的线程安全思路。
-- 哈希冲突、红黑树化、fail-fast、迭代器删除、集合判空和容量预估等常见细节。
-- 源码分析时如何从数据结构、关键字段、核心方法和并发控制四个角度入手。
+- Hệ thống interface của List, Set, Map, Queue và định vị các lớp triển khai phổ biến.
+- Cấu trúc dữ liệu nền (underlying data structure) và cơ chế mở rộng của `ArrayList`, `LinkedList`, `HashMap`, `LinkedHashMap`.
+- Tư duy thread-safe của các container đồng bộ như `ConcurrentHashMap`, `CopyOnWriteArrayList`, `ArrayBlockingQueue`.
+- Các chi tiết thường gặp: xung đột băm (hash collision), cây hóa đỏ-đen (treeify), fail-fast, xóa phần tử khi duyệt bằng iterator, kiểm tra collection rỗng và ước lượng dung lượng (capacity estimation).
+- Cách tiếp cận phân tích mã nguồn từ bốn góc độ: cấu trúc dữ liệu, trường khóa (key fields), phương thức lõi (core methods) và kiểm soát đồng thời (concurrency control).
 
-## 建议阅读顺序
+## Thứ tự đọc đề xuất
 
-1. [Java集合常见面试题总结(上)](./java-collection-questions-01.md)：先建立集合框架和常见容器的问题清单。
-2. [Java集合常见面试题总结(下)](./java-collection-questions-02.md)：继续补齐 Map、Queue、并发集合和源码细节。
-3. [Java集合使用注意事项总结](./java-collection-precautions-for-use.md)：掌握项目里真正容易踩坑的使用方式。
-4. [ArrayList 源码分析](./arraylist-source-code.md)、[LinkedList 源码分析](./linkedlist-source-code.md)、[HashMap 源码分析](./hashmap-source-code.md)：从最常用容器开始读源码。
-5. [ConcurrentHashMap 源码分析](./concurrent-hash-map-source-code.md)、[CopyOnWriteArrayList 源码分析](./copyonwritearraylist-source-code.md)、[ArrayBlockingQueue 源码分析](./arrayblockingqueue-source-code.md)：再进入并发集合和阻塞队列。
+1. [Tổng hợp câu hỏi phỏng vấn Java Collection (Phần 1)](./java-collection-questions-01.md)：Xây dựng danh sách câu hỏi về collection framework và các container phổ biến.
+2. [Tổng hợp câu hỏi phỏng vấn Java Collection (Phần 2)](./java-collection-questions-02.md)：Tiếp tục bổ sung chi tiết về Map, Queue, collection đồng bộ và mã nguồn.
+3. [Tổng hợp lưu ý khi sử dụng Java Collection](./java-collection-precautions-for-use.md)：Nắm vững các cách sử dụng thực tế dễ mắc lỗi trong dự án.
+4. [Phân tích mã nguồn ArrayList](./arraylist-source-code.md)、[Phân tích mã nguồn LinkedList](./linkedlist-source-code.md)、[Phân tích mã nguồn HashMap](./hashmap-source-code.md)：Bắt đầu đọc mã nguồn từ các container phổ biến nhất.
+5. [Phân tích mã nguồn ConcurrentHashMap](./concurrent-hash-map-source-code.md)、[Phân tích mã nguồn CopyOnWriteArrayList](./copyonwritearraylist-source-code.md)、[Phân tích mã nguồn ArrayBlockingQueue](./arrayblockingqueue-source-code.md)：Tiếp đến là collection đồng bộ và hàng đợi chặn (blocking queue).
 
-## 核心文章
+## Bài viết cốt lõi
 
-### 集合面试与使用规范
+### Câu hỏi phỏng vấn và quy chuẩn sử dụng Collection
 
-- [Java集合常见面试题总结(上)](./java-collection-questions-01.md)：覆盖集合框架、List、Set、Map、Queue 的基础问题。
-- [Java集合常见面试题总结(下)](./java-collection-questions-02.md)：继续梳理哈希表、并发集合、集合源码和常见易错点。
-- [Java集合使用注意事项总结](./java-collection-precautions-for-use.md)：总结集合初始化、判空、遍历删除、线程安全和性能相关注意事项。
+- [Tổng hợp câu hỏi phỏng vấn Java Collection (Phần 1)](./java-collection-questions-01.md)：Bao gồm các câu hỏi cơ bản về collection framework, List, Set, Map, Queue.
+- [Tổng hợp câu hỏi phỏng vấn Java Collection (Phần 2)](./java-collection-questions-02.md)：Tiếp tục phân tích bảng băm (hash table), collection đồng bộ, mã nguồn collection và các lỗi thường gặp.
+- [Tổng hợp lưu ý khi sử dụng Java Collection](./java-collection-precautions-for-use.md)：Tổng kết các lưu ý về khởi tạo collection, kiểm tra rỗng, xóa khi duyệt, thread-safe và hiệu năng.
 
-### List 与 Map 源码
+### Mã nguồn List và Map
 
-- [ArrayList 源码分析](./arraylist-source-code.md)：理解动态数组、扩容、随机访问和迭代器。
-- [LinkedList 源码分析](./linkedlist-source-code.md)：理解双向链表、头尾操作和适用场景。
-- [HashMap 源码分析](./hashmap-source-code.md)：理解数组、链表、红黑树、扰动函数、扩容和树化。
-- [LinkedHashMap 源码分析](./linkedhashmap-source-code.md)：理解访问顺序、插入顺序和 LRU 场景。
+- [Phân tích mã nguồn ArrayList](./arraylist-source-code.md)：Hiểu về mảng động (dynamic array), mở rộng (expansion), truy cập ngẫu nhiên và iterator.
+- [Phân tích mã nguồn LinkedList](./linkedlist-source-code.md)：Hiểu về danh sách liên kết đôi (doubly linked list), thao tác đầu cuối và tình huống áp dụng.
+- [Phân tích mã nguồn HashMap](./hashmap-source-code.md)：Hiểu về mảng, danh sách liên kết, cây đỏ-đen (red-black tree), hàm nhiễu (perturbation function), mở rộng và cây hóa (treeify).
+- [Phân tích mã nguồn LinkedHashMap](./linkedhashmap-source-code.md)：Hiểu về thứ tự truy cập (access order), thứ tự chèn (insertion order) và tình huống LRU.
 
-如果对底层结构还不熟，可以先看 [线性数据结构详解](../../cs-basics/data-structure/linear-data-structure.md)、[哈希表面试题总结](../../cs-basics/data-structure/hash-table.md)、[红黑树详解](../../cs-basics/data-structure/red-black-tree.md) 和 [LRU 缓存面试题总结](../../cs-basics/data-structure/lru-cache.md)，再回来看集合源码会顺很多。
+Nếu bạn chưa quen với cấu trúc dữ liệu nền tảng, có thể xem trước [Giải thích chi tiết cấu trúc dữ liệu tuyến tính](../../cs-basics/data-structure/linear-data-structure.md)、[Tổng hợp câu hỏi phỏng vấn bảng băm](../../cs-basics/data-structure/hash-table.md)、[Giải thích chi tiết cây đỏ-đen](../../cs-basics/data-structure/red-black-tree.md) và [Tổng hợp câu hỏi phỏng vấn LRU Cache](../../cs-basics/data-structure/lru-cache.md), sau đó quay lại đọc mã nguồn collection sẽ trôi chảy hơn nhiều.
 
-### 并发集合与队列
+### Collection đồng bộ và hàng đợi
 
-- [ConcurrentHashMap 源码分析](./concurrent-hash-map-source-code.md)：理解分段锁到 CAS + synchronized 的演进。
-- [CopyOnWriteArrayList 源码分析](./copyonwritearraylist-source-code.md)：理解写时复制和读多写少场景。
-- [ArrayBlockingQueue 源码分析](./arrayblockingqueue-source-code.md)：理解有界阻塞队列、锁和条件队列。
-- [PriorityQueue 源码分析（付费）](./priorityqueue-source-code.md)：理解堆结构和优先级队列。
-- [DelayQueue 源码分析](./delayqueue-source-code.md)：理解延迟队列、优先级队列和定时任务场景。
+- [Phân tích mã nguồn ConcurrentHashMap](./concurrent-hash-map-source-code.md)：Hiểu về sự tiến hóa từ khóa phân đoạn (segmented lock) đến CAS + synchronized.
+- [Phân tích mã nguồn CopyOnWriteArrayList](./copyonwritearraylist-source-code.md)：Hiểu về copy-on-write và tình huống đọc nhiều ghi ít.
+- [Phân tích mã nguồn ArrayBlockingQueue](./arrayblockingqueue-source-code.md)：Hiểu về hàng đợi chặn có giới hạn (bounded blocking queue), khóa (lock) và hàng đợi điều kiện (condition queue).
+- [Phân tích mã nguồn PriorityQueue (trả phí)](./priorityqueue-source-code.md)：Hiểu về cấu trúc heap và hàng đợi ưu tiên (priority queue).
+- [Phân tích mã nguồn DelayQueue](./delayqueue-source-code.md)：Hiểu về hàng đợi trễ (delay queue), hàng đợi ưu tiên và tình huống tác vụ định thời (scheduled task).
 
-## 高频问题
+## Câu hỏi thường gặp
 
-- `ArrayList` 和 `LinkedList` 有什么区别？为什么很多场景更推荐 `ArrayList`？
-- `HashMap` 的底层数据结构是什么？什么时候会树化？
-- `HashMap` 为什么线程不安全？扩容时可能出现什么问题？
-- `HashMap` 和 `ConcurrentHashMap` 有什么区别？
-- `ConcurrentHashMap` 在 JDK 7 和 JDK 8 中的实现有什么变化？
-- `CopyOnWriteArrayList` 为什么适合读多写少？
-- fail-fast 和 fail-safe 有什么区别？
-- 遍历集合时如何安全删除元素？
-- `ArrayBlockingQueue`、`PriorityQueue`、`DelayQueue` 分别适合什么场景？
+- `ArrayList` và `LinkedList` khác nhau như thế nào? Tại sao nhiều tình huống khuyến nghị dùng `ArrayList` hơn?
+- Cấu trúc dữ liệu nền của `HashMap` là gì? Khi nào sẽ cây hóa (treeify)?
+- Tại sao `HashMap` không thread-safe? Khi mở rộng (expansion) có thể xảy ra vấn đề gì?
+- `HashMap` và `ConcurrentHashMap` khác nhau như thế nào?
+- Cài đặt của `ConcurrentHashMap` trong JDK 7 và JDK 8 có gì thay đổi?
+- Tại sao `CopyOnWriteArrayList` phù hợp với tình huống đọc nhiều ghi ít?
+- fail-fast và fail-safe khác nhau như thế nào?
+- Khi duyệt collection, làm thế nào để xóa phần tử an toàn?
+- `ArrayBlockingQueue`, `PriorityQueue`, `DelayQueue` lần lượt phù hợp với tình huống nào?
 
-## 相关专题
+## Chuyên đề liên quan
 
-- [Java 知识体系](../)
-- [Java 基础专题](../basis/)
-- [Java 并发编程专题](../concurrent/)
-- [JVM 专题](../jvm/)
-- [数据结构](../../cs-basics/data-structure/)
-- [哈希表面试题总结](../../cs-basics/data-structure/hash-table.md)
-- [LRU 缓存面试题总结](../../cs-basics/data-structure/lru-cache.md)
+- [Hệ thống kiến thức Java](../)
+- [Chuyên đề Java Cơ bản](../basis/)
+- [Chuyên đề Lập trình đồng thời Java](../concurrent/)
+- [Chuyên đề JVM](../jvm/)
+- [Cấu trúc dữ liệu](../../cs-basics/data-structure/)
+- [Tổng hợp câu hỏi phỏng vấn bảng băm](../../cs-basics/data-structure/hash-table.md)
+- [Tổng hợp câu hỏi phỏng vấn LRU Cache](../../cs-basics/data-structure/lru-cache.md)
 
 <!-- @include: @article-footer.snippet.md -->

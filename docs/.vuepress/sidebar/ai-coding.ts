@@ -3,136 +3,136 @@ import { ICONS } from "./constants.js";
 
 export const aiCoding = arraySidebar([
   {
-    text: "入门",
+    text: "Nhập môn",
     icon: ICONS.BASIC,
     children: [
       {
-        text: "AI 编程开放性面试题",
+        text: "Câu hỏi phỏng vấn mở về lập trình AI",
         link: "practices/ai-ide",
       },
       {
-        text: "AI 编程选 CLI 还是 IDE？",
+        text: "Lập trình AI nên chọn CLI hay IDE?",
         link: "practices/cli-vs-ide",
       },
     ],
   },
   {
-    text: "Claude Code 与 Codex",
+    text: "Claude Code và Codex",
     icon: ICONS.CODE,
     children: [
       {
-        text: "⭐️Claude Code 使用指南",
+        text: "⭐️Hướng dẫn sử dụng Claude Code",
         link: "practices/claudecode-tips",
       },
       {
-        text: "Claude Code 核心命令详解",
+        text: "Giải thích chi tiết lệnh cốt lõi Claude Code",
         link: "practices/claudecode-commands",
       },
       {
-        text: "⭐️OpenAI Codex 最佳实践指南",
+        text: "⭐️Hướng dẫn thực hành tốt nhất OpenAI Codex",
         link: "practices/codex-best-practices",
       },
       {
-        text: "高颜值 Claude Code 替代 OMP",
+        text: "Thay thế OMP bằng Claude Code đẹp mắt",
         link: "practices/oh-my-pi",
       },
       {
-        text: "Ghostty 安装、配置和常见技巧",
+        text: "Ghostty: cài đặt, cấu hình và mẹo phổ biến",
         link: "practices/ghostty",
       },
       {
-        text: "Claude Code Agent View 多会话管理",
+        text: "Claude Code Agent View: quản lý đa phiên",
         link: "practices/claudecode-agentview",
       },
     ],
   },
   {
-    text: "Claude Code 原理",
+    text: "Nguyên lý Claude Code",
     icon: ICONS.CODE,
     prefix: "principles/",
     children: [
       {
-        text: "Claude Code 上下文管理",
+        text: "Quản lý ngữ cảnh (context) Claude Code",
         link: "claude-code-context-management",
       },
       {
-        text: "Claude Code 记忆系统",
+        text: "Hệ thống bộ nhớ Claude Code",
         link: "claude-code-memory",
       },
       {
-        text: "Claude Code Skills 原理",
+        text: "Nguyên lý Claude Code Skills",
         link: "claude-code-skills",
       },
       {
-        text: "Claude Code Hooks 原理",
+        text: "Nguyên lý Claude Code Hooks",
         link: "claude-code-hooks",
       },
       {
-        text: "Claude Code 多 Agent 机制",
+        text: "Cơ chế đa Agent của Claude Code",
         link: "claude-code-multi-agent",
       },
     ],
   },
   {
-    text: "规范与提效",
+    text: "Quy chuẩn và nâng cao hiệu suất",
     icon: ICONS.PERFORMANCE,
     children: [
       {
-        text: "⭐️Vibe Coding 实用技巧总结",
+        text: "⭐️Tổng kết mẹo thực dụng Vibe Coding",
         link: "practices/the-cool-tricks-for-vibe-coding",
       },
       {
-        text: "Spec Coding 规范驱动编程",
+        text: "Spec Coding: lập trình theo quy cách",
         link: "practices/spec-coding",
       },
       {
-        text: "⭐️CLAUDE.md 最佳实践",
+        text: "⭐️Thực hành tốt nhất với CLAUDE.md",
         link: "practices/claude-md-best-practices",
       },
       {
-        text: "⭐️AI 编程必备 Skills 推荐",
+        text: "⭐️Gợi ý Skills cần thiết khi lập trình AI",
         link: "practices/programmer-essential-skills",
       },
       {
-        text: "AI 编程 Skills 选型与精简",
+        text: "Chọn lọc và tinh gọn Skills lập trình AI",
         link: "practices/skill-selection-and-pruning",
       },
       {
-        text: "一个好用的 AI 绘图 Skill",
+        text: "Một Skill vẽ biểu đồ AI hữu ích",
         link: "practices/drawio-chart-skill",
       },
     ],
   },
   {
-    text: "AI 编程实战",
+    text: "Thực chiến lập trình AI",
     icon: ICONS.PROJECT,
     children: [
       {
-        text: "IDEA + Qoder 插件多场景实战",
+        text: "Thực chiến đa tình huống với plugin IDEA + Qoder",
         link: "cases/idea-qoder-plugin",
       },
       {
-        text: "Trae + MiniMax 多场景实战",
+        text: "Thực chiến đa tình huống với Trae + MiniMax",
         link: "cases/trae-m2.7",
       },
       {
-        text: "Claude Code 接入第三方模型实战",
+        text: "Thực chiến kết nối mô hình bên thứ ba vào Claude Code",
         link: "cases/cc-glm5.1",
       },
       {
-        text: "DeepSeek V4 + Claude Code 实战",
+        text: "Thực chiến DeepSeek V4 + Claude Code",
         link: "cases/deepseek-v4-claude-code",
       },
       {
-        text: "MiniMax M3 + Claude Code 实战",
+        text: "Thực chiến MiniMax M3 + Claude Code",
         link: "cases/cc-m3",
       },
       {
-        text: "Kimi K3 多场景实战",
+        text: "Thực chiến đa tình huống Kimi K3",
         link: "cases/kimi-k3",
       },
       {
-        text: "IDEA + CC GUI 插件实战",
+        text: "Thực chiến plugin IDEA + CC GUI",
         link: "project/cc-guide",
       },
     ],

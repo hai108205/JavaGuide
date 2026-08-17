@@ -1,48 +1,48 @@
 ---
-title: MySQL查询缓存详解
-description: 深入解析MySQL查询缓存的工作原理、配置管理及其优缺点，分析为什么MySQL 8.0移除了查询缓存功能，以及生产环境中的最佳实践建议。
-category: 数据库
+title: Giải thích chi tiết Query Cache trong MySQL
+description: Phân tích chuyên sâu nguyên lý hoạt động, cấu hình quản lý cùng ưu nhược điểm của Query Cache trong MySQL, lý giải vì sao MySQL 8.0 loại bỏ tính năng Query Cache, và các khuyến nghị thực hành tốt nhất trong môi trường Production.
+category: Cơ sở dữ liệu
 tag:
   - MySQL
 head:
   - - meta
     - name: keywords
-      content: MySQL查询缓存,Query Cache,MySQL缓存机制,缓存失效,MySQL 8.0,查询性能优化,MySQL内存管理
+      content: Query Cache MySQL,Query Cache,Cơ chế Cache MySQL,Vô hiệu hóa Cache,MySQL 8.0,Tối ưu hiệu năng truy vấn,Quản lý bộ nhớ MySQL
 ---
 
-缓存是一个有效且实用的系统性能优化手段，无论是操作系统，还是各类应用软件与 Web 服务，均广泛采用了缓存机制。
+Cache là một phương pháp tối ưu hiệu năng hệ thống hiệu quả và thực dụng, dù là hệ điều hành, hay các loại phần mềm ứng dụng và dịch vụ Web, đều áp dụng rộng rãi cơ chế Cache.
 
-然而，有经验的 DBA 都建议生产环境中把 MySQL 自带的 Query Cache（查询缓存）给关掉。而且，从 MySQL 5.7.20 开始，就已经默认弃用查询缓存了。在 MySQL 8.0 及之后，更是直接删除了查询缓存的功能。
+Tuy nhiên, các DBA có kinh nghiệm đều khuyến nghị trong môi trường Production nên tắt Query Cache (Bộ nhớ đệm truy vấn) đi kèm của MySQL. Hơn nữa, từ MySQL 5.7.20 trở đi, Query Cache đã mặc định bị loại bỏ (deprecated). Từ MySQL 8.0 trở về sau, tính năng Query Cache còn bị xóa bỏ hoàn toàn.
 
-这又是为什么呢？查询缓存真就这么鸡肋么?
+Tại sao lại như vậy? Query Cache thật sự vô dụng đến thế sao?
 
-带着如下几个问题，我们正式进入本文。
+Mang theo vài câu hỏi sau, chúng ta chính thức bước vào bài viết.
 
-- MySQL 查询缓存是什么？适用范围？
-- MySQL 缓存规则是什么？
-- MySQL 缓存的优缺点是什么？
-- MySQL 缓存对性能有什么影响？
+- Query Cache của MySQL là gì? Phạm vi áp dụng?
+- Quy tắc Cache của MySQL là gì?
+- Ưu nhược điểm của Cache trong MySQL là gì?
+- Cache trong MySQL ảnh hưởng thế nào đến hiệu năng?
 
-## MySQL 查询缓存介绍
+## Giới thiệu Query Cache trong MySQL
 
-MySQL 体系架构如下图所示：
+Kiến trúc hệ thống MySQL như hình dưới đây:
 
 ![](https://oss.javaguide.cn/github/javaguide/mysql/mysql-architecture.png)
 
-为了提高完全相同的查询语句的响应速度，MySQL Server 会对查询语句进行 Hash 计算得到一个 Hash 值。MySQL Server 不会对 SQL 做任何处理，SQL 必须完全一致 Hash 值才会一样。得到 Hash 值之后，通过该 Hash 值到查询缓存中匹配该查询的结果。
+Để nâng cao tốc độ phản hồi của các câu lệnh truy vấn hoàn toàn giống nhau, MySQL Server sẽ tính Hash câu lệnh truy vấn để được một giá trị Hash. MySQL Server không xử lý gì với SQL, SQL phải hoàn toàn nhất quán thì giá trị Hash mới giống nhau. Sau khi có được giá trị Hash, thông qua giá trị Hash đó để khớp kết quả của truy vấn trong Query Cache.
 
-- 如果匹配（命中），则将查询的结果集直接返回给客户端，不必再解析、执行查询。
-- 如果没有匹配（未命中），则将 Hash 值和结果集保存在查询缓存中，以便以后使用。
+- Nếu khớp (trúng Cache), sẽ trả trực tiếp tập kết quả (Result Set) của truy vấn về Client, không cần phân tích và thực thi truy vấn nữa.
+- Nếu không khớp (không trúng Cache), sẽ lưu giá trị Hash và tập kết quả vào Query Cache, để sử dụng sau này.
 
-也就是说，**一个查询语句（select）到了 MySQL Server 之后，会先到查询缓存看看，如果曾经执行过的话，就直接返回结果集给客户端。**
+Nghĩa là, **một câu lệnh truy vấn (select) khi đến MySQL Server, sẽ vào Query Cache xem trước, nếu đã từng được thực thi thì trả trực tiếp tập kết quả về Client.**
 
 ![](https://oss.javaguide.cn/javaguide/13526879-3037b144ed09eb88.png)
 
-## MySQL 查询缓存管理和配置
+## Quản lý và cấu hình Query Cache trong MySQL
 
-通过 `show variables like '%query_cache%'`命令可以查看查询缓存相关的信息。
+Thông qua câu lệnh `show variables like '%query_cache%'` có thể xem các thông tin liên quan đến Query Cache.
 
-8.0 版本之前的话，打印的信息可能是下面这样的：
+Với các phiên bản trước 8.0, thông tin in ra có thể như sau:
 
 ```bash
 mysql> show variables like '%query_cache%';
@@ -59,7 +59,7 @@ mysql> show variables like '%query_cache%';
 6 rows in set (0.02 sec)
 ```
 
-8.0 以及之后版本之后，打印的信息是下面这样的：
+Với phiên bản 8.0 trở về sau, thông tin in ra như sau:
 
 ```bash
 mysql> show variables like '%query_cache%';
@@ -71,160 +71,160 @@ mysql> show variables like '%query_cache%';
 1 row in set (0.01 sec)
 ```
 
-我们这里对 8.0 版本之前`show variables like '%query_cache%';`命令打印出来的信息进行解释。
+Ở đây chúng ta sẽ giải thích các thông tin được in ra từ câu lệnh `show variables like '%query_cache%';` ở phiên bản trước 8.0.
 
-- **`have_query_cache`：** 该 MySQL Server 是否支持查询缓存，如果是 YES 表示支持，否则表示不支持。
-- **`query_cache_limit`：** MySQL 查询缓存的最大查询结果，查询结果大于该值时不会被缓存。
-- **`query_cache_min_res_unit`：** 查询缓存分配的最小块的大小(字节)。当查询进行的时候，MySQL 把查询结果保存在查询缓存中，但如果要保存的结果比较大，超过 `query_cache_min_res_unit` 的值，此时 MySQL 将在检索结果的同时保存数据，也就是说，有可能在一次查询中，MySQL 要进行多次内存分配的操作。适当的调节 `query_cache_min_res_unit` 可以优化内存。
-- **`query_cache_size`：** 为缓存查询结果分配的内存的数量，单位是字节，且数值必须是 1024 的整数倍。MySQL 5.7 官方文档显示默认值为 `1048576`（1 MB），设置为 0 时禁用查询缓存。不同小版本的默认值存在差异，建议在配置文件中显式指定，不依赖默认行为。
-- **`query_cache_type`：** 设置查询缓存类型，默认为 ON。设置 GLOBAL 值可以设置后面的所有客户端连接的类型。客户端可以设置 SESSION 值以影响他们自己对查询缓存的使用。
-- **`query_cache_wlock_invalidate`**：如果某个表被锁住，是否返回缓存中的数据，默认处于关闭状态，生产环境通常建议保持此默认配置。
+- **`have_query_cache`:** MySQL Server này có hỗ trợ Query Cache hay không, nếu là YES thì hỗ trợ, ngược lại là không hỗ trợ.
+- **`query_cache_limit`:** Kết quả truy vấn tối đa được Query Cache của MySQL, kết quả truy vấn lớn hơn giá trị này sẽ không được Cache.
+- **`query_cache_min_res_unit`:** Kích thước (byte) của khối nhỏ nhất được phân bổ trong Query Cache. Khi truy vấn đang tiến hành, MySQL lưu kết quả truy vấn vào Query Cache, nhưng nếu kết quả cần lưu khá lớn, vượt quá giá trị `query_cache_min_res_unit`, lúc này MySQL sẽ vừa truy xuất kết quả vừa lưu dữ liệu, nghĩa là trong một lần truy vấn, MySQL có thể phải thực hiện thao tác phân bổ bộ nhớ nhiều lần. Điều chỉnh `query_cache_min_res_unit` hợp lý có thể tối ưu bộ nhớ.
+- **`query_cache_size`:** Lượng bộ nhớ được phân bổ để Cache kết quả truy vấn, đơn vị là byte, và giá trị phải là bội số nguyên của 1024. Tài liệu chính thức của MySQL 5.7 cho thấy giá trị mặc định là `1048576` (1 MB), khi đặt là 0 sẽ vô hiệu hóa Query Cache. Giá trị mặc định giữa các phiên bản nhỏ khác nhau có sự khác biệt, khuyến nghị chỉ định rõ trong file cấu hình, không dựa vào hành vi mặc định.
+- **`query_cache_type`:** Thiết lập loại Query Cache, mặc định là ON. Thiết lập giá trị GLOBAL có thể thiết lập loại cho tất cả kết nối Client phía sau. Client có thể thiết lập giá trị SESSION để ảnh hưởng đến cách sử dụng Query Cache của chính nó.
+- **`query_cache_wlock_invalidate`**: Nếu một bảng nào đó bị khóa, có trả dữ liệu trong Cache hay không, mặc định ở trạng thái tắt, môi trường Production thường khuyến nghị giữ cấu hình mặc định này.
 
-`query_cache_type` 可能的值（`query_cache_type` 在 MySQL 5.6/5.7 中是动态变量，**但有前提**：若实例启动时 `query_cache_type=0`，服务器会跳过查询缓存互斥锁的分配，此时通过 `SET GLOBAL` 动态修改将报错，必须修改配置文件并重启；若启动时非 0，则可通过 `SET GLOBAL query_cache_type=N` 在线生效，无需重启）：
+Các giá trị có thể có của `query_cache_type` (`query_cache_type` trong MySQL 5.6/5.7 là biến động (dynamic variable), **nhưng có điều kiện**: nếu khi khởi động Instance mà `query_cache_type=0`, Server sẽ bỏ qua việc phân bổ Mutex của Query Cache, lúc này việc sửa động qua `SET GLOBAL` sẽ báo lỗi, phải sửa file cấu hình và khởi động lại; nếu khi khởi động khác 0, thì có thể thông qua `SET GLOBAL query_cache_type=N` để có hiệu lực trực tuyến, không cần khởi động lại):
 
-- 0 或 OFF：关闭查询功能。
-- 1 或 ON：开启查询缓存功能，但不缓存 `Select SQL_NO_CACHE` 开头的查询。
-- 2 或 DEMAND：开启查询缓存功能，但仅缓存 `Select SQL_CACHE` 开头的查询。
+- 0 hoặc OFF: Tắt tính năng truy vấn.
+- 1 hoặc ON: Bật tính năng Query Cache, nhưng không Cache các truy vấn bắt đầu bằng `Select SQL_NO_CACHE`.
+- 2 hoặc DEMAND: Bật tính năng Query Cache, nhưng chỉ Cache các truy vấn bắt đầu bằng `Select SQL_CACHE`.
 
-**建议**：
+**Khuyến nghị**:
 
-- `query_cache_size` 不建议设置得过大。过大的空间不但挤占实例其他内存结构的空间，而且会增加在缓存中搜索的开销。建议根据实例规格，初始值设置为 10MB 到 100MB 之间的值，而后根据运行使用情况调整。
-- 建议通过将 `query_cache_size` 设置为 0 来禁用查询缓存，而非仅依赖 `query_cache_type`。两者虽都是动态变量，但 `query_cache_size=0` 会完全跳过缓存内存分配和检查路径，禁用更彻底。
+- `query_cache_size` không khuyến nghị đặt quá lớn. Không gian quá lớn không những chiếm chỗ không gian của các cấu trúc bộ nhớ khác trong Instance, mà còn tăng chi phí tìm kiếm trong Cache. Khuyến nghị dựa theo quy cách của Instance, đặt giá trị ban đầu trong khoảng từ 10MB đến 100MB, sau đó điều chỉnh theo tình hình vận hành thực tế.
+- Khuyến nghị vô hiệu hóa Query Cache bằng cách đặt `query_cache_size` là 0, thay vì chỉ dựa vào `query_cache_type`. Cả hai tuy đều là biến động, nhưng `query_cache_size=0` sẽ bỏ qua hoàn toàn việc phân bổ bộ nhớ Cache và đường dẫn kiểm tra, vô hiệu hóa triệt để hơn.
 
-  8.0 版本之前，`my.cnf` 加入以下配置，重启 MySQL 开启查询缓存
+  Trước phiên bản 8.0, thêm cấu hình sau vào `my.cnf`, khởi động lại MySQL để bật Query Cache
 
 ```properties
 query_cache_type=1
 query_cache_size=614400
 ```
 
-或者，当实例启动时 `query_cache_type` 非 0 的情况下，也可以通过以下命令在线开启查询缓存（若启动值为 0 则该命令会报错，需修改配置文件后重启）：
+Hoặc, trong trường hợp khi khởi động Instance mà `query_cache_type` khác 0, cũng có thể thông qua các câu lệnh sau để bật Query Cache trực tuyến (nếu giá trị khởi động là 0 thì câu lệnh này sẽ báo lỗi, cần sửa file cấu hình rồi khởi động lại):
 
 ```sql
 set global query_cache_type=1;
 set global query_cache_size=614400;
 ```
 
-手动清理缓存可以使用下面三个 SQL：
+Dọn Cache thủ công có thể dùng ba câu SQL sau:
 
-- `flush query cache;`：清理查询缓存内存碎片。
-- `reset query cache;`：从查询缓存中移除所有查询。
-- `flush tables;` 关闭所有打开的表，同时该操作会清空查询缓存中的内容。
+- `flush query cache;`: Dọn phân mảnh bộ nhớ của Query Cache.
+- `reset query cache;`: Xóa tất cả truy vấn khỏi Query Cache.
+- `flush tables;` Đóng tất cả các bảng đang mở, đồng thời thao tác này sẽ xóa sạch nội dung trong Query Cache.
 
-## MySQL 缓存机制
+## Cơ chế Cache trong MySQL
 
-### 缓存规则
+### Quy tắc Cache
 
-- 查询缓存会将查询语句和结果集保存到内存（一般是 key-value 的形式，其中 Key 是由查询语句文本、当前所在的 Database、客户端字符集以及协议版本等环境参数共同计算生成的 Hash 值，Value 则是查询的结果集），下次再查直接从内存中取。
-- 缓存的结果是通过 sessions 共享的，所以一个 client 查询的缓存结果，另一个 client 也可以使用。
-- SQL 必须完全一致才会导致查询缓存命中（大小写、空格、使用的数据库、协议版本、字符集等必须一致）。检查查询缓存时，MySQL Server 不会对 SQL 做任何处理，它精确地使用客户端传来的查询。
-- 不缓存查询中的子查询结果集，仅缓存查询最终结果集。
-- 不确定的函数将永远不会被缓存, 比如 `now()`、`curdate()`、`last_insert_id()`、`rand()` 等。
-- 不缓存产生告警（Warnings）的查询。
-- 结果集超过 `query_cache_limit`（默认 1 MB）时不会被缓存。
-- 如果查询中包含任何用户自定义函数、存储函数、用户变量、临时表、MySQL 库中的系统表，其查询结果也不会被缓存。
-- 缓存建立之后，MySQL 的查询缓存系统会跟踪查询中涉及的每张表，如果这些表（数据或结构）发生变化，那么和这张表相关的所有缓存数据都将失效。
-- MySQL 缓存在分库分表环境下几乎不起作用。原因在于：查询通常经由中间件（如 ShardingSphere、MyCat）路由到不同的 MySQL 实例，各实例维护各自独立的 Query Cache；中间件在路由时往往会改写 SQL（添加分片键条件等），导致改写后的语句与原始语句 Hash 值不一致，缓存无法命中。
-- 不缓存使用 `SQL_NO_CACHE` 的查询。
+- Query Cache sẽ lưu câu lệnh truy vấn và tập kết quả vào bộ nhớ (thường ở dạng key-value, trong đó Key là giá trị Hash được tính chung từ văn bản câu lệnh truy vấn, Database hiện tại, Character Set của Client và phiên bản giao thức cùng các tham số môi trường khác, Value là tập kết quả của truy vấn), lần sau truy vấn sẽ lấy trực tiếp từ bộ nhớ.
+- Kết quả được Cache chia sẻ qua các sessions, nên kết quả Cache mà một Client truy vấn được, Client khác cũng có thể sử dụng.
+- SQL phải hoàn toàn nhất quán thì mới trúng Query Cache (chữ hoa chữ thường, dấu cách, Database đang dùng, phiên bản giao thức, Character Set,... phải nhất quán). Khi kiểm tra Query Cache, MySQL Server không xử lý gì với SQL, nó sử dụng chính xác truy vấn mà Client gửi đến.
+- Không Cache tập kết quả của truy vấn con (Subquery) trong truy vấn, chỉ Cache tập kết quả cuối cùng của truy vấn.
+- Các hàm không xác định sẽ không bao giờ được Cache, ví dụ `now()`, `curdate()`, `last_insert_id()`, `rand()`,...
+- Không Cache các truy vấn sinh ra cảnh báo (Warnings).
+- Tập kết quả vượt quá `query_cache_limit` (mặc định 1 MB) sẽ không được Cache.
+- Nếu trong truy vấn có chứa bất kỳ hàm do người dùng tự định nghĩa, Stored Function, biến người dùng, bảng tạm, bảng hệ thống trong Database mysql, thì kết quả truy vấn cũng không được Cache.
+- Sau khi Cache được thiết lập, hệ thống Query Cache của MySQL sẽ theo dõi từng bảng liên quan trong truy vấn, nếu những bảng này (dữ liệu hoặc cấu trúc) thay đổi, thì tất cả dữ liệu Cache liên quan đến bảng đó đều sẽ bị vô hiệu.
+- Cache của MySQL gần như không có tác dụng trong môi trường phân tách Database và phân tách bảng (Sharding). Nguyên nhân là: truy vấn thường được định tuyến qua Middleware (như ShardingSphere, MyCat) đến các MySQL Instance khác nhau, mỗi Instance duy trì Query Cache độc lập riêng; Middleware khi định tuyến thường viết lại SQL (thêm điều kiện Shard Key,...), dẫn đến câu lệnh sau khi viết lại có giá trị Hash không nhất quán với câu lệnh gốc, Cache không thể trúng.
+- Không Cache các truy vấn sử dụng `SQL_NO_CACHE`.
 - ……
 
-查询缓存 `SELECT` 选项示例：
+Ví dụ về tùy chọn `SELECT` của Query Cache:
 
 ```sql
-SELECT SQL_CACHE id, name FROM customer;# 会缓存
-SELECT SQL_NO_CACHE id, name FROM customer;# 不会缓存
+SELECT SQL_CACHE id, name FROM customer;# Sẽ được Cache
+SELECT SQL_NO_CACHE id, name FROM customer;# Không được Cache
 ```
 
-### 缓存机制中的内存管理
+### Quản lý bộ nhớ trong cơ chế Cache
 
-查询缓存是完全存储在内存中的，所以在配置和使用它之前，我们需要先了解它是如何使用内存的。
+Query Cache được lưu hoàn toàn trong bộ nhớ, nên trước khi cấu hình và sử dụng nó, chúng ta cần tìm hiểu cách nó sử dụng bộ nhớ.
 
-MySQL 查询缓存使用内存池技术，自己管理内存释放和分配，而不是通过操作系统。内存池使用的基本单位是变长的 block, 用来存储类型、大小、数据等信息。一个结果集的缓存通过链表把这些 block 串起来。block 最短长度为 `query_cache_min_res_unit`。
+Query Cache của MySQL sử dụng công nghệ Memory Pool (bộ nhớ đệm), tự quản lý việc giải phóng và phân bổ bộ nhớ, chứ không thông qua hệ điều hành. Đơn vị cơ bản sử dụng của Memory Pool là block có độ dài thay đổi, dùng để lưu các thông tin như loại, kích thước, dữ liệu,... Cache của một tập kết quả sẽ xâu chuỗi các block này lại bằng danh sách liên kết (Linked List). Độ dài ngắn nhất của block là `query_cache_min_res_unit`.
 
-当服务器启动的时候，会初始化缓存需要的内存，是一个完整的空闲块。当查询开始返回结果时，由于此时无法预知完整的结果集有多大，MySQL 会先向内存池申请一个大小为 `query_cache_min_res_unit` 的基础数据块。如果结果集超出该块容量，则会在生成结果的过程中持续按需申请新的数据块，并将其通过链表拼接起来。
+Khi Server khởi động, sẽ khởi tạo bộ nhớ cần thiết cho Cache, là một khối trống hoàn chỉnh. Khi truy vấn bắt đầu trả kết quả, do lúc này không thể biết trước tập kết quả hoàn chỉnh lớn bao nhiêu, MySQL sẽ xin Memory Pool một khối dữ liệu cơ bản có kích thước `query_cache_min_res_unit` trước. Nếu tập kết quả vượt quá dung lượng khối đó, thì trong quá trình sinh kết quả sẽ tiếp tục xin khối dữ liệu mới theo nhu cầu, và xâu chuỗi chúng lại bằng danh sách liên kết.
 
-分配内存块需要先锁住空间块，所以操作很慢，MySQL 会尽量避免这个操作，选择尽可能小的内存块，如果不够，继续申请，如果存储完时有空余则释放多余的。
+Việc phân bổ khối bộ nhớ cần khóa khối không gian trước, nên thao tác rất chậm, MySQL sẽ cố gắng tránh thao tác này, chọn khối bộ nhớ nhỏ nhất có thể, nếu không đủ thì tiếp tục xin, nếu sau khi lưu xong còn dư thì giải phóng phần thừa.
 
-随着并发读写的进行，不同大小的缓存块被无序且随机地释放，加上分配时剩余的微小空间（小于 `query_cache_min_res_unit`）无法被复用，内存池中会迅速产生大量不连续的空闲内存块（类似操作系统层面的外部碎片），进而触发更频繁的内存整理消耗。
+Cùng với việc đọc/ghi đồng thời (Concurrent) diễn ra, các khối Cache có kích thước khác nhau được giải phóng một cách không có thứ tự và ngẫu nhiên, cộng thêm không gian nhỏ còn thừa khi phân bổ (nhỏ hơn `query_cache_min_res_unit`) không thể tái sử dụng, trong Memory Pool sẽ nhanh chóng sinh ra lượng lớn khối bộ nhớ trống không liên tục (tương tự phân mảnh ngoài ở tầng hệ điều hành), từ đó kích hoạt việc tiêu tốn cho chỉnh lý bộ nhớ thường xuyên hơn.
 
-## MySQL 查询缓存的优缺点
+## Ưu nhược điểm của Query Cache trong MySQL
 
-**优点：**
+**Ưu điểm:**
 
-- 查询缓存的查询，发生在 MySQL 接收到客户端的查询请求、查询权限验证之后和查询 SQL 解析之前。也就是说，当 MySQL 接收到客户端的查询 SQL 之后，仅仅只需要对其进行相应的权限验证之后，就会通过查询缓存来查找结果，甚至都不需要经过 Optimizer 模块进行执行计划的分析优化，更不需要发生任何存储引擎的交互。
-- 由于查询缓存是基于内存的，直接从内存中返回相应的查询结果，因此减少了大量的磁盘 I/O 和 CPU 计算。**但此优势仅在低并发且读多写少的静态场景下成立**；在多核高并发环境下，`LOCK_query_cache` 全局互斥锁的激烈竞争会导致大量线程处于等锁状态（可通过 `SHOW PROCESSLIST` 看到 `Waiting for query cache lock`），实际 TPS/QPS 反而大幅下降。
+- Truy vấn bằng Query Cache xảy ra sau khi MySQL nhận yêu cầu truy vấn từ Client, sau khi xác minh quyền truy vấn và trước khi phân tích SQL truy vấn. Nghĩa là, sau khi MySQL nhận SQL truy vấn từ Client, chỉ cần thực hiện xác minh quyền tương ứng, sẽ thông qua Query Cache để tìm kết quả, thậm chí không cần qua module Optimizer để phân tích và tối ưu Execution Plan, càng không cần bất kỳ tương tác nào với Storage Engine.
+- Do Query Cache dựa trên bộ nhớ, trả trực tiếp kết quả truy vấn tương ứng từ bộ nhớ, nên giảm được lượng lớn I/O đĩa và tính toán CPU. **Nhưng ưu điểm này chỉ đúng trong tình huống tĩnh có độ đồng thời thấp và đọc nhiều ghi ít**; trong môi trường đa nhân, đồng thời cao, sự tranh chấp khốc liệt của Mutex toàn cục `LOCK_query_cache` sẽ khiến lượng lớn Thread rơi vào trạng thái chờ khóa (có thể thấy `Waiting for query cache lock` qua `SHOW PROCESSLIST`), TPS/QPS thực tế ngược lại giảm mạnh.
 
-**缺点：**
+**Nhược điểm:**
 
-- MySQL 会对每条接收到的 SELECT 类型的查询进行 Hash 计算，然后查找这个查询的缓存结果是否存在。虽然 Hash 计算和查找本身的 CPU 开销微乎其微，但 Query Cache 底层依赖单一全局互斥锁（`LOCK_query_cache`）来保证并发安全。一旦涉及到高并发，成千上万条查询语句同时争抢该互斥锁进行缓存检查或写入，极其激烈的锁冲突和线程上下文切换开销将成为致命的性能瓶颈。
-- 查询缓存的失效问题。如果表的变更比较频繁，则会造成查询缓存的失效率非常高。表的变更不仅仅指表中的数据发生变化，还包括表结构或者索引的任何变化。
-- 查询语句不同，但查询结果相同的查询都会被缓存，这样便会造成内存资源的过度消耗。查询语句的字符大小写、空格或者注释的不同，查询缓存都会认为是不同的查询（因为他们的 Hash 值会不同）。
-- 相关系统变量设置不合理会造成大量的内存碎片，这样便会导致查询缓存频繁清理内存。
+- MySQL sẽ tính Hash cho mỗi truy vấn loại SELECT nhận được, rồi tìm xem kết quả Cache của truy vấn này có tồn tại không. Tuy chi phí CPU của việc tính Hash và tìm kiếm là rất nhỏ, nhưng Query Cache ở tầng dưới phụ thuộc vào một Mutex toàn cục duy nhất (`LOCK_query_cache`) để đảm bảo an toàn đồng thời. Một khi liên quan đến đồng thời cao, hàng nghìn hàng vạn câu lệnh truy vấn cùng lúc tranh giành Mutex này để kiểm tra hoặc ghi Cache, xung đột khóa cực kỳ khốc liệt và chi phí chuyển đổi ngữ cảnh Thread sẽ trở thành nút thắt hiệu năng chí mạng.
+- Vấn đề vô hiệu hóa của Query Cache. Nếu bảng thay đổi tương đối thường xuyên, sẽ khiến tỷ lệ vô hiệu hóa của Query Cache rất cao. Thay đổi của bảng không chỉ chỉ sự thay đổi của dữ liệu trong bảng, mà còn bao gồm bất kỳ thay đổi nào của cấu trúc bảng hoặc Index.
+- Các câu lệnh truy vấn khác nhau nhưng kết quả truy vấn giống nhau đều sẽ được Cache, như vậy sẽ gây tiêu tốn quá mức tài nguyên bộ nhớ. Sự khác biệt về chữ hoa chữ thường, dấu cách hoặc chú thích của câu lệnh truy vấn, Query Cache đều coi là các truy vấn khác nhau (vì giá trị Hash của chúng sẽ khác nhau).
+- Việc thiết lập các biến hệ thống liên quan không hợp lý sẽ gây ra lượng lớn phân mảnh bộ nhớ, như vậy sẽ dẫn đến Query Cache thường xuyên phải dọn dẹp bộ nhớ.
 
-## MySQL 查询缓存对性能的影响
+## Ảnh hưởng của Query Cache trong MySQL đến hiệu năng
 
-在 MySQL Server 中打开查询缓存对数据库的读和写都会带来额外的消耗:
+Trong MySQL Server, việc bật Query Cache sẽ mang lại tiêu tốn thêm cho cả đọc và ghi của Database:
 
-- **读操作需持锁检查**：读查询开始前必须检查缓存命中，这需要获取 `LOCK_query_cache` 共享锁。高并发下，大量读请求同时争抢锁会形成排队。
-- **缓存写入开销**：若读查询可缓存，执行后需将结果写入缓存，涉及内存分配和链表拼接操作，同样需要持有锁。
-- **写操作触发全局失效**：向表写入数据时，必须使该表所有缓存失效。这需要获取独占锁扫描整个缓存区，`query_cache_size` 越大持锁时间越长。Query Cache 的单一全局互斥锁设计导致写操作会阻塞所有其他读写请求，这也是 MySQL 8.0 移除它的首要原因。
-- **InnoDB 长事务加剧问题**：MVCC 特性下，事务提交前相关缓存无法使用。长事务不仅降低缓存命中率，写操作触发的独占锁还会阻塞对**其他不相关表**的缓存读取。
+- **Thao tác đọc cần giữ khóa để kiểm tra**: Trước khi truy vấn đọc bắt đầu phải kiểm tra trúng Cache, điều này cần lấy Shared Lock (khóa chia sẻ) `LOCK_query_cache`. Dưới áp lực đồng thời cao, lượng lớn yêu cầu đọc cùng lúc tranh giành khóa sẽ tạo thành hàng đợi.
+- **Chi phí ghi Cache**: Nếu truy vấn đọc có thể Cache, sau khi thực thi cần ghi kết quả vào Cache, liên quan đến thao tác phân bổ bộ nhớ và xâu chuỗi danh sách liên kết, cũng cần giữ khóa.
+- **Thao tác ghi kích hoạt vô hiệu hóa toàn cục**: Khi ghi dữ liệu vào bảng, phải vô hiệu hóa tất cả Cache của bảng đó. Điều này cần lấy Exclusive Lock (khóa độc quyền) để quét toàn bộ vùng Cache, `query_cache_size` càng lớn thì thời gian giữ khóa càng lâu. Thiết kế Mutex toàn cục duy nhất của Query Cache khiến thao tác ghi sẽ chặn tất cả yêu cầu đọc/ghi khác, đây cũng là nguyên nhân hàng đầu khiến MySQL 8.0 loại bỏ nó.
+- **Transaction dài của InnoDB làm vấn đề trầm trọng hơn**: Dưới tính năng MVCC, trước khi Transaction commit, Cache liên quan không thể sử dụng. Transaction dài không những giảm tỷ lệ trúng Cache, Exclusive Lock do thao tác ghi kích hoạt còn chặn việc đọc Cache của **các bảng không liên quan khác**.
 
-可以通过以下命令查看查询缓存的使用情况，判断是否值得开启：
+Có thể thông qua câu lệnh sau để xem tình hình sử dụng Query Cache, phán đoán xem có đáng bật không:
 
 ```sql
 SHOW STATUS LIKE 'Qcache%';
 ```
 
-关键指标说明：
+Giải thích các chỉ số quan trọng:
 
-| 状态变量               | 含义                                                               |
-| :--------------------- | :----------------------------------------------------------------- |
-| `Qcache_hits`          | 缓存命中次数                                                       |
-| `Qcache_inserts`       | 写入缓存的查询次数                                                 |
-| `Qcache_not_cached`    | 未被缓存的查询次数（不可缓存或未命中）                             |
-| `Qcache_lowmem_prunes` | 因内存不足而被淘汰的缓存条目数，持续升高说明缓存空间不足或碎片严重 |
-| `Qcache_free_memory`   | 缓存剩余空闲内存（字节）                                           |
+| Biến trạng thái        | Ý nghĩa                                                                                                               |
+| :--------------------- | :-------------------------------------------------------------------------------------------------------------------- |
+| `Qcache_hits`          | Số lần trúng Cache                                                                                                    |
+| `Qcache_inserts`       | Số lần truy vấn được ghi vào Cache                                                                                    |
+| `Qcache_not_cached`    | Số lần truy vấn không được Cache (không thể Cache hoặc không trúng)                                                   |
+| `Qcache_lowmem_prunes` | Số mục Cache bị loại bỏ do thiếu bộ nhớ, liên tục tăng cho thấy không gian Cache không đủ hoặc phân mảnh nghiêm trọng |
+| `Qcache_free_memory`   | Bộ nhớ trống còn lại của Cache (byte)                                                                                 |
 
-命中率参考公式：
+Công thức tham khảo tính tỷ lệ trúng:
 
 ```
-命中率 = Qcache_hits / (Qcache_hits + Qcache_inserts + Qcache_not_cached)
+Tỷ lệ trúng = Qcache_hits / (Qcache_hits + Qcache_inserts + Qcache_not_cached)
 ```
 
-若命中率长期低于 50%，说明工作负载不适合 Query Cache，建议关闭。此外，还需关注 `Qcache_lowmem_prunes` 与 `Qcache_inserts` 的比值：若比值极高，意味着刚写入缓存的数据很快因内存碎片或空间不足被剔除，此时开启缓存是纯负收益。`Qcache_lowmem_prunes` 持续增长时，可执行 `FLUSH QUERY CACHE` 整理内存碎片，或适当降低 `query_cache_min_res_unit` 的值。
+Nếu tỷ lệ trúng trong thời gian dài thấp hơn 50%, cho thấy Workload (tải công việc) không phù hợp với Query Cache, khuyến nghị tắt. Ngoài ra, còn cần quan tâm tỷ số giữa `Qcache_lowmem_prunes` và `Qcache_inserts`: nếu tỷ số cực cao, nghĩa là dữ liệu vừa ghi vào Cache đã nhanh chóng bị loại do phân mảnh bộ nhớ hoặc thiếu không gian, lúc này bật Cache là thuần lỗ. Khi `Qcache_lowmem_prunes` liên tục tăng, có thể thực thi `FLUSH QUERY CACHE` để chỉnh lý phân mảnh bộ nhớ, hoặc giảm giá trị `query_cache_min_res_unit` một cách thích hợp.
 
-## 总结
+## Tổng kết
 
-MySQL 中的查询缓存虽然能够提升数据库的查询性能，但查询缓存机制本身也引入了额外的管理开销，每次查询后都要做一次缓存操作，失效后还要销毁。
+Query Cache trong MySQL tuy có thể nâng cao hiệu năng truy vấn của Database, nhưng bản thân cơ chế Query Cache cũng đưa vào chi phí quản lý thêm, sau mỗi lần truy vấn đều phải thực hiện một thao tác Cache, sau khi vô hiệu hóa còn phải hủy bỏ.
 
-查询缓存是一个适用较少情况的缓存机制。如果你的应用对数据库的更新很少，那么查询缓存将会作用显著。比较典型的如博客系统，一般博客更新相对较慢，数据表相对稳定不变，这时候查询缓存的作用会比较明显。
+Query Cache là cơ chế Cache chỉ phù hợp với tương đối ít tình huống. Nếu ứng dụng của bạn rất ít cập nhật Database, thì Query Cache sẽ phát huy tác dụng rõ rệt. Điển hình như hệ thống Blog, thường thì Blog cập nhật tương đối chậm, bảng dữ liệu tương đối ổn định không đổi, lúc này tác dụng của Query Cache sẽ khá rõ ràng.
 
-简单总结一下查询缓存的适用场景：
+Tổng kết ngắn gọn các tình huống áp dụng của Query Cache:
 
-- 表数据修改不频繁、数据较静态。
-- 查询（Select）重复度高。
-- 查询结果集小于 1 MB。
+- Dữ liệu bảng không sửa thường xuyên, dữ liệu tương đối tĩnh.
+- Độ lặp lại của truy vấn (Select) cao.
+- Tập kết quả truy vấn nhỏ hơn 1 MB.
 
-对于一个更新频繁的系统来说，查询缓存的作用是很微小的，在某些情况下开启查询缓存会带来性能的下降。
+Đối với một hệ thống cập nhật thường xuyên, tác dụng của Query Cache rất nhỏ bé, trong một số trường hợp bật Query Cache còn khiến hiệu năng giảm sút.
 
-简单总结一下查询缓存不适用的场景：
+Tổng kết ngắn gọn các tình huống không áp dụng của Query Cache:
 
-- 表中的数据、表结构或者索引变动频繁
-- 重复的查询很少
-- 查询的结果集很大
+- Dữ liệu trong bảng, cấu trúc bảng hoặc Index thay đổi thường xuyên
+- Truy vấn lặp lại rất ít
+- Tập kết quả truy vấn rất lớn
 
-《高性能 MySQL》这样写到：
+《高性能 MySQL》(High Performance MySQL) viết như sau:
 
-> 根据我们的经验，在高并发压力环境中查询缓存会导致系统性能的下降，甚至僵死。如果你一 定要使用查询缓存，那么不要设置太大内存，而且只有在明确收益的时候才使用（数据库内容修改次数较少）。
+> Theo kinh nghiệm của chúng tôi, trong môi trường áp lực đồng thời cao, Query Cache sẽ dẫn đến hiệu năng hệ thống giảm sút, thậm chí treo cứng. Nếu bạn nhất định phải sử dụng Query Cache, thì đừng đặt bộ nhớ quá lớn, và chỉ sử dụng khi có lợi ích rõ ràng (số lần sửa đổi nội dung Database tương đối ít).
 
-**确实是这样的！实际项目中，更建议使用本地缓存（比如 Caffeine）或者分布式缓存（比如 Redis） ，性能更好，更通用一些。**
+**Quả thật là như vậy! Trong dự án thực tế, càng khuyến nghị sử dụng Cache cục bộ (ví dụ Caffeine) hoặc Cache phân tán (ví dụ Redis), hiệu năng tốt hơn, thông dụng hơn.**
 
-## 参考
+## Tham khảo
 
-- 《高性能 MySQL》
-- MySQL 缓存机制：<https://zhuanlan.zhihu.com/p/55947158>
-- RDS MySQL 查询缓存（Query Cache）的设置和使用 - 阿里元云数据库 RDS 文档:<https://help.aliyun.com/document_detail/41717.html>
-- 8.10.3 The MySQL Query Cache - MySQL 官方文档：<https://dev.mysql.com/doc/refman/5.7/en/query-cache.html>
+- 《高性能 MySQL》(High Performance MySQL)
+- Cơ chế Cache của MySQL: <https://zhuanlan.zhihu.com/p/55947158>
+- Thiết lập và sử dụng Query Cache của RDS MySQL - Tài liệu Alibaba Cloud Database RDS: <https://help.aliyun.com/document_detail/41717.html>
+- 8.10.3 The MySQL Query Cache - Tài liệu chính thức của MySQL: <https://dev.mysql.com/doc/refman/5.7/en/query-cache.html>
 
 <!-- @include: @article-footer.snippet.md -->

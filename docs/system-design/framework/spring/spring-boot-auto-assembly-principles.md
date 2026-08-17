@@ -1,32 +1,32 @@
 ---
-title: SpringBoot 自动装配原理详解
-description: SpringBoot自动装配原理深度解析，详解@EnableAutoConfiguration、SpringFactories加载机制及条件注解工作原理。
+title: Phân Tích Chi Tiết Nguyên Lý Tự Động Cấu Hình (Auto-Assembly) Của Spring Boot
+description: Phân tích chuyên sâu nguyên lý tự động cấu hình của Spring Boot, giải thích chi tiết @EnableAutoConfiguration, cơ chế nạp SpringFactories và nguyên lý hoạt động của các annotation điều kiện.
 category: 框架
 tag:
   - SpringBoot
 head:
   - - meta
     - name: keywords
-      content: Spring Boot自动装配,AutoConfiguration,EnableAutoConfiguration,SpringFactories,条件注解,Starter,Spring Boot原理
+      content: Spring Boot tự động cấu hình,AutoConfiguration,EnableAutoConfiguration,SpringFactories,annotation điều kiện,Starter,Spring Boot nguyên lý
 ---
 
-> 作者：[Miki-byte-1024](https://github.com/Miki-byte-1024) & [Snailclimb](https://github.com/Snailclimb)
+> Tác giả: [Miki-byte-1024](https://github.com/Miki-byte-1024) & [Snailclimb](https://github.com/Snailclimb)
 
-每次问到 Spring Boot， 面试官非常喜欢问这个问题：“讲述一下 SpringBoot 自动装配原理？”。
+Mỗi khi nhắc đến Spring Boot, người phỏng vấn rất thích hỏi câu này: "Hãy trình bày nguyên lý tự động cấu hình (auto-assembly) của Spring Boot?".
 
-我觉得我们可以从以下几个方面回答：
+Tôi nghĩ chúng ta có thể trả lời từ các khía cạnh sau:
 
-1. 什么是 SpringBoot 自动装配？
-2. SpringBoot 是如何实现自动装配的？如何实现按需加载？
-3. 如何实现一个 Starter？
+1. Tự động cấu hình của Spring Boot là gì?
+2. Spring Boot triển khai tự động cấu hình như thế nào? Làm thế nào để nạp theo nhu cầu (on-demand)?
+3. Làm thế nào để triển khai một Starter?
 
-篇幅问题，这篇文章并没有深入，小伙伴们也可以直接使用 debug 的方式去看看 SpringBoot 自动装配部分的源代码。
+Do giới hạn độ dài, bài viết này chưa đi sâu, các bạn cũng có thể trực tiếp sử dụng debug để xem qua mã nguồn phần tự động cấu hình của Spring Boot.
 
-## 前言
+## Lời Mở Đầu
 
-使用过 Spring 的小伙伴，一定有被 XML 配置统治的恐惧。即使 Spring 后面引入了基于注解的配置，我们在开启某些 Spring 特性或者引入第三方依赖的时候，还是需要用 XML 或 Java 进行显式配置。
+Những ai đã từng sử dụng Spring, chắc hẳn vẫn còn nỗi ám ảnh bị cấu hình XML thống trị. Ngay cả khi Spring sau này đã giới thiệu cấu hình dựa trên annotation, chúng ta vẫn cần dùng XML hoặc Java để cấu hình tường minh khi kích hoạt một số tính năng của Spring hoặc tích hợp dependency bên thứ ba.
 
-举个例子。没有 Spring Boot 的时候，我们写一个 RestFul Web 服务，还首先需要进行如下配置。
+Ví dụ nhé. Khi chưa có Spring Boot, để viết một RESTful Web Service, chúng ta còn phải thực hiện cấu hình như sau.
 
 ```java
 @Configuration
@@ -66,7 +66,7 @@ public class RESTConfiguration
 </beans>
 ```
 
-但是，Spring Boot 项目，我们只需要添加相关依赖，无需配置，通过启动下面的 `main` 方法即可。
+Tuy nhiên, với dự án Spring Boot, chúng ta chỉ cần thêm dependency liên quan, không cần cấu hình, chỉ cần khởi động method `main` bên dưới là xong.
 
 ```java
 @SpringBootApplication
@@ -77,17 +77,17 @@ public class DemoApplication {
 }
 ```
 
-并且，我们通过 Spring Boot 的全局配置文件 `application.properties`或`application.yml`即可对项目进行设置比如更换端口号，配置 JPA 属性等等。
+Hơn nữa, chúng ta có thể cấu hình dự án thông qua file cấu hình toàn cục `application.properties` hoặc `application.yml` của Spring Boot, chẳng hạn như thay đổi cổng (port), cấu hình thuộc tính JPA, v.v.
 
-**为什么 Spring Boot 使用起来这么酸爽呢？** 这得益于其自动装配。**自动装配可以说是 Spring Boot 的核心，那究竟什么是自动装配呢？**
+**Tại sao Spring Boot dùng lại sướng đến thế?** Điều này có được là nhờ vào tính năng tự động cấu hình. **Tự động cấu hình có thể nói là cốt lõi của Spring Boot, vậy rốt cuộc tự động cấu hình là gì?**
 
-## 什么是 SpringBoot 自动装配？
+## Tự Động Cấu Hình Của Spring Boot Là Gì?
 
-我们现在提到自动装配的时候，一般会和 Spring Boot 联系在一起。但是，实际上 Spring Framework 早就实现了这个功能。Spring Boot 只是在其基础上，通过 SPI 的方式，做了进一步优化。
+Hiện nay khi nhắc đến tự động cấu hình, chúng ta thường liên tưởng đến Spring Boot. Nhưng thực ra, Spring Framework đã triển khai tính năng này từ lâu. Spring Boot chỉ dựa trên nền tảng đó, thông qua cơ chế SPI, để tối ưu hóa thêm một bước.
 
-> 在 Spring Boot 2.6 及更早版本中，自动配置类主要通过外部 jar 包中的 `META-INF/spring.factories` 注册。Spring Boot 2.7 引入了 `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`，同时兼容旧的注册方式；Spring Boot 3.0 移除了通过 `spring.factories` 中 `EnableAutoConfiguration` key 注册自动配置类的支持，但 `spring.factories` 的其他用途不受影响。
+> Trong Spring Boot 2.6 trở về trước, các lớp tự động cấu hình chủ yếu được đăng ký thông qua file `META-INF/spring.factories` trong các jar bên ngoài. Spring Boot 2.7 đã giới thiệu `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`, đồng thời tương thích với cách đăng ký cũ; Spring Boot 3.0 đã loại bỏ hỗ trợ đăng ký lớp tự động cấu hình thông qua key `EnableAutoConfiguration` trong `spring.factories`, nhưng các mục đích sử dụng khác của `spring.factories` không bị ảnh hưởng.
 
-没有 Spring Boot 的情况下，如果我们需要引入第三方依赖，需要手动配置，非常麻烦。但是，Spring Boot 中，我们直接引入一个 starter 即可。比如你想要在项目中使用 redis 的话，直接在项目中引入对应的 starter 即可。
+Khi chưa có Spring Boot, nếu cần tích hợp dependency bên thứ ba, chúng ta phải cấu hình thủ công, rất phiền phức. Nhưng với Spring Boot, chúng ta chỉ cần thêm trực tiếp một starter là được. Ví dụ, nếu bạn muốn sử dụng Redis trong dự án, chỉ cần thêm starter tương ứng vào dự án.
 
 ```xml
 <dependency>
@@ -96,13 +96,13 @@ public class DemoApplication {
 </dependency>
 ```
 
-引入 starter 之后，我们通过少量注解和一些简单的配置就能使用第三方组件提供的功能了。
+Sau khi thêm starter, chúng ta chỉ cần một vài annotation và một số cấu hình đơn giản là có thể sử dụng các chức năng do thành phần bên thứ ba cung cấp.
 
-在我看来，自动装配可以简单理解为：**通过注解或者一些简单的配置就能在 Spring Boot 的帮助下实现某块功能。**
+Theo tôi, tự động cấu hình có thể được hiểu đơn giản là: **Thông qua annotation hoặc một số cấu hình đơn giản là có thể triển khai một chức năng nào đó với sự trợ giúp của Spring Boot.**
 
-## SpringBoot 是如何实现自动装配的？
+## Spring Boot Triển Khai Tự Động Cấu Hình Như Thế Nào?
 
-我们先看一下 SpringBoot 的核心注解 `SpringBootApplication` 。
+Trước tiên hãy xem annotation cốt lõi của Spring Boot: `SpringBootApplication`.
 
 ```java
 @Target({ElementType.TYPE})
@@ -119,32 +119,32 @@ public @interface SpringBootApplication {
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Configuration //实际上它也是一个配置类
+@Configuration //Thực ra nó cũng là một lớp cấu hình
 public @interface SpringBootConfiguration {
 }
 ```
 
-大概可以把 `@SpringBootApplication`看作是 `@Configuration`、`@EnableAutoConfiguration`、`@ComponentScan` 注解的集合。根据 SpringBoot 官网，这三个注解的作用分别是：
+Có thể xem `@SpringBootApplication` như là tập hợp của các annotation `@Configuration`, `@EnableAutoConfiguration`, `@ComponentScan`. Theo tài liệu chính thức của Spring Boot, chức năng của ba annotation này lần lượt là:
 
-- `@EnableAutoConfiguration`：启用 SpringBoot 的自动配置机制
-- `@Configuration`：允许在上下文中注册额外的 bean 或导入其他配置类
-- `@ComponentScan`：扫描被`@Component` (`@Service`,`@Controller`)注解的 bean，注解默认会扫描启动类所在的包下所有的类 ，可以自定义不扫描某些 bean。如下图所示，容器中将排除`TypeExcludeFilter`和`AutoConfigurationExcludeFilter`。
+- `@EnableAutoConfiguration`: Kích hoạt cơ chế tự động cấu hình của Spring Boot
+- `@Configuration`: Cho phép đăng ký thêm bean hoặc import các lớp cấu hình khác vào context
+- `@ComponentScan`: Quét các bean được đánh dấu bởi `@Component` (`@Service`, `@Controller`), annotation này mặc định sẽ quét tất cả các lớp trong package chứa lớp khởi động (startup class), có thể tùy chỉnh để không quét một số bean nhất định. Như hình bên dưới, container sẽ loại trừ `TypeExcludeFilter` và `AutoConfigurationExcludeFilter`.
 
 ![](https://oss.javaguide.cn/p3-juejin/bcc73490afbe4c6ba62acde6a94ffdfd~tplv-k3u1fbpfcp-watermark.png)
 
-`@EnableAutoConfiguration` 是实现自动装配的重要注解，我们以这个注解入手。
+`@EnableAutoConfiguration` là annotation quan trọng để triển khai tự động cấu hình, chúng ta sẽ bắt đầu phân tích từ annotation này.
 
-### @EnableAutoConfiguration:实现自动装配的核心注解
+### @EnableAutoConfiguration: Annotation Cốt Lõi Triển Khai Tự Động Cấu Hình
 
-`EnableAutoConfiguration` 只是一个简单地注解，自动装配核心功能的实现实际是通过 `AutoConfigurationImportSelector`类。
+`EnableAutoConfiguration` chỉ là một annotation đơn giản, việc triển khai chức năng cốt lõi của tự động cấu hình thực sự được thực hiện thông qua lớp `AutoConfigurationImportSelector`.
 
 ```java
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@AutoConfigurationPackage //作用：将main包下的所有组件注册到容器中
-@Import({AutoConfigurationImportSelector.class}) //加载自动装配类 xxxAutoconfiguration
+@AutoConfigurationPackage //Tác dụng: đăng ký tất cả các component trong package main vào container
+@Import({AutoConfigurationImportSelector.class}) //Nạp lớp tự động cấu hình xxxAutoconfiguration
 public @interface EnableAutoConfiguration {
     String ENABLED_OVERRIDE_PROPERTY = "spring.boot.enableautoconfiguration";
 
@@ -154,13 +154,13 @@ public @interface EnableAutoConfiguration {
 }
 ```
 
-我们现在重点分析下`AutoConfigurationImportSelector` 类到底做了什么？
+Bây giờ chúng ta sẽ tập trung phân tích xem lớp `AutoConfigurationImportSelector` thực sự đã làm gì?
 
-### AutoConfigurationImportSelector:加载自动装配类
+### AutoConfigurationImportSelector: Nạp Lớp Tự Động Cấu Hình
 
-下面以 Spring Boot 2.1.x 的源码节选为例分析 `AutoConfigurationImportSelector`。这些代码省略了部分不影响流程的实现，不能作为独立类直接编译。Spring Boot 2.7 及以上版本的候选自动配置类主要从 `AutoConfiguration.imports` 文件读取，具体源码结构与下面的旧版本代码有所不同。
+Dưới đây lấy đoạn trích mã nguồn của Spring Boot 2.1.x làm ví dụ để phân tích `AutoConfigurationImportSelector`. Những đoạn code này đã được lược bỏ một số phần triển khai không ảnh hưởng đến luồng chính, không thể biên dịch độc lập như một lớp hoàn chỉnh. Các phiên bản Spring Boot 2.7 trở lên đọc các lớp tự động cấu hình ứng viên chủ yếu từ file `AutoConfiguration.imports`, cấu trúc mã nguồn cụ thể có khác biệt so với đoạn mã phiên bản cũ bên dưới.
 
-`AutoConfigurationImportSelector`类的继承体系如下：
+Hệ thống kế thừa của lớp `AutoConfigurationImportSelector` như sau:
 
 ```java
 public class AutoConfigurationImportSelector implements DeferredImportSelector, BeanClassLoaderAware, ResourceLoaderAware, BeanFactoryAware, EnvironmentAware, Ordered {
@@ -176,17 +176,17 @@ public interface ImportSelector {
 }
 ```
 
-可以看出，`AutoConfigurationImportSelector` 类实现了 `ImportSelector`接口，也就实现了这个接口中的 `selectImports`方法，该方法主要用于**获取所有符合条件的类的全限定类名，这些类需要被加载到 IoC 容器中**。
+Có thể thấy, lớp `AutoConfigurationImportSelector` đã triển khai interface `ImportSelector`, cũng tức là đã triển khai method `selectImports` trong interface này, method này chủ yếu dùng để **lấy tất cả các fully qualified class name của các lớp thỏa mãn điều kiện, những lớp này cần được nạp vào IoC container**.
 
 ```java
 private static final String[] NO_IMPORTS = new String[0];
 
 public String[] selectImports(AnnotationMetadata annotationMetadata) {
-        // <1>.判断自动装配开关是否打开
+        // <1>.Kiểm tra xem công tắc tự động cấu hình đã được bật chưa
         if (!this.isEnabled(annotationMetadata)) {
             return NO_IMPORTS;
         } else {
-          //<2>.获取所有需要装配的bean
+          //<2>.Lấy tất cả các bean cần được cấu hình
             AutoConfigurationMetadata autoConfigurationMetadata = AutoConfigurationMetadataLoader.loadMetadata(this.beanClassLoader);
             AutoConfigurationImportSelector.AutoConfigurationEntry autoConfigurationEntry = this.getAutoConfigurationEntry(autoConfigurationMetadata, annotationMetadata);
             return StringUtils.toStringArray(autoConfigurationEntry.getConfigurations());
@@ -194,13 +194,13 @@ public String[] selectImports(AnnotationMetadata annotationMetadata) {
     }
 ```
 
-这里我们需要重点关注一下`getAutoConfigurationEntry()`方法，这个方法主要负责加载自动配置类的。
+Ở đây chúng ta cần tập trung chú ý vào method `getAutoConfigurationEntry()`, method này chịu trách nhiệm chính trong việc nạp các lớp tự động cấu hình.
 
-该方法调用链如下：
+Chuỗi lời gọi của method này như sau:
 
 ![](https://oss.javaguide.cn/github/javaguide/system-design/framework/spring/3c1200712655443ca4b38500d615bb70~tplv-k3u1fbpfcp-watermark.png)
 
-现在我们结合`getAutoConfigurationEntry()`的源码来详细分析一下：
+Bây giờ chúng ta kết hợp với mã nguồn của `getAutoConfigurationEntry()` để phân tích chi tiết:
 
 ```java
 private static final AutoConfigurationEntry EMPTY_ENTRY = new AutoConfigurationEntry();
@@ -226,21 +226,21 @@ AutoConfigurationEntry getAutoConfigurationEntry(AutoConfigurationMetadata autoC
     }
 ```
 
-**第 1 步**:
+**Bước 1**:
 
-判断自动装配开关是否打开。默认`spring.boot.enableautoconfiguration=true`，可在 `application.properties` 或 `application.yml` 中设置
+Kiểm tra xem công tắc tự động cấu hình đã được bật chưa. Mặc định `spring.boot.enableautoconfiguration=true`, có thể cấu hình trong `application.properties` hoặc `application.yml`
 
 ![](https://oss.javaguide.cn/p3-juejin/77aa6a3727ea4392870f5cccd09844ab~tplv-k3u1fbpfcp-watermark.png)
 
-**第 2 步**：
+**Bước 2**:
 
-用于获取`EnableAutoConfiguration`注解中的 `exclude` 和 `excludeName`。
+Dùng để lấy `exclude` và `excludeName` trong annotation `EnableAutoConfiguration`.
 
 ![](https://oss.javaguide.cn/p3-juejin/3d6ec93bbda1453aa08c52b49516c05a~tplv-k3u1fbpfcp-zoom-1.png)
 
-**第 3 步**
+**Bước 3**
 
-在本文采用的 Spring Boot 2.1.x 源码中，获取需要自动装配的所有配置类时会读取 `META-INF/spring.factories`：
+Trong mã nguồn Spring Boot 2.1.x được sử dụng trong bài viết này, khi lấy tất cả các lớp cấu hình cần được tự động cấu hình, nó sẽ đọc `META-INF/spring.factories`:
 
 ```plain
 spring-boot/spring-boot-project/spring-boot-autoconfigure/src/main/resources/META-INF/spring.factories
@@ -248,32 +248,32 @@ spring-boot/spring-boot-project/spring-boot-autoconfigure/src/main/resources/MET
 
 ![](https://oss.javaguide.cn/github/javaguide/system-design/framework/spring/58c51920efea4757aa1ec29c6d5f9e36~tplv-k3u1fbpfcp-watermark.png)
 
-从下图可以看到这个文件的配置内容都被我们读取到了。`XXXAutoConfiguration`的作用就是按需加载组件。
+Từ hình dưới có thể thấy nội dung cấu hình của file này đều đã được chúng ta đọc vào. `XXXAutoConfiguration` có tác dụng nạp component theo nhu cầu.
 
 ![](https://oss.javaguide.cn/github/javaguide/system-design/framework/spring/94d6e1a060ac41db97043e1758789026~tplv-k3u1fbpfcp-watermark.png)
 
-不光是这个依赖下的 `META-INF/spring.factories` 会被读取，类路径中其他 jar 包的同名资源也会被 `SpringFactoriesLoader` 合并读取。需要注意，Starter 通常只是用于聚合依赖的 jar，自动配置代码和注册文件可以放在独立的 autoconfigure 模块中，也可以和 Starter 合并，并不是每个 Starter 都必须包含 `spring.factories`。
+Không chỉ file `META-INF/spring.factories` trong dependency này được đọc, các file tài nguyên cùng tên trong các jar khác trên classpath cũng sẽ được `SpringFactoriesLoader` hợp nhất và đọc. Cần lưu ý, Starter thường chỉ là jar dùng để tổng hợp dependency, mã tự động cấu hình và file đăng ký có thể được đặt trong module autoconfigure riêng biệt, cũng có thể hợp nhất với Starter, không phải mỗi Starter đều nhất thiết phải chứa `spring.factories`.
 
-所以，你可以清楚滴看到， druid 数据库连接池的 Spring Boot Starter 就创建了`META-INF/spring.factories`文件。
+Vì vậy, bạn có thể thấy rõ rằng, Spring Boot Starter của Druid (connection pool cơ sở dữ liệu) đã tạo file `META-INF/spring.factories`.
 
-如果要为 Spring Boot 2.6 及更早版本编写自动配置，需要使用这种注册方式；面向 Spring Boot 3.x 的自动配置应改用 `AutoConfiguration.imports`。
+Nếu muốn viết tự động cấu hình cho Spring Boot 2.6 trở về trước, cần sử dụng cách đăng ký này; đối với Spring Boot 3.x, tự động cấu hình nên chuyển sang dùng `AutoConfiguration.imports`.
 
 ![](https://oss.javaguide.cn/github/javaguide/system-design/framework/spring/68fa66aeee474b0385f94d23bcfe1745~tplv-k3u1fbpfcp-watermark.png)
 
-**第 4 步**：
+**Bước 4**:
 
-到这里可能面试官会问你:“`spring.factories`中这么多配置，每次启动都要全部加载么？”。
+Đến đây có thể người phỏng vấn sẽ hỏi bạn: "Trong `spring.factories` có nhiều cấu hình như vậy, mỗi lần khởi động đều phải nạp toàn bộ sao?".
 
-很明显，这是不现实的。我们 debug 到后面你会发现，`configurations` 的值变小了。
+Rõ ràng, điều này là không thực tế. Khi chúng ta debug đến bước sau, bạn sẽ phát hiện giá trị của `configurations` đã nhỏ đi.
 
 ![](https://oss.javaguide.cn/github/javaguide/system-design/framework/spring/267f8231ae2e48d982154140af6437b0~tplv-k3u1fbpfcp-watermark.png)
 
-因为，这一步有经历了一遍筛选，`@ConditionalOnXXX` 中的所有条件都满足，该类才会生效。
+Bởi vì, ở bước này đã trải qua một lượt sàng lọc, tất cả các điều kiện trong `@ConditionalOnXXX` đều thỏa mãn thì lớp đó mới có hiệu lực.
 
 ```java
 @Configuration
-// 检查相关的类：RabbitTemplate 和 Channel是否存在
-// 存在才会加载
+// Kiểm tra các lớp liên quan: RabbitTemplate và Channel có tồn tại hay không
+// Tồn tại thì mới nạp
 @ConditionalOnClass({ RabbitTemplate.class, Channel.class })
 @EnableConfigurationProperties(RabbitProperties.class)
 @Import(RabbitAnnotationDrivenConfiguration.class)
@@ -281,51 +281,51 @@ public class RabbitAutoConfiguration {
 }
 ```
 
-有兴趣的童鞋可以详细了解下 Spring Boot 提供的条件注解
+Các bạn quan tâm có thể tìm hiểu chi tiết về các annotation điều kiện (conditional annotation) mà Spring Boot cung cấp:
 
-- `@ConditionalOnBean`：当容器里有指定 Bean 的条件下
-- `@ConditionalOnMissingBean`：当容器里没有指定 Bean 的情况下
-- `@ConditionalOnSingleCandidate`：当指定 Bean 在容器中只有一个，或者虽然有多个但是指定首选 Bean
-- `@ConditionalOnClass`：当类路径下有指定类的条件下
-- `@ConditionalOnMissingClass`：当类路径下没有指定类的条件下
-- `@ConditionalOnProperty`：指定的属性是否有指定的值
-- `@ConditionalOnResource`：类路径是否有指定的值
-- `@ConditionalOnExpression`：基于 SpEL 表达式作为判断条件
-- `@ConditionalOnJava`：基于 Java 版本作为判断条件
-- `@ConditionalOnJndi`：在 JNDI 存在的条件下差在指定的位置
-- `@ConditionalOnNotWebApplication`：当前项目不是 Web 项目的条件下
-- `@ConditionalOnWebApplication`：当前项目是 Web 项 目的条件下
+- `@ConditionalOnBean`: Khi trong container có Bean được chỉ định
+- `@ConditionalOnMissingBean`: Khi trong container không có Bean được chỉ định
+- `@ConditionalOnSingleCandidate`: Khi Bean được chỉ định trong container chỉ có một, hoặc tuy có nhiều nhưng có Bean được chỉ định làm ưu tiên
+- `@ConditionalOnClass`: Khi trên classpath có lớp được chỉ định
+- `@ConditionalOnMissingClass`: Khi trên classpath không có lớp được chỉ định
+- `@ConditionalOnProperty`: Thuộc tính được chỉ định có giá trị được chỉ định hay không
+- `@ConditionalOnResource`: Liệu classpath có tài nguyên được chỉ định hay không
+- `@ConditionalOnExpression`: Dựa trên biểu thức SpEL làm điều kiện phán đoán
+- `@ConditionalOnJava`: Dựa trên phiên bản Java làm điều kiện phán đoán
+- `@ConditionalOnJndi`: Trong điều kiện JNDI tồn tại, tìm ở vị trí được chỉ định
+- `@ConditionalOnNotWebApplication`: Trong điều kiện dự án hiện tại không phải là Web project
+- `@ConditionalOnWebApplication`: Trong điều kiện dự án hiện tại là Web project
 
-## 如何实现一个 Starter
+## Làm Thế Nào Để Triển Khai Một Starter
 
-光说不练假把式，现在就来撸一个 starter，实现自定义线程池
+Nói suông thì không thuyết phục, bây giờ chúng ta sẽ làm ngay một starter, triển khai thread pool tùy chỉnh.
 
-第一步，创建`threadpool-spring-boot-starter`工程
+Bước đầu tiên, tạo project `threadpool-spring-boot-starter`
 
 ![](https://oss.javaguide.cn/github/javaguide/system-design/framework/spring/1ff0ebe7844f40289eb60213af72c5a6~tplv-k3u1fbpfcp-watermark.png)
 
-第二步，引入 Spring Boot 相关依赖
+Bước thứ hai, thêm dependency liên quan đến Spring Boot
 
 ![](https://oss.javaguide.cn/github/javaguide/system-design/framework/spring/5e14254276604f87b261e5a80a354cc0~tplv-k3u1fbpfcp-watermark.png)
 
-第三步，创建`ThreadPoolAutoConfiguration`
+Bước thứ ba, tạo `ThreadPoolAutoConfiguration`
 
 ![](https://oss.javaguide.cn/github/javaguide/system-design/framework/spring/1843f1d12c5649fba85fd7b4e4a59e39~tplv-k3u1fbpfcp-watermark.png)
 
-第四步，注册自动配置类。对于 Spring Boot 2.6 及更早版本，在`threadpool-spring-boot-starter`工程的 resources 包下创建`META-INF/spring.factories`文件；Spring Boot 2.7 及以上版本应使用 `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`，面向 Spring Boot 3.x 时自动配置类通常使用 `@AutoConfiguration` 标注。
+Bước thứ tư, đăng ký lớp tự động cấu hình. Đối với Spring Boot 2.6 trở về trước, trong package resources của project `threadpool-spring-boot-starter`, tạo file `META-INF/spring.factories`; Spring Boot 2.7 trở lên nên sử dụng `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`, đối với Spring Boot 3.x, lớp tự động cấu hình thường được đánh dấu bằng `@AutoConfiguration`.
 
 ![](https://oss.javaguide.cn/github/javaguide/system-design/framework/spring/97b738321f1542ea8140484d6aaf0728~tplv-k3u1fbpfcp-watermark.png)
 
-最后新建工程引入`threadpool-spring-boot-starter`
+Cuối cùng, tạo project mới và thêm dependency `threadpool-spring-boot-starter`
 
 ![](https://oss.javaguide.cn/github/javaguide/system-design/framework/spring/edcdd8595a024aba85b6bb20d0e3fed4~tplv-k3u1fbpfcp-watermark.png)
 
-测试通过！！！
+Kiểm tra thành công!!!
 
 ![](https://oss.javaguide.cn/github/javaguide/system-design/framework/spring/9a265eea4de742a6bbdbbaa75f437307~tplv-k3u1fbpfcp-watermark.png)
 
-## 总结
+## Tổng Kết
 
-Spring Boot 通过`@EnableAutoConfiguration`开启自动装配，并加载类路径中注册的候选自动配置类。Spring Boot 2.6 及更早版本主要通过 `spring.factories` 注册，Spring Boot 2.7 及以上版本使用 `AutoConfiguration.imports`。自动配置类会结合 `@Conditional` 系列注解按需生效；Starter 的主要作用是聚合常用依赖，并不是自动配置生效所要求的固定包名。
+Spring Boot kích hoạt tự động cấu hình thông qua `@EnableAutoConfiguration`, và nạp các lớp tự động cấu hình ứng viên đã được đăng ký trên classpath. Spring Boot 2.6 trở về trước chủ yếu đăng ký qua `spring.factories`, Spring Boot 2.7 trở lên sử dụng `AutoConfiguration.imports`. Lớp tự động cấu hình sẽ kết hợp với các annotation dòng `@Conditional` để có hiệu lực theo nhu cầu; vai trò chính của Starter là tổng hợp các dependency thường dùng, không phải là quy ước tên package cố định bắt buộc để tự động cấu hình có hiệu lực.
 
 <!-- @include: @article-footer.snippet.md -->

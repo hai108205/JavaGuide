@@ -1,6 +1,6 @@
 ---
-title: 十年大厂成长之路
-description: "十年大厂成长之路：围绕技术知识与面试总结梳理关键概念、常见问题与实践要点，帮助你高效学习与备战面试。"
+title: Mười năm con đường trưởng thành ở công ty lớn
+description: "Mười năm con đường trưởng thành ở công ty lớn: Tổng hợp và sắp xếp các khái niệm then chốt, câu hỏi thường gặp và điểm thực hành quanh kiến thức kỹ thuật và chuẩn bị phỏng vấn, giúp bạn học tập hiệu quả và sẵn sàng cho phỏng vấn."
 category: 技术文章精选集
 author: CodingBetterLife
 tag:
@@ -11,131 +11,131 @@ head:
       content: 大厂成长,程序员职业发展,技术专家,技术管理,转岗跳槽,职场选择,十年规划,技术领导
 ---
 
-> **推荐语**：这篇文章的作者有着丰富的工作经验，曾在大厂工作了 12 年。结合自己走过的弯路和接触过的优秀技术人，他总结出了一些对于个人成长具有普遍指导意义的经验和特质。
+> **Lời giới thiệu**: Tác giả của bài viết này có nhiều năm kinh nghiệm làm việc, từng công tác tại công ty lớn suốt 12 năm. Kết hợp những đoạn đường vòng bản thân đã trải qua và những kỹ sư công nghệ xuất sắc từng tiếp xúc, anh đã đúc kết ra những kinh nghiệm và phẩm chất có ý nghĩa hướng dẫn mang tính phổ quát cho sự trưởng thành của cá nhân.
 >
-> **原文地址：** <https://mp.weixin.qq.com/s/vIIRxznpRr5yd6IVyNUW2w>
+> **Địa chỉ bài viết gốc:** <https://mp.weixin.qq.com/s/vIIRxznpRr5yd6IVyNUW2w>
 
-最近这段时间，有好几个年轻的同学和我聊到自己的迷茫。其中有关于技术成长的、有关于晋升的、有关于择业的。我很高兴他们愿意听我这个“过来人”分享自己的经验。
+Gần đây, có vài bạn trẻ tâm sự với tôi về sự hoang mang của họ. Có người về trưởng thành kỹ thuật, có người về thăng tiến, có người về lựa chọn nghề nghiệp. Tôi rất vui vì họ sẵn lòng nghe một "người từng trải" như tôi chia sẻ kinh nghiệm.
 
-我自己毕业后进入大厂，在大厂工作 12 年，我说的内容都来自于我自己或者身边人的真实情况。尤其，我会把 **【我自己走过的弯路】** 和 **【我看到过的优秀技术人的特质】** 相结合来给出建议。
+Bản thân tôi sau khi tốt nghiệp vào làm ở công ty lớn, làm việc tại đó 12 năm, những điều tôi nói đều xuất phát từ tình huống thực tế của chính tôi hoặc của những người xung quanh. Đặc biệt, tôi sẽ kết hợp **【những đoạn đường vòng bản thân đã đi qua】** và **【những phẩm chất của các kỹ sư công nghệ xuất sắc mà tôi từng thấy】** để đưa ra lời khuyên.
 
-这些内容我觉得具有普遍的指导意义，所以决定做个整理分享出来。我相信，无论你在大厂还是小厂，如果你相信这些建议，或早或晚他们会帮助到你。
+Tôi tin những nội dung này có ý nghĩa hướng dẫn mang tính phổ quát, nên quyết định sắp xếp lại và chia sẻ. Tôi tin rằng, dù bạn ở công ty lớn hay công ty nhỏ, chỉ cần bạn tin những lời khuyên này, sớm hay muộn chúng sẽ giúp ích cho bạn.
 
-我自己工作 12 年，走了些弯路，所以我就来讲讲，“在一个技术人 10 年的发展过程中，应该注意些什么”。我们把内容分为两块：
+Bản thân tôi làm việc 12 năm, đã đi không ít đường vòng, nên tôi sẽ kể rằng, "trong quá trình phát triển 10 năm của một người làm kỹ thuật, nên chú ý những điều gì". Chúng ta chia nội dung thành hai phần:
 
-1. **十年技术路怎么走**
-2. **一些重要选择**
+1. **Mười năm con đường kỹ thuật nên đi thế nào**
+2. **Một số lựa chọn quan trọng**
 
-## 01 十年技术路怎么走
+## 01 Mười năm con đường kỹ thuật nên đi thế nào
 
-### 【1-2 年】=> 从“菜鸟”到“职业”
+### 【Năm 1-2】=> Từ "gà mờ" đến "chuyên nghiệp"
 
-应届生刚进入到工作时，会有各种不适应。比如写好的代码会被反复打回、和团队老司机讨论技术问题会有一堆问号、不敢提问和质疑、碰到问题一个人使劲死磕等等。
+Khi sinh viên mới tốt nghiệp vừa bước vào công việc, sẽ có đủ kiểu khó thích nghi. Ví dụ như code viết xong bị trả về liên tục, khi trao đổi vấn đề kỹ thuật với các "lão làng" trong team thì đầu đầy dấu hỏi, không dám đặt câu hỏi và phản biện, gặp vấn đề thì một mình vật lộn giải quyết, v.v.
 
-**简单来说就是，即使日以继夜地埋头苦干，最后也无法顺利的开展工作。**
+**Nói ngắn gọn là, dù cắm đầu làm việc quên ngày quên đêm, cuối cùng vẫn không thể thuận lợi triển khai công việc.**
 
-这个阶段最重要的几个点：
+Những điểm quan trọng nhất của giai đoạn này:
 
-**【多看多模仿】**：比如写代码的时候，不要就像在学校完成书本作业那样只关心功能是否正确，还要关心模块的设计、异常的处理、代码的可读性等等。在你还没有了解这些内容的精髓之前，也要照猫画虎地模仿起来，慢慢地你就会越来越明白真实世界的代码是怎么写的，以及为什么要这么写。
+**【Nhìn nhiều, bắt chước nhiều】**: Ví dụ khi viết code, đừng chỉ quan tâm chức năng có đúng hay không như kiểu làm bài tập trong sách vở ở trường, mà còn phải quan tâm đến thiết kế module, xử lý ngoại lệ, tính dễ đọc của code, v.v. Trước khi bạn còn chưa hiểu được tinh túy của những điều này, cũng cứ bắt chước theo hình mẫu có sẵn, dần dần bạn sẽ càng ngày càng hiểu rõ code trong thế giới thực được viết như thế nào, và vì sao lại phải viết như vậy.
 
-做技术方案的时候也是同理，技术文档的要求你也许并不理解，但你可以先参考已有文档写起来。
+Khi làm phương án kỹ thuật cũng tương tự, có thể bạn chưa hiểu yêu cầu của tài liệu kỹ thuật, nhưng bạn có thể tham khảo các tài liệu đã có rồi viết trước.
 
-**【脸皮厚一点】**：不懂就问，你是新人大家都是理解的。你做的各种方案也可以多找老司机们 review，不要怕被看笑话。
+**【Mặt dày một chút】**: Không hiểu thì cứ hỏi, bạn là người mới nên ai cũng đều hiểu cả. Các phương án bạn làm cũng có thể nhờ các "lão làng" review nhiều, đừng sợ bị chê cười.
 
-**【关注工作方式】**：比如发现需求在计划时间完不成就要尽快报风险、及时做好工作内容的汇报（例如周报）、开会后确定会议结论和 todo 项、承诺时间就要尽力完成、严格遵循公司的要求（例如发布规范、权限规范等）
+**【Quan tâm đến cách làm việc】**: Ví dụ khi phát hiện yêu cầu không thể hoàn thành trong thời gian dự kiến thì phải sớm báo rủi ro, kịp thời báo cáo nội dung công việc (ví dụ báo cáo tuần), sau cuộc họp phải chốt kết luận cuộc họp và các mục todo, đã cam kết thời gian thì phải cố gắng hoàn thành, nghiêm túc tuân thủ các yêu cầu của công ty (ví dụ quy chuẩn phát hành, quy chuẩn phân quyền, v.v.)
 
-一般来说，工作 2 年后，你就应该成为一个职业人。老板可以相信任何工作交到你的手里，不会出现“意外”（例如一个重要需求明天要上线了，突然被告知上不了）。
+Nói chung, sau 2 năm làm việc, bạn nên trở thành một người làm nghề chuyên nghiệp. Sếp có thể tin tưởng giao bất kỳ công việc nào vào tay bạn, sẽ không xảy ra "bất ngờ" (ví dụ một yêu cầu quan trọng ngày mai phải lên môi trường production, đột nhiên lại bị báo không thể lên được).
 
-### 【3-4 年】=> 从“职业”到“尖兵”
+### 【Năm 3-4】=> Từ "chuyên nghiệp" đến "tinh binh"
 
-工作两年后，对业务以及现有系统的了解已经到达了一定的程度，技术同学会开始承担更有难度的技术挑战。
+Sau hai năm làm việc, mức độ hiểu biết về nghiệp vụ cũng như hệ thống hiện tại đã đạt đến một trình độ nhất định, các bạn làm kỹ thuật sẽ bắt đầu đảm nhận những thách thức kỹ thuật có độ khó cao hơn.
 
-例如需要将性能提升到某一个水位、例如需要对某一个重要模块进行重构、例如有个重要的项目需要协同 N 个团队一起完成。
+Ví dụ cần đưa hiệu năng lên một mức nào đó, ví dụ cần tái cấu trúc (refactor) một module quan trọng, ví dụ có một dự án quan trọng cần phối hợp N team cùng hoàn thành.
 
-可见，上述的这些技术问题，难度都已经远远超过一个普通的需求。解决这些问题需要有一定的技术能力，同时也需要具备更高的协同能力。
+Có thể thấy, những vấn đề kỹ thuật nói trên đều có độ khó vượt xa một yêu cầu (requirement) thông thường. Giải quyết những vấn đề này cần có năng lực kỹ thuật nhất định, đồng thời cũng cần có năng lực phối hợp cao hơn.
 
-这个阶段最重要的几个点：
+Những điểm quan trọng nhất của giai đoạn này:
 
-**【技术能力提升】**：无论是公司内还是公司外的技术内容，都要多做主动的学习。基本上这个阶段的技术难题都集中在【性能】【稳定性】和【扩展性】上，而这些内容在业界都是有成型的方法论的。
+**【Nâng cao năng lực kỹ thuật】**: Dù là nội dung kỹ thuật trong hay ngoài công ty, đều phải chủ động học hỏi nhiều hơn. Về cơ bản, các bài toán kỹ thuật khó của giai đoạn này đều tập trung ở 【hiệu năng】【tính ổn định】 và 【khả năng mở rộng】, và những nội dung này trong ngành đều đã có phương pháp luận hoàn chỉnh.
 
-**【主人翁精神】**：技术难题除了技术方案设计及落地外，背后还有一系列的其他工作。例如上线后对效果的观测、重点项目对于上下游改造和风险的了解程度、对于整个技改后续的计划（二期、三期的优化思路）等。
+**【Tinh thần chủ nhân】**: Ngoài việc thiết kế và triển khai phương án kỹ thuật, phía sau các bài toán kỹ thuật khó còn có một loạt công việc khác. Ví dụ quan sát hiệu quả sau khi lên production, mức độ nắm rõ các thay đổi và rủi ro của upstream/downstream đối với dự án trọng điểm, kế hoạch tiếp theo của toàn bộ đợt cải tạo kỹ thuật (ý tưởng tối ưu của giai đoạn hai, giai đoạn ba), v.v.
 
-在工作四年后，基本上你成为了团队的一、二号技术位。很多技术难题即使不是你来落地，也是由你来决定方案。你会做调研、会做方案对比、会考虑整个技改的生命周期。
+Sau bốn năm làm việc, về cơ bản bạn đã trở thành vị trí kỹ thuật số một hoặc số hai của team. Nhiều bài toán kỹ thuật khó, kể cả không phải do bạn triển khai, thì phương án cũng do bạn quyết định. Bạn sẽ làm nghiên cứu khảo sát, so sánh phương án, và cân nhắc toàn bộ vòng đời của đợt cải tạo kỹ thuật.
 
-### 【5-7 年】=> 从“尖兵”到“专家”
+### 【Năm 5-7】=> Từ "tinh binh" đến "chuyên gia"
 
-技术尖兵重点在于解决某一个具体的技术难题或者重点项目。而下一步的发展方向，就是能够承担起来一整个“业务板块”，也就是“领域技术专家”。
+Vị trí tinh binh kỹ thuật chú trọng vào việc giải quyết một bài toán kỹ thuật cụ thể hoặc một dự án trọng điểm. Còn hướng phát triển tiếp theo, chính là có thể đảm nhận trọn vẹn một "mảng nghiệp vụ", tức là "chuyên gia kỹ thuật lĩnh vực".
 
-想要承担一整个“业务板块”需要 **【对业务领域有深刻的理解，同时基于这些理解来规划技术的发展方向】** 。
+Muốn đảm nhận trọn vẹn một "mảng nghiệp vụ" cần **【có hiểu biết sâu sắc về lĩnh vực nghiệp vụ, đồng thời dựa trên những hiểu biết đó để hoạch định hướng phát triển của kỹ thuật】**.
 
-拿支付做个例子。简单的支付功能其实很容易完成，只要处理好和双联（网联和银联）的接口调用（成功、失败、异常）即可。但在很多背景下，支付没有那么简单。
+Lấy thanh toán làm ví dụ. Một chức năng thanh toán đơn giản thực ra rất dễ hoàn thành, chỉ cần xử lý tốt việc gọi interface với "song liên" (NetsUnion và UnionPay) (thành công, thất bại, ngoại lệ) là được. Nhưng trong nhiều bối cảnh, thanh toán không hề đơn giản như vậy.
 
-例如，支付是一个用户敏感型操作，非常强调用户体验，如何能兼顾体验和接口的不稳定？支付接口还需要承担费用，同步和异步的接口费用不同，如何能够降本？支付接口往往还有限额等。这一系列问题的背后涉及到很多技术的设计，包括异步化、补偿设计、资金流设计、最终一致性设计等等。
+Ví dụ, thanh toán là một thao tác nhạy cảm với người dùng, rất coi trọng trải nghiệm người dùng, làm sao có thể dung hòa được giữa trải nghiệm và sự bất ổn định của interface? Interface thanh toán còn phải chịu phí, phí của interface đồng bộ và bất đồng bộ là khác nhau, làm sao để giảm chi phí? Interface thanh toán thường còn có hạn mức, v.v. Đằng sau chuỗi vấn đề này liên quan đến rất nhiều thiết kế kỹ thuật, bao gồm bất đồng bộ hóa, thiết kế bù trừ (compensation), thiết kế dòng tiền, thiết kế nhất quán cuối cùng (final consistency), v.v.
 
-这个阶段最重要的几个点：
+Những điểm quan trọng nhất của giai đoạn này:
 
-**【深入理解行业及趋势】**：密切关注行业的各种变化（新鲜的玩法、政策的变动、竞对的策略、科技等外在因素的影响等等），和业务同学加强沟通。
+**【Hiểu sâu về ngành và xu hướng】**: Theo dõi sát sao những thay đổi khác nhau của ngành (cách chơi mới, biến động chính sách, chiến lược của đối thủ cạnh tranh, tác động của các yếu tố bên ngoài như công nghệ, v.v.), và tăng cường trao đổi với các bạn làm nghiệp vụ.
 
-**【深入了解行业解决方案】**：充分对标已有的国内外技术方案，做深入学习和尝试，评估建设及运维成本，结合业务趋势制定计划。
+**【Tìm hiểu sâu về giải pháp của ngành】**: Đối chiếu đầy đủ với các phương án kỹ thuật trong và ngoài nước đã có, học tập và thử nghiệm một cách sâu sắc, đánh giá chi phí xây dựng và vận hành, kết hợp xu hướng nghiệp vụ để xây dựng kế hoạch.
 
-### 【8-10 年】=> 从“专家”到“TL”
+### 【Năm 8-10】=> Từ "chuyên gia" đến "TL"
 
-其实很多时候，如果能做到专家，基本也是一个 TL 的角色了，但这并不代表正在执行 TL 的职责。
+Thực ra trong nhiều trường hợp, nếu đạt được vị trí chuyên gia, về cơ bản cũng đã mang vai trò của một TL rồi, nhưng điều đó không có nghĩa là bạn đang thực thi đúng trách nhiệm của một TL.
 
-专家虽然已经可以做到“为业务发展而规划好技术发展”，但问题是要怎么落地呢？显然，靠一个人的力量是不可能完成建设的。所以，这里的 TL 更多强调的不是“领导”这个职位，而是 **【通过聚合一个团队的力量来实施技术规划】** 。
+Dù chuyên gia đã có thể làm được "vì sự phát triển của nghiệp vụ mà hoạch định tốt sự phát triển của kỹ thuật", nhưng vấn đề là làm sao để triển khai? Rõ ràng, dựa vào sức của một người thì không thể hoàn thành việc xây dựng. Vì vậy, TL ở đây nhấn mạnh không phải vị trí "lãnh đạo", mà là **【thông qua việc hội tụ sức mạnh của cả team để triển khai kế hoạch kỹ thuật】**.
 
-所以，这里的 TL 需要具备【团队技术培养】【合理分配资源】【确认工作优先级】【激励与奖惩】等各种能力。
+Vì vậy, TL ở đây cần có các năng lực như 【đào tạo kỹ thuật cho team】【phân bổ tài nguyên hợp lý】【xác định thứ tự ưu tiên công việc】【khích lệ và khen thưởng/phạt】.
 
-这个阶段最重要的几个点：
+Những điểm quan trọng nhất của giai đoạn này:
 
-**【学习管理学】**：这里的管理学当然不是指 PUA，而是指如何在每个同学都有各自诉求的现实背景下，让个人目标和团队目标相结合，产生向前发展的动力。
+**【Học quản trị học】**: Quản trị học ở đây tất nhiên không phải là PUA, mà là cách làm thế nào trong bối cảnh thực tế mỗi bạn đều có những mong muốn riêng, kết hợp mục tiêu cá nhân với mục tiêu của team, tạo ra động lực phát triển đi lên.
 
-**【始终扎根技术】**：很多时候，工作重心偏向管理以后，就会荒废技术。但事实是，一个优秀的领导永远是一个优秀的技术人。参与一起讨论技术方案并给予指导、不断扩展自己的技术宽度、保持对技术的好奇心，这些是让一个技术领导持续拥有向心力的关键。
+**【Luôn bám rễ vào kỹ thuật】**: Nhiều khi, sau khi trọng tâm công việc nghiêng về quản lý, người ta sẽ bỏ bê kỹ thuật. Nhưng sự thật là, một người lãnh đạo xuất sắc mãi mãi là một kỹ sư công nghệ xuất sắc. Cùng tham gia thảo luận phương án kỹ thuật và đưa ra chỉ dẫn, không ngừng mở rộng bề rộng kỹ thuật của bản thân, giữ vững sự tò mò với công nghệ, những điều này chính là chìa khóa để một người lãnh đạo kỹ thuật duy trì mãi sức hút quy tụ.
 
-## 02 一些重要选择
+## 02 Một số lựa chọn quan trọng
 
-下面来聊聊在十年间我们可能会碰到的一些重要选择。这些都是真实的血与泪的教训。
+Dưới đây chúng ta cùng bàn về một số lựa chọn quan trọng mà chúng ta có thể gặp phải trong mười năm. Đây đều là những bài học xương máu thực sự.
 
-### 我该不该转岗？
+### Tôi có nên chuyển vị trí không?
 
-大厂都有转岗的机制。转岗可以帮助员工寻找自己感兴趣的方向，也可以帮助新型团队招募有即战力的同学。
+Các công ty lớn đều có cơ chế chuyển vị trí (转岗). Chuyển vị trí có thể giúp nhân viên tìm kiếm hướng đi mà mình quan tâm, cũng có thể giúp các team mới tuyển dụng được những bạn có năng lực làm việc ngay.
 
-转岗看似只是在公司内部变动，但你需要谨慎决定。
+Chuyển vị trí nhìn qua có vẻ chỉ là thay đổi trong nội bộ công ty, nhưng bạn cần cân nhắc cẩn thận trước khi quyết định.
 
-本人转岗过多次。虽然还在同一家公司，但转岗等同于换工作。无论是领域沉淀、工作内容、信任关系、协作关系都是从零开始。
+Bản thân tôi đã chuyển vị trí nhiều lần. Dù vẫn ở cùng một công ty, nhưng chuyển vị trí cũng tương đương với việc đổi công việc. Dù là tích lũy lĩnh vực, nội dung công việc, quan hệ tin tưởng, hay quan hệ hợp tác, tất cả đều bắt đầu từ con số không.
 
-针对转岗我的建议是：**如果你是想要拓宽自己的技术广度，也就是抱着提升技术能力的想法，我觉得可以转岗。但如果你想要晋升，不建议你转岗。**晋升需要在一个领域的持续积淀和在一个团队信任感的持续建立。
+Về việc chuyển vị trí, lời khuyên của tôi là: **Nếu bạn muốn mở rộng bề rộng kỹ thuật của bản thân, tức là mang ý nghĩ nâng cao năng lực kỹ thuật, tôi nghĩ có thể chuyển vị trí. Nhưng nếu bạn muốn thăng tiến, không khuyến khích bạn chuyển vị trí.** Thăng tiến cần có sự tích lũy bền bỉ trong một lĩnh vực và sự xây dựng liên tục lòng tin trong một team.
 
-当然，转岗可能还有其他原因，例如家庭原因、身体原因等，这个不展开讨论了。
+Tất nhiên, chuyển vị trí còn có thể vì những lý do khác, ví dụ lý do gia đình, lý do sức khỏe, v.v., phần này không bàn sâu nữa.
 
-### 我该不该跳槽？
+### Tôi có nên nhảy việc không?
 
-跳槽和转岗一样，往往有很多因素造成，不能一概而论，我仅以几个场景来说：
+Nhảy việc giống như chuyển vị trí, thường do nhiều yếu tố gây ra, không thể khái quát chung chung, tôi chỉ nói qua vài tình huống:
 
-**【晋升失败】**：扪心自问，如果你觉得自己确实还不够格，那你就踏踏实实继续努力。如果你觉得评委有失偏颇，你可以尝试去外面面试一下，让市场来给你答案。
+**【Thăng tiến thất bại】**: Tự vấn bản thân, nếu bạn cảm thấy mình thực sự chưa đủ tư cách, thì cứ chăm chỉ tiếp tục cố gắng. Nếu bạn cảm thấy hội đồng đánh giá có phần thiên lệch, bạn có thể thử đi phỏng vấn bên ngoài, để thị trường cho bạn câu trả lời.
 
-**【成长局限】**：觉得自己做的事情没有挑战，无法成长。你可以和老板聊一下，有可能是因为你没有看到其中的挑战，也有可能老板没有意识到你的“野心”。
+**【Giới hạn trưởng thành】**: Cảm thấy những việc mình đang làm không có thử thách, không thể trưởng thành. Bạn có thể trò chuyện với sếp, có thể là do bạn chưa nhìn ra thử thách trong đó, cũng có thể là do sếp chưa nhận ra "dã tâm" của bạn.
 
-**【氛围不适】**：一般来自于新入职或者领导更换，这种情况下不适是正常的。我的建议是，**如果一个环境是“对事不对人”的，那就可以留下来**，努力去适应，这种不适应只是做事方式不同导致的。但如果这个环境是“对人不对事”的话，走吧。
+**【Bầu không khí không hợp】**: Thường đến từ việc mới nhập việc hoặc thay đổi người lãnh đạo, trong trường hợp này không thích nghi là điều bình thường. Lời khuyên của tôi là, **nếu một môi trường là "chỉ nói về việc, không nói về người", thì có thể ở lại**, cố gắng thích nghi, sự không thích nghi này chỉ do cách làm việc khác nhau mà thôi. Nhưng nếu môi trường đó là "nói về người, không nói về việc", thì hãy đi thôi.
 
-### 跳槽该找怎样的工作？
+### Nhảy việc nên tìm công việc như thế nào?
 
-我们跳槽的时候往往会同时面试好几家公司。行情好的时候，往往可以收到多家 offer，那么我们要如何选择呢？
+Khi nhảy việc, chúng ta thường phỏng vấn cùng lúc vài công ty. Khi thị trường tốt, thường có thể nhận được nhiều offer từ nhiều công ty, vậy chúng ta nên chọn như thế nào?
 
-考虑一个 offer 往往有这几点：【公司品牌】【薪资待遇】【职级职称】【技术背景】。每个同学其实都有自己的诉求，所以无论做什么选择都没有对错之分。
+Khi cân nhắc một offer thường có mấy điểm này: 【thương hiệu công ty】【mức lương và đãi ngộ】【cấp bậc và chức danh】【bối cảnh kỹ thuật】. Mỗi bạn thực ra đều có những mong muốn riêng, nên dù đưa ra lựa chọn nào cũng không có đúng sai.
 
-我的一个建议是：**你要关注新岗位的空间，这个空间是有希望满足你的期待的**。
+Một lời khuyên của tôi là: **Bạn cần quan tâm đến không gian (dư địa) của vị trí mới, không gian này có hy vọng đáp ứng được kỳ vọng của bạn**.
 
-比如，你想成为架构师，那新岗位是否有足够的技术挑战来帮助你提升技术能力，而不仅仅是疲于奔命地应付需求？
+Ví dụ, bạn muốn trở thành kiến trúc sư (architect), vậy vị trí mới có đủ thách thức kỹ thuật để giúp bạn nâng cao năng lực kỹ thuật hay không, chứ không phải chỉ là hối hả đối phó với các yêu cầu?
 
-比如，你想往技术管理发展，那新岗位是否有带人的机会？是否有足够的问题需要搭建团队来解决？
+Ví dụ, bạn muốn phát triển theo hướng quản lý kỹ thuật, vậy vị trí mới có cơ hội dẫn dắt nhân sự hay không? Có đủ vấn đề cần dựng team để giải quyết hay không?
 
-比如，你想扎根在某个领域持续发展（例如电商、游戏），那新岗位是不是延续这个领域，并且可以碰到更多这个领域的问题？
+Ví dụ, bạn muốn bám rễ phát triển lâu dài trong một lĩnh vực nào đó (ví dụ thương mại điện tử, game), vậy vị trí mới có phải là sự tiếp nối của lĩnh vực này, và có thể gặp thêm nhiều vấn đề thuộc lĩnh vực này hay không?
 
-当然，如果薪资实在高到无法拒绝，以上参考可以忽略!
+Tất nhiên, nếu mức lương thực sự cao đến mức không thể từ chối, những tham khảo ở trên có thể bỏ qua!
 
-## 结语
+## Lời kết
 
-以上就是我对互联网从业技术人员十年成长之路的心得，希望在你困惑和关键选择的时候可以帮助到你。如果我的只言片语能够在未来的某个时间帮助到你哪怕一点，那将是我莫大的荣幸。
+Trên đây là những tâm đắc của tôi về con đường trưởng thành mười năm của những người làm kỹ thuật trong ngành Internet, hy vọng có thể giúp ích cho bạn vào lúc bạn hoang mang và đứng trước những lựa chọn quan trọng. Nếu những lời lẽ ngắn ngủi của tôi có thể giúp ích cho bạn dù chỉ một chút vào một thời điểm nào đó trong tương lai, thì đó sẽ là niềm vinh hạnh lớn lao của tôi.
 
 <!-- @include: @article-footer.snippet.md -->

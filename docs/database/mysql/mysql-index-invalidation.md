@@ -1,217 +1,217 @@
 ---
-title: MySQL索引失效场景总结
-description: 全面总结MySQL索引失效的常见场景，包括SELECT *查询、违背最左前缀原则、索引列计算函数转换、LIKE模糊查询、OR连接、IN/NOT IN使用不当、隐式类型转换以及ORDER BY排序优化陷阱，帮助你避免索引失效导致的性能问题。
-category: 数据库
+title: Tổng kết các tình huống Index mất hiệu lực trong MySQL
+description: Tổng kết toàn diện các tình huống thường gặp khiến Index trong MySQL mất hiệu lực, bao gồm truy vấn SELECT *, vi phạm nguyên tắc Leftmost Prefix, tính toán và chuyển đổi hàm trên cột Index, truy vấn mờ LIKE, nối bằng OR, sử dụng IN/NOT IN không đúng cách, chuyển đổi kiểu ngầm định và các bẫy tối ưu hóa sắp xếp ORDER BY, giúp bạn tránh các vấn đề hiệu năng do Index mất hiệu lực gây ra.
+category: Cơ sở dữ liệu
 tag:
   - MySQL
-  - 性能优化
+  - Tối ưu hiệu năng
 head:
   - - meta
     - name: keywords
-    - content: MySQL索引失效,索引失效场景,最左前缀原则,覆盖索引,索引下推,隐式类型转换,SQL优化,MySQL性能优化,全表扫描,回表查询
+    - content: Index MySQL mất hiệu lực,tình huống Index mất hiệu lực,nguyên tắc Leftmost Prefix,Covering Index,Index Condition Pushdown,chuyển đổi kiểu ngầm định,tối ưu SQL,tối ưu hiệu năng MySQL,quét toàn bảng,Back to Table
 ---
 
-在数据库性能优化中，索引是最直接有效的优化手段之一。然而，**建了索引并不等于一定能用上索引**。实际开发中，我们经常遇到这样的困惑：明明在字段上建立了索引，查询却依然慢如蜗牛，通过 `EXPLAIN` 分析发现居然是全表扫描。
+Trong tối ưu hiệu năng cơ sở dữ liệu, Index là một trong những phương pháp tối ưu trực tiếp và hiệu quả nhất. Tuy nhiên, **đã tạo Index không có nghĩa là chắc chắn sẽ dùng được Index**. Trong quá trình phát triển thực tế, chúng ta thường gặp phải những băn khoăn như thế này: rõ ràng đã tạo Index trên trường dữ liệu, nhưng truy vấn vẫn chậm như rùa, phân tích bằng `EXPLAIN` thì phát hiện ra lại là quét toàn bảng (full table scan).
 
-导致索引失效的原因多种多样，既有 SQL 语句写法问题，也有索引设计不当的因素。有些失效场景是显性的（如违背最左前缀原则），有些则非常隐蔽（如隐式类型转换）。如果不深入了解这些失效场景，很容易在生产环境中埋下性能隐患。
+Nguyên nhân khiến Index mất hiệu lực rất đa dạng, có cả vấn đề về cách viết câu lệnh SQL, cũng có yếu tố thiết kế Index không hợp lý. Một số tình huống mất hiệu lực là rõ ràng (như vi phạm nguyên tắc Leftmost Prefix), một số lại rất khó phát hiện (như chuyển đổi kiểu ngầm định). Nếu không hiểu sâu các tình huống mất hiệu lực này, rất dễ để lại mầm mống về hiệu năng trong môi trường production.
 
-本文将系统总结 MySQL 索引失效的常见场景，分析失效背后的原理机制，并提供相应的优化建议，帮助你在日常开发和排查问题中快速定位并解决索引失效问题。
+Bài viết này sẽ tổng kết một cách có hệ thống các tình huống thường gặp khiến Index trong MySQL mất hiệu lực, phân tích cơ chế nguyên lý đằng sau sự mất hiệu lực, và đưa ra các gợi ý tối ưu tương ứng, giúp bạn nhanh chóng định vị và giải quyết vấn đề Index mất hiệu lực trong quá trình phát triển và xử lý sự cố hằng ngày.
 
-### SELECT \* 查询（成本权衡）
+### Truy vấn SELECT \* (đánh đổi chi phí)
 
-- **核心定义**：`SELECT *` 本身**不会直接导致索引失效**。它是一种”非覆盖索引”查询，如果 `WHERE` 条件命中了索引，索引依然会被初步考虑。
-- **回表成本决策**：当查询需要的字段不在索引树中时，MySQL 必须拿着主键回聚簇索引查找整行数据（回表）。优化器会对比”索引扫描 + 回表”与”直接全表扫描”的成本。如果查询结果占总数据量的比例较高（通常阈值在 20%~30%），优化器会认为全表扫描的顺序 IO 效率高于回表的随机 IO，从而**主动放弃索引**。
-- **场景权衡**：
-  - **覆盖索引场景**：如果查询只需索引覆盖的字段，使用覆盖索引可以避免回表，性能最优。
-  - **回表不可避免时**：如果业务确实需要多个非索引字段，直接 `SELECT 需要的字段` 即可。当需要大部分字段时，代码可读性可能比”省几个字段”的微优化更重要，此时用 `SELECT *` 也无妨。
-- **落地建议**：优先 `SELECT 需要的字段`，能覆盖索引最好；如果需要大量字段且回表不可避免，不必教条地”省字段”。
+- **Định nghĩa cốt lõi**: Bản thân `SELECT *` **không trực tiếp khiến Index mất hiệu lực**. Đây là dạng truy vấn "không được Index bao phủ" (non-covering index), nếu điều kiện `WHERE` trúng Index, Index vẫn sẽ được cân nhắc ban đầu.
+- **Quyết định chi phí Back to Table**: Khi các trường mà truy vấn cần không nằm trong cây Index, MySQL phải cầm Primary Key quay lại Clustered Index để tìm toàn bộ dữ liệu hàng (Back to Table). Optimizer sẽ so sánh chi phí giữa "quét Index + Back to Table" và "quét toàn bảng trực tiếp". Nếu tỷ lệ kết quả truy vấn chiếm khá lớn trong tổng dữ liệu (thường ngưỡng khoảng 20%~30%), optimizer sẽ cho rằng I/O tuần tự của quét toàn bảng hiệu quả hơn I/O ngẫu nhiên của Back to Table, từ đó **chủ động từ bỏ Index**.
+- **Cân nhắc tình huống**:
+  - **Tình huống Covering Index**: Nếu truy vấn chỉ cần các trường được Index bao phủ, sử dụng Covering Index có thể tránh Back to Table, hiệu năng tối ưu nhất.
+  - **Khi Back to Table không thể tránh khỏi**: Nếu nghiệp vụ thực sự cần nhiều trường không có trong Index, chỉ cần `SELECT các trường cần thiết` là được. Khi cần phần lớn các trường, tính dễ đọc của code có thể quan trọng hơn việc tối ưu vi mô "tiết kiệm vài trường", lúc này dùng `SELECT *` cũng không sao.
+- **Gợi ý áp dụng**: Ưu tiên `SELECT các trường cần thiết`, nếu bao phủ được Index thì càng tốt; nếu cần nhiều trường và Back to Table không thể tránh khỏi, không cần giáo điều "tiết kiệm trường".
 
-### 违背最左前缀原则
+### Vi phạm nguyên tắc Leftmost Prefix (tiền tố trái nhất)
 
-- **核心定义**：最左前缀匹配原则指的是在使用联合索引时，MySQL 会根据索引中的字段顺序，从左到右依次匹配查询条件中的字段。如果查询条件与索引中的最左侧字段相匹配，那么 MySQL 就会使用索引来过滤数据。
-- **范围查询的中断效应**：在联合索引中，如果某个字段使用了范围查询（例如 >、<、BETWEEN、前缀匹配 LIKE "abc%"），该字段本身以及其之前的列可以正常匹配并用于索引的精确定位，但该字段之后的列将无法利用
-  索引进行快速定位（即无法使用 ref 类型的二分查找）。这是因为在 B+Tree 索引结构中，只有当前导列完全相等时，后续列才是有序的。一旦前导列变成一个范围，后续列在整个扫描区间内就呈现相对无序状态，从而中断了精准定位能力。不过，在 MySQL 5.6 及以上版本中，这些后续列并未完全失效，而是降级为使用**索引下推（Index Condition Pushdown, ICP）机制**，在范围扫描的过程中直接进行条件过滤，以此来减少回表次数。
-- **索引跳跃扫描 (ISS)**：MySQL 8.0.13 引入了**索引跳跃扫描（Index Skip Scan）**，允许在缺失最左前缀时，通过枚举前导列的所有 Distinct 值来跳跃扫描后续索引树。
-  - **版本避坑指南**：在 **MySQL 8.0.31** 中，ISS 存在严重 Bug（[[Bug #109145]](https://bugs.mysql.com/bug.php?id=109145)），在跨 Range 读取时未清理陈旧的边界值，会导致查询直接**丢失数据**。
-  - **落地建议**：ISS 在前导列基数（Cardinality）极低（如性别、状态枚举）时性能最优，因为优化器需要枚举前导列的所有 distinct 值逐一跳跃扫描——distinct 值越少，跳跃次数越少。但"基数低"本身并非官方限制条件，优化器会综合评估成本决定是否触发 ISS。在生产环境中，**严禁依赖 ISS 来弥补糟糕的索引设计**，必须通过调整联合索引顺序或补齐前导列条件来满足最左前缀。
+- **Định nghĩa cốt lõi**: Nguyên tắc khớp tiền tố trái nhất chỉ rằng khi sử dụng Composite Index (chỉ mục kết hợp), MySQL sẽ dựa vào thứ tự các trường trong Index, lần lượt khớp các trường trong điều kiện truy vấn từ trái sang phải. Nếu điều kiện truy vấn khớp với trường ngoài cùng bên trái của Index, thì MySQL sẽ sử dụng Index để lọc dữ liệu.
+- **Hiệu ứng gián đoạn của truy vấn phạm vi**: Trong Composite Index, nếu một trường nào đó sử dụng truy vấn phạm vi (ví dụ >, <, BETWEEN, khớp tiền tố LIKE "abc%"), bản thân trường đó và các cột trước nó vẫn có thể khớp bình thường và dùng để định vị chính xác trong Index, nhưng các cột sau trường đó sẽ không thể tận dụng
+  Index để định vị nhanh (tức không thể sử dụng tìm kiếm nhị phân kiểu ref). Nguyên nhân là trong cấu trúc B+Tree Index, chỉ khi các cột dẫn đầu hoàn toàn bằng nhau thì các cột tiếp theo mới có thứ tự. Một khi cột dẫn đầu trở thành một phạm vi, các cột tiếp theo sẽ ở trạng thái vô thứ tự tương đối trong toàn bộ vùng quét, từ đó làm gián đoạn khả năng định vị chính xác. Tuy nhiên, trong MySQL 5.6 trở lên, các cột tiếp theo này không hoàn toàn mất hiệu lực, mà được giáng cấp xuống sử dụng **cơ chế Index Condition Pushdown (ICP, đẩy điều kiện xuống Index)**, trực tiếp lọc điều kiện trong quá trình quét phạm vi, nhằm giảm số lần Back to Table.
+- **Index Skip Scan (quét nhảy Index)**: MySQL 8.0.13 đã giới thiệu **Index Skip Scan**, cho phép khi thiếu tiền tố trái nhất, thông qua việc liệt kê tất cả các giá trị Distinct của cột dẫn đầu để quét nhảy qua các cây Index tiếp theo.
+  - **Hướng dẫn tránh lỗi phiên bản**: Trong **MySQL 8.0.31**, ISS tồn tại Bug nghiêm trọng ([[Bug #109145]](https://bugs.mysql.com/bug.php?id=109145)), khi đọc xuyên Range không dọn dẹp giá trị biên cũ, dẫn đến truy vấn trực tiếp **mất dữ liệu**.
+  - **Gợi ý áp dụng**: ISS có hiệu năng tối ưu khi Cardinality (số lượng giá trị phân biệt) của cột dẫn đầu cực thấp (như giới tính, enum trạng thái), vì optimizer cần liệt kê tất cả các giá trị distinct của cột dẫn đầu để quét nhảy từng cái một — giá trị distinct càng ít, số lần nhảy càng ít. Nhưng bản thân "Cardinality thấp" không phải là điều kiện giới hạn chính thức, optimizer sẽ đánh giá tổng hợp chi phí để quyết định có kích hoạt ISS hay không. Trong môi trường production, **nghiêm cấm dựa vào ISS để bù đắp cho thiết kế Index tồi**, phải thông qua việc điều chỉnh thứ tự Composite Index hoặc bổ sung điều kiện cột dẫn đầu để thỏa mãn Leftmost Prefix.
 
-**Index Skip Scan 失败路径图：**
+**Sơ đồ đường dẫn thất bại của Index Skip Scan:**
 
 ```mermaid
 sequenceDiagram
     participant Executor
     participant InnoDB_Index
 
-    Note over Executor, InnoDB_Index: MySQL 8.0.31 触发 ISS Bug 场景
+    Note over Executor, InnoDB_Index: Kịch bản kích hoạt ISS Bug trong MySQL 8.0.31
     Executor->>InnoDB_Index: Read Range 1 (Prefix A)
     InnoDB_Index-->>Executor: Return Rows, Set End-of-Range = X
     Executor->>InnoDB_Index: Read Range 2 (Prefix B)
-    Note right of InnoDB_Index: [BUG] 未清理上一个 Range 的 End-of-Range X
-    InnoDB_Index-->>Executor: 发现当前值 > X，错误判定越界，提前终止！
-    Note over Executor: 导致结果集丢失 (Incorrect Result)
+    Note right of InnoDB_Index: [BUG] Chưa dọn dẹp End-of-Range X của Range trước đó
+    InnoDB_Index-->>Executor: Phát hiện giá trị hiện tại > X, phán đoán sai là vượt biên, kết thúc sớm!
+    Note over Executor: Dẫn đến mất tập kết quả (Incorrect Result)
 ```
 
-失效示例：
+Ví dụ mất hiệu lực:
 
 ```sql
--- 索引：(sname, s_code, address)
-SELECT * FROM students WHERE s_code = 1;                  -- 跳过最左列 sname，索引失效
-SELECT * FROM students WHERE sname = 'A' AND address = 'Shanghai'; -- 跳过中间列，仅 sname 走索引（索引下推 ICP 可优化过滤）
-SELECT * FROM students WHERE sname = 'A' AND s_code > 1 AND address = 'Shanghai'; -- 范围查询后，address 无法用于定位，仅用于过滤
+-- Index: (sname, s_code, address)
+SELECT * FROM students WHERE s_code = 1;                  -- Bỏ qua cột ngoài cùng bên trái sname, Index mất hiệu lực
+SELECT * FROM students WHERE sname = 'A' AND address = 'Shanghai'; -- Bỏ qua cột ở giữa, chỉ sname đi qua Index (Index Condition Pushdown ICP có thể tối ưu việc lọc)
+SELECT * FROM students WHERE sname = 'A' AND s_code > 1 AND address = 'Shanghai'; -- Sau truy vấn phạm vi, address không thể dùng để định vị, chỉ dùng để lọc
 ```
 
-### 在索引列上进行计算、函数或类型转换
+### Thực hiện tính toán, hàm hoặc chuyển đổi kiểu trên cột Index
 
-- **核心定义**：索引 B+Tree 存储的是字段的**原始值**。一旦在 `WHERE` 条件中对索引列应用了函数（如 `ABS()`、`DATE()`）或算术运算，该列的值在逻辑上发生了改变。
-- **有序性破坏效应**：由于 B+Tree 是基于原始值排序的，经过函数处理后的结果在索引树中是**无序**的。数据库无法利用二分查找快速定位，只能被迫进行全表扫描。
-- **函数索引**：MySQL 8.0 支持**函数索引**（Functional Index），可针对计算后的值建索引，但使用场景有限，首选还是优化 SQL 写法。
+- **Định nghĩa cốt lõi**: B+Tree Index lưu trữ **giá trị gốc** của trường. Một khi áp dụng hàm (như `ABS()`, `DATE()`) hoặc phép toán số học lên cột Index trong điều kiện `WHERE`, giá trị của cột đó đã bị thay đổi về mặt logic.
+- **Hiệu ứng phá vỡ tính có thứ tự**: Vì B+Tree được sắp xếp dựa trên giá trị gốc, kết quả sau khi xử lý bằng hàm sẽ **vô thứ tự** trong cây Index. Cơ sở dữ liệu không thể sử dụng tìm kiếm nhị phân để định vị nhanh, chỉ có thể buộc phải quét toàn bảng.
+- **Functional Index (chỉ mục hàm)**: MySQL 8.0 hỗ trợ **Functional Index**, có thể tạo Index trên giá trị sau tính toán, nhưng tình huống sử dụng có hạn, ưu tiên hàng đầu vẫn là tối ưu cách viết SQL.
 
-失效示例：
+Ví dụ mất hiệu lực:
 
 ```sql
-SELECT * FROM students WHERE height + 1 = 170;            -- 对索引列进行计算
-SELECT * FROM students WHERE DATE(create_time) = '2022-01-01'; -- 对索引列使用函数
+SELECT * FROM students WHERE height + 1 = 170;            -- Thực hiện tính toán trên cột Index
+SELECT * FROM students WHERE DATE(create_time) = '2022-01-01'; -- Sử dụng hàm trên cột Index
 ```
 
-优化建议：
+Gợi ý tối ưu:
 
 ```sql
-SELECT * FROM students WHERE height = 169;                -- 将计算移到等号右边
+SELECT * FROM students WHERE height = 169;                -- Chuyển phép tính sang bên phải dấu bằng
 SELECT * FROM students WHERE create_time BETWEEN '2022-01-01 00:00:00' AND '2022-01-01 23:59:59';
 ```
 
-### LIKE 模糊查询以通配符开头
+### Truy vấn mờ LIKE bắt đầu bằng ký tự đại diện
 
-- **核心定义**：`LIKE` 查询必须以具体字符开头才能利用索引有序性，例如 `WHERE sname LIKE 'Guide%';`。这是因为 B+ 树是从左到右排序的。前缀通配符（`%`）破坏了有序性，无法定位起始点。
-- **前缀通配符的失效机制**：如果以 `%` 开头（如 `'%abc'`），由于索引是按字符从左到右排序的，前缀不确定意味着可能出现在索引树的任何位置，导致无法定位搜索区间的起始点。
-- **落地建议**：
-  - 如果必须进行全模糊查询，尽量只查询索引覆盖的列，此时 `EXPLAIN` 会显示 `type: index`（**Index Full Scan**），虽然扫描了整棵树，但无需回表，性能仍优于 `ALL`。
-  - 核心业务的大规模模糊搜索应通过 **ElasticSearch** 或其他搜索引擎实现。
+- **Định nghĩa cốt lõi**: Truy vấn `LIKE` phải bắt đầu bằng ký tự cụ thể thì mới tận dụng được tính có thứ tự của Index, ví dụ `WHERE sname LIKE 'Guide%';`. Nguyên nhân là vì B+ Tree được sắp xếp từ trái sang phải. Ký tự đại diện tiền tố (`%`) phá vỡ tính có thứ tự, không thể định vị điểm bắt đầu.
+- **Cơ chế mất hiệu lực của ký tự đại diện tiền tố**: Nếu bắt đầu bằng `%` (như `'%abc'`), do Index được sắp xếp theo ký tự từ trái sang phải, tiền tố không xác định đồng nghĩa với việc có thể xuất hiện ở bất kỳ vị trí nào trong cây Index, dẫn đến không thể định vị điểm bắt đầu của vùng tìm kiếm.
+- **Gợi ý áp dụng**:
+  - Nếu bắt buộc phải truy vấn mờ toàn phần, hãy cố gắng chỉ truy vấn các cột được Index bao phủ, lúc này `EXPLAIN` sẽ hiển thị `type: index` (**Index Full Scan**), tuy quét cả cây nhưng không cần Back to Table, hiệu năng vẫn tốt hơn `ALL`.
+  - Tìm kiếm mờ quy mô lớn của nghiệp vụ cốt lõi nên được thực hiện thông qua **ElasticSearch** hoặc các công cụ tìm kiếm khác.
 
-失效示例：
+Ví dụ mất hiệu lực:
 
 ```sql
-SELECT * FROM students WHERE sname LIKE '%Guide';          -- 前缀模糊，全表扫描
-SELECT * FROM students WHERE sname LIKE '%Guide%';         -- 前后模糊，全表扫描
+SELECT * FROM students WHERE sname LIKE '%Guide';          -- Mờ phần đầu, quét toàn bảng
+SELECT * FROM students WHERE sname LIKE '%Guide%';         -- Mờ cả đầu và cuối, quét toàn bảng
 ```
 
-### OR 连接与 Index Merge
+### Nối bằng OR và Index Merge
 
-- **核心定义**：在 `OR` 连接的多个条件中，只要有**任意一列没有索引**，MySQL 就会放弃所有索引转而执行全表扫描。
-- **Index Merge 机制**：若 `OR` 两侧都有索引，MySQL 5.1+ 可能会触发**索引合并（Index Merge）**优化，分别扫描两个索引后取并集。不过，如果两个索引过滤后的数据量都很大，合并结果集的成本可能高于全表扫描，依然会放弃索引。
-- **落地建议**：
-  - 优先将 `OR` 改写为 `UNION ALL`。`UNION ALL` 可以让每一段查询独立使用索引，且规避了优化器对 `OR` 成本估算不准的问题。
-  - 注意：只有当确定结果集不重复时才用 `UNION ALL`，否则需用 `UNION`（涉及临时表去重，有额外开销）。
+- **Định nghĩa cốt lõi**: Trong nhiều điều kiện được nối bằng `OR`, chỉ cần **bất kỳ cột nào không có Index**, MySQL sẽ từ bỏ tất cả Index và chuyển sang thực hiện quét toàn bảng.
+- **Cơ chế Index Merge**: Nếu cả hai phía của `OR` đều có Index, MySQL 5.1+ có thể kích hoạt tối ưu hóa **Index Merge (gộp Index)**, lần lượt quét hai Index rồi lấy hợp nhất. Tuy nhiên, nếu lượng dữ liệu sau khi lọc của cả hai Index đều lớn, chi phí gộp tập kết quả có thể cao hơn quét toàn bảng, vẫn sẽ từ bỏ Index.
+- **Gợi ý áp dụng**:
+  - Ưu tiên viết lại `OR` thành `UNION ALL`. `UNION ALL` cho phép mỗi đoạn truy vấn độc lập sử dụng Index, và tránh được vấn đề optimizer ước lượng chi phí `OR` không chính xác.
+  - Lưu ý: Chỉ dùng `UNION ALL` khi chắc chắn tập kết quả không trùng lặp, nếu không cần dùng `UNION` (liên quan đến việc khử trùng lặp bằng bảng tạm, có chi phí bổ sung).
 
-失效示例：
+Ví dụ mất hiệu lực:
 
 ```sql
--- 假设 sname 和 address 都有索引，但各匹配 30%+ 数据
-SELECT * FROM students WHERE sname = '学生 1' OR address = '上海'; -- 可能放弃索引，全表扫描
+-- Giả sử sname và address đều có Index, nhưng mỗi bên khớp hơn 30% dữ liệu
+SELECT * FROM students WHERE sname = '学生 1' OR address = '上海'; -- Có thể từ bỏ Index, quét toàn bảng
 
--- 建议改写为
+-- Gợi ý viết lại thành
 SELECT * FROM students WHERE sname = '学生 1'
 UNION ALL
-SELECT * FROM students WHERE address = '上海'; -- 各自走索引
+SELECT * FROM students WHERE address = '上海'; -- Mỗi bên tự đi qua Index
 ```
 
-**验证方式**：`EXPLAIN` 中若出现 `type: index_merge` 和 `Extra: Using union; Using where`，说明使用了 Index Merge。
+**Cách xác minh**: Nếu trong `EXPLAIN` xuất hiện `type: index_merge` và `Extra: Using union; Using where`, nghĩa là đã sử dụng Index Merge.
 
-### IN / NOT IN 使用不当
+### Sử dụng IN / NOT IN không đúng cách
 
-**`IN` 列表长度**：
+**Độ dài danh sách `IN`**:
 
-- `eq_range_index_dive_limit`（默认 **200**）并不直接导致索引失效，而是影响**行数估算策略**：
-  - **<= 200**：MySQL 使用 **Index Dive**（深入索引树探测）精确估算行数，成本估算准确，索引大概率有效。
-  - **> 200**：当 `IN` 列表长度超过 `eq_range_index_dive_limit`（MySQL 5.7.4+ 默认为 200）时，优化器从精确的 Index Dive 切换为基于 `index_statistics` 的估算。若表数据的基数（Cardinality）统计陈旧，可能导致估算成本异常，从而放弃走范围扫描（Range Scan）而选择全表扫描。
-- 可通过调大 `eq_range_index_dive_limit` 或改写为 `JOIN` 临时表来规避。
+- `eq_range_index_dive_limit` (mặc định **200**) không trực tiếp khiến Index mất hiệu lực, mà ảnh hưởng đến **chiến lược ước lượng số hàng**:
+  - **<= 200**: MySQL sử dụng **Index Dive** (thăm dò sâu vào cây Index) để ước lượng chính xác số hàng, ước lượng chi phí chính xác, Index phần lớn có hiệu quả.
+  - **> 200**: Khi độ dài danh sách `IN` vượt quá `eq_range_index_dive_limit` (MySQL 5.7.4+ mặc định là 200), optimizer chuyển từ Index Dive chính xác sang ước lượng dựa trên `index_statistics`. Nếu thống kê Cardinality (số lượng giá trị phân biệt) của dữ liệu bảng đã lỗi thời, có thể dẫn đến ước lượng chi phí bất thường, từ đó từ bỏ quét phạm vi (Range Scan) mà chọn quét toàn bảng.
+- Có thể tăng `eq_range_index_dive_limit` hoặc viết lại thành `JOIN` với bảng tạm để tránh.
 
-**`NOT IN`** ：
+**`NOT IN`** :
 
-- **常量列表**（如 `NOT IN (1,2,3)`）：通常全表扫描，因需遍历整个 B+ 树证明"不在集合中"。
-- **子查询关联索引列**：`WHERE id NOT IN (SELECT user_id FROM orders WHERE user_id > 1000)` 可用 `orders` 表的 `user_id` 索引。
-- **推荐替代**：优先使用 `NOT EXISTS` 或 `LEFT JOIN / IS NULL`，性能更优且语义更清晰。
+- **Danh sách hằng số** (như `NOT IN (1,2,3)`): Thường quét toàn bảng, vì cần duyệt toàn bộ cây B+ để chứng minh "không nằm trong tập hợp".
+- **Subquery liên quan đến cột Index**: `WHERE id NOT IN (SELECT user_id FROM orders WHERE user_id > 1000)` có thể sử dụng Index `user_id` của bảng `orders`.
+- **Phương án thay thế được khuyến nghị**: Ưu tiên sử dụng `NOT EXISTS` hoặc `LEFT JOIN / IS NULL`, hiệu năng tốt hơn và ngữ nghĩa rõ ràng hơn.
 
-失效示例：
+Ví dụ mất hiệu lực:
 
 ```sql
-SELECT * FROM students WHERE s_code IN (1, 2, 3, ..., 500); -- 列表过长，可能改用统计估算导致误判
-SELECT * FROM students WHERE s_code NOT IN (1, 2, 3);     -- 常量列表，全表扫描
+SELECT * FROM students WHERE s_code IN (1, 2, 3, ..., 500); -- Danh sách quá dài, có thể chuyển sang ước lượng thống kê dẫn đến phán đoán sai
+SELECT * FROM students WHERE s_code NOT IN (1, 2, 3);     -- Danh sách hằng số, quét toàn bảng
 ```
 
-### 隐式类型转换
+### Chuyển đổi kiểu ngầm định (Implicit Type Conversion)
 
-这是开发中最隐蔽的坑，**转换的方向决定了索引的生死**。
+Đây là cái bẫy khó phát hiện nhất trong quá trình phát triển, **hướng chuyển đổi quyết định sự sống còn của Index**.
 
-| 场景                  | 示例                | 转换方向                     | 索引是否有效 |
-| --------------------- | ------------------- | ---------------------------- | ------------ |
-| **字符串列 + 数字值** | `varchar_col = 123` | 字符串转数字（发生在索引列） | ❌ 失效      |
-| **数字列 + 字符串值** | `int_col = '123'`   | 字符串转数字（发生在常量）   | ✅ 有效      |
+| Tình huống                 | Ví dụ               | Hướng chuyển đổi                              | Index có hiệu lực không |
+| -------------------------- | ------------------- | --------------------------------------------- | ----------------------- |
+| **Cột chuỗi + giá trị số** | `varchar_col = 123` | Chuỗi chuyển thành số (xảy ra trên cột Index) | ❌ Mất hiệu lực         |
+| **Cột số + giá trị chuỗi** | `int_col = '123'`   | Chuỗi chuyển thành số (xảy ra trên hằng số)   | ✅ Có hiệu lực          |
 
-**关键点**：
+**Điểm mấu chốt**:
 
-- 只有当**转换发生在索引列上**时，索引才会失效。
-- 当字符串与数字进行比较时，MySQL 默认将字符串转换为**浮点数（DOUBLE）**进行比较（详见 [MySQL 官方文档规则 7](https://dev.mysql.com/doc/refman/8.0/en/type-conversion.html)）。对索引列发生隐式类型转换等同于在索引列上应用了不可逆的转换函数，破坏了 B+ 树的有序性，导致只能走全表扫描。
-- `int_col = '123'` 会被转换为 `int_col = CAST('123' AS DOUBLE)`，转换发生在常量侧，不影响索引使用。
+- Chỉ khi **chuyển đổi xảy ra trên cột Index**, Index mới mất hiệu lực.
+- Khi chuỗi và số được so sánh với nhau, MySQL mặc định chuyển chuỗi thành **số dấu phẩy động (DOUBLE)** để so sánh (xem chi tiết tại [quy tắc 7 trong tài liệu chính thức của MySQL](https://dev.mysql.com/doc/refman/8.0/en/type-conversion.html)). Chuyển đổi kiểu ngầm định xảy ra trên cột Index tương đương với việc áp dụng một hàm chuyển đổi không thể đảo ngược lên cột Index, phá vỡ tính có thứ tự của cây B+, dẫn đến chỉ có thể quét toàn bảng.
+- `int_col = '123'` sẽ được chuyển thành `int_col = CAST('123' AS DOUBLE)`, chuyển đổi xảy ra ở phía hằng số, không ảnh hưởng đến việc sử dụng Index.
 
-**详细介绍**：[MySQL隐式转换造成索引失效](https://javaguide.cn/database/mysql/index-invalidation-caused-by-implicit-conversion.html)
+**Giới thiệu chi tiết**: [Index mất hiệu lực do chuyển đổi ngầm định trong MySQL](https://javaguide.cn/database/mysql/index-invalidation-caused-by-implicit-conversion.html)
 
-### ORDER BY 排序优化陷阱
+### Bẫy tối ưu hóa sắp xếp ORDER BY
 
-即使 `WHERE` 条件精准，如果 `ORDER BY` 处理不好，依然会出现慢查询。
+Ngay cả khi điều kiện `WHERE` chính xác, nếu xử lý `ORDER BY` không tốt, vẫn sẽ xuất hiện truy vấn chậm.
 
-**触发 `Using filesort` 的条件**：
+**Điều kiện kích hoạt `Using filesort`**:
 
-- 排序字段不在索引中
-- 索引顺序与 `ORDER BY` 不一致（如索引 `(a,b)` 但 `ORDER BY b,a`）
-- `WHERE` 与 `ORDER BY` 分别使用不同索引
-- 排序列包含 `SELECT *` 中非索引列（需回表排序）
+- Trường sắp xếp không nằm trong Index
+- Thứ tự Index không khớp với `ORDER BY` (như Index `(a,b)` nhưng `ORDER BY b,a`)
+- `WHERE` và `ORDER BY` lần lượt sử dụng các Index khác nhau
+- Cột sắp xếp chứa cột không có trong Index của `SELECT *` (cần Back to Table để sắp xếp)
 
-**优化方案**：
+**Phương án tối ưu**:
 
-- 利用**覆盖索引**同时满足 `WHERE` 和 `ORDER BY`。例如索引为 `(name, age)`，查询 `SELECT name, age FROM users WHERE name = 'A' ORDER BY age`。
-- 调整索引顺序以匹配 `ORDER BY`。
+- Tận dụng **Covering Index** để đồng thời thỏa mãn `WHERE` và `ORDER BY`. Ví dụ Index là `(name, age)`, truy vấn `SELECT name, age FROM users WHERE name = 'A' ORDER BY age`.
+- Điều chỉnh thứ tự Index để khớp với `ORDER BY`.
 
-**验证方式**：`EXPLAIN` 中 `Extra` 列出现 `Using filesort` 即表示触发了排序。
+**Cách xác minh**: Nếu cột `Extra` trong `EXPLAIN` xuất hiện `Using filesort` nghĩa là đã kích hoạt sắp xếp.
 
-### 总结
+### Tổng kết
 
-本文系统梳理了 MySQL 索引失效的常见场景，从底层机制上可归纳为以下两大核心类：
+Bài viết này đã hệ thống hóa các tình huống thường gặp khiến Index trong MySQL mất hiệu lực, từ cơ chế bên dưới có thể tổng kết thành hai loại cốt lõi sau:
 
-**1. SQL 写法与底层逻辑冲突（破坏 B+Tree 有序性）**
+**1. Cách viết SQL xung đột với logic bên dưới (phá vỡ tính có thứ tự của B+Tree)**
 
-此类问题最为常见，本质是查询条件让底层的 B+Tree 失去了“二分查找”的快速定位能力。
+Loại vấn đề này phổ biến nhất, bản chất là điều kiện truy vấn khiến B+Tree bên dưới mất đi khả năng định vị nhanh bằng "tìm kiếm nhị phân".
 
-- **违背最左前缀原则**：跳过联合索引前导列，或遇到范围查询（如 `>`、`<`、`BETWEEN`、`LIKE "abc%"`）导致后续列中断精确定位，降级为范围扫描加过滤。
-- **对索引列进行加工**：在 `WHERE` 左侧对索引列进行数学计算或应用函数，导致原始数据发生逻辑改变，在索引树中呈现无序状态。
-- **隐式类型转换（隐蔽且致命）**：当“字符串类型的列”去比较“数字类型的值”时，MySQL 会默认在列上套用转换函数，直接破坏树的有序性。
-- **LIKE 模糊查询前置通配符**：如 `LIKE "%abc"`，前缀字符的不确定性使得优化器无法锁定扫描区间的起始点。
-- **ORDER BY 排序陷阱**：排序列未命中索引、排序方向与索引结构不一致等触发额外的内存或磁盘排序（`Using filesort`）。
+- **Vi phạm nguyên tắc Leftmost Prefix**: Bỏ qua cột dẫn đầu của Composite Index, hoặc gặp truy vấn phạm vi (như `>`, `<`, `BETWEEN`, `LIKE "abc%"`) khiến các cột tiếp theo bị gián đoạn khả năng định vị chính xác, bị giáng cấp thành quét phạm vi kèm lọc.
+- **Xử lý trên cột Index**: Thực hiện tính toán số học hoặc áp dụng hàm lên cột Index ở vế trái của `WHERE`, khiến dữ liệu gốc bị thay đổi về mặt logic, trở nên vô thứ tự trong cây Index.
+- **Chuyển đổi kiểu ngầm định (ẩn và chết người)**: Khi "cột kiểu chuỗi" so sánh với "giá trị kiểu số", MySQL sẽ mặc định áp hàm chuyển đổi lên cột, trực tiếp phá vỡ tính có thứ tự của cây.
+- **Ký tự đại diện đứng trước trong truy vấn mờ LIKE**: Như `LIKE "%abc"`, tính không xác định của ký tự tiền tố khiến optimizer không thể xác định điểm bắt đầu của vùng quét.
+- **Bẫy sắp xếp ORDER BY**: Cột sắp xếp không trúng Index, hướng sắp xếp không khớp với cấu trúc Index, v.v. sẽ kích hoạt sắp xếp bổ sung trong bộ nhớ hoặc trên đĩa (`Using filesort`).
 
-**2. 优化器的成本决策（基于 I/O 成本妥协）**
+**2. Quyết định chi phí của optimizer (sự đánh đổi dựa trên chi phí I/O)**
 
-此类问题并非索引本身不可用，而是 MySQL 优化器经过计算后，认为”不走普通索引”整体开销反而更小。**需要特别说明的是：优化器选择全表扫描或回表查询，往往是正确的成本决策，而非”性能问题”**。
+Loại vấn đề này không phải bản thân Index không dùng được, mà là optimizer của MySQL sau khi tính toán cho rằng "không đi qua Index thông thường" thì tổng chi phí lại nhỏ hơn. **Cần đặc biệt nói rõ rằng: optimizer chọn quét toàn bảng hoặc Back to Table, thường là quyết định chi phí đúng đắn, chứ không phải "vấn đề hiệu năng"**.
 
-- **回表查询是正常现象**：当查询需要非索引覆盖的字段时，回表是不可避免的正常操作。索引过滤 + 回表获取业务字段是标准查询模式，并非”性能不佳”的表现。只有当回表次数过多（如命中数据量超过 20%~30%）且存在更优的全表扫描方案时，才需要关注。
-- **全表扫描可能是最优选择**：优化器选择全表扫描通常是基于成本计算的理性决策。当索引选择率低（命中数据量大）时，顺序 IO 的全表扫描往往比随机 IO 的索引回表更高效。这不是索引”失效”，而是优化器选择了更优的执行路径。
-- **`SELECT *` 的场景权衡**：优先 `SELECT 需要的字段`，能命中覆盖索引最好。如果需要大量非索引字段且回表不可避免，不必教条地"省字段"——当需要大部分字段时，代码可读性可能比"少传几个字段"的微优化更重要。
-- **`OR` 条件导致全表扫描**：只要 `OR` 连接的任意一侧条件没有对应索引，就会触发全表扫描。即使两侧都有索引，若 Index Merge（索引合并）的预期成本过高，依然会被放弃。
-- **`IN` 列表过长引发估算失真**：当 `IN` 列表长度超过系统阈值（默认 200）时，优化器会从精准的深入探测（Index Dive）切换为粗略的统计估算，极易因统计信息陈旧而产生执行成本的误判。
+- **Back to Table là hiện tượng bình thường**: Khi truy vấn cần các trường không được Index bao phủ, Back to Table là thao tác bình thường không thể tránh khỏi. Lọc bằng Index + Back to Table để lấy trường nghiệp vụ là mô hình truy vấn chuẩn, không phải biểu hiện của "hiệu năng kém". Chỉ khi số lần Back to Table quá nhiều (như lượng dữ liệu trúng vượt quá 20%~30%) và tồn tại phương án quét toàn bảng tối ưu hơn, thì mới cần quan tâm.
+- **Quét toàn bảng có thể là lựa chọn tối ưu nhất**: Optimizer chọn quét toàn bảng thường là quyết định lý tính dựa trên tính toán chi phí. Khi tỷ lệ chọn của Index thấp (lượng dữ liệu trúng lớn), quét toàn bảng với I/O tuần tự thường hiệu quả hơn Back to Table qua Index với I/O ngẫu nhiên. Đây không phải Index "mất hiệu lực", mà là optimizer đã chọn đường dẫn thực thi tối ưu hơn.
+- **Cân nhắc tình huống của `SELECT *`**: Ưu tiên `SELECT các trường cần thiết`, nếu trúng Covering Index thì càng tốt. Nếu cần nhiều trường không có trong Index và Back to Table không thể tránh khỏi, không cần giáo điều "tiết kiệm trường" — khi cần phần lớn các trường, tính dễ đọc của code có thể quan trọng hơn việc tối ưu vi mô "truyền ít vài trường".
+- **Điều kiện `OR` dẫn đến quét toàn bảng**: Chỉ cần một trong hai phía của điều kiện nối bằng `OR` không có Index tương ứng, sẽ kích hoạt quét toàn bảng. Ngay cả khi cả hai phía đều có Index, nếu chi phí dự kiến của Index Merge (gộp Index) quá cao, vẫn sẽ bị từ bỏ.
+- **Danh sách `IN` quá dài gây sai lệch ước lượng**: Khi độ dài danh sách `IN` vượt ngưỡng hệ thống (mặc định 200), optimizer sẽ chuyển từ thăm dò chính xác (Index Dive) sang ước lượng thống kê thô, rất dễ do thông tin thống kê lỗi thời mà phán đoán sai chi phí thực thi.
 
-**实战建议**：
+**Gợi ý thực chiến**:
 
-1. **养成 `EXPLAIN` 分析习惯**：在编写复杂 SQL 后，务必使用 `EXPLAIN` 分析执行计划，重点关注 `type`、`key`、`rows`、`Extra` 字段。**注意**：`type: ALL` 不一定是问题，可能是优化器的正确决策。
-2. **根据场景选择查询策略**：
-   - 如果查询字段能被索引覆盖，优先使用覆盖索引避免回表
-   - 如果必须获取多个非索引字段，避免为了"省字段"而拆分多次查询，减少网络往返
-3. **规范数据类型使用**：保持查询条件与字段类型一致，避免隐式类型转换。
-4. **合理设计联合索引**：按照查询频率和选择性安排字段顺序，优先满足高频查询场景。
-5. **大规模模糊搜索考虑 ES**：对于前后模糊查询（`%keyword%`），建议使用 Elasticsearch 等搜索引擎。
+1. **Hình thành thói quen phân tích bằng `EXPLAIN`**: Sau khi viết SQL phức tạp, nhất định phải sử dụng `EXPLAIN` để phân tích kế hoạch thực thi, tập trung vào các trường `type`, `key`, `rows`, `Extra`. **Lưu ý**: `type: ALL` không nhất định là vấn đề, có thể là quyết định đúng đắn của optimizer.
+2. **Chọn chiến lược truy vấn theo tình huống**:
+   - Nếu các trường truy vấn có thể được Index bao phủ, ưu tiên sử dụng Covering Index để tránh Back to Table
+   - Nếu bắt buộc phải lấy nhiều trường không có trong Index, tránh vì "tiết kiệm trường" mà chia thành nhiều lần truy vấn, giảm số lần đi lại trên mạng
+3. **Chuẩn hóa việc sử dụng kiểu dữ liệu**: Giữ điều kiện truy vấn nhất quán với kiểu của trường, tránh chuyển đổi kiểu ngầm định.
+4. **Thiết kế Composite Index hợp lý**: Sắp xếp thứ tự trường theo tần suất truy vấn và độ chọn lọc, ưu tiên thỏa mãn các tình huống truy vấn tần suất cao.
+5. **Tìm kiếm mờ quy mô lớn nên cân nhắc ES**: Đối với truy vấn mờ cả đầu và cuối (`%keyword%`), nên sử dụng các công cụ tìm kiếm như Elasticsearch.
 
-索引优化是数据库性能优化的基本功，但也需要结合实际业务场景和数据分布进行权衡。理解索引失效的根本原因，才能在遇到性能问题时快速定位并解决。
+Tối ưu Index là bài tập cơ bản của tối ưu hiệu năng cơ sở dữ liệu, nhưng cũng cần kết hợp với tình huống nghiệp vụ thực tế và phân bố dữ liệu để đánh đổi. Hiểu được nguyên nhân gốc rễ của việc Index mất hiệu lực, mới có thể nhanh chóng định vị và giải quyết khi gặp vấn đề hiệu năng.
 
-**延伸阅读**：
+**Đọc thêm**:
 
-- [MySQL 索引详解](https://javaguide.cn/database/mysql/mysql-index.html)
-- [MySQL 执行计划分析](https://javaguide.cn/database/mysql/mysql-query-execution-plan.html)
-- [MySQL 隐式转换造成索引失效](https://javaguide.cn/database/mysql/index-invalidation-caused-by-implicit-conversion.html)
+- [Giải thích chi tiết Index trong MySQL](https://javaguide.cn/database/mysql/mysql-index.html)
+- [Phân tích kế hoạch thực thi trong MySQL](https://javaguide.cn/database/mysql/mysql-query-execution-plan.html)
+- [Index mất hiệu lực do chuyển đổi ngầm định trong MySQL](https://javaguide.cn/database/mysql/index-invalidation-caused-by-implicit-conversion.html)

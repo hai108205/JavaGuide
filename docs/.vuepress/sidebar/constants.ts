@@ -86,8 +86,8 @@ export const ICONS = {
  * 常用文本常量
  */
 export const COMMON_TEXT = {
-  IMPORTANT_POINTS: "重要知识点",
-  SOURCE_CODE_ANALYSIS: "源码分析",
+  IMPORTANT_POINTS: "Kiến thức quan trọng",
+  SOURCE_CODE_ANALYSIS: "Phân tích mã nguồn",
 } as const;
 
 /**

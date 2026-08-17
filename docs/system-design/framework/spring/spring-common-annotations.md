@@ -1,6 +1,6 @@
 ---
-title: Spring&SpringMVC&SpringBoot常用注解总结
-description: Spring和SpringBoot常用注解大全，涵盖@Autowired、@Component、@RequestMapping等核心注解的用法详解。
+title: Tổng hợp các Annotation thường dùng trong Spring & SpringMVC & SpringBoot
+description: Tổng hợp đầy đủ các Annotation thường dùng trong Spring và Spring Boot, bao gồm giải thích chi tiết cách sử dụng các annotation cốt lõi như @Autowired, @Component, @RequestMapping, v.v.
 category: 框架
 tag:
   - SpringBoot
@@ -11,19 +11,19 @@ head:
       content: Spring注解,Spring Boot注解,@SpringBootApplication,@Autowired,@RequestMapping,@Configuration,@Component,常用注解
 ---
 
-可以毫不夸张地说，这篇文章介绍的 Spring/SpringBoot 常用注解基本已经涵盖你工作中遇到的大部分常用的场景。对于每一个注解本文都提供了具体用法，掌握这些内容后，使用 Spring Boot 来开发项目基本没啥大问题了！
+Có thể khẳng định không ngoa rằng, các annotation thường dùng trong Spring/SpringBoot được giới thiệu trong bài viết này về cơ bản đã bao quát hầu hết các tình huống phổ biến mà bạn gặp trong công việc. Đối với mỗi annotation, bài viết đều cung cấp cách sử dụng cụ thể. Sau khi nắm vững những nội dung này, việc sử dụng Spring Boot để phát triển dự án về cơ bản sẽ không còn vấn đề gì lớn!
 
-**为什么要写这篇文章？**
+**Tại sao lại viết bài này?**
 
-最近看到网上有一篇关于 Spring Boot 常用注解的文章被广泛转载，但文章内容存在一些误导性，可能对没有太多实际使用经验的开发者不太友好。于是我花了几天时间总结了这篇文章，希望能够帮助大家更好地理解和使用 Spring 注解。
+Gần đây tôi thấy có một bài viết trên mạng về các annotation thường dùng trong Spring Boot được chia sẻ rộng rãi, nhưng nội dung bài viết có một số điểm gây hiểu lầm, có thể không thân thiện với những developer chưa có nhiều kinh nghiệm thực tế. Vì vậy tôi đã dành vài ngày để tổng hợp bài viết này, hy vọng có thể giúp mọi người hiểu và sử dụng Spring annotation tốt hơn.
 
-**因为个人能力和精力有限，如果有任何错误或遗漏，欢迎指正！非常感激！**
+**Do năng lực và thời gian có hạn, nếu có bất kỳ sai sót hoặc thiếu sót nào, rất mong được góp ý! Vô cùng cảm ơn!**
 
-## Spring Boot 基础注解
+## Spring Boot Annotation Cơ Bản
 
-`@SpringBootApplication` 是 Spring Boot 应用的核心注解，通常用于标注主启动类。
+`@SpringBootApplication` là annotation cốt lõi của ứng dụng Spring Boot, thường được dùng để đánh dấu lớp khởi chạy chính (main class).
 
-示例：
+Ví dụ:
 
 ```java
 @SpringBootApplication
@@ -34,13 +34,13 @@ public class SpringSecurityJwtGuideApplication {
 }
 ```
 
-我们可以把 `@SpringBootApplication`看作是下面三个注解的组合：
+Chúng ta có thể coi `@SpringBootApplication` là sự kết hợp của ba annotation sau:
 
-- **`@EnableAutoConfiguration`**：启用 Spring Boot 的自动配置机制。
-- **`@ComponentScan`**：扫描 `@Component`、`@Service`、`@Repository`、`@Controller` 等注解的类。
-- **`@Configuration`**：允许注册额外的 Spring Bean 或导入其他配置类。
+- **`@EnableAutoConfiguration`**: Kích hoạt cơ chế tự động cấu hình (auto-configuration) của Spring Boot.
+- **`@ComponentScan`**: Quét các class được đánh dấu bởi `@Component`, `@Service`, `@Repository`, `@Controller`, v.v.
+- **`@Configuration`**: Cho phép đăng ký thêm các Spring Bean hoặc import các class cấu hình khác.
 
-源码如下：
+Mã nguồn như sau:
 
 ```java
 package org.springframework.boot.autoconfigure;
@@ -69,9 +69,9 @@ public @interface SpringBootConfiguration {
 
 ## Spring Bean
 
-### 依赖注入（Dependency Injection, DI）
+### Dependency Injection (DI)
 
-`@Autowired` 用于自动注入依赖项（即其他 Spring Bean）。它可以标注在构造器、字段、Setter 方法或配置方法上，Spring 容器会自动查找匹配类型的 Bean 并将其注入。
+`@Autowired` được dùng để tự động tiêm (inject) các dependency (tức là các Spring Bean khác). Nó có thể được đánh dấu trên constructor, field, setter method hoặc configuration method. Spring container sẽ tự động tìm Bean có kiểu phù hợp và tiêm vào.
 
 ```java
 @Service
@@ -81,14 +81,14 @@ public class UserServiceImpl implements UserService {
 
 @RestController
 public class UserController {
-    // 字段注入
+    // Field injection
     @Autowired
     private UserService userService;
     // ...
 }
 ```
 
-当存在多个相同类型的 Bean 时，`@Autowired` 默认按类型注入可能产生歧义。此时，可以与 `@Qualifier` 结合使用，通过指定 Bean 的名称来精确选择需要注入的实例。
+Khi tồn tại nhiều Bean cùng kiểu, `@Autowired` mặc định tiêm theo kiểu (by type) có thể gây ra sự không rõ ràng (ambiguity). Lúc này, có thể kết hợp với `@Qualifier` để chỉ định chính xác instance cần tiêm thông qua tên của Bean.
 
 ```java
 @Repository("userRepositoryA")
@@ -100,16 +100,16 @@ public class UserRepositoryB implements UserRepository { /* ... */ }
 @Service
 public class UserService {
     @Autowired
-    @Qualifier("userRepositoryA") // 指定注入名为 "userRepositoryA" 的 Bean
+    @Qualifier("userRepositoryA") // Chỉ định tiêm Bean có tên "userRepositoryA"
     private UserRepository userRepository;
     // ...
 }
 ```
 
-`@Primary`同样是为了解决同一类型存在多个 Bean 实例的注入问题。在 Bean 定义时（例如使用 `@Bean` 或类注解）添加 `@Primary` 注解，表示该 Bean 是**首选**的注入对象。当进行 `@Autowired` 注入时，如果没有使用 `@Qualifier` 指定名称，Spring 将优先选择带有 `@Primary` 的 Bean。
+`@Primary` cũng được dùng để giải quyết vấn đề tiêm khi có nhiều instance Bean cùng kiểu. Khi định nghĩa Bean (ví dụ sử dụng `@Bean` hoặc class annotation), thêm annotation `@Primary` để biểu thị rằng Bean đó là đối tượng tiêm **ưu tiên**. Khi thực hiện tiêm `@Autowired`, nếu không sử dụng `@Qualifier` để chỉ định tên, Spring sẽ ưu tiên chọn Bean có `@Primary`.
 
 ```java
-@Primary // 将 UserRepositoryA 设为首选注入对象
+@Primary // Đặt UserRepositoryA làm đối tượng tiêm ưu tiên
 @Repository("userRepositoryA")
 public class UserRepositoryA implements UserRepository { /* ... */ }
 
@@ -118,15 +118,15 @@ public class UserRepositoryB implements UserRepository { /* ... */ }
 
 @Service
 public class UserService {
-    @Autowired // 会自动注入 UserRepositoryA，因为它是 @Primary
+    @Autowired // Sẽ tự động tiêm UserRepositoryA, vì nó là @Primary
     private UserRepository userRepository;
     // ...
 }
 ```
 
-`@Resource(name="beanName")`是 JSR-250 规范定义的注解，也用于依赖注入。它默认按**名称 (by Name)** 查找 Bean 进行注入，而 `@Autowired`默认按**类型 (by Type)** 。如果未指定 `name` 属性，它会尝试根据字段名或方法名查找，如果找不到，则回退到按类型查找（类似 `@Autowired`）。
+`@Resource(name="beanName")` là annotation được định nghĩa trong chuẩn JSR-250, cũng được dùng cho dependency injection. Nó mặc định tìm kiếm Bean theo **tên (by Name)** để tiêm, trong khi `@Autowired` mặc định tìm theo **kiểu (by Type)**. Nếu không chỉ định thuộc tính `name`, nó sẽ cố gắng tìm theo tên field hoặc tên method; nếu không tìm thấy, sẽ fallback sang tìm theo kiểu (tương tự `@Autowired`).
 
-`@Resource`只能标注在字段 和 Setter 方法上，不支持构造器注入。
+`@Resource` chỉ có thể đánh dấu trên field và setter method, không hỗ trợ constructor injection.
 
 ```java
 @Service
@@ -137,70 +137,70 @@ public class UserService {
 }
 ```
 
-### Bean 作用域
+### Bean Scope
 
-`@Scope("scopeName")` 定义 Spring Bean 的作用域，即 Bean 实例的生命周期和可见范围。常用的作用域包括：
+`@Scope("scopeName")` định nghĩa phạm vi (scope) của Spring Bean, tức là vòng đời và phạm vi khả kiến của instance Bean. Các scope thường dùng bao gồm:
 
-- **singleton** : IoC 容器中只有唯一的 bean 实例。Spring 中的 bean 默认都是单例的，是对单例设计模式的应用。
-- **prototype** : 每次获取都会创建一个新的 bean 实例。也就是说，连续 `getBean()` 两次，得到的是不同的 Bean 实例。
-- **request** （仅 Web 应用可用）: 每一次 HTTP 请求都会产生一个新的 bean（请求 bean），该 bean 仅在当前 HTTP request 内有效。
-- **session** （仅 Web 应用可用） : 每一次来自新 session 的 HTTP 请求都会产生一个新的 bean（会话 bean），该 bean 仅在当前 HTTP session 内有效。
-- **application/global-session** （仅 Web 应用可用）：每个 Web 应用在启动时创建一个 Bean（应用 Bean），该 bean 仅在当前应用启动时间内有效。
-- **websocket** （仅 Web 应用可用）：每一次 WebSocket 会话产生一个新的 bean。
+- **singleton**: Chỉ có duy nhất một instance Bean trong IoC container. Bean trong Spring mặc định là singleton, áp dụng singleton design pattern.
+- **prototype**: Mỗi lần lấy sẽ tạo ra một instance Bean mới. Nói cách khác, gọi `getBean()` hai lần liên tiếp sẽ nhận được hai instance Bean khác nhau.
+- **request** (chỉ khả dụng trong Web app): Mỗi HTTP request sẽ tạo ra một bean mới (request bean), bean đó chỉ có hiệu lực trong phạm vi HTTP request hiện tại.
+- **session** (chỉ khả dụng trong Web app): Mỗi HTTP request từ một session mới sẽ tạo ra một bean mới (session bean), bean đó chỉ có hiệu lực trong phạm vi HTTP session hiện tại.
+- **application/global-session** (chỉ khả dụng trong Web app): Mỗi Web app khi khởi động sẽ tạo một Bean (application Bean), bean đó chỉ có hiệu lực trong thời gian ứng dụng hiện tại đang chạy.
+- **websocket** (chỉ khả dụng trong Web app): Mỗi WebSocket session sẽ tạo ra một bean mới.
 
 ```java
 @Component
-// 每次获取都会创建新的 PrototypeBean 实例
+// Mỗi lần lấy sẽ tạo instance PrototypeBean mới
 @Scope("prototype")
 public class PrototypeBean {
     // ...
 }
 ```
 
-### Bean 注册
+### Đăng Ký Bean
 
-Spring 容器需要知道哪些类需要被管理为 Bean。除了使用 `@Bean` 方法显式声明（通常在 `@Configuration` 类中），更常见的方式是使用 Stereotype（构造型） 注解标记类，并配合组件扫描（Component Scanning）机制，让 Spring 自动发现并注册这些类作为 Bean。这些 Bean 后续可以通过 `@Autowired` 等方式注入到其他组件中。
+Spring container cần biết những class nào cần được quản lý dưới dạng Bean. Ngoài việc sử dụng phương thức `@Bean` để khai báo tường minh (thường là trong class `@Configuration`), cách phổ biến hơn là sử dụng Stereotype annotation để đánh dấu class, kết hợp với cơ chế Component Scanning, cho phép Spring tự động phát hiện và đăng ký các class này thành Bean. Các Bean này sau đó có thể được tiêm (inject) vào các component khác thông qua `@Autowired` và các cách khác.
 
-下面是常见的一些注册 Bean 的注解：
+Dưới đây là một số annotation thường dùng để đăng ký Bean:
 
-- `@Component`：通用的注解，可标注任意类为 `Spring` 组件。如果一个 Bean 不知道属于哪个层，可以使用`@Component` 注解标注。
-- `@Repository` : 对应持久层即 Dao 层，主要用于数据库相关操作。
-- `@Service` : 对应服务层，主要涉及一些复杂的逻辑，需要用到 Dao 层。
-- `@Controller` : 对应 Spring MVC 控制层，主要用于接受用户请求并调用 Service 层返回数据给前端页面。
-- `@RestController`：一个组合注解，等效于 `@Controller` + `@ResponseBody`。它专门用于构建 RESTful Web 服务的控制器。标注了 `@RestController` 的类，其所有处理器方法（handler methods）的返回值都会被自动序列化（通常为 JSON）并写入 HTTP 响应体，而不是被解析为视图名称。
+- `@Component`: Annotation chung, có thể đánh dấu bất kỳ class nào là Spring component. Nếu một Bean không biết thuộc tầng (layer) nào, có thể sử dụng annotation `@Component` để đánh dấu.
+- `@Repository`: Tương ứng với tầng persistence (persistence layer) tức là tầng Dao, chủ yếu dùng cho các thao tác liên quan đến database.
+- `@Service`: Tương ứng với tầng service (service layer), chủ yếu liên quan đến các logic phức tạp, cần sử dụng tầng Dao.
+- `@Controller`: Tương ứng với tầng Spring MVC controller, chủ yếu dùng để nhận request từ người dùng và gọi Service layer để trả dữ liệu về cho frontend page.
+- `@RestController`: Một annotation tổ hợp, tương đương với `@Controller` + `@ResponseBody`. Nó được thiết kế đặc biệt để xây dựng controller cho RESTful Web Service. Với class được đánh dấu `@RestController`, tất cả giá trị trả về của các handler method đều được tự động serialize (thường là JSON) và ghi vào HTTP response body, thay vì được phân giải thành tên view.
 
-`@Controller` vs `@RestController`：
+`@Controller` vs `@RestController`:
 
-- `@Controller`：主要用于传统的 Spring MVC 应用，方法返回值通常是逻辑视图名，需要视图解析器配合渲染页面。如果需要返回数据（如 JSON），则需要在方法上额外添加 `@ResponseBody` 注解。
-- `@RestController`：专为构建返回数据的 RESTful API 设计。类上使用此注解后，所有方法的返回值都会默认被视为响应体内容（相当于每个方法都隐式添加了 `@ResponseBody`），通常用于返回 JSON 或 XML 数据。在现代前后端分离的应用中，`@RestController` 是更常用的选择。
+- `@Controller`: Chủ yếu dùng trong ứng dụng Spring MVC truyền thống, giá trị trả về của method thường là tên view logic (logical view name), cần View Resolver phối hợp để render trang. Nếu cần trả về dữ liệu (như JSON), cần thêm annotation `@ResponseBody` trên method.
+- `@RestController`: Được thiết kế chuyên biệt để xây dựng RESTful API trả về dữ liệu. Khi sử dụng annotation này trên class, tất cả giá trị trả về của method mặc định đều được coi là nội dung response body (tương đương với việc mỗi method đều ngầm có `@ResponseBody`), thường dùng để trả về dữ liệu JSON hoặc XML. Trong các ứng dụng frontend-backend tách biệt hiện đại, `@RestController` là lựa chọn phổ biến hơn.
 
-关于`@RestController` 和 `@Controller`的对比，请看这篇文章：[@RestController vs @Controller](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247485544&idx=1&sn=3cc95b88979e28fe3bfe539eb421c6d8&chksm=cea247a3f9d5ceb5e324ff4b8697adc3e828ecf71a3468445e70221cce768d1e722085359907&token=1725092312&lang=zh_CN#rd)。
+Về so sánh giữa `@RestController` và `@Controller`, vui lòng xem bài viết này: [@RestController vs @Controller](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247485544&idx=1&sn=3cc95b88979e28fe3bfe539eb421c6d8&chksm=cea247a3f9d5ceb5e324ff4b8697adc3e828ecf71a3468445e70221cce768d1e722085359907&token=1725092312&lang=zh_CN#rd)。
 
-## 配置
+## Cấu Hình
 
-### 声明配置类
+### Khai Báo Class Cấu Hình
 
-`@Configuration` 主要用于声明一个类是 Spring 的配置类。虽然也可以用 `@Component` 注解替代，但 `@Configuration` 能够更明确地表达该类的用途（定义 Bean），语义更清晰，也便于 Spring 进行特定的处理（例如，通过 CGLIB 代理确保 `@Bean` 方法的单例行为）。
+`@Configuration` chủ yếu được dùng để khai báo một class là class cấu hình (configuration class) của Spring. Mặc dù cũng có thể dùng annotation `@Component` để thay thế, nhưng `@Configuration` thể hiện rõ ràng hơn mục đích của class đó (định nghĩa Bean), ngữ nghĩa rõ ràng hơn, đồng thời cũng thuận tiện cho Spring thực hiện các xử lý đặc thù (ví dụ: thông qua CGLIB proxy để đảm bảo hành vi singleton của phương thức `@Bean`).
 
 ```java
 @Configuration
 public class AppConfig {
 
-    // @Bean 注解用于在配置类中声明一个 Bean
+    // @Bean annotation dùng để khai báo một Bean trong class cấu hình
     @Bean
     public TransferService transferService() {
         return new TransferServiceImpl();
     }
 
-    // 配置类中可以包含一个或多个 @Bean 方法。
+    // Class cấu hình có thể chứa một hoặc nhiều phương thức @Bean.
 }
 ```
 
-### 读取配置信息
+### Đọc Thông Tin Cấu Hình
 
-在应用程序开发中，我们经常需要管理一些配置信息，例如数据库连接细节、第三方服务（如阿里云 OSS、短信服务、微信认证）的密钥或地址等。通常，这些信息会**集中存放在配置文件**（如 `application.yml` 或 `application.properties`）中，方便管理和修改。
+Trong quá trình phát triển ứng dụng, chúng ta thường cần quản lý một số thông tin cấu hình, ví dụ như chi tiết kết nối database, khóa hoặc địa chỉ của dịch vụ bên thứ ba (như Alibaba Cloud OSS, dịch vụ SMS, xác thực WeChat). Thông thường, những thông tin này sẽ được **lưu trữ tập trung trong file cấu hình** (như `application.yml` hoặc `application.properties`), để thuận tiện cho việc quản lý và chỉnh sửa.
 
-Spring 提供了多种便捷的方式来读取这些配置信息。假设我们有如下 `application.yml` 文件：
+Spring cung cấp nhiều cách thuận tiện để đọc các thông tin cấu hình này. Giả sử chúng ta có file `application.yml` như sau:
 
 ```yaml
 wuhan2020: 2020年初武汉爆发了新型冠状病毒，疫情严重，但是，我相信一切都会过去！武汉加油！中国加油！
@@ -215,21 +215,21 @@ library:
     - name: 天才基本法
       description: 二十二岁的林朝夕在父亲确诊阿尔茨海默病这天，得知自己暗恋多年的校园男神裴之即将出国深造的消息——对方考取的学校，恰是父亲当年为她放弃的那所。
     - name: 时间的秩序
-      description: 为什么我们记得过去，而非未来？时间“流逝”意味着什么？是我们存在于时间之内，还是时间存在于我们之中？卡洛·罗韦利用诗意的文字，邀请我们思考这一亘古难题——时间的本质。
+      description: 为什么我们记得过去，而非未来？时间"流逝"意味着什么？是我们存在于时间之内，还是时间存在于我们之中？卡洛·罗韦利用诗意的文字，邀请我们思考这一亘古难题——时间的本质。
     - name: 了不起的我
       description: 如何养成一个新习惯？如何让心智变得更成熟？如何拥有高质量的关系？ 如何走出人生的艰难时刻？
 ```
 
-下面介绍几种常用的读取配置的方式：
+Dưới đây là một số cách thường dùng để đọc cấu hình:
 
-1、`@Value("${property.key}")` 注入配置文件（如 `application.properties` 或 `application.yml`）中的单个属性值。它还支持 Spring 表达式语言 (SpEL)，可以实现更复杂的注入逻辑。
+1. `@Value("${property.key}")` tiêm (inject) giá trị thuộc tính đơn lẻ từ file cấu hình (như `application.properties` hoặc `application.yml`). Nó cũng hỗ trợ Spring Expression Language (SpEL), có thể thực hiện logic tiêm phức tạp hơn.
 
 ```java
 @Value("${wuhan2020}")
 String wuhan2020;
 ```
 
-2、`@ConfigurationProperties`可以读取配置信息并与 Bean 绑定，用的更多一些。
+2. `@ConfigurationProperties` có thể đọc thông tin cấu hình và liên kết (bind) với Bean, được sử dụng nhiều hơn.
 
 ```java
 @Component
@@ -251,7 +251,7 @@ class LibraryProperties {
 }
 ```
 
-你可以像使用普通的 Spring Bean 一样，将其注入到类中使用。
+Bạn có thể sử dụng nó như một Spring Bean thông thường, tiêm vào class để sử dụng.
 
 ```java
 @Service
@@ -270,9 +270,9 @@ public class LibraryService {
 }
 ```
 
-### 加载指定的配置文件
+### Tải File Cấu Hình Chỉ Định
 
-`@PropertySource` 注解允许加载自定义的配置文件。适用于需要将部分配置信息独立存储的场景。
+Annotation `@PropertySource` cho phép tải file cấu hình tùy chỉnh. Phù hợp với các tình huống cần lưu trữ một phần thông tin cấu hình riêng biệt.
 
 ```java
 @Component
@@ -287,25 +287,25 @@ class WebSite {
 }
 ```
 
-**注意**：当使用 `@PropertySource` 时，确保外部文件路径正确，且文件在类路径（classpath）中。
+**Lưu ý**: Khi sử dụng `@PropertySource`, hãy đảm bảo đường dẫn file bên ngoài chính xác và file đó nằm trong classpath.
 
-更多内容请查看我的这篇文章：[10 分钟搞定 SpringBoot 如何优雅读取配置文件？](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247486181&idx=2&sn=10db0ae64ef501f96a5b0dbc4bd78786&chksm=cea2452ef9d5cc384678e456427328600971180a77e40c13936b19369672ca3e342c26e92b50&token=816772476&lang=zh_CN#rd) 。
+Để biết thêm chi tiết, vui lòng xem bài viết này của tôi: [10 phút làm chủ cách Spring Boot đọc file cấu hình một cách thanh lịch](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247486181&idx=2&sn=10db0ae64ef501f96a5b0dbc4bd78786&chksm=cea2452ef9d5cc384678e456427328600971180a77e40c13936b19369672ca3e342c26e92b50&token=816772476&lang=zh_CN#rd) 。
 
 ## MVC
 
-### HTTP 请求
+### HTTP Request
 
-**5 种常见的请求类型:**
+**5 loại request phổ biến:**
 
-- **GET**：请求从服务器获取特定资源。举个例子：`GET /users`（获取所有学生）
-- **POST**：在服务器上创建一个新的资源。举个例子：`POST /users`（创建学生）
-- **PUT**：更新服务器上的资源（客户端提供更新后的整个资源）。举个例子：`PUT /users/12`（更新编号为 12 的学生）
-- **DELETE**：从服务器删除特定的资源。举个例子：`DELETE /users/12`（删除编号为 12 的学生）
-- **PATCH**：更新服务器上的资源（客户端提供更改的属性，可以看做作是部分更新），使用的比较少，这里就不举例子了。
+- **GET**: Yêu cầu lấy tài nguyên cụ thể từ server. Ví dụ: `GET /users` (lấy tất cả sinh viên)
+- **POST**: Tạo một tài nguyên mới trên server. Ví dụ: `POST /users` (tạo sinh viên)
+- **PUT**: Cập nhật tài nguyên trên server (client cung cấp toàn bộ tài nguyên sau khi cập nhật). Ví dụ: `PUT /users/12` (cập nhật sinh viên có id 12)
+- **DELETE**: Xóa tài nguyên cụ thể khỏi server. Ví dụ: `DELETE /users/12` (xóa sinh viên có id 12)
+- **PATCH**: Cập nhật tài nguyên trên server (client cung cấp các thuộc tính đã thay đổi, có thể coi là cập nhật một phần), ít được sử dụng hơn, ở đây không nêu ví dụ.
 
-#### GET 请求
+#### GET Request
 
-`@GetMapping("users")` 等价于`@RequestMapping(value="/users",method=RequestMethod.GET)`。
+`@GetMapping("users")` tương đương với `@RequestMapping(value="/users",method=RequestMethod.GET)`.
 
 ```java
 @GetMapping("/users")
@@ -314,11 +314,11 @@ public ResponseEntity<List<User>> getAllUsers() {
 }
 ```
 
-#### POST 请求
+#### POST Request
 
-`@PostMapping("users")` 等价于`@RequestMapping(value="/users",method=RequestMethod.POST)`。
+`@PostMapping("users")` tương đương với `@RequestMapping(value="/users",method=RequestMethod.POST)`.
 
-`@PostMapping` 通常与 `@RequestBody` 配合，用于接收 JSON 数据并映射为 Java 对象。
+`@PostMapping` thường kết hợp với `@RequestBody` để nhận dữ liệu JSON và ánh xạ (map) thành Java object.
 
 ```java
 @PostMapping("/users")
@@ -328,9 +328,9 @@ public ResponseEntity<User> createUser(@Valid @RequestBody UserCreateRequest use
 }
 ```
 
-#### PUT 请求
+#### PUT Request
 
-`@PutMapping("/users/{userId}")` 等价于`@RequestMapping(value="/users/{userId}",method=RequestMethod.PUT)`。
+`@PutMapping("/users/{userId}")` tương đương với `@RequestMapping(value="/users/{userId}",method=RequestMethod.PUT)`.
 
 ```java
 @PutMapping("/users/{userId}")
@@ -340,9 +340,9 @@ public ResponseEntity<User> updateUser(@PathVariable(value = "userId") Long user
 }
 ```
 
-#### DELETE 请求
+#### DELETE Request
 
-`@DeleteMapping("/users/{userId}")`等价于`@RequestMapping(value="/users/{userId}",method=RequestMethod.DELETE)`
+`@DeleteMapping("/users/{userId}")` tương đương với `@RequestMapping(value="/users/{userId}",method=RequestMethod.DELETE)`.
 
 ```java
 @DeleteMapping("/users/{userId}")
@@ -351,9 +351,9 @@ public ResponseEntity deleteUser(@PathVariable(value = "userId") Long userId){
 }
 ```
 
-#### PATCH 请求
+#### PATCH Request
 
-一般实际项目中，我们都是 PUT 不够用了之后才用 PATCH 请求去更新数据。
+Thông thường trong các dự án thực tế, chúng ta chỉ sử dụng PATCH request để cập nhật dữ liệu khi PUT không đủ đáp ứng.
 
 ```java
   @PatchMapping("/profile")
@@ -363,13 +363,13 @@ public ResponseEntity deleteUser(@PathVariable(value = "userId") Long userId){
     }
 ```
 
-### 参数绑定
+### Parameter Binding
 
-在处理 HTTP 请求时，Spring MVC 提供了多种注解用于绑定请求参数到方法参数中。以下是常见的参数绑定方式：
+Khi xử lý HTTP request, Spring MVC cung cấp nhiều annotation để liên kết (bind) tham số request vào tham số method. Dưới đây là các cách bind tham số phổ biến:
 
-#### 从 URL 路径中提取参数
+#### Trích Xuất Tham Số Từ URL Path
 
-`@PathVariable` 用于从 URL 路径中提取参数。例如：
+`@PathVariable` được dùng để trích xuất tham số từ URL path. Ví dụ:
 
 ```java
 @GetMapping("/klasses/{klassId}/teachers")
@@ -378,11 +378,11 @@ public List<Teacher> getTeachersByClass(@PathVariable("klassId") Long klassId) {
 }
 ```
 
-若请求 URL 为 `/klasses/123/teachers`，则 `klassId = 123`。
+Nếu URL request là `/klasses/123/teachers`, thì `klassId = 123`.
 
-#### 绑定查询参数
+#### Bind Query Parameter
 
-`@RequestParam` 用于绑定查询参数。例如：
+`@RequestParam` được dùng để bind query parameter. Ví dụ:
 
 ```java
 @GetMapping("/klasses/{klassId}/teachers")
@@ -392,15 +392,15 @@ public List<Teacher> getTeachersByClass(@PathVariable Long klassId,
 }
 ```
 
-若请求 URL 为 `/klasses/123/teachers?type=web`，则 `klassId = 123`，`type = web`。
+Nếu URL request là `/klasses/123/teachers?type=web`, thì `klassId = 123`, `type = web`.
 
-#### 绑定请求体中的 JSON 数据
+#### Bind Dữ Liệu JSON Trong Request Body
 
-`@RequestBody` 用于读取 Request 请求（可能是 POST,PUT,DELETE,GET 请求）的 body 部分并且**Content-Type 为 application/json** 格式的数据，接收到数据之后会自动将数据绑定到 Java 对象上去。系统会使用`HttpMessageConverter`或者自定义的`HttpMessageConverter`将请求的 body 中的 json 字符串转换为 java 对象。
+`@RequestBody` được dùng để đọc phần body của request (có thể là POST, PUT, DELETE, GET request) với **Content-Type là application/json**. Sau khi nhận dữ liệu, hệ thống sẽ tự động bind dữ liệu vào Java object. Hệ thống sẽ sử dụng `HttpMessageConverter` hoặc `HttpMessageConverter` tùy chỉnh để chuyển đổi chuỗi JSON trong request body thành Java object.
 
-我用一个简单的例子来给演示一下基本使用！
+Tôi sẽ dùng một ví dụ đơn giản để minh họa cách sử dụng cơ bản!
 
-我们有一个注册的接口：
+Chúng ta có một interface đăng ký:
 
 ```java
 @PostMapping("/sign-up")
@@ -410,7 +410,7 @@ public ResponseEntity signUp(@RequestBody @Valid UserRegisterRequest userRegiste
 }
 ```
 
-`UserRegisterRequest`对象：
+Object `UserRegisterRequest`:
 
 ```java
 @Data
@@ -426,42 +426,42 @@ public class UserRegisterRequest {
 }
 ```
 
-我们发送 post 请求到这个接口，并且 body 携带 JSON 数据：
+Chúng ta gửi POST request đến interface này, và body mang dữ liệu JSON:
 
 ```json
 { "userName": "coder", "fullName": "shuangkou", "password": "123456" }
 ```
 
-这样我们的后端就可以直接把 json 格式的数据映射到我们的 `UserRegisterRequest` 类上。
+Như vậy backend của chúng ta có thể trực tiếp ánh xạ dữ liệu định dạng JSON sang class `UserRegisterRequest`.
 
 ![](./images/spring-annotations/@RequestBody.png)
 
-**注意**：
+**Lưu ý**:
 
-- 一个方法只能有一个 `@RequestBody` 参数，但可以有多个 `@PathVariable` 和 `@RequestParam`。
-- 如果需要接收多个复杂对象，建议合并成一个单一对象。
+- Một method chỉ có thể có một tham số `@RequestBody`, nhưng có thể có nhiều `@PathVariable` và `@RequestParam`.
+- Nếu cần nhận nhiều object phức tạp, nên gộp chúng thành một object duy nhất.
 
-## 数据校验
+## Data Validation
 
-数据校验是保障系统稳定性和安全性的关键环节。即使在用户界面（前端）已经实施了数据校验，**后端服务仍必须对接收到的数据进行再次校验**。这是因为前端校验可以被轻易绕过（例如，通过开发者工具修改请求或使用 Postman、curl 等 HTTP 工具直接调用 API），恶意或错误的数据可能直接发送到后端。因此，后端校验是防止非法数据、维护数据一致性、确保业务逻辑正确执行的最后一道，也是最重要的一道防线。
+Data validation là khâu then chốt để đảm bảo tính ổn định và bảo mật của hệ thống. Ngay cả khi phía giao diện người dùng (frontend) đã thực hiện data validation, **dịch vụ backend vẫn phải thực hiện validation lại đối với dữ liệu nhận được**. Điều này là do validation phía frontend có thể dễ dàng bị vượt qua (ví dụ: thông qua developer tools để sửa request hoặc sử dụng các công cụ HTTP như Postman, curl để gọi trực tiếp API), dữ liệu độc hại hoặc sai lệch có thể được gửi trực tiếp đến backend. Do đó, validation phía backend là tuyến phòng thủ cuối cùng, cũng là quan trọng nhất, để ngăn chặn dữ liệu bất hợp lệ, duy trì tính nhất quán của dữ liệu và đảm bảo logic nghiệp vụ thực thi chính xác.
 
-Bean Validation 是一套定义 JavaBean 参数校验标准的规范 (JSR 303, 349, 380)，它提供了一系列注解，可以直接用于 JavaBean 的属性上，从而实现便捷的参数校验。
+Bean Validation là một bộ đặc tả (specification) định nghĩa tiêu chuẩn validation tham số JavaBean (JSR 303, 349, 380). Nó cung cấp một loạt annotation có thể được sử dụng trực tiếp trên các thuộc tính của JavaBean, từ đó thực hiện validation tham số một cách thuận tiện.
 
-- **JSR 303 (Bean Validation 1.0):** 奠定了基础，引入了核心校验注解（如 `@NotNull`、`@Size`、`@Min`、`@Max` 等），定义了如何通过注解的方式对 JavaBean 的属性进行校验，并支持嵌套对象校验和自定义校验器。
-- **JSR 349 (Bean Validation 1.1):** 在 1.0 基础上进行扩展，例如引入了对方法参数和返回值校验的支持、增强了对分组校验（Group Validation）的处理。
-- **JSR 380 (Bean Validation 2.0):** 拥抱 Java 8 的新特性，并进行了一些改进，例如支持 `java.time` 包中的日期和时间类型、引入了一些新的校验注解（如 `@NotEmpty`, `@NotBlank`等）。
+- **JSR 303 (Bean Validation 1.0):** Đặt nền móng, giới thiệu các annotation validation cốt lõi (như `@NotNull`, `@Size`, `@Min`, `@Max`, v.v.), định nghĩa cách validation các thuộc tính của JavaBean thông qua annotation, đồng thời hỗ trợ validation object lồng nhau (nested) và custom validator.
+- **JSR 349 (Bean Validation 1.1):** Mở rộng trên nền tảng 1.0, ví dụ như giới thiệu hỗ trợ validation tham số method và giá trị trả về, tăng cường xử lý Group Validation.
+- **JSR 380 (Bean Validation 2.0):** Tận dụng các tính năng mới của Java 8 và thực hiện một số cải tiến, ví dụ như hỗ trợ các kiểu ngày và thời gian trong package `java.time`, giới thiệu một số annotation validation mới (như `@NotEmpty`, `@NotBlank`, v.v.).
 
-Bean Validation 本身只是一套**规范（接口和注解）**，我们需要一个实现了这套规范的**具体框架**来执行校验逻辑。目前，**Hibernate Validator** 是 Bean Validation 规范最权威、使用最广泛的参考实现。
+Bản thân Bean Validation chỉ là một bộ **đặc tả (interface và annotation)**, chúng ta cần một **framework cụ thể** triển khai đặc tả này để thực thi logic validation. Hiện tại, **Hibernate Validator** là implementation tham chiếu có thẩm quyền nhất và được sử dụng rộng rãi nhất của đặc tả Bean Validation.
 
-- Hibernate Validator 4.x 实现了 Bean Validation 1.0 (JSR 303)。
-- Hibernate Validator 5.x 实现了 Bean Validation 1.1 (JSR 349)。
-- Hibernate Validator 6.x 实现了 Bean Validation 2.0（JSR 380），使用 `javax.validation` 包名。
-- Hibernate Validator 7.x 和 8.x 实现了 Jakarta Bean Validation 3.0，使用 `jakarta.validation` 包名；Hibernate Validator 9.x 实现了 Jakarta Validation 3.1。
+- Hibernate Validator 4.x triển khai Bean Validation 1.0 (JSR 303).
+- Hibernate Validator 5.x triển khai Bean Validation 1.1 (JSR 349).
+- Hibernate Validator 6.x triển khai Bean Validation 2.0 (JSR 380), sử dụng package `javax.validation`.
+- Hibernate Validator 7.x và 8.x triển khai Jakarta Bean Validation 3.0, sử dụng package `jakarta.validation`; Hibernate Validator 9.x triển khai Jakarta Validation 3.1.
 
-在 Spring Boot 项目中使用 Bean Validation 非常方便，这得益于 Spring Boot 的自动配置能力。关于依赖引入，需要注意：
+Sử dụng Bean Validation trong dự án Spring Boot rất thuận tiện, nhờ vào khả năng auto-configuration của Spring Boot. Về việc thêm dependency, cần lưu ý:
 
-- 在较早版本的 Spring Boot（通常指 2.3.x 之前）中，`spring-boot-starter-web` 依赖默认包含了 hibernate-validator。因此，只要引入了 Web Starter，就无需额外添加校验相关的依赖。
-- 从 Spring Boot 2.3.x 版本开始，为了更精细化的依赖管理，校验相关的依赖被移出了 spring-boot-starter-web。如果你的项目使用了这些或更新的版本，并且需要 Bean Validation 功能，那么你需要显式地添加 `spring-boot-starter-validation` 依赖：
+- Trong các phiên bản Spring Boot cũ hơn (thường là trước 2.3.x), dependency `spring-boot-starter-web` đã mặc định bao gồm hibernate-validator. Do đó, chỉ cần thêm Web Starter là không cần thêm dependency validation riêng.
+- Bắt đầu từ phiên bản Spring Boot 2.3.x, để quản lý dependency chi tiết hơn, các dependency liên quan đến validation đã bị loại bỏ khỏi spring-boot-starter-web. Nếu dự án của bạn sử dụng các phiên bản này hoặc mới hơn và cần chức năng Bean Validation, bạn cần thêm tường minh dependency `spring-boot-starter-validation`:
 
 ```xml
 <dependency>
@@ -472,32 +472,32 @@ Bean Validation 本身只是一套**规范（接口和注解）**，我们需要
 
 ![](https://oss.javaguide.cn/2021/03/c7bacd12-1c1a-4e41-aaaf-4cad840fc073.png)
 
-非 SpringBoot 项目需要自行引入相关依赖包，这里不多做讲解，具体可以查看我的这篇文章：[如何在 Spring/Spring Boot 中做参数校验？你需要了解的都在这里！](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247485783&idx=1&sn=a407f3b75efa17c643407daa7fb2acd6&chksm=cea2469cf9d5cf8afbcd0a8a1c9cc4294d6805b8e01bee6f76bb2884c5bc15478e91459def49&token=292197051&lang=zh_CN#rd)。
+Các dự án không phải Spring Boot cần tự thêm các dependency liên quan, ở đây không đi sâu vào chi tiết. Cụ thể có thể xem bài viết này của tôi: [Làm thế nào để thực hiện validation tham số trong Spring/Spring Boot? Mọi thứ bạn cần biết đều ở đây!](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247485783&idx=1&sn=a407f3b75efa17c643407daa7fb2acd6&chksm=cea2469cf9d5cf8afbcd0a8a1c9cc4294d6805b8e01bee6f76bb2884c5bc15478e91459def49&token=292197051&lang=zh_CN#rd)。
 
-👉 需要注意的是：优先使用 Bean Validation/Jakarta Validation 规范提供的约束注解，而不是 Hibernate Validator 私有约束。Spring Boot 2.x 通常使用 `javax.validation.constraints`，Spring Boot 3.x 及以上版本使用 `jakarta.validation.constraints`。
+👉 Cần lưu ý: Ưu tiên sử dụng các constraint annotation do đặc tả Bean Validation/Jakarta Validation cung cấp, thay vì các constraint riêng của Hibernate Validator. Spring Boot 2.x thường sử dụng `javax.validation.constraints`, Spring Boot 3.x trở lên sử dụng `jakarta.validation.constraints`.
 
-### 一些常用的字段验证的注解
+### Một Số Annotation Validation Field Thường Dùng
 
-Bean Validation 规范及其实现（如 Hibernate Validator）提供了丰富的注解，用于声明式地定义校验规则。以下是一些常用的注解及其说明：
+Đặc tả Bean Validation và các implementation của nó (như Hibernate Validator) cung cấp annotation phong phú để định nghĩa quy tắc validation theo kiểu khai báo (declarative). Dưới đây là một số annotation thường dùng và mô tả của chúng:
 
-- `@NotNull`: 检查被注解的元素（任意类型）不能为 `null`。
-- `@NotEmpty`: 检查被注解的元素（如 `CharSequence`、`Collection`、`Map`、`Array`）不能为 `null` 且其大小/长度不能为 0。注意：对于字符串，`@NotEmpty` 允许包含空白字符的字符串，如 `" "`。
-- `@NotBlank`: 检查被注解的 `CharSequence`（如 `String`）不能为 `null`，并且去除首尾空格后的长度必须大于 0。（即，不能为空白字符串）。
-- `@Null`: 检查被注解的元素必须为 `null`。
-- `@AssertTrue` / `@AssertFalse`: 检查被注解的 `boolean` 或 `Boolean` 类型元素必须为 `true` / `false`。
-- `@Min(value)` / `@Max(value)`: 检查被注解的数字类型（或其字符串表示）的值必须大于等于 / 小于等于指定的 `value`。适用于整数类型（`byte`、`short`、`int`、`long`、`BigInteger` 等）。
-- `@DecimalMin(value)` / `@DecimalMax(value)`: 功能类似 `@Min` / `@Max`，但适用于包含小数的数字类型（`BigDecimal`、`BigInteger`、`CharSequence`、`byte`、`short`、`int`、`long`及其包装类）。 `value` 必须是数字的字符串表示。
-- `@Size(min=, max=)`: 检查被注解的元素（如 `CharSequence`、`Collection`、`Map`、`Array`）的大小/长度必须在指定的 `min` 和 `max` 范围之内（包含边界）。
-- `@Digits(integer=, fraction=)`: 检查被注解的数字类型（或其字符串表示）的值，其整数部分的位数必须 ≤ `integer`，小数部分的位数必须 ≤ `fraction`。
-- `@Pattern(regexp=, flags=)`: 检查被注解的 `CharSequence`（如 `String`）是否匹配指定的正则表达式 (`regexp`)。`flags` 可以指定匹配模式（如不区分大小写）。
-- `@Email`: 检查被注解的 `CharSequence`（如 `String`）是否符合 Email 格式（内置了一个相对宽松的正则表达式）。
-- `@Past` / `@Future`: 检查被注解的日期或时间类型（`java.util.Date`、`java.util.Calendar`、JSR 310 `java.time` 包下的类型）是否在当前时间之前 / 之后。
-- `@PastOrPresent` / `@FutureOrPresent`: 类似 `@Past` / `@Future`，但允许等于当前时间。
+- `@NotNull`: Kiểm tra phần tử được đánh dấu (bất kỳ kiểu nào) không được là `null`.
+- `@NotEmpty`: Kiểm tra phần tử được đánh dấu (như `CharSequence`, `Collection`, `Map`, `Array`) không được là `null` và kích thước/độ dài của nó không được là 0. Lưu ý: Đối với chuỗi, `@NotEmpty` cho phép chuỗi chứa ký tự khoảng trắng, như `" "`.
+- `@NotBlank`: Kiểm tra `CharSequence` được đánh dấu (như `String`) không được là `null`, và sau khi loại bỏ khoảng trắng đầu và cuối, độ dài phải lớn hơn 0 (tức là không được là chuỗi trắng).
+- `@Null`: Kiểm tra phần tử được đánh dấu phải là `null`.
+- `@AssertTrue` / `@AssertFalse`: Kiểm tra phần tử kiểu `boolean` hoặc `Boolean` được đánh dấu phải là `true` / `false`.
+- `@Min(value)` / `@Max(value)`: Kiểm tra giá trị của kiểu số được đánh dấu (hoặc biểu diễn chuỗi của nó) phải lớn hơn hoặc bằng / nhỏ hơn hoặc bằng `value` được chỉ định. Áp dụng cho kiểu số nguyên (`byte`, `short`, `int`, `long`, `BigInteger`, v.v.).
+- `@DecimalMin(value)` / `@DecimalMax(value)`: Chức năng tương tự `@Min` / `@Max`, nhưng áp dụng cho kiểu số chứa phần thập phân (`BigDecimal`, `BigInteger`, `CharSequence`, `byte`, `short`, `int`, `long` và các wrapper class của chúng). `value` phải là biểu diễn chuỗi của số.
+- `@Size(min=, max=)`: Kiểm tra kích thước/độ dài của phần tử được đánh dấu (như `CharSequence`, `Collection`, `Map`, `Array`) phải nằm trong phạm vi `min` và `max` được chỉ định (bao gồm biên).
+- `@Digits(integer=, fraction=)`: Kiểm tra giá trị của kiểu số được đánh dấu (hoặc biểu diễn chuỗi của nó), số chữ số phần nguyên phải ≤ `integer`, số chữ số phần thập phân phải ≤ `fraction`.
+- `@Pattern(regexp=, flags=)`: Kiểm tra `CharSequence` được đánh dấu (như `String`) có khớp với biểu thức chính quy (`regexp`) được chỉ định hay không. `flags` có thể chỉ định chế độ khớp (như không phân biệt chữ hoa chữ thường).
+- `@Email`: Kiểm tra `CharSequence` được đánh dấu (như `String`) có đúng định dạng Email hay không (tích hợp sẵn một regex tương đối lỏng).
+- `@Past` / `@Future`: Kiểm tra kiểu ngày hoặc thời gian được đánh dấu (`java.util.Date`, `java.util.Calendar`, các kiểu trong package `java.time` của JSR 310) có trước / sau thời điểm hiện tại hay không.
+- `@PastOrPresent` / `@FutureOrPresent`: Tương tự `@Past` / `@Future`, nhưng cho phép bằng với thời điểm hiện tại.
 - ……
 
-### 验证请求体(RequestBody)
+### Validate Request Body
 
-当 Controller 方法使用 `@RequestBody` 注解来接收请求体并将其绑定到一个对象时，可以在该参数前添加 `@Valid` 注解来触发对该对象的校验。如果验证失败，它将抛出`MethodArgumentNotValidException`。
+Khi Controller method sử dụng annotation `@RequestBody` để nhận request body và bind vào một object, có thể thêm annotation `@Valid` trước tham số đó để kích hoạt validation đối với object. Nếu validation thất bại, nó sẽ ném ra `MethodArgumentNotValidException`.
 
 ```java
 @Data
@@ -531,14 +531,14 @@ public class PersonController {
 }
 ```
 
-### 验证请求参数(Path Variables 和 Request Parameters)
+### Validate Request Parameters (Path Variables và Request Parameters)
 
-对于直接映射到方法参数的简单类型数据（如路径变量 `@PathVariable` 或请求参数 `@RequestParam`），校验方式会因 Spring Framework 版本而异：
+Đối với dữ liệu kiểu đơn giản được ánh xạ trực tiếp vào tham số method (như path variable `@PathVariable` hoặc request parameter `@RequestParam`), cách validation sẽ khác nhau tùy theo phiên bản Spring Framework:
 
-1. **Spring Framework 6.1 及以上版本**：Spring MVC 内置支持 Handler Method Validation。将 `@Min`、`@Max`、`@Size`、`@Pattern` 等约束注解直接放在方法参数上即可，不要在 Controller 类上添加 `@Validated`，否则会改用基于 AOP 的方法校验。
-2. **Spring Framework 6.0 及更早版本**：通常需要在 Controller 类上添加 Spring 提供的 `@Validated`，通过方法校验基础设施处理参数约束。
+1. **Spring Framework 6.1 trở lên**: Spring MVC tích hợp sẵn Handler Method Validation. Đặt trực tiếp các constraint annotation như `@Min`, `@Max`, `@Size`, `@Pattern` lên tham số method, không thêm `@Validated` trên Controller class, nếu không sẽ chuyển sang sử dụng method validation dựa trên AOP.
+2. **Spring Framework 6.0 trở về trước**: Thường cần thêm `@Validated` (do Spring cung cấp) trên Controller class, xử lý constraint của tham số thông qua hạ tầng method validation.
 
-下面以 Spring Framework 6.1 及以上版本的内置校验方式为例：
+Dưới đây là ví dụ sử dụng cách validation tích hợp sẵn của Spring Framework 6.1 trở lên:
 
 ```java
 @RestController
@@ -551,14 +551,14 @@ public class PersonController {
             @Max(value = 5, message = "ID 不能超过 5")
             Integer id
     ) {
-        // Spring MVC 6.1+ 会在进入方法体前抛出 HandlerMethodValidationException。
+        // Spring MVC 6.1+ sẽ ném ra HandlerMethodValidationException trước khi vào method body.
         return ResponseEntity.ok().body(id);
     }
 
     @GetMapping("/person")
     public ResponseEntity<String> findPersonByName(
             @RequestParam("name")
-            @NotBlank(message = "姓名不能为空") // 同样适用于 @RequestParam
+            @NotBlank(message = "姓名不能为空") // Tương tự áp dụng cho @RequestParam
             @Size(max = 10, message = "姓名长度不能超过 10")
             String name
     ) {
@@ -567,16 +567,16 @@ public class PersonController {
 }
 ```
 
-## 全局异常处理
+## Global Exception Handling
 
-介绍一下我们 Spring 项目必备的全局处理 Controller 层异常。
+Giới thiệu về global exception handling cho Controller layer - thứ không thể thiếu trong dự án Spring.
 
-**相关注解：**
+**Các annotation liên quan:**
 
-1. `@ControllerAdvice` :注解定义全局异常处理类
-2. `@ExceptionHandler` :注解声明异常处理方法
+1. `@ControllerAdvice` : Annotation định nghĩa class xử lý ngoại lệ toàn cục (global exception handler)
+2. `@ExceptionHandler` : Annotation khai báo phương thức xử lý ngoại lệ
 
-如何使用呢？拿我们在第 5 节参数校验这块来举例子。如果方法参数不对的话就会抛出`MethodArgumentNotValidException`，我们来处理这个异常。
+Sử dụng như thế nào? Hãy lấy ví dụ từ phần data validation ở mục 5. Nếu tham số method không hợp lệ sẽ ném ra `MethodArgumentNotValidException`, chúng ta sẽ xử lý ngoại lệ này.
 
 ```java
 @ControllerAdvice
@@ -584,7 +584,7 @@ public class PersonController {
 public class GlobalExceptionHandler {
 
     /**
-     * 请求参数异常处理
+     * Xử lý ngoại lệ tham số request
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request) {
@@ -593,14 +593,14 @@ public class GlobalExceptionHandler {
 }
 ```
 
-更多关于 Spring Boot 异常处理的内容，请看我的这两篇文章：
+Để biết thêm về xử lý ngoại lệ trong Spring Boot, vui lòng xem hai bài viết này của tôi:
 
-1. [SpringBoot 处理异常的几种常见姿势](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247485568&idx=2&sn=c5ba880fd0c5d82e39531fa42cb036ac&chksm=cea2474bf9d5ce5dcbc6a5f6580198fdce4bc92ef577579183a729cb5d1430e4994720d59b34&token=2133161636&lang=zh_CN#rd)
-2. [使用枚举简单封装一个优雅的 Spring Boot 全局异常处理！](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247486379&idx=2&sn=48c29ae65b3ed874749f0803f0e4d90e&chksm=cea24460f9d5cd769ed53ad7e17c97a7963a89f5350e370be633db0ae8d783c3a3dbd58c70f8&token=1054498516&lang=zh_CN#rd)
+1. [Một số cách phổ biến để xử lý ngoại lệ trong Spring Boot](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247485568&idx=2&sn=c5ba880fd0c5d82e39531fa42cb036ac&chksm=cea2474bf9d5ce5dcbc6a5f6580198fdce4bc92ef577579183a729cb5d1430e4994720d59b34&token=2133161636&lang=zh_CN#rd)
+2. [Sử dụng enum để đóng gói một cách đơn giản một Global Exception Handler thanh lịch cho Spring Boot!](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247486379&idx=2&sn=48c29ae65b3ed874749f0803f0e4d90e&chksm=cea24460f9d5cd769ed53ad7e17c97a7963a89f5350e370be633db0ae8d783c3a3dbd58c70f8&token=1054498516&lang=zh_CN#rd)
 
-## 事务
+## Transaction
 
-在要开启事务的方法上使用`@Transactional`注解即可!
+Chỉ cần thêm annotation `@Transactional` trên method muốn bật transaction!
 
 ```java
 @Transactional(rollbackFor = Exception.class)
@@ -610,22 +610,22 @@ public void save() {
 
 ```
 
-我们知道 Exception 分为运行时异常 RuntimeException 和非运行时异常。在`@Transactional`注解中如果不配置`rollbackFor`属性,那么事务只会在遇到`RuntimeException`的时候才会回滚,加上`rollbackFor=Exception.class`,可以让事务在遇到非运行时异常时也回滚。
+Chúng ta biết rằng Exception được chia thành runtime exception RuntimeException và non-runtime exception. Trong annotation `@Transactional`, nếu không cấu hình thuộc tính `rollbackFor`, thì transaction sẽ chỉ rollback khi gặp `RuntimeException`. Thêm `rollbackFor=Exception.class` có thể khiến transaction rollback ngay cả khi gặp non-runtime exception.
 
-`@Transactional` 注解一般可以作用在`类`或者`方法`上。
+Annotation `@Transactional` thường có thể được áp dụng trên `class` hoặc `method`.
 
-- **作用于类**：当把`@Transactional` 注解放在类上时，表示所有该类的 public 方法都配置相同的事务属性信息。
-- **作用于方法**：当类配置了`@Transactional`，方法也配置了`@Transactional`，方法的事务会覆盖类的事务配置信息。
+- **Áp dụng trên class**: Khi đặt `@Transactional` trên class, điều đó có nghĩa là tất cả các public method của class đó đều được cấu hình với cùng thông tin thuộc tính transaction.
+- **Áp dụng trên method**: Khi class đã được cấu hình `@Transactional` và method cũng được cấu hình `@Transactional`, transaction của method sẽ ghi đè (override) thông tin cấu hình transaction của class.
 
-更多关于 Spring 事务的内容请查看我的这篇文章：[可能是最漂亮的 Spring 事务管理详解](./spring-transaction.md) 。
+Để biết thêm về Spring transaction, vui lòng xem bài viết này của tôi: [Có lẽ là bài giải thích chi tiết nhất về Spring Transaction Management](./spring-transaction.md) 。
 
 ## JPA
 
-Spring Data JPA 提供了一系列注解和功能，帮助开发者轻松实现 ORM（对象关系映射）。
+Spring Data JPA cung cấp một loạt annotation và chức năng, giúp developer dễ dàng triển khai ORM (Object-Relational Mapping).
 
-### 创建表
+### Tạo Bảng
 
-`@Entity` 用于声明一个类为 JPA 实体类，与数据库中的表映射。`@Table` 指定实体对应的表名。
+`@Entity` được dùng để khai báo một class là JPA entity class, ánh xạ với bảng trong database. `@Table` chỉ định tên bảng tương ứng với entity.
 
 ```java
 @Entity
@@ -643,17 +643,17 @@ public class Role {
 }
 ```
 
-### 主键生成策略
+### Chiến Lược Sinh Khóa Chính (Primary Key Generation Strategy)
 
-`@Id`声明字段为主键。`@GeneratedValue` 指定主键的生成策略。
+`@Id` khai báo field là khóa chính. `@GeneratedValue` chỉ định chiến lược sinh khóa chính.
 
-Jakarta Persistence 3.1 提供了 5 种主键生成策略：
+Jakarta Persistence 3.1 cung cấp 5 chiến lược sinh khóa chính:
 
-- **`GenerationType.TABLE`**：通过数据库表生成主键。
-- **`GenerationType.SEQUENCE`**：通过数据库序列生成主键（适用于 Oracle 等数据库）。
-- **`GenerationType.IDENTITY`**：主键自增长（适用于 MySQL 等数据库）。
-- **`GenerationType.UUID`**：生成 RFC 4122 UUID，适用于 `UUID` 或 `String` 类型主键。
-- **`GenerationType.AUTO`**：由 JPA 自动选择合适的生成策略（默认策略）。
+- **`GenerationType.TABLE`**: Sinh khóa chính thông qua bảng database.
+- **`GenerationType.SEQUENCE`**: Sinh khóa chính thông qua database sequence (phù hợp với Oracle và các database khác).
+- **`GenerationType.IDENTITY`**: Khóa chính tự tăng (auto-increment) (phù hợp với MySQL và các database khác).
+- **`GenerationType.UUID`**: Sinh RFC 4122 UUID, phù hợp với khóa chính kiểu `UUID` hoặc `String`.
+- **`GenerationType.AUTO`**: JPA tự động chọn chiến lược sinh phù hợp (chiến lược mặc định).
 
 ```java
 @Id
@@ -661,7 +661,7 @@ Jakarta Persistence 3.1 提供了 5 种主键生成策略：
 private Long id;
 ```
 
-通过 `@GenericGenerator` 声明自定义主键生成策略：
+Khai báo chiến lược sinh khóa chính tùy chỉnh thông qua `@GenericGenerator`:
 
 ```java
 @Id
@@ -670,7 +670,7 @@ private Long id;
 private Long id;
 ```
 
-等价于：
+Tương đương với:
 
 ```java
 @Id
@@ -678,7 +678,7 @@ private Long id;
 private Long id;
 ```
 
-下面是旧版 Hibernate 内部实现的源码节选，展示了当时 Hibernate 支持的字符串生成器策略。它不属于 JPA/Jakarta Persistence 标准 API，也不能替代上面的标准 `GenerationType` 枚举；新项目应以所使用 Hibernate 版本的官方文档为准。
+Dưới đây là đoạn trích mã nguồn nội bộ của Hibernate phiên bản cũ, hiển thị các chiến lược generator dạng chuỗi được Hibernate hỗ trợ vào thời điểm đó. Nó không thuộc về API chuẩn JPA/Jakarta Persistence, cũng không thể thay thế enum `GenerationType` chuẩn ở trên; dự án mới nên tham khảo tài liệu chính thức của phiên bản Hibernate đang sử dụng.
 
 ```java
 public class DefaultIdentifierGeneratorFactory
@@ -713,14 +713,14 @@ public class DefaultIdentifierGeneratorFactory
 }
 ```
 
-### 字段映射
+### Field Mapping
 
-`@Column` 用于指定实体字段与数据库列的映射关系。
+`@Column` được dùng để chỉ định mối quan hệ ánh xạ giữa entity field và cột database.
 
-- **`name`**：指定数据库列名。
-- **`nullable`**：指定是否允许为 `null`。
-- **`length`**：设置字段的长度（仅适用于 `String` 类型）。
-- **`columnDefinition`**：指定字段的数据库类型和默认值。
+- **`name`**: Chỉ định tên cột database.
+- **`nullable`**: Chỉ định có cho phép `null` hay không.
+- **`length`**: Đặt độ dài của field (chỉ áp dụng cho kiểu `String`).
+- **`columnDefinition`**: Chỉ định kiểu database và giá trị mặc định của field.
 
 ```java
 @Column(name = "user_name", nullable = false, length = 32)
@@ -730,28 +730,28 @@ private String userName;
 private Boolean enabled;
 ```
 
-### 忽略字段
+### Bỏ Qua Field
 
-`@Transient` 用于声明不需要持久化的字段。
+`@Transient` được dùng để khai báo field không cần persistence.
 
 ```java
 @Entity
 public class User {
 
     @Transient
-    private String temporaryField; // 不会映射到数据库表中
+    private String temporaryField; // Sẽ không được ánh xạ vào bảng database
 }
 ```
 
-其他不被持久化的字段方式：
+Các cách khác để field không bị persistence:
 
-- **`static`**：静态字段不会被持久化。
-- **`final`**：最终字段不会被持久化。
-- **`transient`**：使用 Java 的 `transient` 关键字声明的字段不会被序列化或持久化。
+- **`static`**: Static field sẽ không bị persistence.
+- **`final`**: Final field sẽ không bị persistence.
+- **`transient`**: Field được khai báo bằng từ khóa `transient` của Java sẽ không bị serialization hoặc persistence.
 
-### 大字段存储
+### Lưu Trữ Field Lớn
 
-`@Lob` 用于声明大字段（如 `CLOB` 或 `BLOB`）。
+`@Lob` được dùng để khai báo field lớn (như `CLOB` hoặc `BLOB`).
 
 ```java
 @Lob
@@ -759,12 +759,12 @@ public class User {
 private String content;
 ```
 
-### 枚举类型映射
+### Ánh Xạ Kiểu Enum
 
-`@Enumerated` 用于将枚举类型映射为数据库字段。
+`@Enumerated` được dùng để ánh xạ kiểu enum thành field database.
 
-- **`EnumType.ORDINAL`**：存储枚举的序号（默认）。
-- **`EnumType.STRING`**：存储枚举的名称（推荐）。
+- **`EnumType.ORDINAL`**: Lưu trữ số thứ tự (ordinal) của enum (mặc định).
+- **`EnumType.STRING`**: Lưu trữ tên của enum (khuyến nghị).
 
 ```java
 public enum Gender {
@@ -780,13 +780,13 @@ public class User {
 }
 ```
 
-数据库中存储的值为 `MALE` 或 `FEMALE`。
+Giá trị được lưu trữ trong database là `MALE` hoặc `FEMALE`.
 
-### 审计功能
+### Chức Năng Audit
 
-通过 JPA 的审计功能，可以在实体中自动记录创建时间、更新时间、创建人和更新人等信息。
+Thông qua chức năng audit của JPA, có thể tự động ghi lại thông tin như thời gian tạo, thời gian cập nhật, người tạo và người cập nhật trong entity.
 
-审计基类:
+Base class cho audit:
 
 ```java
 @Data
@@ -810,7 +810,7 @@ public abstract class AbstractAuditBase {
 }
 ```
 
-配置审计功能:
+Cấu hình chức năng audit:
 
 ```java
 @Configuration
@@ -827,15 +827,15 @@ public class AuditConfig {
 }
 ```
 
-简单介绍一下上面涉及到的一些注解：
+Giới thiệu đơn giản về một số annotation liên quan ở trên:
 
-1. `@CreatedDate`: 表示该字段为创建时间字段，在这个实体被 insert 的时候，会设置值
-2. `@CreatedBy` :表示该字段为创建人，在这个实体被 insert 的时候，会设置值 `@LastModifiedDate`、`@LastModifiedBy`同理。
-3. `@EnableJpaAuditing`：开启 JPA 审计功能。
+1. `@CreatedDate`: Biểu thị field này là field thời gian tạo, khi entity này được insert, sẽ được đặt giá trị.
+2. `@CreatedBy`: Biểu thị field này là người tạo, khi entity này được insert, sẽ được đặt giá trị. `@LastModifiedDate`, `@LastModifiedBy` tương tự.
+3. `@EnableJpaAuditing`: Kích hoạt chức năng audit của JPA.
 
-### 修改和删除操作
+### Thao Tác Sửa và Xóa
 
-`@Modifying` 用于把 `@Query` 声明的语句标识为 INSERT、UPDATE、DELETE 或 DDL 等修改操作。派生删除方法（例如 `deleteByUserName`）不需要 `@Modifying`。事务边界既可以声明在 Repository 方法上，也可以由上层 Service 的工作单元统一管理。
+`@Modifying` được dùng để đánh dấu câu lệnh được khai báo bởi `@Query` là thao tác sửa đổi như INSERT, UPDATE, DELETE hoặc DDL. Các phương thức xóa dẫn xuất (derived delete method, ví dụ `deleteByUserName`) không cần `@Modifying`. Ranh giới transaction có thể được khai báo trên Repository method, hoặc được quản lý thống nhất bởi unit of work của Service tầng trên.
 
 ```java
 @Repository
@@ -848,14 +848,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
 }
 ```
 
-### 关联关系
+### Quan Hệ Liên Kết (Association)
 
-JPA 提供了 4 种关联关系的注解：
+JPA cung cấp 4 loại annotation quan hệ liên kết:
 
-- **`@OneToOne`**：一对一关系。
-- **`@OneToMany`**：一对多关系。
-- **`@ManyToOne`**：多对一关系。
-- **`@ManyToMany`**：多对多关系。
+- **`@OneToOne`**: Quan hệ một-một.
+- **`@OneToMany`**: Quan hệ một-nhiều.
+- **`@ManyToOne`**: Quan hệ nhiều-một.
+- **`@ManyToMany`**: Quan hệ nhiều-nhiều.
 
 ```java
 @Entity
@@ -869,19 +869,19 @@ public class User {
 }
 ```
 
-## JSON 数据处理
+## Xử Lý Dữ Liệu JSON
 
-在 Web 开发中，经常需要处理 Java 对象与 JSON 格式之间的转换。Spring 通常集成 Jackson 库来完成此任务，以下是一些常用的 Jackson 注解，可以帮助我们定制化 JSON 的序列化（Java 对象转 JSON）和反序列化（JSON 转 Java 对象）过程。
+Trong phát triển Web, thường xuyên cần xử lý chuyển đổi giữa Java object và định dạng JSON. Spring thường tích hợp thư viện Jackson để hoàn thành nhiệm vụ này. Dưới đây là một số Jackson annotation thường dùng, có thể giúp chúng ta tùy chỉnh quá trình serialize (Java object sang JSON) và deserialize (JSON sang Java object).
 
-### 过滤 JSON 字段
+### Lọc Field JSON
 
-有时我们不希望 Java 对象的某些字段被包含在最终生成的 JSON 中，或者在将 JSON 转换为 Java 对象时不处理某些 JSON 属性。
+Đôi khi chúng ta không muốn một số field của Java object được bao gồm trong JSON được tạo ra cuối cùng, hoặc không xử lý một số thuộc tính JSON khi chuyển đổi JSON thành Java object.
 
-`@JsonIgnoreProperties` 作用在类上用于过滤掉特定字段不返回或者不解析。
+`@JsonIgnoreProperties` áp dụng trên class để lọc bỏ các field cụ thể, không trả về hoặc không parse.
 
 ```java
-// 在生成 JSON 时忽略 userRoles 属性
-// 如果允许未知属性（即 JSON 中有而类中没有的属性），可以添加 ignoreUnknown = true
+// Khi tạo JSON, bỏ qua thuộc tính userRoles
+// Nếu cho phép thuộc tính không xác định (tức là thuộc tính có trong JSON nhưng không có trong class), có thể thêm ignoreUnknown = true
 @JsonIgnoreProperties({"userRoles"})
 public class User {
     private String userName;
@@ -892,7 +892,7 @@ public class User {
 }
 ```
 
-`@JsonIgnore`作用于字段或`getter/setter` 方法级别，用于指定在序列化或反序列化时忽略该特定属性。
+`@JsonIgnore` áp dụng ở cấp độ field hoặc `getter/setter`, dùng để chỉ định bỏ qua thuộc tính cụ thể đó khi serialize hoặc deserialize.
 
 ```java
 public class User {
@@ -900,32 +900,32 @@ public class User {
     private String fullName;
     private String password;
 
-    // 在生成 JSON 时忽略 userRoles 属性
+    // Khi tạo JSON, bỏ qua thuộc tính userRoles
     @JsonIgnore
     private List<UserRole> userRoles = new ArrayList<>();
     // getters and setters...
 }
 ```
 
-`@JsonIgnoreProperties` 更适用于在类定义时明确排除多个字段，或继承场景下的字段排除；`@JsonIgnore` 则更直接地用于标记单个具体字段。
+`@JsonIgnoreProperties` phù hợp hơn khi loại trừ nhiều field một cách rõ ràng khi định nghĩa class, hoặc loại trừ field trong tình huống kế thừa; `@JsonIgnore` thì trực tiếp hơn để đánh dấu một field cụ thể đơn lẻ.
 
-### 格式化 JSON 数据
+### Định Dạng Dữ Liệu JSON
 
-`@JsonFormat` 用于指定属性在序列化和反序列化时的格式。常用于日期时间类型的格式化。
+`@JsonFormat` được dùng để chỉ định định dạng của thuộc tính khi serialize và deserialize. Thường được dùng để định dạng kiểu ngày giờ.
 
-比如：
+Ví dụ:
 
 ```java
-// 指定 Date 类型序列化为 ISO 8601 格式字符串，并设置时区为 GMT
+// Chỉ định kiểu Date được serialize thành chuỗi định dạng ISO 8601, và đặt timezone là GMT
 @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "GMT")
 private Date date;
 ```
 
-### 扁平化 JSON 对象
+### Làm Phẳng (Flatten) JSON Object
 
-`@JsonUnwrapped` 注解作用于字段上，用于在序列化时将其嵌套对象的属性“提升”到当前对象的层级，反序列化时执行相反操作。这可以使 JSON 结构更扁平。
+Annotation `@JsonUnwrapped` áp dụng trên field, được dùng để "nâng" (promote) các thuộc tính của object lồng nhau lên cấp độ của object hiện tại khi serialize, và thực hiện thao tác ngược lại khi deserialize. Điều này có thể làm cho cấu trúc JSON phẳng hơn.
 
-假设有 `Account` 类，包含 `Location` 和 `PersonInfo` 两个嵌套对象。
+Giả sử có class `Account`, chứa hai object lồng nhau là `Location` và `PersonInfo`.
 
 ```java
 @Getter
@@ -953,7 +953,7 @@ public class Account {
 
 ```
 
-未扁平化之前的 JSON 结构：
+Cấu trúc JSON trước khi làm phẳng:
 
 ```json
 {
@@ -968,7 +968,7 @@ public class Account {
 }
 ```
 
-使用`@JsonUnwrapped` 扁平对象：
+Sử dụng `@JsonUnwrapped` để làm phẳng object:
 
 ```java
 @Getter
@@ -983,7 +983,7 @@ public class Account {
 }
 ```
 
-扁平化后的 JSON 结构：
+Cấu trúc JSON sau khi làm phẳng:
 
 ```json
 {
@@ -994,12 +994,12 @@ public class Account {
 }
 ```
 
-## 测试
+## Testing
 
-`@ActiveProfiles`一般作用于测试类上， 用于声明生效的 Spring 配置文件。
+`@ActiveProfiles` thường được áp dụng trên test class, dùng để khai báo Spring profile đang có hiệu lực.
 
 ```java
-// 指定在 RANDOM_PORT 上启动应用上下文，并激活 "test" profile
+// Chỉ định khởi động application context trên RANDOM_PORT, và kích hoạt "test" profile
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @Slf4j
@@ -1008,21 +1008,21 @@ public abstract class TestBase {
 }
 ```
 
-`@Test` 是 JUnit 框架（通常是 JUnit 5 Jupiter）提供的注解，用于标记一个方法为测试方法。虽然不是 Spring 自身的注解，但它是执行单元测试和集成测试的基础。
+`@Test` là annotation do JUnit framework cung cấp (thường là JUnit 5 Jupiter), dùng để đánh dấu một method là test method. Mặc dù không phải là annotation của chính Spring, nhưng nó là nền tảng để thực thi unit test và integration test.
 
-由 Spring TestContext 在测试线程中管理的 `@Transactional` 测试方法默认会在测试结束后回滚，避免污染测试数据。需要注意，如果使用 `RANDOM_PORT` 发起真实 HTTP 请求，服务端处理运行在另一个线程和事务中，不会随测试线程的事务自动回滚，此时需要使用隔离数据库或显式清理数据。
+Phương thức test có `@Transactional` được quản lý bởi Spring TestContext trong test thread sẽ mặc định rollback sau khi test kết thúc, tránh làm ô nhiễm dữ liệu test. Cần lưu ý, nếu sử dụng `RANDOM_PORT` để gửi HTTP request thực sự, quá trình xử lý ở phía server chạy trong một thread và transaction khác, sẽ không tự động rollback theo transaction của test thread, lúc này cần sử dụng database cô lập hoặc dọn dẹp dữ liệu tường minh.
 
-`@WithMockUser` 是 Spring Security Test 模块提供的注解，用于在测试期间模拟一个已认证的用户。可以方便地指定用户名、密码、角色（authorities）等信息，从而测试受安全保护的端点或方法。
+`@WithMockUser` là annotation do Spring Security Test module cung cấp, dùng để mô phỏng (mock) một người dùng đã được xác thực trong quá trình test. Có thể thuận tiện chỉ định username, password, role (authorities) và các thông tin khác, từ đó test các endpoint hoặc method được bảo vệ bởi security.
 
 ```java
 public class MyServiceTest extends TestBase { // Assuming TestBase provides Spring context
 
     @Test
-    @Transactional // 测试数据将回滚
-    @WithMockUser(username = "test-user", authorities = { "ROLE_TEACHER", "read" }) // 模拟一个名为 "test-user"，拥有 TEACHER 角色和 read 权限的用户
+    @Transactional // Dữ liệu test sẽ được rollback
+    @WithMockUser(username = "test-user", authorities = { "ROLE_TEACHER", "read" }) // Mô phỏng người dùng tên "test-user", có role TEACHER và quyền read
     void should_perform_action_requiring_teacher_role() throws Exception {
-        // ... 测试逻辑 ...
-        // 这里可以调用需要 "ROLE_TEACHER" 权限的服务方法
+        // ... Test logic ...
+        // Ở đây có thể gọi service method yêu cầu quyền "ROLE_TEACHER"
     }
 }
 ```

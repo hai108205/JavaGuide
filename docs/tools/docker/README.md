@@ -1,66 +1,66 @@
 ---
-title: Docker 专题：容器、镜像、仓库、数据卷、网络与容器化部署
-description: Docker 面试与容器化学习路线，涵盖容器、镜像、仓库、Docker 引擎、数据卷、网络、常用命令和容器化部署实践。
-category: 开发工具
+title: "Chuyên đề Docker: container, image, repository, volume, network và triển khai container hóa"
+description: "Lộ trình học Docker và container hóa phục vụ phỏng vấn, bao gồm container, image, repository, Docker Engine, volume, network, các lệnh thường dùng và thực hành triển khai container hóa."
+category: Công cụ phát triển
 tag:
   - Docker
-  - 容器
-  - 部署
+  - Container
+  - Triển khai
 sitemap:
   changefreq: weekly
   priority: 0.85
 head:
   - - meta
     - name: keywords
-      content: Docker,容器,镜像,仓库,Docker引擎,数据卷,网络,容器化部署,环境一致性,后端开发
+      content: Docker,container,image,repository,Docker Engine,volume,network,triển khai container hóa,nhất quán môi trường,phát triển backend
 ---
 
-Docker 是后端开发非常常见的容器化工具，常用于本地快速启动 MySQL、Redis、Kafka 等依赖服务，也常用于测试环境和部署交付。学习 Docker 时，要把核心概念和命令实践结合起来。
+Docker là công cụ container hóa rất phổ biến trong phát triển backend, thường được dùng để khởi chạy nhanh các dịch vụ phụ thuộc như MySQL, Redis, Kafka ngay trên máy local, cũng như trong môi trường kiểm thử và triển khai phân phối. Khi học Docker, hãy kết hợp việc nắm vững các khái niệm cốt lõi với thực hành câu lệnh.
 
-## 适合谁看
+## Phù hợp với ai
 
-- 想快速理解 Docker 容器化基础的后端开发者。
-- 需要用 Docker 搭建本地开发环境、测试环境或依赖服务的同学。
-- 准备面试，需要讲清容器、镜像、数据卷、网络和容器与虚拟机区别的读者。
-- 已经会复制 Docker 命令，但不清楚镜像构建、容器生命周期和数据持久化的工程师。
+- Lập trình viên backend muốn nhanh chóng hiểu nền tảng container hóa của Docker.
+- Người cần dùng Docker để dựng môi trường phát triển local, môi trường kiểm thử hoặc các dịch vụ phụ thuộc.
+- Người chuẩn bị phỏng vấn, cần trình bày rõ về container, image, volume, network và sự khác biệt giữa container với máy ảo.
+- Kỹ sư đã biết copy-paste lệnh Docker nhưng chưa hiểu rõ cách build image, vòng đời container và cơ chế lưu trữ dữ liệu bền vững.
 
-## 学习重点
+## Trọng tâm học tập
 
-- 容器解决的是应用运行环境隔离和一致性问题。
-- 镜像是静态模板，容器是镜像运行后的实例，仓库用于分发和复用镜像。
-- Docker 常用命令要围绕镜像管理、容器生命周期、日志查看、端口映射和进入容器来掌握。
-- 数据卷用于数据持久化和宿主机目录挂载，网络用于容器之间和容器与外部服务通信。
-- Docker Compose 用于定义和运行多容器应用，适合本地开发环境和简单服务编排。
-- Docker 不是万能部署方案，生产环境还要结合镜像安全、资源限制、日志、监控和编排能力考虑。
+- Container giải quyết bài toán cô lập và nhất quán môi trường chạy ứng dụng.
+- Image là template tĩnh, container là instance của image khi chạy, còn repository dùng để phân phối và tái sử dụng image.
+- Các lệnh Docker thường dùng cần nắm vững theo nhóm: quản lý image, vòng đời container, xem log, ánh xạ cổng (port mapping) và truy cập vào bên trong container.
+- Volume dùng để lưu trữ dữ liệu bền vững và mount thư mục từ máy host, còn network dùng cho giao tiếp giữa các container và giữa container với dịch vụ bên ngoài.
+- Docker Compose dùng để định nghĩa và chạy ứng dụng đa container, phù hợp với môi trường phát triển local và orchestration dịch vụ đơn giản.
+- Docker không phải giải pháp triển khai vạn năng; với môi trường production, cần xem xét thêm về bảo mật image, giới hạn tài nguyên, log, monitoring và khả năng orchestration.
 
-## 建议阅读顺序
+## Thứ tự đọc đề xuất
 
-1. [Docker 核心概念总结](./docker-intro.md)：先理解容器、镜像、仓库、Docker 引擎以及容器和虚拟机的区别。
-2. [Docker 实战](./docker-in-action.md)：通过实际命令练习镜像拉取、容器启动、端口映射、数据卷、日志查看和常见服务部署。
-3. 结合一个 Java 项目练习：把应用依赖的 MySQL、Redis 等服务用 Docker 启动起来，再观察日志、数据目录和端口映射。
+1. [Tổng hợp khái niệm cốt lõi của Docker](./docker-intro.md): trước tiên hãy hiểu về container, image, repository, Docker Engine và sự khác biệt giữa container với máy ảo.
+2. [Thực hành Docker](./docker-in-action.md): luyện tập qua các lệnh thực tế như kéo image, khởi chạy container, ánh xạ cổng, volume, xem log và triển khai các dịch vụ thường gặp.
+3. Kết hợp luyện tập với một dự án Java: dùng Docker khởi chạy các dịch vụ mà ứng dụng phụ thuộc như MySQL, Redis, sau đó quan sát log, thư mục dữ liệu và ánh xạ cổng.
 
-## 核心文章
+## Bài viết chính
 
-- [Docker 核心概念总结](./docker-intro.md)：讲解容器、镜像、仓库、Docker 引擎、Docker 架构、Docker Compose，以及 Docker 和虚拟机的区别。
-- [Docker 实战](./docker-in-action.md)：通过常用命令和实践场景理解镜像管理、容器管理、服务部署、本地环境搭建和常见排查。
+- [Tổng hợp khái niệm cốt lõi của Docker](./docker-intro.md): giải thích về container, image, repository, Docker Engine, kiến trúc Docker, Docker Compose, cùng sự khác biệt giữa Docker và máy ảo.
+- [Thực hành Docker](./docker-in-action.md): thông qua các lệnh thường dùng và kịch bản thực tế để hiểu quản lý image, quản lý container, triển khai dịch vụ, dựng môi trường local và xử lý sự cố thường gặp.
 
-## 高频问题
+## Câu hỏi thường gặp
 
-- Docker 主要解决什么问题？
-- 容器和虚拟机有什么区别？
-- 镜像和容器是什么关系？
-- Dockerfile、镜像、容器、仓库分别是什么？
-- 为什么容器删除后数据可能丢失？数据卷解决了什么问题？
-- 端口映射和容器网络分别解决什么问题？
-- 如何查看容器日志、进入容器、停止和删除容器？
-- `docker compose` 适合解决什么问题？和单独执行 `docker run` 有什么区别？
-- Docker 在开发、测试和部署环境里分别有什么价值？
+- Docker chủ yếu giải quyết vấn đề gì?
+- Container và máy ảo khác nhau như thế nào?
+- Mối quan hệ giữa image và container là gì?
+- Dockerfile, image, container, repository lần lượt là gì?
+- Vì sao dữ liệu có thể bị mất sau khi xóa container? Volume giải quyết vấn đề gì?
+- Ánh xạ cổng và network của container lần lượt giải quyết vấn đề gì?
+- Làm sao để xem log của container, truy cập vào container, dừng và xóa container?
+- `docker compose` phù hợp giải quyết vấn đề gì? Khác với việc chạy riêng lẻ `docker run` như thế nào?
+- Docker có giá trị gì trong từng môi trường phát triển, kiểm thử và triển khai?
 
-## 相关专题
+## Chuyên đề liên quan
 
-- [开发工具知识体系](../)
-- [Git 专题](../git/)
-- [Maven 专题](../maven/)
-- [高可用系统设计](../../high-availability/)
+- [Hệ thống kiến thức công cụ phát triển](../)
+- [Chuyên đề Git](../git/)
+- [Chuyên đề Maven](../maven/)
+- [Thiết kế hệ thống sẵn sàng cao](../../high-availability/)
 
 <!-- @include: @article-footer.snippet.md -->
